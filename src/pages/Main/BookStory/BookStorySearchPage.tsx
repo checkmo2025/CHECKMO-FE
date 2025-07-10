@@ -1,31 +1,22 @@
-//SearchPage.tsx
+//BookStorySearchPage.tsx
 import React from 'react'
 import { useNavigate } from 'react-router-dom'
-import BookSearch, { type Book, type Action } from '../../components/Search/BookSearch';
+import BookSearch, { type Book, type Action } from '../../../components/Search/BookSearch';
 
 
 
-export default function SearchPage() {
+export default function BookStorySearchPage() {
   const navigate = useNavigate()
 
    const actions: Action[] = [
     {
-      label: '책 이야기',
+      label: '선택하기',
       onClick: (book: Book) => {
-        // 책 이야기 페이지로 이동
+        // 책 추천페이지로 이동
         navigate(`/bookstory/${book.id}`)
       },
       className: 'bg-[var(--button-brown,#A6917E)] text-white',
-      iconUrl: '/assets/icon-pencil.svg' // 연필 아이콘
     },
-    {
-      label: '상세 보기',
-      onClick: (book: Book) => {
-        // 상세 보기 페이지로 이동
-        navigate(`/bookdetail/${book.id}`)
-      },
-      className: 'bg-[var(--button-brown,#FFF] text-black border-[1.5px] border-[var(--sub-color-1-brown,#BFAB96)]',
-    }
   ]
 
   return (
