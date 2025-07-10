@@ -49,7 +49,7 @@ export default function BookSearch({ actions }: BookSearchProps) {
           className="w-[33px] h-[33px] "
         />
 
-        <input type="text" placeholder="검색하기 (도서명, 작가, 출판사)"  className=" text-[18px] mx-[14px] font-[Pretendard] font-medium bg-transparent outline-none flex-1 leading-[135%] text-[var(--Gray5,#BBB)]"
+        <input type="text" placeholder="검색하기 (도서명, 작가)"  className=" text-[18px] mx-[14px] font-[Pretendard] font-medium bg-transparent outline-none flex-1 leading-[135%] text-[var(--Gray5,#BBB)]"
         />
 
 
