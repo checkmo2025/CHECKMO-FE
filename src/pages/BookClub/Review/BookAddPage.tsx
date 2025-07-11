@@ -1,31 +1,24 @@
-//SearchPage.tsx
+//BookAddPage.tsx
 import React from 'react'
 import { useNavigate } from 'react-router-dom'
-import BookSearch, { type Book, type Action } from '../../components/Search/BookSearch';
+import BookSearch, { type Book, type Action } from '../../../components/Search/BookSearch'
+import { useParams } from 'react-router-dom'
 
 
-
-export default function SearchPage() {
+export default function BookAddPage() {
   const navigate = useNavigate()
+   const { prefix } = useParams<{ prefix: string }>()
 
    const actions: Action[] = [
     {
-      label: '책 이야기',
+      label: '추천하기',
       onClick: (book: Book) => {
         // 책 이야기 페이지로 이동
-        navigate(`/bookstory/${book.id}`)
+        navigate(`/${prefix}/${book.id}/EditPage`)
       },
       className: 'bg-[var(--button-brown,#A6917E)] text-white',
-      iconUrl: '/assets/meteor-icons_pencil.svg' // 연필 아이콘
     },
-    {
-      label: '상세 보기',
-      onClick: (book: Book) => {
-        // 상세 보기 페이지로 이동
-        navigate(`/bookdetail/${book.id}`)
-      },
-      className: 'bg-[var(--button-brown,#FFF] text-black border-[1.5px] border-[var(--sub-color-1-brown,#BFAB96)]',
-    }
+    
   ]
 
   return (
@@ -35,7 +28,7 @@ export default function SearchPage() {
           <span>사이드바 자리</span>
       </div>
 
-      <div className="absolute top-[60px] left-[315px] right-[42px] opacity-100 ">
+      <div className="absolute top-[20px] left-[315px] right-[42px] opacity-100 ">
         {/* 헤더 자리 */}
         <div className = "bg-gray-200 flex justify-center items-center mb-[69px]"><span>헤더자리</span></div>
 
