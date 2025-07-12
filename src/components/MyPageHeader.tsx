@@ -1,13 +1,17 @@
 import React from "react";
 import { useNavigate } from "react-router-dom"; 
 
-const MyPageHeader: React.FC = () => {
-  const navigate = useNavigate(); 
+interface MyPageHeaderProps {
+  title: string;
+}
+
+const MyPageHeader: React.FC<MyPageHeaderProps> = ({ title }) => {
+  const navigate = useNavigate();
 
   return (
     <header className="flex justify-between items-center px-10 py-6 bg-white border-b border-gray-200">
       {/* 마이페이지 텍스트 */}
-      <h1 className="text-2xl font-bold text-[#2C2C2C]">마이페이지</h1>
+      <h1 className="text-2xl font-bold text-[#2C2C2C]">{title}</h1>
 
       {/* 프로필 영역 */}
       <div className="flex items-center gap-3">
