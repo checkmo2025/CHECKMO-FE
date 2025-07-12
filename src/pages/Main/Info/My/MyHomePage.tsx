@@ -1,6 +1,6 @@
 import React from "react";
 import MyPageHeader from "../../../../components/MyPageHeader";
-import { Heart, BellRing } from "lucide-react";
+import { Heart, Flag } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
 const MyPage: React.FC = () => {
@@ -174,13 +174,13 @@ const MyPage: React.FC = () => {
                     </p>
 
                     {/* 좋아요 & 신고 아이콘 */}
-                    <div className="absolute right-0 top-0 flex items-center gap-4">
-                      <div className="flex items-center gap-1 text-gray-500 text-sm">
-                        <Heart size={20} className="text-gray-500" />
+                    <div className="flex justify-end gap-5 mt-4">
+                      <div className="flex items-center gap-1 text-[#2C2C2C] hover:text-[#90D26D] text-sm">
+                        <Heart size={20} />
                         <span>12</span>
                       </div>
-                      <div className="flex items-center gap-1 text-gray-500 text-sm">
-                        <BellRing size={20} className="text-gray-500" />
+                      <div className="flex items-center gap-1 text-[#2C2C2C] hover:text-[#90D26D] text-sm">
+                        <Flag size={20} />
                       </div>
                     </div>
                   </div>
