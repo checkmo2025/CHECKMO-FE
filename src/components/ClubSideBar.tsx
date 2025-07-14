@@ -1,9 +1,5 @@
-
-
 const ClubSidebar = () => {
-  return (
-    <div>ClubSidebar</div>
-  )
-}
+  return <div>ClubSidebar</div>;
+};
 
-export default ClubSidebar
+export default ClubSidebar;
