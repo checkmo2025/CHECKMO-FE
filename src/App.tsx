@@ -11,6 +11,7 @@ import MySubscriptionPage from "./pages/Main/Info/My/MySubscriptionPage";
 import MyNotificationPage from "./pages/Main/Info/My/MyNotificationPage";
 import MyStoryPage from "./pages/Main/Info/My/MyStoryPage";
 import MyProfilePage from "./pages/Main/Info/My/MyProfilePage";
+import OthersProfilePage from "./pages/Main/Info/OthersProfilePage";
 
 const App = () => {
   return (
@@ -22,6 +23,8 @@ const App = () => {
           <Route path="/profile" element={<ProfilePage />} />
           <Route path="/test-header" element={<TestHeaderPage />} /> 
           <Route path="/mypage" element={<MyHomePage />} />
+          {/* Others 프로필 라우트 추가 */}
+          <Route path="/info/others/:id" element={<OthersProfilePage />} />
           {/* 마이페이지 하위 라우트 */}
           <Route path="/mypage/group" element={<MyGroupPage />} />
           <Route path="/mypage/subscription" element={<MySubscriptionPage />} />
