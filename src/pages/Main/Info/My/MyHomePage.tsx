@@ -14,7 +14,7 @@ const MyPage: React.FC = () => {
       {/* 메인 영역 */}
       <main className="flex-1">
         {/* 마이페이지 헤더 */}
-        <MyPageHeader />
+        <MyPageHeader title="마이페이지" />
 
         <div className="px-10 py-8 space-y-10">
           {/* 프로필 상단 */}
