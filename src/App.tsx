@@ -5,7 +5,12 @@ import LoginPage from "./pages/Auth/LoginPage";
 import SignupPage from "./pages/Auth/SignupPage";
 import ProfilePage from "./pages/Auth/ProfilePage";
 import TestHeaderPage from "./pages/TestHeaderPage";
-import MyPage from "./pages/Main/Info/MyPage";
+import MyHomePage from "./pages/Main/Info/My/MyHomePage";
+import MyGroupPage from "./pages/Main/Info/My/MyGroupPage";
+import MySubscriptionPage from "./pages/Main/Info/My/MySubscriptionPage";
+import MyNotificationPage from "./pages/Main/Info/My/MyNotificationPage";
+import MyStoryPage from "./pages/Main/Info/My/MyStoryPage";
+import MyProfilePage from "./pages/Main/Info/My/MyProfilePage";
 import HomePage from './pages/BookClub/HomePage'      // 북클럽 홈
 import NoticePage from './pages/BookClub/NoticePage'  // 북클럽 공지사항
 import ClubSearchPage from './pages/Main/ClubSearchPage'  // 북클럽 검색
@@ -25,7 +30,13 @@ const App = () => {
           <Route path="/signup" element={<SignupPage />} />
           <Route path="/profile" element={<ProfilePage />} />
           <Route path="/test-header" element={<TestHeaderPage />} /> 
-          <Route path="/mypage" element={<MyPage />} />
+          <Route path="/mypage" element={<MyHomePage />} />
+          {/* 마이페이지 하위 라우트 */}
+          <Route path="/mypage/group" element={<MyGroupPage />} />
+          <Route path="/mypage/subscription" element={<MySubscriptionPage />} />
+          <Route path="/mypage/notification" element={<MyNotificationPage />} />
+          <Route path="/mypage/story" element={<MyStoryPage />} />
+          <Route path="/mypage/myprofile" element={<MyProfilePage />} />
           {/* /bookclub 이하에 북클럽 관련 페이지 묶기 */}
           <Route path="/bookclub">
             {/* /bookclub → 북클럽 홈 */}
