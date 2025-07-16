@@ -4,6 +4,8 @@ import { KEYS } from "./config/key";
 import LoginPage from "./pages/Auth/LoginPage";
 import SignupPage from "./pages/Auth/SignupPage";
 import ProfilePage from "./pages/Auth/ProfilePage";
+import TestHeaderPage from "./pages/TestHeaderPage";
+import MyPage from "./pages/Main/Info/MyPage";
 import HomePage from './pages/BookClub/HomePage'      // 북클럽 홈
 import NoticePage from './pages/BookClub/NoticePage'  // 북클럽 공지사항
 import ClubSearchPage from './pages/Main/ClubSearchPage'  // 북클럽 검색
@@ -22,6 +24,8 @@ const App = () => {
           <Route path="/" element={<LoginPage />} />
           <Route path="/signup" element={<SignupPage />} />
           <Route path="/profile" element={<ProfilePage />} />
+          <Route path="/test-header" element={<TestHeaderPage />} /> 
+          <Route path="/mypage" element={<MyPage />} />
           {/* /bookclub 이하에 북클럽 관련 페이지 묶기 */}
           <Route path="/bookclub">
             {/* /bookclub → 북클럽 홈 */}
@@ -35,13 +39,9 @@ const App = () => {
           <Route path="/bookstory/search" element={<BookStorySearchPage />} />
           <Route path="/booksearch" element={<SearchPage />} />
           <Route path=":prefix/bookaddpage" element={<BookAddPage />} />
-
-
           // 책장
           <Route path=":prefix/shelf" element={<ShelfHomePage />} />
           <Route path=":prefix/shelf/:shelfBookIndex" element={<ShelfDetailPage />} />
-
-          
         </Routes>
       </Router>
     </GoogleOAuthProvider>
