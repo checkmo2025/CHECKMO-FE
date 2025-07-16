@@ -45,11 +45,11 @@ export default function ShelfHomePage() {
 
   function getStarIcon(average_score: number, i: number) {
     if (average_score >= i + 1) {
-      return '/assets/star-full.svg' // 꽉 찬 별
+      return "/assets/material-symbols_star-rounded.svg" // 꽉 찬 별
     } else if (average_score >= i + 0.5) {
-      return '/assets/star-half.svg' // 반만 찬 별
+      return "/assets/uim_star-half-alt.svg" // 반만 찬 별
     } else {
-      return '/assets/star-empty.svg' // 빈 별
+      return "/assets/material-symbols_star-emptyrounded.svg" // 빈 별
     }
   }
 
@@ -144,21 +144,21 @@ export default function ShelfHomePage() {
   <div className=" w-[128px] h-[24px] border-b-[1px] border-[var(--sub-color-2-brown,#EAE5E2)] flex items-center justify-between">
     <span className="text-[12px] font-[Pretendard] font-medium leading-[145%] text-[#2C2C2C] items-center">
       발제</span>
-    <img src={ShelfBook.coverUrl} className="w-[24px] h-[24px]"/>
+    <img src="/assets/바로가기.svg" className="w-[24px] h-[24px]"/>
   </div>
 </Link>
 <Link to={`/${useParams<{ prefix: string }>().prefix}/shelf/${ShelfBook.id}/score`}className="block">
   <div className=" w-[128px] h-[24px] border-b-[1px] border-[var(--sub-color-2-brown,#EAE5E2)] flex items-center justify-between">
     <span className="text-[12px] font-[Pretendard] font-medium leading-[145%] text-[#2C2C2C] items-center">
       한줄평</span>
-    <img src={ShelfBook.coverUrl} className="w-[24px] h-[24px]"/>
+    <img src="/assets/바로가기.svg" className="w-[24px] h-[24px]"/>
   </div>
 </Link>
 <Link to={`/${useParams<{ prefix: string }>().prefix}/shelf/${ShelfBook.id}/afterread`}className="block">
   <div className=" w-[128px] h-[24px] border-b-[1px] border-[var(--sub-color-2-brown,#EAE5E2)] flex items-center justify-between">
     <span className="text-[12px] font-[Pretendard] font-medium leading-[145%] text-[#2C2C2C] items-center">
       독서 후 활동</span>
-    <img src={ShelfBook.coverUrl} className="w-[24px] h-[24px]"/>
+    <img src="/assets/바로가기.svg" className="w-[24px] h-[24px]"/>
   </div>
 </Link>
 

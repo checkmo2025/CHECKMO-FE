@@ -16,7 +16,7 @@ export default function SearchPage() {
         navigate(`/bookstory/${book.id}`)
       },
       className: 'bg-[var(--button-brown,#A6917E)] text-white',
-      iconUrl: '/assets/icon-pencil.svg' // 연필 아이콘
+      iconUrl: '/assets/meteor-icons_pencil.svg' // 연필 아이콘
     },
     {
       label: '상세 보기',
