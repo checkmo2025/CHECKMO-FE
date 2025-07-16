@@ -1,9 +1,12 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { GoogleOAuthProvider } from "@react-oauth/google";
-import { KEYS } from "./config/key"; 
+import { KEYS } from "./config/key";
 import LoginPage from "./pages/Auth/LoginPage";
 import SignupPage from "./pages/Auth/SignupPage";
 import ProfilePage from "./pages/Auth/ProfilePage";
+import MainLayout from "./components/layout/MainLayout";
+import MyPage from "./pages/Main/Info/MyPage";
+import HomePage from "./pages/Main/HomePage";
 import TestHeaderPage from "./pages/TestHeaderPage";
 import MyHomePage from "./pages/Main/Info/My/MyHomePage";
 import MyGroupPage from "./pages/Main/Info/My/MyGroupPage";
@@ -12,7 +15,7 @@ import MyNotificationPage from "./pages/Main/Info/My/MyNotificationPage";
 import MyStoryPage from "./pages/Main/Info/My/MyStoryPage";
 import MyProfilePage from "./pages/Main/Info/My/MyProfilePage";
 import OthersProfilePage from "./pages/Main/Info/OthersProfilePage";
-import HomePage from './pages/BookClub/HomePage'      // 북클럽 홈
+import BookClubHomePage from './pages/BookClub/BookClubHomePage'      // 북클럽 홈
 import NoticePage from './pages/BookClub/NoticePage'  // 북클럽 공지사항
 import ClubSearchPage from './pages/Main/ClubSearchPage'  // 북클럽 검색
 import CreateClubPage from './pages/Main/CreateClubPage'
@@ -33,6 +36,11 @@ const App = () => {
           <Route path="/" element={<LoginPage />} />
           <Route path="/signup" element={<SignupPage />} />
           <Route path="/profile" element={<ProfilePage />} />
+          <Route element={<MainLayout />}>
+            <Route path="/home" element={<HomePage />} />
+            {/* 메인 사이드바 사용할 페이지는 여기에 넣기 */}
+            <Route path="/search" element={<SearchPage />} />
+          </Route>
           <Route path="/test-header" element={<TestHeaderPage />} /> 
           <Route path="/mypage" element={<MyHomePage />} />
           {/* Others 프로필 라우트 추가 */}
