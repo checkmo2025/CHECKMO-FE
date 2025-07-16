@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import AnnouncementCard, {  type AnnouncementCardProps } from '../../components/BookClub/AnnouncementCard';
+import AnnouncementCard, { type AnnouncementCardProps } from '../../components/BookClub/AnnouncementCard';
 import { NotificationItem, type NotificationItemProps } from '../../components/BookClub/NotificationItem';
 import BookStoryCard, { type BookStoryCardProps } from '../../components/BookClub/BookStoryCard';
 import checkerImage from '../../assets/images/checker.png';
