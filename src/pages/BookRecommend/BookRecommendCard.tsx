@@ -1,9 +1,9 @@
-import type { Recommendation } from "../../types/bookRecommend";
+import type { RecommendationDto } from "../../types/dto";
 import BookReviewHeader from "./BookRecommendHeader";
 import StarRating from "./StarRating";
 
 interface BookReviewCardProps {
-  recommend: Recommendation;
+  recommend: RecommendationDto;
 }
 
 const BookRecommendCard = ({ recommend }: BookReviewCardProps) => {

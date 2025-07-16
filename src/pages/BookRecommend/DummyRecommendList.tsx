@@ -1,6 +1,6 @@
-import type { RecommendList } from "../../types/bookRecommend";
+import type { RecommendListDto } from "../../types/bookRecommend";
 
-export const dummyRecommendList: RecommendList = {
+export const dummyRecommendList: RecommendListDto = {
   isSuccess: true,
   code: "200",
   message: "성공적으로 불러왔습니다.",
@@ -13,6 +13,7 @@ export const dummyRecommendList: RecommendList = {
           title: "넥서스",
           author: "유발 하라리",
           imgUrl: "https://example.com/covers/nexus.jpg",
+          pulisher: "",
         },
         memberInfo: {
           memberId: 11,
@@ -31,6 +32,7 @@ export const dummyRecommendList: RecommendList = {
           title: "데이터 과학 입문",
           author: "박철수",
           imgUrl: "https://example.com/covers/data-science.jpg",
+          pulisher: "",
         },
         memberInfo: {
           memberId: 27,
@@ -49,6 +51,7 @@ export const dummyRecommendList: RecommendList = {
           title: "리액트를 다루는 기술",
           author: "홍길동",
           imgUrl: "https://example.com/covers/react-guide.jpg",
+          pulisher: "",
         },
         memberInfo: {
           memberId: 35,
@@ -67,6 +70,7 @@ export const dummyRecommendList: RecommendList = {
           title: "SSAFY",
           author: "홍길동123",
           imgUrl: "https://example.com/covers/react-guide.jpg",
+          pulisher: "",
         },
         memberInfo: {
           memberId: 343,
@@ -84,6 +88,7 @@ export const dummyRecommendList: RecommendList = {
           title: "SSAFY12",
           author: "홍길동123",
           imgUrl: "https://example.com/covers/react-guide.jpg",
+          pulisher: "",
         },
         memberInfo: {
           memberId: 343,
@@ -101,6 +106,7 @@ export const dummyRecommendList: RecommendList = {
           title: "SSAFY14",
           author: "홍길동123",
           imgUrl: "https://example.com/covers/react-guide.jpg",
+          pulisher: "",
         },
         memberInfo: {
           memberId: 343,

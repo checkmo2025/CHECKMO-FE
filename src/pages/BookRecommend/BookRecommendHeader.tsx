@@ -1,7 +1,7 @@
-import type { Member } from "../../types/bookRecommend";
+import type { MemberDto } from "../../types/dto";
 
 interface HeaderProps {
-  memberInfo: Member;
+  memberInfo: MemberDto;
 }
 
 const BookRecommendHeader = ({ memberInfo }: HeaderProps) => {
