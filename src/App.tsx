@@ -5,7 +5,6 @@ import LoginPage from "./pages/Auth/LoginPage";
 import SignupPage from "./pages/Auth/SignupPage";
 import ProfilePage from "./pages/Auth/ProfilePage";
 import MainLayout from "./components/layout/MainLayout";
-import MyPage from "./pages/Main/Info/MyPage";
 import HomePage from "./pages/Main/HomePage";
 import TestHeaderPage from "./pages/TestHeaderPage";
 import MyHomePage from "./pages/Main/Info/My/MyHomePage";
@@ -54,7 +53,7 @@ const App = () => {
           {/* /bookclub 이하에 북클럽 관련 페이지 묶기 */}
           <Route path="/bookclub">
             {/* /bookclub → 북클럽 홈 */}
-            <Route index element={<HomePage />} />
+            <Route index element={<BookClubHomePage />} />
             {/* /bookclub/notices → 공지사항 페이지 */}
             <Route path="notices" element={<NoticePage />} />
           </Route>
