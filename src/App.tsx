@@ -20,6 +20,9 @@ import SearchPage from "./pages/Main/SearchPage";
 import BookAddPage from "./pages/BookClub/Review/BookAddPage";
 import ShelfHomePage from "./pages/BookClub/Shelf/ShelfHomePage";
 import ShelfDetailPage from "./pages/BookClub/Shelf/ShelfDetailPage";
+import ThemeDetailPage from "./pages/BookClub/Shelf/ThemeDetailPage";
+import ScoreDetailPage from "./pages/BookClub/Shelf/ScoreDetailPage";
+
 
 const App = () => {
   return (
@@ -53,6 +56,8 @@ const App = () => {
           // 책장
           <Route path=":prefix/shelf" element={<ShelfHomePage />} />
           <Route path=":prefix/shelf/:shelfBookIndex" element={<ShelfDetailPage />} />
+          <Route path=":prefix/shelf/:shelfBookIndex/theme" element={<ThemeDetailPage />} />
+          <Route path=":prefix/shelf/:shelfBookIndex/score" element={<ScoreDetailPage />} />
         </Routes>
       </Router>
     </GoogleOAuthProvider>

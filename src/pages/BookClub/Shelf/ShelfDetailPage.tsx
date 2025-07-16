@@ -13,7 +13,7 @@ function getRandomScores(scores: ShelfBookScore[], count: number) {
   const shuffled = [...scores].sort(() => Math.random() - 0.5)
   return shuffled.slice(0, count)
 }
-function getStarIcon(average_score: number, i: number) {
+export function getStarIcon(average_score: number, i: number) {
     if (average_score >= i + 1) {
       return "/assets/material-symbols_star-rounded.svg" // 꽉 찬 별
     } else if (average_score >= i + 0.5) {
@@ -215,7 +215,7 @@ export default function ShelfDetailPage() {
               </div>
 
               {/* 3) 입력창 */}
-              <div className="flex-1 border-b-2 border-[var(--sub-color-2-brown,#EAE5E2)] ">
+              <div className="flex-1 border-b-2 border-[var(--sub-color-2-brown,#EAE5E2)] mr-">
                 <input type="text"  placeholder="한줄평을 입력해 주세요"  className="w-full text-[14px] text-gray-700 leading-snug break-words my-[10px]  mr-[20px] bg-transparent focus:outline-none" />
               </div>
 
@@ -231,7 +231,7 @@ export default function ShelfDetailPage() {
 
             {/* +더보기 버튼 */}
              <div className="mt-[11px] mr-[8px] flex justify-end">
-              <button onClick={() => navigate(`${location.pathname}/theme`)} className="text-[14px] font-medium text-[var(--button-brown,#969696) leading-[145%] hover:cursor-pointer">
+              <button onClick={() => navigate(`${location.pathname}/score`)} className="text-[14px] font-medium text-[var(--button-brown,#969696) leading-[145%] hover:cursor-pointer">
                 +더보기
               </button>
             </div>
