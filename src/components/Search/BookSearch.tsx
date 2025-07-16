@@ -49,11 +49,8 @@ export default function BookSearch({ actions }: BookSearchProps) {
           src="/assets/material-symbols_search-rounded.svg"
           className="w-[33px] h-[33px] "
         />
-
         <input type="text" placeholder="검색하기 (도서명, 작가)"  className=" text-[18px] mx-[14px] font-[Pretendard] font-medium bg-transparent outline-none flex-1 leading-[135%] text-[var(--Gray-1,#2C2C2C)] ]"
         />
-
-
       </div>
 
       {/* 검색 결과 리스트 (스크롤은 내부에서만, 바는 숨김) */}
