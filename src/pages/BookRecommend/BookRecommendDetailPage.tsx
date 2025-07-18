@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import StarRating from "./StarRating";
+import StarRating from "../../components/BookRecommend/StarRating";
 import type { RecommendationDto } from "../../types/dto";
-import BookRecommendDetailCard from "./BookRecommendDetailCard";
+import BookRecommendDetailCard from "../../components/BookRecommend/BookRecommendDetailCard";
 import type { useRecommendDetail } from "../../hooks/useRecommend";
 import { dummyRecommendDetail } from "./DummyRecommendDetail";
 

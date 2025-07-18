@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 import type { RecommendListDto } from "../../types/bookRecommend";
-import BookRecommendCard from "./BookRecommendCard";
+import BookRecommendCard from "../../components/BookRecommend/BookRecommendCard";
 
 interface BookRecommendListProps {
   bookRecommendList: RecommendListDto;
