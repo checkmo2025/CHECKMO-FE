@@ -1,12 +1,12 @@
 import type { RecommendationDto } from "../../types/dto";
-import BookReviewHeader from "./BookRecommendHeader";
+import BookRecommendHeader from "./BookRecommendHeader";
 import StarRating from "./StarRating";
 
-interface BookReviewCardProps {
+interface BookRecommendCardProps {
   recommend: RecommendationDto;
 }
 
-const BookRecommendCard = ({ recommend }: BookReviewCardProps) => {
+const BookRecommendCard = ({ recommend }: BookRecommendCardProps) => {
   const { memberInfo, bookInfo, content, rate } = recommend;
 
   return (
@@ -14,7 +14,7 @@ const BookRecommendCard = ({ recommend }: BookReviewCardProps) => {
       className="relative rounded-lg overflow-hidden 
     border-2 border-gray-200 transition-transform duration-300 transform hover:shadow-lg hover:scale-105 bg-white"
     >
-      <BookReviewHeader memberInfo={memberInfo} />
+      <BookRecommendHeader memberInfo={memberInfo} />
 
       <div className="mt-2 mb-3 mr-3 ml-3">
         <div className="flex">
