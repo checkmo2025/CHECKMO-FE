@@ -28,12 +28,12 @@ const menus = [
   },
   {
     name: "책 검색하기",
-    path: "/search",
+    path: "/booksearch",
     icon: searchIcon,
     submenus: [
-      { name: "통합검색", path: "/bookclub/:id" },
-      { name: "국내도서", path: "/domesticBook" },
-      { name: "전자책", path: "/ebook" },
+      { name: "통합검색", path: "/booksearch" },
+      { name: "국내도서", path: "/booksearch" },
+      { name: "전자책", path: "/booksearch" },
     ],
   },
   {
