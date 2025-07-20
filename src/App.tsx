@@ -4,6 +4,10 @@ import { KEYS } from "./config/key";
 import LoginPage from "./pages/Auth/LoginPage";
 import SignupPage from "./pages/Auth/SignupPage";
 import ProfilePage from "./pages/Auth/ProfilePage";
+import { dummyRecommendList } from "./pages/BookRecommend/DummyRecommendList";
+import BookRecommendPage from "./pages/BookRecommend/BookRecommendPage";
+import BookRecommendDetailPage from "./pages/BookRecommend/BookRecommendDetailPage";
+import BookRecommendCreatePage from "./pages/BookRecommend/BookRecommendCreatePage";
 import MainLayout from "./components/layout/MainLayout";
 import HomePage from "./pages/Main/HomePage";
 import TestHeaderPage from "./pages/TestHeaderPage";
@@ -26,8 +30,9 @@ import ShelfDetailPage from "./pages/BookClub/Shelf/ShelfDetailPage";
 import ThemeDetailPage from "./pages/BookClub/Shelf/ThemeDetailPage";
 import ScoreDetailPage from "./pages/BookClub/Shelf/ScoreDetailPage";
 
-
 const App = () => {
+  const dummyList = dummyRecommendList;
+
   return (
     <GoogleOAuthProvider clientId={KEYS.GOOGLE_CLIENT_ID}>
       <Router>
@@ -35,6 +40,18 @@ const App = () => {
           <Route path="/" element={<LoginPage />} />
           <Route path="/signup" element={<SignupPage />} />
           <Route path="/profile" element={<ProfilePage />} />
+          <Route
+            path="/recommend"
+            element={<BookRecommendPage bookRecommendList={dummyList} />}
+          />
+          <Route
+            path="/recommend/:recommendId"
+            element={<BookRecommendDetailPage />}
+          />
+          <Route
+            path="/recommend/create/:bookId"
+            element={<BookRecommendCreatePage />}
+          />
           <Route element={<MainLayout />}>
             <Route path="/home" element={<HomePage />} />
             {/* 메인 사이드바 사용할 페이지는 여기에 넣기 */}
