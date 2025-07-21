@@ -30,6 +30,7 @@ import ShelfDetailPage from "./pages/BookClub/Shelf/ShelfDetailPage";
 import ThemeDetailPage from "./pages/BookClub/Shelf/ThemeDetailPage";
 import ScoreDetailPage from "./pages/BookClub/Shelf/ScoreDetailPage";
 import BookStoryHomePage from "./pages/Main/BookStory/BookStoryHomePage";
+import BookClubLayout from "./components/layout/BookClubLayout";
 
 const App = () => {
   const dummyList = dummyRecommendList;
@@ -57,13 +58,6 @@ const App = () => {
             <Route path="/home" element={<HomePage />} />
             {/* 메인 사이드바 사용할 페이지는 여기에 넣기 */}
             <Route path="/search" element={<SearchPage />} />
-            {/* /bookclub 이하에 북클럽 관련 페이지 묶기 */}
-            <Route path="/bookclub">
-              {/* /bookclub → 북클럽 홈 */}
-              <Route index element={<BookClubHomePage />} />
-              {/* /bookclub/notices → 공지사항 페이지 */}
-              <Route path="notices" element={<NoticePage />} />
-            </Route>
             {/* 마이페이지 하위 라우트 */}
             <Route path="/mypage/group" element={<MyGroupPage />} />
             <Route
@@ -78,6 +72,23 @@ const App = () => {
             <Route path="/mypage/myprofile" element={<MyProfilePage />} />
             <Route path="/mypage" element={<MyHomePage />} />
             <Route path="/bookstory" element={<BookStoryHomePage />} />
+          </Route>
+          {/* /bookclub 이하에 북클럽 관련 페이지 묶기 */}
+          <Route path="/bookclub">
+            {/* /bookclub → 북클럽 홈 */}
+            <Route index element={<BookClubHomePage />} />
+            {/* /bookclub/notices → 공지사항 페이지 */}
+            <Route path="notices" element={<NoticePage />} />
+
+            {/* 동적 모임 - 사이드바 확인용 (더기)  */}
+            <Route path=":id" element={<BookClubLayout />}>
+              <Route path="home" element={<BookClubHomePage />} />
+              {/* <Route path="notice" element={<NoticePage />} />
+                <Route path="bookcase" element={<BookcasePage />} />
+                <Route path="meeting" element={<MeetingPage />} />
+                <Route path="recommend" element={<RecommendPage />} />
+                <Route path="schedule" element={<SchedulePage />} /> */}
+            </Route>
           </Route>
           <Route path="/test-header" element={<TestHeaderPage />} />
           {/* Others 프로필 라우트 추가 */}

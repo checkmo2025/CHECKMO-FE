@@ -58,7 +58,7 @@ const menus = [
   },
 ];
 
-const MainSidebar = () => {
+const MainSideBar = () => {
   const [openMenus, setOpenMenus] = useState<Set<string>>(new Set());
 
   const toggleMenu = (menuName: string) => {
@@ -141,4 +141,4 @@ const MainSidebar = () => {
   );
 };
 
-export default MainSidebar;
+export default MainSideBar;
