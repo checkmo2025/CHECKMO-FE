@@ -58,7 +58,7 @@ const menus = [
   },
 ];
 
-const MainSidebar = () => {
+const MainSideBar = () => {
   const [openMenus, setOpenMenus] = useState<Set<string>>(new Set());
 
   const toggleMenu = (menuName: string) => {
@@ -74,7 +74,7 @@ const MainSidebar = () => {
   };
 
   return (
-    <div className="flex w-[16.5rem] h-[64rem] flex-col items-start justify-start gap-[2.8125rem] px-6 py-8 bg-[#E9F2E3] shrink-0">
+    <div className="flex w-[16.5rem] h-screen flex-col items-start justify-start gap-[2.8125rem] px-6 py-8 bg-[#E9F2E3] shrink-0">
       <div className="flex w-[9.375rem] h-[4.5rem] items-center gap-4 shrink-0">
         <img src={logoImage} alt="logo" className="w-18 h-18 object-contain" />
         <span className="text-4xl font-bold text-[#3D4C35] tracking-tight font-pretendard">
@@ -141,4 +141,4 @@ const MainSidebar = () => {
   );
 };
 
-export default MainSidebar;
+export default MainSideBar;
