@@ -3,7 +3,7 @@ import MainSidebar from "../MainSideBar";
 
 const MainLayout = () => {
   return (
-    <div className="flex min-h-screen">
+    <div className="flex min-h-screen ">
       <MainSidebar />
       <div className="flex-1 bg-white p-6">
         <Outlet />

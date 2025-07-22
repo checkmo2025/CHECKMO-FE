@@ -55,7 +55,8 @@ const App = () => {
           <Route element={<MainLayout />}>
             <Route path="/home" element={<HomePage />} />
             {/* 메인 사이드바 사용할 페이지는 여기에 넣기 */}
-            <Route path="/search" element={<SearchPage />} />
+            <Route path="/booksearch" element={<SearchPage />} />
+            <Route path="/bookstory/search" element={<BookStorySearchPage />} />
           </Route>
           <Route path="/test-header" element={<TestHeaderPage />} /> 
           <Route path="/mypage" element={<MyHomePage />} />
@@ -76,9 +77,8 @@ const App = () => {
           </Route>
           <Route path='/searchClub' element={<ClubSearchPage />} />
           <Route path='/createClub' element={<CreateClubPage />} />
-          // 검색 임시 페이지
-          <Route path="/bookstory/search" element={<BookStorySearchPage />} />
-          <Route path="/booksearch" element={<SearchPage />} />
+
+          
           <Route path=":prefix/bookaddpage" element={<BookAddPage />} />
           // 책장
           <Route path=":prefix/shelf" element={<ShelfHomePage />} />
