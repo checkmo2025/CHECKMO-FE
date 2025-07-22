@@ -15,6 +15,7 @@ export interface ShelfBook {
 }
 
 export default function ShelfHomePage() {
+  const { prefix } = useParams<{ prefix: string }>();
   const [maxTerm, setMaxTerm] = useState(7)  // 초깃값 7기
   const [Term,setTerm] = useState(0) 
   const [shelfBooks, setShelfBooks] = useState<ShelfBook[]>([])
@@ -104,7 +105,7 @@ export default function ShelfHomePage() {
           {/* 책장 리스트 */}
           <div className="grid grid-cols-3 gap-x-[12px] gap-y-[24px] overflow-y-auto h-[calc(100vh-171px)] overscroll-none "  style={{ msOverflowStyle: 'none', scrollbarWidth: 'none' }}>
             {shelfBooks.map((ShelfBook, idx) => (
-          <Link key={idx}  to={`/${useParams<{prefix:string}>().prefix}/shelf/${ShelfBook.id}`}  className="block">
+          <Link key={idx}  to={`/${prefix}/shelf/${ShelfBook.id}`}  className="block">
             <div className="flex h-[240px] p-[20px] items-center gap-[20px] rounded-2xl border-2 border-[var(--sub-color-2-brown,#EAE5E2)] bg-[var(--White,#FFF)] hover:shadow-lg transition-shadow">
 
             {/* 왼쪽 */}
@@ -140,21 +141,21 @@ export default function ShelfHomePage() {
 
             {/* 4–6) 링크 3개 (20px 아래 여백, 링크별 색상 예시) */}
             <div className="mt-[24px] flex flex-col items-center">
-          <Link to={`/${useParams<{ prefix: string }>().prefix}/shelf/${ShelfBook.id}/theme`}className="block">
+          <Link to={`/${prefix}/shelf/${ShelfBook.id}/theme`}className="block">
             <div className=" w-[128px] h-[24px] border-b-[1px] border-[var(--sub-color-2-brown,#EAE5E2)] flex items-center justify-between">
               <span className="text-[12px] font-[Pretendard] font-medium leading-[145%] text-[#2C2C2C] items-center">
                 발제</span>
               <img src="/assets/바로가기.svg" className="w-[24px] h-[24px]"/>
             </div>
           </Link>
-          <Link to={`/${useParams<{ prefix: string }>().prefix}/shelf/${ShelfBook.id}/score`}className="block">
+          <Link to={`/${prefix}/shelf/${ShelfBook.id}/score`}className="block">
             <div className=" w-[128px] h-[24px] border-b-[1px] border-[var(--sub-color-2-brown,#EAE5E2)] flex items-center justify-between">
               <span className="text-[12px] font-[Pretendard] font-medium leading-[145%] text-[#2C2C2C] items-center">
                 한줄평</span>
               <img src="/assets/바로가기.svg" className="w-[24px] h-[24px]"/>
             </div>
           </Link>
-          <Link to={`/${useParams<{ prefix: string }>().prefix}/shelf/${ShelfBook.id}/afterread`}className="block">
+          <Link to={`/${prefix}/shelf/${ShelfBook.id}/afterread`}className="block">
             <div className=" w-[128px] h-[24px] border-b-[1px] border-[var(--sub-color-2-brown,#EAE5E2)] flex items-center justify-between">
               <span className="text-[12px] font-[Pretendard] font-medium leading-[145%] text-[#2C2C2C] items-center">
                 독서 후 활동</span>
