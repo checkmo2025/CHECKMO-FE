@@ -37,14 +37,14 @@ export default function BookSearch({ actions }: BookSearchProps) {
   return (
     <div className="px-6 flex flex-col flex-1">
       
-       {actions?.[0]?.label === '추천하기' && (
-        <p className="font-[Pretendard] font-medium text-[18px] text-black mb-5">
+        {actions?.[0]?.label === '추천하기' && (
+        <p className="absolute mt-[110px] font-[Pretendard] font-medium text-[18px] text-black mb-5">
           인상 깊은 책을 모임원들에게 추천해주세요!
         </p>
       )}
 
       {/* 검색창 */}
-      <div className=" flex items-center h-[53px] py-[10px] px-[17px] rounded-2xl bg-[var(--Color-4,#F4F2F1)]">
+      <div className="mt-[150px] flex items-center h-[53px] py-[10px] px-[17px] rounded-2xl bg-[var(--Color-4,#F4F2F1)]">
         <img
           src="/assets/material-symbols_search-rounded.svg"
           className="w-[33px] h-[33px] "
@@ -54,7 +54,7 @@ export default function BookSearch({ actions }: BookSearchProps) {
       </div>
 
       {/* 검색 결과 리스트 (스크롤은 내부에서만, 바는 숨김) */}
-      <div className="mt-6 flex flex-col overflow-y-auto space-y-6 pr-2 h-[calc(100vh-248px)] overscroll-none" style={{ msOverflowStyle: 'none', scrollbarWidth: 'none' }}
+      <div className="p-5 flex flex-col overflow-y-auto space-y-6 h-[calc(100vh-248px)] overscroll-none" style={{ msOverflowStyle: 'none', scrollbarWidth: 'none' }}
 >
         {books.map((book, idx) => (
   <div key={idx} className="flex w-full border-2 border-[var(--sub-color-2-brown,#EAE5E2)] rounded-2xl bg-[var(--White,#FFF)] shadow-sm">

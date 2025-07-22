@@ -71,7 +71,10 @@ const App = () => {
             <Route path="/mypage/story" element={<MyStoryPage />} />
             <Route path="/mypage/myprofile" element={<MyProfilePage />} />
             <Route path="/mypage" element={<MyHomePage />} />
+            // 검색 임시 페이지
             <Route path="/bookstory" element={<BookStoryHomePage />} />
+            <Route path="/booksearch" element={<SearchPage />} />
+            <Route path="/bookstory/search" element={<BookStorySearchPage />} />
           </Route>
           {/* /bookclub 이하에 북클럽 관련 페이지 묶기 */}
           <Route path="/bookclub">
@@ -82,12 +85,7 @@ const App = () => {
 
             {/* 동적 모임 - 사이드바 확인용 (더기)  */}
             <Route path=":id" element={<BookClubLayout />}>
-              <Route path="home" element={<BookClubHomePage />} />
-              {/* <Route path="notice" element={<NoticePage />} />
-                <Route path="bookcase" element={<BookcasePage />} />
-                <Route path="meeting" element={<MeetingPage />} />
-                <Route path="recommend" element={<RecommendPage />} />
-                <Route path="schedule" element={<SchedulePage />} /> */}
+              <Route path="home" element={<BookClubHomePage />} /
             </Route>
           </Route>
           <Route path="/test-header" element={<TestHeaderPage />} />
@@ -95,9 +93,6 @@ const App = () => {
           <Route path="/info/others/:id" element={<OthersProfilePage />} />
           <Route path="/searchClub" element={<ClubSearchPage />} />
           <Route path="/createClub" element={<CreateClubPage />} />
-          // 검색 임시 페이지
-          <Route path="/bookstory/search" element={<BookStorySearchPage />} />
-          <Route path="/booksearch" element={<SearchPage />} />
           <Route path=":prefix/bookaddpage" element={<BookAddPage />} />
           // 책장
           <Route path=":prefix/shelf" element={<ShelfHomePage />} />
