@@ -24,7 +24,7 @@ import ClubSearchPage from "./pages/Main/ClubSearchPage"; // 북클럽 검색
 import CreateClubPage from "./pages/Main/CreateClubPage";
 import BookStorySearchPage from "./pages/Main/BookStory/BookStorySearchPage";
 import SearchPage from "./pages/Main/SearchPage";
-import BookAddPage from "./pages/BookClub/Review/BookAddPage";
+import SearchRecommendBookPage from "./pages/BookRecommend/SearchRecommendBookPage"
 import ShelfHomePage from "./pages/BookClub/Shelf/ShelfHomePage";
 import ShelfDetailPage from "./pages/BookClub/Shelf/ShelfDetailPage";
 import ThemeDetailPage from "./pages/BookClub/Shelf/ThemeDetailPage";
@@ -87,12 +87,15 @@ const App = () => {
             {/* 동적 모임 - 사이드바 확인용 (더기)  */}
             <Route path=":id" element={<BookClubLayout />}>
               <Route path="home" element={<BookClubHomePage />} />
-              <Route path="bookaddpage" element={<BookAddPage />} />
 
+              {/* 책장 */}
               <Route path="shelf" element={<ShelfHomePage />} />
               <Route path="shelf/:shelfBookIndex" element={<ShelfDetailPage />} />
               <Route path="shelf/:shelfBookIndex/theme" element={<ThemeDetailPage />} />
               <Route path="shelf/:shelfBookIndex/score" element={<ScoreDetailPage />} />  
+
+              {/* 책 추천 */}
+              <Route path="recommend/searchrecommendbook" element={<SearchRecommendBookPage />} />
             </Route>
           </Route>
           <Route path="/test-header" element={<TestHeaderPage />} />
