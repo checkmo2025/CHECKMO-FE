@@ -23,15 +23,16 @@ export default function BookStorySearchPage() {
     
     <div className="flex h-screen">
       <div className="absolute left-[315px] right-[42px] opacity-100 ">
-        <div className = "">
-          <Header pageTitle={'title'} userProfile={{
-            username: '123',
-            bio: '123'
-          }} notifications={[]}/>
-        </div>
+        <Header pageTitle={'책 이야기'} userProfile={{
+          username: 'Luke',
+          bio: '아 피곤하다.'
+        }} 
+        notifications={[]}
+        customClassName="mt-15"
+        />
 
         {/* 메인 컨텐츠 자리 */}
-        <BookSearch actions={actions} />
+        <BookSearch SearchResultHeight = {235} actions={actions} />
       </div>
     </div>
   )

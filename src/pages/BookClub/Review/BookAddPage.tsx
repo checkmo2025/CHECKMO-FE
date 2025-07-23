@@ -7,14 +7,14 @@ import Header from '../../../components/Header'
 
 export default function BookAddPage() {
   const navigate = useNavigate()
-   const { prefix } = useParams<{ prefix: string }>()
+   const { id } = useParams<{ id: string }>()
 
    const actions: Action[] = [
     {
       label: '추천하기',
       onClick: (book: Book) => {
         // 책 이야기 페이지로 이동
-        navigate(`/${prefix}/${book.id}/EditPage`)
+        navigate(`/${id}/${book.id}/EditPage`)
       },
       className: 'bg-[var(--button-brown,#A6917E)] text-white',
     },
@@ -22,17 +22,23 @@ export default function BookAddPage() {
   ]
 
   return (
-    <div className="flex h-screen p-6">
+    <div className="flex h-screen">
       <div className="absolute left-[315px] right-[42px] opacity-100 ">
-        <div className = "">
-        <Header pageTitle={'title'} userProfile={{
-          username: '123',
-          bio: '123'
-        }} notifications={[]}/>
-        </div>
+
+        <Header pageTitle={'책 추천하기'} userProfile={{
+          username: 'Luke',
+          bio: '아 피곤하다.'
+        }} 
+        notifications={[]}
+        customClassName="mb-19 mt-9" //112-36 = 76
+        />
+
 
         {/* 메인 컨텐츠 자리 */}
-        <BookSearch actions={actions} />
+        <div>
+          <BookSearch SearchResultHeight = {287} actions={actions} />
+        </div>
+        
       </div>
     </div>
   )

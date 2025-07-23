@@ -57,7 +57,9 @@ const App = () => {
           <Route element={<MainLayout />}>
             <Route path="/home" element={<HomePage />} />
             {/* 메인 사이드바 사용할 페이지는 여기에 넣기 */}
-            <Route path="/search" element={<SearchPage />} />
+            <Route path="/booksearch" element={<SearchPage />} />
+            <Route path="/searchClub" element={<ClubSearchPage />} />
+
             {/* 마이페이지 하위 라우트 */}
             <Route path="/mypage/group" element={<MyGroupPage />} />
             <Route
@@ -71,9 +73,8 @@ const App = () => {
             <Route path="/mypage/story" element={<MyStoryPage />} />
             <Route path="/mypage/myprofile" element={<MyProfilePage />} />
             <Route path="/mypage" element={<MyHomePage />} />
-            // 검색 임시 페이지
             <Route path="/bookstory" element={<BookStoryHomePage />} />
-            <Route path="/booksearch" element={<SearchPage />} />
+            
             <Route path="/bookstory/search" element={<BookStorySearchPage />} />
           </Route>
           {/* /bookclub 이하에 북클럽 관련 페이지 묶기 */}
@@ -85,29 +86,21 @@ const App = () => {
 
             {/* 동적 모임 - 사이드바 확인용 (더기)  */}
             <Route path=":id" element={<BookClubLayout />}>
-              <Route path="home" element={<BookClubHomePage />} /
+              <Route path="home" element={<BookClubHomePage />} />
+              <Route path="bookaddpage" element={<BookAddPage />} />
+
+              <Route path="shelf" element={<ShelfHomePage />} />
+              <Route path="shelf/:shelfBookIndex" element={<ShelfDetailPage />} />
+              <Route path="shelf/:shelfBookIndex/theme" element={<ThemeDetailPage />} />
+              <Route path="shelf/:shelfBookIndex/score" element={<ScoreDetailPage />} />  
             </Route>
           </Route>
           <Route path="/test-header" element={<TestHeaderPage />} />
           {/* Others 프로필 라우트 추가 */}
           <Route path="/info/others/:id" element={<OthersProfilePage />} />
-          <Route path="/searchClub" element={<ClubSearchPage />} />
+          
           <Route path="/createClub" element={<CreateClubPage />} />
-          <Route path=":prefix/bookaddpage" element={<BookAddPage />} />
-          // 책장
-          <Route path=":prefix/shelf" element={<ShelfHomePage />} />
-          <Route
-            path=":prefix/shelf/:shelfBookIndex"
-            element={<ShelfDetailPage />}
-          />
-          <Route
-            path=":prefix/shelf/:shelfBookIndex/theme"
-            element={<ThemeDetailPage />}
-          />
-          <Route
-            path=":prefix/shelf/:shelfBookIndex/score"
-            element={<ScoreDetailPage />}
-          />
+          
         </Routes>
       </Router>
     </GoogleOAuthProvider>

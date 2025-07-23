@@ -46,8 +46,8 @@ const Header: React.FC<HeaderProps> = ({ pageTitle, userProfile, notifications, 
       className={`${
         customClassName
           ? customClassName
-          : "fixed left-[264px] right-0 top-3 h-[56px]" // 기본값
-      } bg-white flex justify-between items-center px-4 md:px-8 lg:px-13 z-50 shadow-sm`}
+          : "fixed left-[264px] right-0 top-3 h-[56px] lg:px-13 px-4 md:px-8 " // 기본값
+      } bg-white flex justify-between items-center z-50 `}
     >
       {/* 페이지 타이틀 */}
       <h1 className="font-bold text-lg md:text-xl lg:text-2xl text-[#2C2C2C]">

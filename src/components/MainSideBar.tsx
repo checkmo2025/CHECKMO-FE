@@ -22,7 +22,7 @@ const menus = [
     icon: bookclubIcon,
     submenus: [
       { name: "내 모임 바로가기", path: "/bookclub/:id" },
-      { name: "모임 검색하기", path: "/bookclub/search" },
+      { name: "모임 검색하기", path: "/searchClub" },
       { name: "모임 생성하기", path: "/bookclub/create" },
     ],
   },
