@@ -1,5 +1,5 @@
 import type { RecommendationDto } from "../../types/dto";
-import BookRecommendHeader from "../../pages/BookRecommend/BookRecommendHeader";
+import BookRecommendHeader from "./BookRecommendHeader";
 import StarRating from "./StarRating";
 
 interface BookRecommendCardProps {
