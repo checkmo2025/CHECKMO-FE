@@ -1,10 +1,10 @@
 import { Outlet } from "react-router-dom";
-import MainSideBar from "../MainSideBar";
+import ClubSideBar from "../ClubSideBar";
 
-const MainLayout = () => {
+const BookClubLayout = () => {
   return (
     <div className="flex h-screen overflow-hidden">
-      <MainSideBar />
+      <ClubSideBar />
       <div className="flex-1 overflow-y-auto bg-white">
         <Outlet />
       </div>
@@ -12,4 +12,4 @@ const MainLayout = () => {
   );
 };
 
-export default MainLayout;
+export default BookClubLayout;

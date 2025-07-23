@@ -3,18 +3,18 @@ import React from 'react'
 import { useNavigate } from 'react-router-dom'
 import BookSearch, { type Book, type Action } from '../../../components/Search/BookSearch'
 import { useParams } from 'react-router-dom'
-
+import Header from '../../../components/Header'
 
 export default function BookAddPage() {
   const navigate = useNavigate()
-   const { prefix } = useParams<{ prefix: string }>()
+   const { id } = useParams<{ id: string }>()
 
    const actions: Action[] = [
     {
       label: '추천하기',
       onClick: (book: Book) => {
         // 책 이야기 페이지로 이동
-        navigate(`/${prefix}/${book.id}/EditPage`)
+        navigate(`/${id}/${book.id}/EditPage`)
       },
       className: 'bg-[var(--button-brown,#A6917E)] text-white',
     },
@@ -23,17 +23,22 @@ export default function BookAddPage() {
 
   return (
     <div className="flex h-screen">
-      {/* 사이드바 자리*/}
-      <div className="w-[264px] bg-[#F1F8EF] flex flex-col items-center justify-center gap-[45px] opacity-100">
-          <span>사이드바 자리</span>
-      </div>
+      <div className="absolute left-[315px] right-[42px] opacity-100 ">
 
-      <div className="absolute top-[20px] left-[315px] right-[42px] opacity-100 ">
-        {/* 헤더 자리 */}
-        <div className = "bg-gray-200 flex justify-center items-center mb-[69px]"><span>헤더자리</span></div>
+        <Header pageTitle={'책 추천하기'} userProfile={{
+          username: 'Luke',
+          bio: '아 피곤하다.'
+        }} 
+        notifications={[]}
+        customClassName="mb-19 mt-9" //112-36 = 76
+        />
+
 
         {/* 메인 컨텐츠 자리 */}
-        <BookSearch actions={actions} />
+        <div>
+          <BookSearch SearchResultHeight = {287} actions={actions} />
+        </div>
+        
       </div>
     </div>
   )

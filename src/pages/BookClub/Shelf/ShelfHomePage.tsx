@@ -2,6 +2,7 @@ import React, { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useEffect } from 'react'
 import { useParams, Link } from 'react-router-dom'
+import Header from '../../../components/Header'
 export interface ShelfBook {
   id: string
   title: string
@@ -14,6 +15,7 @@ export interface ShelfBook {
 }
 
 export default function ShelfHomePage() {
+  const { prefix } = useParams<{ prefix: string }>();
   const [maxTerm, setMaxTerm] = useState(7)  // 초깃값 7기
   const [Term,setTerm] = useState(0) 
   const [shelfBooks, setShelfBooks] = useState<ShelfBook[]>([])
@@ -62,9 +64,12 @@ export default function ShelfHomePage() {
       {/* 메인 컨텐츠 자리 */}
       <div className="absolute top-[30px] left-[305px] right-[34px]">
         {/* 헤더 자리 */}
-        <div className = "bg-gray-200 flex justify-center items-center mb-[54px] h-[42px]"><span>헤더자리</span></div>
+        <Header pageTitle={'title'} userProfile={{
+          username: '123',
+          bio: '123'
+        }} notifications={[]}/>
   
-        <div className="flex flex-col gap-[18px]">
+        <div className="mt-10 flex flex-col gap-[18px]">
           {/* 타이틀과 기수 */}
           <div className="flex items-center justify-between w-full h-[24px]">
 
@@ -100,11 +105,7 @@ export default function ShelfHomePage() {
           {/* 책장 리스트 */}
           <div className="grid grid-cols-3 gap-x-[12px] gap-y-[24px] overflow-y-auto h-[calc(100vh-171px)] overscroll-none "  style={{ msOverflowStyle: 'none', scrollbarWidth: 'none' }}>
             {shelfBooks.map((ShelfBook, idx) => (
-          <Link
-            key={idx}
-            to={`/${useParams<{prefix:string}>().prefix}/shelf/${ShelfBook.id}`}
-            className="block"
-          >
+          <Link key={idx}  to={`/${prefix}/shelf/${ShelfBook.id}`}  className="block">
             <div className="flex h-[240px] p-[20px] items-center gap-[20px] rounded-2xl border-2 border-[var(--sub-color-2-brown,#EAE5E2)] bg-[var(--White,#FFF)] hover:shadow-lg transition-shadow">
 
             {/* 왼쪽 */}
@@ -116,69 +117,67 @@ export default function ShelfHomePage() {
               />
             </div>
 
-  {/* 오른쪽: 남은 공간을 모두 차지 */}
-  <div className="flex-1 h-full flex flex-col">
+            {/* 오른쪽: 남은 공간을 모두 차지 */}
+            <div className="flex-1 h-full flex flex-col">
 
-    {/* 1) 제목 */}
-    <p className="text-[14px] font-[Pretendard] font-semibold  leading-[135%] text-[var(--Gray1,#2C2C2C)]">
-      {ShelfBook.title}
-    </p>
-    {/* 2) 저자 · 번역자 */}
-    <p className="text-[12px] text-[#8D8D8D] font-[Pretendard] font-medium leading-[145%] ">
-      {ShelfBook.author} 지음
-      {ShelfBook.translator && ` | ${ShelfBook.translator} 옮김`}
-    </p>
-    {/* 3) term·tag pills (10px 아래 여백) */}
-    <div className="mt-[10px] flex gap-[8px] ">
-      <span className="px-[20px] py-[2px] text-[12px] rounded-full bg-[#90D26D] text-white">
-        {ShelfBook.term}기
-      </span>
-      <span className="px-[20px] py-[2px] text-[12px] rounded-full bg-[#90D26D] text-white">
-        {ShelfBook.tag}
-      </span>
-    </div>
+              {/* 1) 제목 */}
+              <p className="text-[14px] font-[Pretendard] font-semibold  leading-[135%] text-[var(--Gray1,#2C2C2C)]">
+                {ShelfBook.title}
+              </p>
+              {/* 2) 저자 · 번역자 */}
+              <p className="text-[12px] text-[#8D8D8D] font-[Pretendard] font-medium leading-[145%] ">
+                {ShelfBook.author} 지음
+                {ShelfBook.translator && ` | ${ShelfBook.translator} 옮김`}
+              </p>
+              {/* 3) term·tag pills (10px 아래 여백) */}
+              <div className="mt-[10px] flex gap-[8px] ">
+                <span className="px-[20px] py-[2px] text-[12px] rounded-full bg-[#90D26D] text-white">
+                  {ShelfBook.term}기
+                </span>
+                <span className="px-[20px] py-[2px] text-[12px] rounded-full bg-[#90D26D] text-white">
+                  {ShelfBook.tag}
+                </span>
+              </div>
 
-  {/* 4–6) 링크 3개 (20px 아래 여백, 링크별 색상 예시) */}
-  <div className="mt-[24px] flex flex-col items-center">
-<Link to={`/${useParams<{ prefix: string }>().prefix}/shelf/${ShelfBook.id}/theme`}className="block">
-  <div className=" w-[128px] h-[24px] border-b-[1px] border-[var(--sub-color-2-brown,#EAE5E2)] flex items-center justify-between">
-    <span className="text-[12px] font-[Pretendard] font-medium leading-[145%] text-[#2C2C2C] items-center">
-      발제</span>
-    <img src="/assets/바로가기.svg" className="w-[24px] h-[24px]"/>
-  </div>
-</Link>
-<Link to={`/${useParams<{ prefix: string }>().prefix}/shelf/${ShelfBook.id}/score`}className="block">
-  <div className=" w-[128px] h-[24px] border-b-[1px] border-[var(--sub-color-2-brown,#EAE5E2)] flex items-center justify-between">
-    <span className="text-[12px] font-[Pretendard] font-medium leading-[145%] text-[#2C2C2C] items-center">
-      한줄평</span>
-    <img src="/assets/바로가기.svg" className="w-[24px] h-[24px]"/>
-  </div>
-</Link>
-<Link to={`/${useParams<{ prefix: string }>().prefix}/shelf/${ShelfBook.id}/afterread`}className="block">
-  <div className=" w-[128px] h-[24px] border-b-[1px] border-[var(--sub-color-2-brown,#EAE5E2)] flex items-center justify-between">
-    <span className="text-[12px] font-[Pretendard] font-medium leading-[145%] text-[#2C2C2C] items-center">
-      독서 후 활동</span>
-    <img src="/assets/바로가기.svg" className="w-[24px] h-[24px]"/>
-  </div>
-</Link>
-
-
-  </div>
-
-  {/* 7) 평점별 별 아이콘 (24px, 24px 아래 여백) */}
-  <div className="mt-[20px] flex items-center">
-    {Array.from({ length: 5 }).map((_, i) => {
-      const src = getStarIcon(ShelfBook.average_score, i);
-      return <img key={i} src={src} alt="star" className="w-[24px] h-[24px]" />;
-    })}
-  </div>
-</div>
-
-</div>
+            {/* 4–6) 링크 3개 (20px 아래 여백, 링크별 색상 예시) */}
+            <div className="mt-[24px] flex flex-col items-center">
+          <Link to={`/${prefix}/shelf/${ShelfBook.id}/theme`}className="block">
+            <div className=" w-[128px] h-[24px] border-b-[1px] border-[var(--sub-color-2-brown,#EAE5E2)] flex items-center justify-between">
+              <span className="text-[12px] font-[Pretendard] font-medium leading-[145%] text-[#2C2C2C] items-center">
+                발제</span>
+              <img src="/assets/바로가기.svg" className="w-[24px] h-[24px]"/>
+            </div>
           </Link>
-))}
-          </div>
+          <Link to={`/${prefix}/shelf/${ShelfBook.id}/score`}className="block">
+            <div className=" w-[128px] h-[24px] border-b-[1px] border-[var(--sub-color-2-brown,#EAE5E2)] flex items-center justify-between">
+              <span className="text-[12px] font-[Pretendard] font-medium leading-[145%] text-[#2C2C2C] items-center">
+                한줄평</span>
+              <img src="/assets/바로가기.svg" className="w-[24px] h-[24px]"/>
+            </div>
+          </Link>
+          <Link to={`/${prefix}/shelf/${ShelfBook.id}/afterread`}className="block">
+            <div className=" w-[128px] h-[24px] border-b-[1px] border-[var(--sub-color-2-brown,#EAE5E2)] flex items-center justify-between">
+              <span className="text-[12px] font-[Pretendard] font-medium leading-[145%] text-[#2C2C2C] items-center">
+                독서 후 활동</span>
+              <img src="/assets/바로가기.svg" className="w-[24px] h-[24px]"/>
+            </div>
+          </Link>
 
+
+            </div>
+
+            {/* 7) 평점별 별 아이콘 (24px, 24px 아래 여백) */}
+            <div className="mt-[20px] flex items-center">
+              {Array.from({ length: 5 }).map((_, i) => {
+                const src = getStarIcon(ShelfBook.average_score, i);
+                return <img key={i} src={src} alt="star" className="w-[24px] h-[24px]" />;
+              })}
+            </div>
+          </div>
+        </div>
+      </Link>
+      ))}
+          </div>
         </div>
       </div>
     </div>
