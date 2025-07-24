@@ -27,6 +27,28 @@ export default function ThemeDetailPage() {
 
   const [isAdding, setIsAdding] = useState(false)
   const inputRef = React.useRef<HTMLInputElement>(null);
+
+  const handleInput = (e: React.FormEvent<HTMLTextAreaElement>) => {
+      const ta = e.currentTarget;
+      ta.style.height = 'auto';               // 높이 리셋
+      ta.style.height = ta.scrollHeight + 'px'; // 내용에 맞게 늘리기
+    };
+  
+    const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
+      if (e.key === 'Tab') {
+        e.preventDefault();
+        const ta = e.currentTarget;
+        const start = ta.selectionStart;
+        const end = ta.selectionEnd;
+        // 탭 문자 삽입
+        ta.value = ta.value.slice(0, start) + '\t' + ta.value.slice(end);
+        // 커서 위치 복원
+        ta.selectionStart = ta.selectionEnd = start + 1;
+      }
+    };
+  
+
+
   const myId = '1004' //임시로 내 ID 설정
 
   function handleSend() {
@@ -50,10 +72,6 @@ export default function ThemeDetailPage() {
 
   return (
     <div className="flex h-screen">
-      {/* 사이드바 자리*/}
-      <div className="w-[264px] bg-[#F1F8EF] flex flex-col items-center justify-center gap-[45px] opacity-100">
-          <span>사이드바 자리</span>
-      </div>
       {/* 메인 */}
       <div className="absolute top-[30px] left-[305px] right-[34px] ">
 
@@ -81,14 +99,14 @@ export default function ThemeDetailPage() {
               {/* 발제 리스트 */}
               <div className="flex flex-col gap-[12px]">
                 {dummyShelfBookThemes.map(theme => (
-                  <div key={theme.id} className="flex bg-[#F4F2F1] shadow rounded-2xl border-2 border-[var(--sub-color-2-brown,#EAE5E2)] items-center">
-                    <div className= "ml-[12px] flex gap-[19px] items-center w-[222px] flex-shrink-0 my-[10px] " >
+                  <div key={theme.id} className=" py-3 flex bg-[#F4F2F1] shadow rounded-2xl border-2 border-[var(--sub-color-2-brown,#EAE5E2)]">
+                    <div className= "flex-shrink-0 items-center w-[222px] h-[48px] ml-[12px] flex gap-[19px] mr-[15px] " >
                       <img src= "/assets/ix_user-profile-filled.svg" className="w-[48px] h-[48px] rounded-full object-cover" />
                       <div className="font-semibold text-[15px] text-gray-800 mb-1">{theme.nickname}</div>
                     </div>
                     
                     {/* 발제 내용 */}
-                    <p className="font-pretendard text-sm font-medium leading-[145%] tracking-[-0.014px] text-[var(--Gray-1,#2C2C2C)] [font-feature-settings:'case' on] my-[20px] mr-[20px]">{theme.theme}</p>
+                    <p className="flex items-center font-pretendard text-sm font-medium leading-[145%] tracking-[-0.014px] text-[var(--Gray-1,#2C2C2C)] [font-feature-settings:'case' on] mr-[20px]  whitespace-pre-wrap">{theme.theme}</p>
                     
                     {/* 내 글인 경우 글쓰기/삭제 버튼 */}
                       {theme.userid === myId && (
@@ -107,19 +125,20 @@ export default function ThemeDetailPage() {
 
               {/* 발제 추가 영역 */}
               {isAdding && (
-              <div className="mt-[11px] flex shadow rounded-2xl bg-[#F4F2F1] border-2 border-[var(--sub-color-2-brown,#EAE5E2)] items-center w-full">
+              <div className="mt-[11px] flex shadow rounded-2xl bg-[#F4F2F1] border-2 border-[var(--sub-color-2-brown,#EAE5E2)]  w-full">
                 {/* 1) 프로필 + 닉네임 */}
-                <div className="ml-[12px] flex gap-[19px] items-center w-[222px] flex-shrink-0 my-[10px]">
+                <div className=" ml-[12px] flex gap-[19px] items-center h-12 w-[222px] flex-shrink-0 my-[10px] mr-[15px]">
                   <img src="/assets/ix_user-profile-filled.svg" className="w-[48px] h-[48px] rounded-full object-cover" alt="내 프로필" />
                   <div className="font-semibold text-[15px] text-gray-800 mb-1">luke</div>
                 </div>
                 {/* 2) 입력창 */}
-                <div className="flex-1 border-b-2 border-[var(--sub-color-2-brown,#EAE5E2)] mr-[20px]">
-                  <input  type="text" placeholder="발제를 입력해 주세요" ref={inputRef} className="w-full text-[14px] text-gray-700 leading-snug my-[10px] bg-transparent focus:outline-none"
-                  />
+                <div className="flex-1 mr-[20px] min-h-[48px] flex items-center ">
+                  <textarea ref={inputRef} type="text" rows={1} placeholder="한줄평을 입력해 주세요" onInput={handleInput}
+                    onKeyDown={handleKeyDown}
+                    className="flex items-center w-full text-[14px]  leading-snug bg-transparent focus:outline-none overflow-hidden resize-none min-h-[20px] py-2 border-b-2 border-[var(--sub-color-2-brown,#EAE5E2)]" />
                 </div>
                 {/* 3) 전송 버튼 */}
-                <button onClick={handleSend} className="mr-[15px] hover:cursor-pointer">
+                <button onClick={handleSend} className="mt-5 w-[24px] h-[24px] mr-[15px] hover:cursor-pointer">
                   <img src="/assets/등록.svg" className="w-[24px] h-[24px]" alt="전송" />
                 </button>
               </div>
