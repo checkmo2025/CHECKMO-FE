@@ -1,7 +1,9 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import AuthLeftPanel from "../../components/AuthLeftPanel";
-import AuthRightTopTitle from "../../components/AuthRightTopTitle";
+import { isValidEmail, isValidPassword } from "../../utils/validators";
+import ReactivateAccountModal from "../../components/ReactivateAccountModal";
+import AlertModal from "../../components/AlertModal";
 
 const SignupPage = () => {
   const navigate = useNavigate();
@@ -25,21 +27,18 @@ const SignupPage = () => {
     marketing: false,
   });
 
+  const [showReactivateModal, setShowReactivateModal] = useState(false);
+  const [reactivateEmail, setReactivateEmail] = useState("");
+
+  const withdrawnEmails = ["2jw@gmail.com"];
+
+  const [alertMessage, setAlertMessage] = useState("");
+
   const emailOptions = ["@naver.com", "@gmail.com", "@daum.net", "직접 입력"];
 
   const getFullEmail = () => {
     const domain = isCustomDomain ? customDomain.trim() : emailDomain.trim();
     return `${emailId.trim()}@${domain.replace(/^@/, "")}`;
-  };
-
-  const isValidEmail = (email: string) => {
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    return emailRegex.test(email);
-  };
-
-  const isValidPassword = (pw: string) => {
-    const pwRegex = /^(?=.*[A-Za-z])(?=.*\W).{6,10}$/;
-    return pwRegex.test(pw);
   };
 
   const handleSendCode = () => {
@@ -48,8 +47,16 @@ const SignupPage = () => {
       setEmailError("올바른 이메일 형식을 입력해주세요.");
       return;
     }
+
+    // 탈퇴 계정인 경우 모달 띄우기
+    if (withdrawnEmails.includes(fullEmail)) {
+      setReactivateEmail(fullEmail);
+      setShowReactivateModal(true);
+      return;
+    }
+
     setEmailError(""); 
-    alert(`인증번호가 ${fullEmail}로 발송되었습니다!`);
+    setAlertMessage(`인증번호가 ${fullEmail}로 발송되었습니다!`);
     setIsCodeSent(true);
     setVerificationMessage(""); 
   };
@@ -77,7 +84,7 @@ const SignupPage = () => {
   const handlePasswordChange = (value: string) => {
     setPassword(value);
     if (!isValidPassword(value)) {
-      setPasswordError("6~10자, 영어 및 특수문자를 1개 이상 포함해야 합니다.");
+      setPasswordError("ⓘ 영어 및 특수문자가 반드시 1개 이상 포함되어야합니다. (6-10자)");
     } else {
       setPasswordError("");
     }
@@ -102,7 +109,7 @@ const SignupPage = () => {
       setStep(2);
     } else if (step === 2) {
       if (!isValidPassword(password)) {
-        setPasswordError("6~10자, 영어 및 특수문자를 1개 이상 포함해야 합니다.");
+        setPasswordError("ⓘ 영어 및 특수문자가 반드시 1개 이상 포함되어야합니다. (6-10자)");
         return;
       }
       if (password !== passwordConfirm) {
@@ -130,22 +137,32 @@ const SignupPage = () => {
 
   return (
     <div className="flex h-screen font-sans">
+      <div className="hidden xl:flex">
       <AuthLeftPanel />
+      </div>
 
-      <div className="w-3/5 flex justify-center items-start relative">
-        <AuthRightTopTitle />
+      {/* 오른쪽 영역 */}
+      <div className="flex-1 overflow-y-auto">
+        <div className="flex flex-col items-center w-full min-h-screen px-6 py-20">
+        {/* 책모 타이틀 */}
+        <div className="mb-16 text-center">
+          <h1 className="text-5xl sm:text-6xl md:text-7xl font-extrabold text-[#90D26D] break-keep">
+            책모
+          </h1>
+        </div>
+
         {/* 상단 고정 회원가입 글씨 */}
-        <div className="absolute top-55 right-1/2 translate-x-1/2">
-          <h2 className="text-2xl font-bold">회원가입</h2>
+        <div className="mb-20">
+          <h2 className="text-2xl text-[#2C2C2C] font-bold">회원가입</h2>
         </div>
 
         {/* 아래쪽 박스 */}
-        <div className="w-[80%] max-w-md mt-80 mb-16 transition-all duration-300">
+        <div className="w-[80%] max-w-md space-y-10">
           {step === 1 && (
             <>
               {/* 아이디 입력 */}
               <div className="mb-7">
-                <label className="block mb-3 text-gray-700 text-sm font-semibold">
+                <label className="block mb-3 text-[#2C2C2C] text-sm font-semibold">
                   아이디
                 </label>
                 <div className="flex gap-2">
@@ -154,7 +171,7 @@ const SignupPage = () => {
                     placeholder="이메일 아이디"
                     value={emailId}
                     onChange={(e) => setEmailId(e.target.value)}
-                    className="flex-1 border-b border-gray-300 px-2 py-1 focus:outline-none"
+                    className="flex-1 border-b border-[#DADFE3] px-3 py-1 focus:outline-none"
                   />
                   {isCustomDomain ? (
                     <input
@@ -168,13 +185,13 @@ const SignupPage = () => {
                           setEmailDomain("@naver.com");
                         }
                       }}
-                      className="border-b border-gray-300 px-2 py-1 w-[40%] focus:outline-none"
+                      className="border-b border-[#DADFE3] px-3 py-1 w-[40%] focus:outline-none"
                     />
                   ) : (
                     <select
                       value={emailDomain}
                       onChange={(e) => handleDomainChange(e.target.value)}
-                      className="border-b border-gray-300 px-2 py-1 w-[40%] focus:outline-none"
+                      className="border-b border-[#DADFE3] px-3 py-1 w-[40%] focus:outline-none"
                     >
                       {emailOptions.map((option) => (
                         <option key={option} value={option}>
@@ -186,16 +203,16 @@ const SignupPage = () => {
                 </div>
                 {/* 이메일 오류 메시지 */}
                 {emailError && (
-                  <p className="text-green-600 mt-3 text-sm">{emailError}</p>
+                  <p className="text-[#FF8045] mt-2 text-sm">{emailError}</p>
                 )}
               </div>
 
               {/* 인증번호 발송 버튼 */}
               {emailId && (
-                <div className="mb-6">
+                <div className="w-full">
                   <button
                     onClick={handleSendCode}
-                    className="w-full bg-[#90D26D] text-white py-2 rounded transition hover:opacity-90"
+                    className="w-full bg-[#90D26D] text-white py-3 rounded transition hover:opacity-90"
                   >
                     인증번호 발송
                   </button>
@@ -203,8 +220,8 @@ const SignupPage = () => {
               )}
 
               {/* 인증번호 입력 */}
-              <div className="mb-7">
-                <label className="block mb-3 text-gray-700 text-sm font-semibold">
+              <div>
+                <label className="block mb-2 text-[#2C2C2C] text-sm font-semibold">
                   인증번호
                 </label>
                 <div className="relative">
@@ -213,7 +230,7 @@ const SignupPage = () => {
                     placeholder="인증번호 입력"
                     value={verificationCode}
                     onChange={(e) => setVerificationCode(e.target.value)}
-                    className="w-full border-b border-gray-300 px-2 py-1 focus:outline-none"
+                    className="w-full border-b border-[#DADFE3] px-3 py-1 focus:outline-none"
                   />
                   {verificationCode && (
                     <button
@@ -232,8 +249,8 @@ const SignupPage = () => {
               {/* 인증 메시지 */}
               {verificationMessage && (
                 <p
-                  className={`mt-1 text-sm ${
-                    isVerified ? "text-green-600" : "text-gray-700"
+                  className={` text-[14px] mt-1 ${
+                    isVerified ? "text-[#488328]" : "text-[#FF8045]"
                   }`}
                 >
                   {verificationMessage}
@@ -246,7 +263,7 @@ const SignupPage = () => {
             <>
               {/* 비밀번호 입력 */}
               <div className="mb-7">
-                <label className="block mb-3 text-gray-700 text-sm font-semibold">
+                <label className="block mb-3 text-[#2C2C2C] text-sm font-semibold">
                   비밀번호
                 </label>
                 <input
@@ -254,11 +271,11 @@ const SignupPage = () => {
                   placeholder="비밀번호 입력"
                   value={password}
                   onChange={(e) => handlePasswordChange(e.target.value)}
-                  className="w-full border-b border-gray-300 px-2 py-2 focus:outline-none"
+                  className="w-full border-b border-[#DADFE3] px-2 py-2 focus:outline-none"
                 />
                 {/* 비밀번호 조건 에러 메시지 */}
                 {passwordError && (
-                  <p className="text-green-700 font-medium text-sm mt-2">
+                  <p className="text-[#FF8045] font-medium text-[14px] mt-2">
                     {passwordError}
                   </p>
                 )}
@@ -266,7 +283,7 @@ const SignupPage = () => {
 
               {/* 비밀번호 확인 */}
               <div className="mb-6">
-                <label className="block mb-3 text-gray-700 text-sm font-semibold">
+                <label className="block mb-3 text-[#2C2C2C] text-[14px] font-semibold">
                   비밀번호 확인
                 </label>
                 <input
@@ -274,11 +291,11 @@ const SignupPage = () => {
                   placeholder="비밀번호 확인"
                   value={passwordConfirm}
                   onChange={(e) => handlePasswordConfirmChange(e.target.value)}
-                  className="w-full border-b border-gray-300 px-2 py-2 focus:outline-none"
+                  className="w-full border-b border-[#DADFE3] px-3 py-2 focus:outline-none"
                 />
                 {/* 비밀번호 불일치 에러 메시지 */}
                 {passwordConfirmError && (
-                  <p className="text-green-700 font-medium text-sm mt-2">
+                  <p className="text-[#FF8045] font-medium text-[14px] mt-2">
                     {passwordConfirmError}
                   </p>
                 )}
@@ -295,7 +312,7 @@ const SignupPage = () => {
                   { key: "marketing", label: "마케팅 정보 수신에 동의하시나요?" },
                 ].map((item) => (
                   <div key={item.key} className="flex justify-between items-center">
-                    <span className="text-gray-700 text-m font-bold">{item.label}</span>
+                    <span className="text-[#2C2C2C] text-m font-bold">{item.label}</span>
                     <button
                       onClick={() =>
                         toggleAgreement(item.key as keyof typeof agreements)
@@ -317,7 +334,7 @@ const SignupPage = () => {
           )}
 
           {/* 다음 버튼 고정 */}
-          <div className="absolute bottom-20 left-1/2 transform -translate-x-1/2 w-[80%] max-w-md">
+          <div className="w-full max-w-md mt-25">
             <button
               onClick={handleNextStep}
               className="w-full bg-[#90D26D] text-white py-3 rounded transition hover:opacity-90"
@@ -328,6 +345,27 @@ const SignupPage = () => {
         </div>
       </div>
     </div>
+    {showReactivateModal && (
+      <ReactivateAccountModal
+       email={reactivateEmail}
+        onConfirm={() => {
+          setAlertMessage(`${reactivateEmail} 계정이 복구되었습니다.`);
+          setShowReactivateModal(false);
+          navigate("/");
+          // 인증 확인 처리 (강제로 인증 성공 처리)
+          setIsVerified(true);
+        }}
+        onCancel={() => setShowReactivateModal(false)}
+      />
+    )}
+
+    {alertMessage && (
+      <AlertModal
+        message={alertMessage}
+        onClose={() => setAlertMessage("")}
+      />
+    )}
+   </div>
   );
 };
 
