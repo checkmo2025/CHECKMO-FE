@@ -50,7 +50,7 @@ const ProfilePage = () => {
   };
 
   //   버튼 라우트 > 추후 합칠 때 수정
-  const goToClubSearch = () => navigate("/club-search");
+  const goToClubSearch = () => navigate("/searchClub");
   const goToCreateClub = () => navigate("/create-club");
   const goToHomePage = () => navigate("/home");
 

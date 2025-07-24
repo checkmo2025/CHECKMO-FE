@@ -22,18 +22,18 @@ const menus = [
     icon: bookclubIcon,
     submenus: [
       { name: "내 모임 바로가기", path: "/bookclub/:id" },
-      { name: "모임 검색하기", path: "/bookclub/search" },
+      { name: "모임 검색하기", path: "/searchClub" },
       { name: "모임 생성하기", path: "/bookclub/create" },
     ],
   },
   {
     name: "책 검색하기",
-    path: "/search",
+    path: "/booksearch",
     icon: searchIcon,
     submenus: [
-      { name: "통합검색", path: "/bookclub/:id" },
-      { name: "국내도서", path: "/domesticBook" },
-      { name: "전자책", path: "/ebook" },
+      { name: "통합검색", path: "/booksearch" },
+      { name: "국내도서", path: "/booksearch" },
+      { name: "전자책", path: "/booksearch" },
     ],
   },
   {
@@ -58,7 +58,7 @@ const menus = [
   },
 ];
 
-const MainSidebar = () => {
+const MainSideBar = () => {
   const [openMenus, setOpenMenus] = useState<Set<string>>(new Set());
 
   const toggleMenu = (menuName: string) => {
@@ -74,7 +74,7 @@ const MainSidebar = () => {
   };
 
   return (
-    <div className="flex w-[16.5rem] h-[64rem] flex-col items-start justify-start gap-[2.8125rem] px-6 py-8 bg-[#E9F2E3] shrink-0">
+    <div className="flex w-[16.5rem] h-screen flex-col items-start justify-start gap-[2.8125rem] px-6 py-8 bg-[#E9F2E3] shrink-0">
       <div className="flex w-[9.375rem] h-[4.5rem] items-center gap-4 shrink-0">
         <img src={logoImage} alt="logo" className="w-18 h-18 object-contain" />
         <span className="text-4xl font-bold text-[#3D4C35] tracking-tight font-pretendard">
@@ -141,4 +141,4 @@ const MainSidebar = () => {
   );
 };
 
-export default MainSidebar;
+export default MainSideBar;
