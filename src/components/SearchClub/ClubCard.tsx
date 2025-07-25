@@ -60,9 +60,10 @@ export default function ClubCard({
                   justify-center
                   text-[12px] font-medium
                   bg-[#90D26D] text-white
-                  w-[54px] h-[24px]
+                  px-[12px] h-[24px]
                   rounded-[15px]
                   whitespace-nowrap
+                  min-w-[54px]
                 "
               >
                 {categoryName}
@@ -168,33 +169,38 @@ export default function ClubCard({
                 </button>
               </div>
               <div className="absolute left-[213px] top-[196px] flex flex-col gap-[8px]">
-                <textarea
-                  placeholder="가입 메시지 작성"
-                  className="
-                    w-[699px] h-[40px] border-[2px] border-[#EAE5E2]
-                    rounded-[16px] px-[20px] py-[20px]
-                    font-pretendard font-medium text-[14px]
-                    leading-[145%] tracking-[-0.1%] text-[#2C2C2C]
-                    outline-none resize-none
-                  "
-                />
+                <div className="
+                  w-[684px] h-[180px] border-[2px] border-[#EAE5E2]
+                  rounded-[16px] px-[20px] py-[20px]
+                  relative
+                ">
+                  <textarea
+                    placeholder="가입 메시지 작성"
+                    className="
+                      w-full h-[120px] border-none
+                      font-pretendard font-medium text-[14px]
+                      leading-[145%] tracking-[-0.1%] text-[#2C2C2C]
+                      outline-none resize-none bg-transparent
+                    "
+                  />
+                  <div className="absolute bottom-[20px] right-[20px]">
+                    <button
+                      onClick={() => {}}
+                      className="
+                        w-[90px] h-[35px]
+                        bg-[#A6917D] text-white rounded-[16px] text-[12px]
+                        flex items-center justify-center
+                        cursor-pointer
+                      "
+                    >
+                      가입 신청하기
+                    </button>
+                  </div>
+                </div>
               </div>
             </>
           )}
-          {mode === 'join' && (
-            <button
-              onClick={() => {}}
-              className="
-                absolute left-[787px] top-[321px]
-                w-[90px] h-[35px]
-                bg-[#A6917D] text-white rounded-[16px] text-[12px]
-                flex items-center justify-center
-                cursor-pointer
-              "
-            >
-              가입 신청하기
-            </button>
-          )}
+
 
           {/* 문의 모드 */}
           {mode === 'inquiry' && (
