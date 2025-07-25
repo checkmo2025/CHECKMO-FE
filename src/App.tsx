@@ -10,7 +10,6 @@ import BookRecommendDetailPage from "./pages/BookRecommend/BookRecommendDetailPa
 import BookRecommendCreatePage from "./pages/BookRecommend/BookRecommendCreatePage";
 import MainLayout from "./components/layout/MainLayout";
 import HomePage from "./pages/Main/HomePage";
-import TestHeaderPage from "./pages/TestHeaderPage";
 import MyHomePage from "./pages/Main/Info/My/MyHomePage";
 import MyGroupPage from "./pages/Main/Info/My/MyGroupPage";
 import MySubscriptionPage from "./pages/Main/Info/My/MySubscriptionPage";
@@ -98,7 +97,6 @@ const App = () => {
               <Route path="recommend/searchrecommendbook" element={<SearchRecommendBookPage />} />
             </Route>
           </Route>
-          <Route path="/test-header" element={<TestHeaderPage />} />
           {/* Others 프로필 라우트 추가 */}
           <Route path="/info/others/:id" element={<OthersProfilePage />} />
           
