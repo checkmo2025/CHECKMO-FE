@@ -59,6 +59,7 @@ const App = () => {
             {/* 메인 사이드바 사용할 페이지는 여기에 넣기 */}
             <Route path="/booksearch" element={<SearchPage />} />
             <Route path="/searchClub" element={<ClubSearchPage />} />
+            <Route path="/createClub" element={<CreateClubPage />} />
 
             {/* 마이페이지 하위 라우트 */}
             <Route path="/mypage/group" element={<MyGroupPage />} />
@@ -98,8 +99,6 @@ const App = () => {
           <Route path="/test-header" element={<TestHeaderPage />} />
           {/* Others 프로필 라우트 추가 */}
           <Route path="/info/others/:id" element={<OthersProfilePage />} />
-          
-          <Route path="/createClub" element={<CreateClubPage />} />
           
         </Routes>
       </Router>
