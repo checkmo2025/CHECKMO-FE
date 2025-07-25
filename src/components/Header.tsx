@@ -16,9 +16,10 @@ interface HeaderProps {
   pageTitle: string;
   userProfile: UserProfile;
   notifications: Notification[];
+  customClassName?: string;        // 커스텀으로 각자 페이지에서 조정 가능
 }
 
-const Header: React.FC<HeaderProps> = ({ pageTitle, userProfile, notifications }) => {
+const Header: React.FC<HeaderProps> = ({ pageTitle, userProfile, notifications, customClassName }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const modalRef = useRef<HTMLDivElement>(null);
   const navigate = useNavigate(); 
@@ -42,7 +43,11 @@ const Header: React.FC<HeaderProps> = ({ pageTitle, userProfile, notifications }
 
   return (
     <header
-      className="fixed left-[264px] right-0 top-3 h-[56px] bg-white flex justify-between items-center px-4 md:px-8 lg:px-13 z-50 shadow-sm"
+      className={`${
+        customClassName
+          ? customClassName
+          : "fixed left-[264px] right-0 top-3 h-[56px] lg:px-13 px-4 md:px-8 " // 기본값
+      } bg-white flex justify-between items-center z-50 `}
     >
       {/* 페이지 타이틀 */}
       <h1 className="font-bold text-lg md:text-xl lg:text-2xl text-[#2C2C2C]">
