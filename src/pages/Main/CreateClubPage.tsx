@@ -16,22 +16,23 @@ export default function CreateClubPage(): React.ReactElement {
   const [selectedParticipants, setSelectedParticipants] = useState<string[]>([]);
   const [clubName, setClubName] = useState('');
   const [duplicateCheck, setDuplicateCheck] = useState<'pending' | 'duplicate' | 'available' | null>(null);
+  const [activityArea, setActivityArea] = useState('');
   const [sns1Link, setSns1Link] = useState('');
   const [sns2Link, setSns2Link] = useState('');
 
   return (
-    <div className="p-8">
+    <div className="absolute left-[315px] right-[42px] opacity-100">
       <Header 
         pageTitle="모임 생성하기" 
         userProfile={{
           username: 'Dayoun',
           bio: '아 피곤하다.'
         }} 
-        notifications={[        ]}
+        notifications={[]}
         customClassName="mt-[60px]"
       />
 
-      <div className="mt-8">
+      <div className="mt-8 flex flex-col items-center">
 
         {/* 모임 이름 + 중복확인 버튼 */}
         <div className="mt-[36px]">
@@ -92,8 +93,8 @@ export default function CreateClubPage(): React.ReactElement {
         </div>
 
         {/* 프로필 사진 업로드 */}
-        <div className="mt-[56px]">
-          <label className="font-pretendard font-medium text-[18px] leading-[135%] tracking-[-0.1%]">
+        <div className="mt-[56px] flex flex-col items-center">
+          <label className="font-pretendard font-medium text-[18px] leading-[135%] tracking-[-0.1%] ">
             모임의 프로필 사진을 업로드 해주세요.
           </label>
           <div
@@ -101,7 +102,7 @@ export default function CreateClubPage(): React.ReactElement {
               mt-[16px]
               w-[216px] h-[216px]
               bg-white rounded-[16px] border-[2px] border-[#EAE5E2]
-              flex items-center justify-center
+              flex flex-col items-center justify-center
             "
           >
             <span className="text-[24px] text-gray-300">＋</span>
@@ -210,6 +211,20 @@ export default function CreateClubPage(): React.ReactElement {
           </div>
         </div>
 
+        {/* 활동 지역 */}
+        <div className="mt-[56px]">
+          <label className="font-pretendard font-medium text-[18px] leading-[135%] tracking-[-0.1%] px-[6.5px]">
+            활동 지역을 작성해주세요.
+          </label>
+          <div className="mt-[16px] flex flex-col gap-[16px]">
+            <input
+              value={activityArea}
+              onChange={(e) => setActivityArea(e.target.value)}
+              className="w-[393px] h-[40px] bg-[#F6F5F3] rounded-full px-[17px] py-[10px] text-[14px] text-[#2C2C2C] outline-none placeholder:text-[#BBBBBB]"
+            />
+          </div>
+        </div>
+
         {/* SNS/카카오톡 링크 연동 (선택) */}
         <div className="mt-[56px]">
           <label className="font-pretendard font-medium text-[18px] leading-[135%] tracking-[-0.1%] px-[6.5px]">
@@ -232,7 +247,7 @@ export default function CreateClubPage(): React.ReactElement {
         {/* 유의사항 */}
         <div className="mt-[86px] w-[393px] h-[88px] flex flex-col items-center">
           <p className="font-pretendard font-normal text-[12px] leading-[145%] tracking-[-0.1%] text-[#FF8045]">
-            등록된 동아리는 수정이 불가합니다. 위 사항을 한 번 더 확인해주세요!
+            등록된 동아리명은 수정이 불가합니다. 위 사항을 한 번 더 확인해주세요!
           </p>
 
           {/* 등록하기 버튼 */}
@@ -246,6 +261,9 @@ export default function CreateClubPage(): React.ReactElement {
             등록하기
           </button>
         </div>
+        
+        {/* 하단 여백 */}
+        <div className="h-[100px]"></div>
       </div>
     </div>
   );
