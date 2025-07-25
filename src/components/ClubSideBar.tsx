@@ -1,12 +1,12 @@
 import { useState, useEffect } from "react";
 import { NavLink, useParams, useNavigate } from "react-router-dom";
-import homeIcon from "../assets/icons/home.png";
-import searchIcon from "../assets/icons/search.png";
-import bookstoryIcon from "../assets/icons/bookstory.png";
-import mypageIcon from "../assets/icons/mypage.png";
+import homeIcon from "../../public/assets/icons/home.png";
+import searchIcon from "../../public/assets/icons/search.png";
+import bookstoryIcon from "../../public/assets/icons/bookstory.png";
+import mypageIcon from "../../public/assets/icons/mypage.png";
 import logoImage from "../assets/logos/mainlogo.png";
-import toggleClose from "../assets/icons/toggleClose.png";
-import toggleOpen from "../assets/icons/toggleOpen.png";
+import toggleClose from "../../public/assets/icons/toggleClose.png";
+import toggleOpen from "../../public/assets/icons/toggleOpen.png";
 
 const dummyBookclubs: Record<string, string> = {
   "1": "북적북적",
