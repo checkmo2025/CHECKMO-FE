@@ -1,11 +1,11 @@
-//BookAddPage.tsx
+//SearchRecommendBookPage.tsx
 import React from 'react'
 import { useNavigate } from 'react-router-dom'
-import BookSearch, { type Book, type Action } from '../../../components/Search/BookSearch'
+import BookSearch, { type Book, type Action } from '../../components/Search/BookSearch'
 import { useParams } from 'react-router-dom'
-import Header from '../../../components/Header'
+import Header from '../../components/Header'
 
-export default function BookAddPage() {
+export default function SearchRecommendBookPage() {
   const navigate = useNavigate()
    const { id } = useParams<{ id: string }>()
 
