@@ -13,16 +13,65 @@ export interface ClubCardProps {
   region: string;
   /** 동아리 썸네일 URL */
   logoUrl?: string;
+  /** 가입 신청 처리 함수 */
+  onJoinRequest?: (clubId: number, message: string) => void;
 }
 
 export default function ClubCard({
+  id,
   title,
   tags,
   target,
   region,
   logoUrl,
+  onJoinRequest,
 }: ClubCardProps): React.ReactElement {
   const [mode, setMode] = useState<'default' | 'join' | 'inquiry'>('default');
+  const [joinMessage, setJoinMessage] = useState('');
+
+  // 현재 사용자 닉네임 (실제로는 로그인된 사용자 정보에서 가져와야 함)
+  const currentUserNickname = 'dayoun'; // 임시로 하드코딩
+
+  // 더미 데이터: 이미 가입된 모임 목록 (API 명세서 참고)
+  const dummyClubMembers = [
+    {
+      clubMemberId: 1001,
+      nickname: 'dayoun', // 현재 사용자가 이미 가입된 모임
+      profileImgUrl: 'https://example.com/profile.jpg',
+      joinMessage: '책 너무 좋아요! 가입하고 싶어요.',
+      clubMemberStatus: 'PENDING'
+    },
+    {
+      clubMemberId: 1002,
+      nickname: 'reader123',
+      profileImgUrl: 'https://example.com/profile2.jpg',
+      joinMessage: '모임에 꼭 참여하고 싶습니다.',
+      clubMemberStatus: 'PENDING'
+    }
+  ];
+
+  // 현재 모임에 이미 가입되어 있는지 확인
+  const isAlreadyMember = dummyClubMembers.some(
+    member => member.nickname === currentUserNickname
+  );
+
+  // 가입 신청 처리
+  const handleJoinRequest = () => {
+    if (isAlreadyMember) {
+      onJoinRequest?.(id, 'already_member');
+      return;
+    }
+
+    if (!joinMessage.trim()) {
+      onJoinRequest?.(id, 'no_message');
+      return;
+    }
+
+    // 가입 신청 성공 처리
+    onJoinRequest?.(id, joinMessage);
+    setMode('default');
+    setJoinMessage('');
+  };
 
   return (
     <div
@@ -160,11 +209,13 @@ export default function ClubCard({
                   문의 하기
                 </button>
               </div>
-              <div className="absolute left-[213px] top-[196px] flex flex-col gap-[8px]">
+              <div className="absolute left-[213px] right-[20px] top-[196px] flex flex-col">
                 <textarea
+                  value={joinMessage}
+                  onChange={(e) => setJoinMessage(e.target.value)}
                   placeholder="가입 메시지 작성"
                   className="
-                    w-[699px] h-[40px] border-[2px] border-[#EAE5E2]
+                    w-full h-[180px] border-[2px] border-[#EAE5E2]
                     rounded-[16px] px-[20px] py-[20px]
                     font-pretendard font-medium text-[14px]
                     leading-[145%] tracking-[-0.1%] text-[#2C2C2C]
@@ -176,7 +227,7 @@ export default function ClubCard({
           )}
           {mode === 'join' && (
             <button
-              onClick={() => {}}
+              onClick={handleJoinRequest}
               className="
                 absolute left-[787px] top-[321px]
                 w-[90px] h-[35px]
