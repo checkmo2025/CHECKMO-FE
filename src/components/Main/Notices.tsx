@@ -40,7 +40,7 @@ const NoticeCard = ({ title, date, book, type, imageUrl }: NoticeCardProps) => {
               </div>
             </div>
             <img
-              src="/public/assets/icons/shortcut.png"
+              src="/src/assets/icons/shortcut.png"
               alt="바로가기"
               className="w-4 h-4 mt-2"
             />

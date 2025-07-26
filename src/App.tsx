@@ -8,7 +8,6 @@ import { dummyRecommendList } from "./pages/BookRecommend/DummyRecommendList";
 import BookRecommendPage from "./pages/BookRecommend/BookRecommendPage";
 import BookRecommendDetailPage from "./pages/BookRecommend/BookRecommendDetailPage";
 import BookRecommendCreatePage from "./pages/BookRecommend/BookRecommendCreatePage";
-import MainLayout from "./components/layout/MainLayout";
 import HomePage from "./pages/Main/HomePage";
 import TestHeaderPage from "./pages/TestHeaderPage";
 import MyHomePage from "./pages/Main/Info/My/MyHomePage";

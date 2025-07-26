@@ -1,6 +1,6 @@
 import React from "react";
-import likeIcon from "../../../public/assets/icons/likes.png";
-import reportIcon from "../../../public/assets/icons/report.png";
+import likeIcon from "../../assets/icons/likes.png";
+import reportIcon from "../../assets/icons/report.png";
 
 interface BookStoriesCardProps {
   title: string;
