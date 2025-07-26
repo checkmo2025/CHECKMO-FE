@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import MyPageHeader from "../../../../components/MyPageHeader";
 
-interface Notification {
+type Notification = {
   id: number;
   sender: string;
   content: string;
@@ -9,7 +9,7 @@ interface Notification {
   isRead: boolean;
 }
 
-const MyNotificationPage: React.FC = () => {
+const MyNotificationPage = () => {
   const [notifications, setNotifications] = useState<Notification[]>([]);
   const [page, setPage] = useState(1);
   const [hasMore, setHasMore] = useState(true);
@@ -67,8 +67,6 @@ const MyNotificationPage: React.FC = () => {
 
   return (
     <div className="flex w-full min-h-screen bg-[#FAFAFA]">
-      {/* 사이드바 */}
-      <aside className="hidden md:block w-[264px] bg-[#F1F8EF] border-r border-gray-200"></aside>
 
       {/* 메인 영역 */}
       <main className="flex-1">
