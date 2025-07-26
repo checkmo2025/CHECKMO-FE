@@ -33,13 +33,7 @@ export default function SearchPage() {
   return (
     <div className="flex h-screen ">
       <div className="absolute left-[315px] right-[42px] opacity-100 ">
-        <Header pageTitle={'통합검색'} userProfile={{
-          username: 'Luke',
-          bio: '아 피곤하다.'
-        }} 
-        notifications={[]}
-        customClassName="mt-15"
-        />
+        <Header pageTitle="통합검색" customClassName="mt-15" />
         
         {/* 메인 컨텐츠 자리 */}
         <div className = "">
