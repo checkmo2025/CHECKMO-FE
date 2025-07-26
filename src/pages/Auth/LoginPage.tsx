@@ -25,9 +25,10 @@ const LoginPage = () => {
   const [showReactivateModal, setShowReactivateModal] = useState(false);
   const [reactivateEmail, setReactivateEmail] = useState("");
   const [alertMessage, setAlertMessage] = useState("");
+  const [passwordError, setPasswordError] = useState("");
 
   // 예시용 탈퇴 이메일 (실제로는 서버 응답으로 처리해야 함)
-  const withdrawnEmails = ["2jw@gmail.com"];
+  const withdrawnEmails = ["22jw@gmail.com"];
 
   //  카카오 SDK 초기화
   useEffect(() => {
@@ -54,10 +55,24 @@ const LoginPage = () => {
       return;
     }
 
+    if (!password.trim()) {
+      setPasswordError("비밀번호를 입력해주세요!");
+      return;
+    } else {
+      setPasswordError("");
+    }
+
     if (withdrawnEmails.includes(email)) {
       setReactivateEmail(email);
       setShowReactivateModal(true);
       return;
+    }
+
+    // 로그인 성공 시 메시지 없이 바로 이동
+    if (email === "2jw@gmail.com" && password === "1234") {
+      navigate("/home");
+    } else {
+      setAlertMessage("아이디 또는 비밀번호가 일치하지 않습니다.");
     }
 
     console.log("로그인 시도", { email, password });
@@ -161,6 +176,11 @@ const LoginPage = () => {
               onChange={(e) => setPassword(e.target.value)}
               className="w-full border-b border-[#DADFE3] px-2 py-2 focus:outline-none"
             />
+            {passwordError && (
+              <p className="flex items-center text-[#FF8045] text-sm mt-2">
+                <span className="mr-1">ⓘ</span> {passwordError}
+              </p>
+            )}
           </div>
 
           {/* 로그인 버튼 */}

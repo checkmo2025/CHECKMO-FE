@@ -351,9 +351,9 @@ const SignupPage = () => {
         onConfirm={() => {
           setAlertMessage(`${reactivateEmail} 계정이 복구되었습니다.`);
           setShowReactivateModal(false);
-          navigate("/");
           // 인증 확인 처리 (강제로 인증 성공 처리)
           setIsVerified(true);
+          navigate("/");
         }}
         onCancel={() => setShowReactivateModal(false)}
       />
