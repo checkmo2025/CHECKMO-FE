@@ -2,14 +2,16 @@ import React, { useState } from "react";
 import MyPageHeader from "../../../../components/MyPageHeader";
 import { Pencil, Trash2, Save } from "lucide-react";
 
-interface Story {
+type MyStoryPageProps = {};
+
+type Story = {
   id: number;
   author: string;
   title: string;
   content: string;
 }
 
-const MyStoryPage: React.FC = () => {
+const MyStoryPage= (props: MyStoryPageProps) => {
   const [stories, setStories] = useState<Story[]>([
     {
       id: 1,
@@ -57,8 +59,6 @@ const MyStoryPage: React.FC = () => {
 
   return (
     <div className="flex w-full min-h-screen bg-[#FAFAFA]">
-      {/* 사이드바 */}
-      <aside className="hidden md:block w-[264px] bg-[#F1F8EF] border-r border-gray-200"></aside>
 
       {/* 메인 영역 */}
       <main className="flex-1">
