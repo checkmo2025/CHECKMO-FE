@@ -1,4 +1,6 @@
 import React from "react";
+import likeIcon from "../../assets/icons/likes.png";
+import reportIcon from "../../assets/icons/report.png";
 
 interface BookStoriesCardProps {
   title: string;
@@ -57,20 +59,12 @@ const BookStoriesCard = ({
           {/* 하단: 좋아요 / 신고 */}
           <div className="flex w-[7.5rem] justify-end items-end gap-[0.6875rem]">
             <div className="flex items-center gap-[0.125rem]">
-              <img
-                src="/src/assets/icons/likes.png"
-                alt="좋아요"
-                className="w-5 h-5"
-              />
+              <img src={likeIcon} alt="좋아요" className="w-5 h-5" />
               <div className="text-gray-700 text-xs font-medium font-pretendard leading-none">
                 {likes}
               </div>
             </div>
-            <img
-              src="/src/assets/icons/report.png"
-              alt="신고"
-              className="w-5 h-5"
-            />
+            <img src={reportIcon} alt="신고" className="w-5 h-5" />
           </div>
         </div>
       </div>
