@@ -17,6 +17,54 @@ export interface ClubCardProps {
   onJoinRequest?: (clubId: number, message: string) => void;
 }
 
+// 버튼 컴포넌트들
+const ActionButton: React.FC<{
+  variant: 'primary' | 'secondary';
+  onClick: () => void;
+  children: React.ReactNode;
+}> = ({ variant, onClick, children }) => (
+  <button
+    onClick={onClick}
+    className={`
+      w-[105px] h-[35px] rounded-[15px] px-[19.5px] py-[9px]
+      text-[12px] flex items-center justify-center whitespace-nowrap cursor-pointer
+      ${variant === 'primary' 
+        ? 'bg-[#A6917D] text-white' 
+        : 'bg-white border-[1.5px] border-[#BFAB96] text-[#434343]'
+      }
+    `}
+  >
+    {children}
+  </button>
+);
+
+const ActionButtons: React.FC<{
+  onJoinClick: () => void;
+  onInquiryClick: () => void;
+  position?: 'top-right' | 'default';
+}> = ({ onJoinClick, onInquiryClick, position = 'default' }) => {
+  const positionClass = position === 'top-right' 
+    ? 'absolute right-[20px] top-[20px]' 
+    : 'absolute right-[20px] top-[107px]';
+  
+  return (
+    <div className={`${positionClass} flex flex-col gap-[10px]`}>
+      <ActionButton
+        variant="primary"
+        onClick={onJoinClick}
+      >
+        가입 신청하기
+      </ActionButton>
+      <ActionButton
+        variant="secondary"
+        onClick={onInquiryClick}
+      >
+        문의 하기
+      </ActionButton>
+    </div>
+  );
+};
+
 export default function ClubCard({
   id,
   title,
@@ -72,6 +120,9 @@ export default function ClubCard({
     setMode('default');
     setJoinMessage('');
   };
+
+  const handleJoinClick = () => setMode('join');
+  const handleInquiryClick = () => setMode('inquiry');
 
   return (
     <div
@@ -144,71 +195,20 @@ export default function ClubCard({
           {/* 모드별 UI */}
           {/* 기본 모드 */}
           {mode === 'default' && (
-            <div className="absolute right-[20px] top-[107px] flex flex-col gap-[10px]">
-              <button
-                onClick={() => setMode('join')}
-                className="
-                  w-[105px] h-[35px]
-                  bg-[#A6917D] rounded-[15px]
-                  px-[19.5px] py-[9px]
-                  text-white text-[12px]
-                  flex items-center justify-center
-                  whitespace-nowrap
-                  cursor-pointer
-                "
-              >
-                가입 신청하기
-              </button>
-              <button
-                onClick={() => setMode('inquiry')}
-                className="
-                  w-[105px] h-[35px]
-                  bg-white border-[1.5px] border-[#BFAB96] rounded-[15px]
-                  px-[19.5px] py-[9px]
-                  text-[#434343] text-[12px]
-                  flex items-center justify-center
-                  whitespace-nowrap
-                  cursor-pointer
-                "
-              >
-                문의 하기
-              </button>
-            </div>
+            <ActionButtons
+              onJoinClick={handleJoinClick}
+              onInquiryClick={handleInquiryClick}
+            />
           )}
 
           {/* 가입 신청 모드 */}
           {mode === 'join' && (
             <>
-              <div className="absolute right-[20px] top-[20px] flex flex-col gap-[10px]">
-                <button
-                  onClick={() => setMode('join')}
-                  className="
-                    w-[105px] h-[35px]
-                    bg-[#A6917D] rounded-[15px]
-                    px-[19.5px] py-[9px]
-                    text-white text-[12px]
-                    flex items-center justify-center
-                    whitespace-nowrap
-                    cursor-pointer
-                  "
-                >
-                  가입 신청하기
-                </button>
-                <button
-                  onClick={() => setMode('inquiry')}
-                  className="
-                    w-[105px] h-[35px]
-                    bg-white border-[1.5px] border-[#BFAB96] rounded-[15px]
-                    px-[19.5px] py-[9px]
-                    text-[#434343] text-[12px]
-                    flex items-center justify-center
-                    whitespace-nowrap
-                    cursor-pointer
-                  "
-                >
-                  문의 하기
-                </button>
-              </div>
+              <ActionButtons
+                onJoinClick={handleJoinClick}
+                onInquiryClick={handleInquiryClick}
+                position="top-right"
+              />
               <div className="absolute left-[213px] right-[20px] top-[196px] flex flex-col">
                 <textarea
                   value={joinMessage}
@@ -223,56 +223,29 @@ export default function ClubCard({
                   "
                 />
               </div>
-            </>
-          )}
-          {mode === 'join' && (
-            <button
-              onClick={handleJoinRequest}
-              className="
-                absolute left-[787px] top-[321px]
-                w-[90px] h-[35px]
-                bg-[#A6917D] text-white rounded-[16px] text-[12px]
-                flex items-center justify-center
-                cursor-pointer
-              "
-            >
-              가입 신청하기
-            </button>
-          )}
-
-          {/* 문의 모드 */}
-          {mode === 'inquiry' && (
-            <>
-              <div className="absolute right-[20px] top-[20px] flex flex-col gap-[10px]">
               <button
-                onClick={() => setMode('join')}
+                onClick={handleJoinRequest}
                 className="
-                  w-[105px] h-[35px]
-                  bg-[#A6917D] rounded-[15px]
-                  px-[19.5px] py-[9px]
-                  text-white text-[12px]
+                  absolute left-[787px] top-[321px]
+                  w-[90px] h-[35px]
+                  bg-[#A6917D] text-white rounded-[16px] text-[12px]
                   flex items-center justify-center
-                  whitespace-nowrap
                   cursor-pointer
                 "
               >
                 가입 신청하기
               </button>
-              <button
-                onClick={() => setMode('inquiry')}
-                className="
-                  w-[105px] h-[35px]
-                  bg-white border-[1.5px] border-[#BFAB96] rounded-[15px]
-                  px-[19.5px] py-[9px]
-                  text-[#434343] text-[12px]
-                  flex items-center justify-center
-                  whitespace-nowrap
-                  cursor-pointer
-                "
-              >
-                문의 하기
-              </button>
-            </div>
+            </>
+          )}
+
+          {/* 문의 모드 */}
+          {mode === 'inquiry' && (
+            <>
+              <ActionButtons
+                onJoinClick={handleJoinClick}
+                onInquiryClick={handleInquiryClick}
+                position="top-right"
+              />
               <div className="
                 absolute left-[213px] top-[196px]
                 w-[684px] h-[91px] border-[2px] border-[#EAE5E2]
