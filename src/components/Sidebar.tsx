@@ -59,7 +59,7 @@ const Sidebar = () => {
           icon: homeIcon,
           submenus: [
             { name: "공지사항", path: `/bookclub/${id}/notice` },
-            { name: "책장", path: `/bookclub/${id}/bookcase` },
+            { name: "책장", path: `/bookclub/${id}/shelf` },
             { name: "모임", path: `/bookclub/${id}/meeting` },
             { name: "책 추천", path: `/bookclub/${id}/recommend` },
             { name: "일정", path: `/bookclub/${id}/schedule` },
@@ -69,9 +69,9 @@ const Sidebar = () => {
           name: "책 검색하기",
           icon: searchIcon,
           submenus: [
-            { name: "통합검색", path: `/bookclub/${id}` },
-            { name: "국내도서", path: "/domesticBook" },
-            { name: "전자책", path: "/ebook" },
+            { name: "통합검색", path: "/booksearch" },
+            { name: "국내도서", path: "/booksearch" },
+            { name: "전자책", path: "/booksearch" },
           ],
         },
         {
@@ -112,12 +112,12 @@ const Sidebar = () => {
         },
         {
           name: "책 검색하기",
-          path: "/search",
+          path: "/booksearch",
           icon: searchIcon,
           submenus: [
-            { name: "통합검색", path: "/bookclub/:id" },
-            { name: "국내도서", path: "/domesticBook" },
-            { name: "전자책", path: "/ebook" },
+            { name: "통합검색", path: "/booksearch" },
+            { name: "국내도서", path: "booksearch1" },
+            { name: "전자책", path: "/booksearch2" },
           ],
         },
         {
