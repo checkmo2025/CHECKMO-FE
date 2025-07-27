@@ -1,42 +1,78 @@
-import React from "react";
+import React, { useState } from "react";
 import MyPageHeader from "../../../../components/MyPageHeader";
-import { Heart, Flag } from "lucide-react";
+import { Heart, Siren } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
-const MyPage: React.FC = () => {
+type MyPageProps = {};
+
+type Story = {
+  id: number;
+  title: string;
+  content: string;
+  liked: boolean;
+  likes: number;
+};
+
+const MyPage = (props: MyPageProps) => {
   const navigate = useNavigate();
+
+  const [stories, setStories] = useState<Story[]>(
+    [1, 2, 3].map((id) => ({
+      id,
+      title: "나는 나이든 왕자다",
+      content:
+        "어린 왕자는 비행기 추락으로 사막에 불시착한 조종사가 어린 왕자를 만나 그의 이야기를 들으며 시작됩니다. 어린 왕자는 자신의 고향인 소행성 B-612에서 아름다운 장미와 함께 살다가 세상에 대한 호기심으로 여행을 떠납니다...",
+      liked: false,
+      likes: 12,
+    }))
+  );
+
+  const toggleLike = (id: number) => {
+    setStories((prev) =>
+      prev.map((story) =>
+        story.id === id
+          ? {
+              ...story,
+              liked: !story.liked,
+              likes: story.liked ? story.likes - 1 : story.likes + 1,
+            }
+          : story
+      )
+    );
+  };
+
+  const handleReport = (title: string) => {
+    alert(`'${title}' 글이 신고되었습니다.`);
+  };
 
   return (
     <div className="flex w-full min-h-screen bg-[#FAFAFA]">
-      {/* 사이드바 */}
-      <aside className="hidden md:block w-[264px] bg-[#F1F8EF] border-r border-gray-200"></aside>
-
-      {/* 메인 영역 */}
       <main className="flex-1">
-        {/* 마이페이지 헤더 */}
         <MyPageHeader title="마이페이지" />
 
         <div className="px-10 py-8 space-y-10">
           {/* 프로필 상단 */}
-          <div className="bg-[#F1F8EF] rounded-xl px-6 py-4 flex justify-between items-center mb-8">
-            {/* 프로필 왼쪽 */}
-            <div className="flex items-center gap-4">
-              <div className="w-14 h-14 rounded-full bg-[#DADADA]"></div>
-              <div>
-                <p className="font-semibold text-[#2C2C2C] text-[18px]">hy_0716</p>
-                <p className="text-[14px] text-[#8D8D8D] mt-1">책을 아는가? 나는 모른다!</p>
+          <div className="w-full bg-white rounded-[12px] px-4 md:px-6 py-4 mb-5 flex flex-col gap-3">
+            <div className="flex flex-col sm:flex-row justify-between sm:items-center gap-3">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 sm:w-12 sm:h-12 bg-[#DADADA] rounded-full"></div>
+                <p className="text-[16px] sm:text-[18px] font-semibold text-[#2C2C2C]">hy_0716</p>
+              </div>
+
+              <div className="flex flex-wrap gap-2">
+                {["사회", "경제", "인문", "과학"].map((tag, idx) => (
+                  <span
+                    key={idx}
+                    className="px-3 py-1 rounded-full bg-[#90D26D] text-white text-[12px] sm:text-[13px]"
+                  >
+                    {tag}
+                  </span>
+                ))}
               </div>
             </div>
-            {/* 태그 */}
-            <div className="flex gap-2">
-              {["사회", "경제", "인문", "과학"].map((tag, idx) => (
-                <span
-                  key={idx}
-                  className="px-3 py-1 rounded-full bg-[#90D26D] text-white text-[13px]"
-                >
-                  {tag}
-                </span>
-              ))}
+
+            <div className="w-full bg-[#EFF5ED] mt-2 rounded-[8px] px-4 sm:px-5 py-3 text-[#5C5C5C] text-[15px] sm:text-[16px] font-medium">
+              책을 아는가? 나는 모른다!
             </div>
           </div>
 
@@ -78,32 +114,20 @@ const MyPage: React.FC = () => {
               </div>
               <div className="bg-white rounded-xl border border-[#EAE5E2] p-5 shadow-sm min-h-[424px]">
                 <div className="grid grid-cols-2 gap-3">
-                  {/* 팔로잉 */}
-                  <div>
-                    <p className="text-[#90D26D] text-[13px] mb-2">팔로잉</p>
-                    {[1, 2, 3, 4, 5].map((idx) => (
-                      <div
-                        key={`following-${idx}`}
-                        className="bg-[#F4F2F1] rounded-lg px-3 py-2 mb-2 flex items-center gap-2"
-                      >
-                        <div className="w-6 h-6 rounded-full bg-[#DADADA]"></div>
-                        <p className="text-[#2C2C2C] text-[14px] flex-1 text-center">닉네임</p>
-                      </div>
-                    ))}
-                  </div>
-                  {/* 팔로워 */}
-                  <div>
-                    <p className="text-[#90D26D] text-[13px] mb-2">팔로워</p>
-                    {[1, 2, 3, 4, 5].map((idx) => (
-                      <div
-                        key={`follower-${idx}`}
-                        className="bg-[#F4F2F1] rounded-lg px-3 py-2 mb-2 flex items-center gap-2"
-                      >
-                        <div className="w-6 h-6 rounded-full bg-[#DADADA]"></div>
-                        <p className="text-[#2C2C2C] text-[14px] flex-1 text-center">닉네임</p>
-                      </div>
-                    ))}
-                  </div>
+                  {["팔로잉", "팔로워"].map((label) => (
+                    <div key={label}>
+                      <p className="text-[#90D26D] text-[13px] mb-2">{label}</p>
+                      {[1, 2, 3, 4, 5].map((idx) => (
+                        <div
+                          key={`${label}-${idx}`}
+                          className="bg-[#F4F2F1] rounded-lg px-3 py-2 mb-2 flex items-center gap-2"
+                        >
+                          <div className="w-6 h-6 rounded-full bg-[#DADADA]"></div>
+                          <p className="text-[#2C2C2C] text-[14px] flex-1 text-center">닉네임</p>
+                        </div>
+                      ))}
+                    </div>
+                  ))}
                 </div>
               </div>
             </div>
@@ -149,39 +173,41 @@ const MyPage: React.FC = () => {
               </button>
             </div>
             <div className="space-y-4">
-              {[1, 2, 3].map((idx) => (
+              {stories.map((story) => (
                 <div
-                  key={idx}
+                  key={story.id}
                   className="flex gap-4 bg-white rounded-xl border border-[#EAE5E2] px-5 py-4 shadow-sm"
                 >
-                  {/* 책 사진 자리 (회색 박스) */}
                   <div className="w-32 h-40 rounded-md bg-gray-200 flex-shrink-0"></div>
 
-                  {/* 책 내용 */}
                   <div className="flex-1 ml-4 relative">
-                    {/* 프로필 */}
                     <div className="flex items-center gap-2 mb-2">
                       <div className="w-7 h-7 rounded-full bg-gray-300"></div>
                       <p className="text-[#2C2C2C] text-[14px]">hy</p>
                     </div>
-                    {/* 책 제목 */}
                     <p className="text-[#2C2C2C] text-[16px] font-semibold mb-1">
-                      나는 나이든 왕자다
+                      {story.title}
                     </p>
-                    {/* 줄글 */}
                     <p className="text-[#2C2C2C] text-[14px] overflow-hidden text-ellipsis line-clamp-3">
-                      어린 왕자는 비행기 추락으로 사막에 불시착한 조종사가 어린 왕자를 만나 그의 이야기를 들으며 시작됩니다. 어린 왕자는 자신의 고향인 소행성 B-612에서 아름다운 장미와 함께 살다가 세상에 대한 호기심으로 여행을 떠납니다. 여행 중에 만난 여러 별에서 다양한 사람들을 만나고, 그들의 어리석음과 욕심을 보며 세상의 부조리를 깨닫습니다. 마지막으로 지구에 온 어린 왕자는 여우를 만나 우정과 책임감에 대해 배우고, 자신의 별로 돌아가기 위해 독사에게 몸을 맡깁니다...
+                      {story.content}
                     </p>
 
-                    {/* 좋아요 & 신고 아이콘 */}
                     <div className="flex justify-end gap-5 mt-4">
-                      <div className="flex items-center gap-1 text-[#2C2C2C] hover:text-[#90D26D] text-sm">
+                      <button
+                        onClick={() => toggleLike(story.id)}
+                        className={`flex items-center gap-1 text-sm ${
+                          story.liked ? "text-[#90D26D]" : "text-[#2C2C2C]"
+                        }`}
+                      >
                         <Heart size={20} />
-                        <span>12</span>
-                      </div>
-                      <div className="flex items-center gap-1 text-[#2C2C2C] hover:text-[#90D26D] text-sm">
-                        <Flag size={20} />
-                      </div>
+                        <span>{story.likes}</span>
+                      </button>
+                      <button
+                        onClick={() => handleReport(story.title)}
+                        className="flex items-center gap-1 text-[#2C2C2C] hover:text-[#90D26D] text-sm"
+                      >
+                        <Siren size={20} />
+                      </button>
                     </div>
                   </div>
                 </div>

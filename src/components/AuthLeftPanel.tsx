@@ -1,16 +1,18 @@
 const AuthLeftPanel = () => {
   return (
     <div
-      className="w-2/5 flex flex-col justify-center items-center text-white"
-      style={{ backgroundColor: "#90D26D" }}
+      className="hidden xl:flex flex-col justify-center items-center text-white p-6"
+      style={{ 
+        backgroundColor: "#90D26D",
+        width: "450px",
+        minHeight: "100vh"
+      }}
     >
       <img
-        src="/book-logo.png"
+        src="/assets/book-logo.png"
         alt="책모 로고"
-        className="w-70 mb-6"
+        className="w-60 max-w-full h-auto mb-2"
       />
-      <h1 className="mt-5 text-2xl font-bold">독서의 처음부터 모임의 끝까지!</h1>
-      <p className="mt-5 text-7xl font-extrabold">책모</p>
     </div>
   );
 };

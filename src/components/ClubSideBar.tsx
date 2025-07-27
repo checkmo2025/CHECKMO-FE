@@ -44,7 +44,7 @@ const ClubSideBar = () => {
       icon: homeIcon,
       submenus: [
         { name: "공지사항", path: `/bookclub/${id}/notice` },
-        { name: "책장", path: `/bookclub/${id}/bookcase` },
+        { name: "책장", path: `/bookclub/${id}/shelf` },
         { name: "모임", path: `/bookclub/${id}/meeting` },
         { name: "책 추천", path: `/bookclub/${id}/recommend` },
         { name: "일정", path: `/bookclub/${id}/schedule` },
