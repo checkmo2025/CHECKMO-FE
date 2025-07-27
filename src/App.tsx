@@ -57,8 +57,12 @@ const App = () => {
             <Route path="/home" element={<HomePage />} />
             <Route path="/booksearch" element={<SearchPage />} />
             <Route path="/searchClub" element={<ClubSearchPage />} />
+            
+            <Route path="/info/others/:id" element={<OthersProfilePage />} />
+
             <Route path="/createClub" element={<CreateClubPage />} />
             <Route path="/bookClub/notices" element={<NoticePage />} />
+
             {/* 마이페이지 하위 라우트 */}
             <Route path="/mypage/group" element={<MyGroupPage />} />
             <Route
@@ -112,9 +116,11 @@ const App = () => {
                 element={<SearchRecommendBookPage />}
               />
             </Route>
+          </Route>  
+
+          <Route path="/createClub" element={<CreateClubPage />} />
+
           </Route>
-          {/* Others 프로필 라우트 추가 */}
-          <Route path="/info/others/:id" element={<OthersProfilePage />} />
         </Routes>
       </Router>
     </GoogleOAuthProvider>
