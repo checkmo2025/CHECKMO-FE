@@ -37,10 +37,12 @@ export default function AnnouncementCard({
   items: AnnouncementCardProps[];
 }): React.ReactElement {
   return (
-    <div className="flex gap-[24px]">
-      {items.map((item, idx) => (
-        <AnnouncementCardItem key={idx} item={item} />
-      ))}
+    <div className="overflow-x-auto">
+      <div className="flex gap-[24px] min-w-max">
+        {items.map((item, idx) => (
+          <AnnouncementCardItem key={idx} item={item} />
+        ))}
+      </div>
     </div>
   );
 }
@@ -128,13 +130,14 @@ function AnnouncementCardItem({
             <div className="absolute top-[80px] right-[24px]">
              <img src={arrow} alt="icon" className="w-[24px] h-[24px] -mt-2" />
             </div>
-            <div className="absolute bottom-[20px] left-1/2 transform -translate-x-1/2">
+            <div className="absolute bottom-[24.5px]">
               <div
                 className="
                   relative
                   w-[262px] h-[232px]
                   bg-gray-100 rounded-lg
                   overflow-hidden
+                  flex items-center justify-center
                 "
               >
                 {item.imageUrl

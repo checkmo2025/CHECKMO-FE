@@ -1,14 +1,15 @@
 // src/components/BookClub/ClubCard.tsx
 import React, { useState } from 'react';
 import checker from '../../assets/images/checker.png';
+import { BOOK_CATEGORIES, PARTICIPANT_TYPES } from '../../types/dto';
 
 export interface ClubCardProps {
   id: number;
   title: string;
-  /** 독서 카테고리 태그, ex: ['7기', '사회'] */
-  tags: string[];
-  /** 모임 대상, ex: '대학생' */
-  target: string;
+  /** 카테고리 ID 배열, ex: [1, 2, 3] */
+  category: number[];
+  /** 참여자 유형 배열, ex: ['STUDENT', 'WORKER'] */
+  participantTypes: string[];
   /** 활동 지역, ex: '서울' */
   region: string;
   /** 동아리 썸네일 URL */
@@ -68,8 +69,8 @@ const ActionButtons: React.FC<{
 export default function ClubCard({
   id,
   title,
-  tags,
-  target,
+  category,
+  participantTypes,
   region,
   logoUrl,
   onJoinRequest,
@@ -124,6 +125,12 @@ export default function ClubCard({
   const handleJoinClick = () => setMode('join');
   const handleInquiryClick = () => setMode('inquiry');
 
+  // 카테고리 ID를 이름으로 변환
+  const categoryNames = category.map(id => BOOK_CATEGORIES[id as keyof typeof BOOK_CATEGORIES] || `카테고리${id}`);
+  
+  // 참여자 유형을 이름으로 변환
+  const participantNames = participantTypes.map(type => PARTICIPANT_TYPES[type as keyof typeof PARTICIPANT_TYPES] || type);
+
   return (
     <div
       className={`
@@ -143,22 +150,23 @@ export default function ClubCard({
         {/* 정보 영역 */}
         <div className="ml-[29px] flex-1 flex flex-col">
           {/* 카테고리 태그 */}
-          <div className="flex gap-[12px] mt-[24px] mb-[18px]">
-            {tags.map((t) => (
+          <div className="flex gap-[12px] mt-[24px] mb-[18px] flex-wrap">
+            {categoryNames.map((categoryName) => (
               <span
-                key={t}
+                key={categoryName}
                 className="
                   inline-flex
                   items-center
                   justify-center
                   text-[12px] font-medium
                   bg-[#90D26D] text-white
-                  w-[54px] h-[24px]
+                  px-[12px] h-[24px]
                   rounded-[15px]
                   whitespace-nowrap
+                  min-w-[54px]
                 "
               >
-                {t}
+                {categoryName}
               </span>
             ))}
           </div>
@@ -181,7 +189,7 @@ export default function ClubCard({
               leading-[145%] tracking-[-0.1%] text-[#8D8D8D]
             "
           >
-            모임 대상 | {target}
+            모임 대상 | {participantNames.join(', ')}
           </p>
           <p
             className="

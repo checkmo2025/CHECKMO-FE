@@ -13,20 +13,69 @@ export default function ClubSearchPage(): React.ReactElement {
 
   // 예시 더미 데이터
   const dummyClubs: ClubCardProps[] = [
-    { id: 1, title: '모임 명', tags: ['7기','사회'], target: '대학생', region: '서울', logoUrl: checker },
-    { id: 2, title: '모임 명', tags: ['7기','사회'], target: '대학생', region: '서울', logoUrl: checker },
-    { id: 3, title: '모임 명', tags: ['7기','사회'], target: '대학생', region: '서울', logoUrl: checker },
-    { id: 4, title: '모임 명', tags: ['7기','사회'], target: '대학생', region: '서울', logoUrl: checker },
-    { id: 5, title: '모임 명', tags: ['7기','사회'], target: '대학생', region: '서울', logoUrl: checker },
-    { id: 6, title: '모임 명', tags: ['7기','사회'], target: '대학생', region: '서울', logoUrl: checker },
-    { id: 7, title: '모임 명', tags: ['7기','사회'], target: '대학생', region: '서울', logoUrl: checker },
+    { 
+      id: 1, 
+      title: '북적북적 독서모임', 
+      category: [6], // 인문학
+      participantTypes: ['STUDENT'], 
+      region: '서울', 
+      logoUrl: checker 
+    },
+    { 
+      id: 2, 
+      title: '책을모아', 
+      category: [9, 10], // 사회과학, 정치/외교/국방
+      participantTypes: ['WORKER'], 
+      region: '부산', 
+      logoUrl: checker 
+    },
+    { 
+      id: 3, 
+      title: '슬기로운 독서생활', 
+      category: [2, 3, 7], // 소설/시/희곡, 에세이, 여행
+      participantTypes: ['STUDENT'], 
+      region: '대구', 
+      logoUrl: checker 
+    },
+    { 
+      id: 4, 
+      title: '독서재량', 
+      category: [4, 5], // 경제/경영, 자기계발
+      participantTypes: ['WORKER'], 
+      region: '서울', 
+      logoUrl: checker 
+    },
+    { 
+      id: 5, 
+      title: '책사랑', 
+      category: [8], // 역사/문화
+      participantTypes: ['STUDENT'], 
+      region: '인천', 
+      logoUrl: checker 
+    },
+    { 
+      id: 6, 
+      title: '독서모임', 
+      category: [11, 12], // 컴퓨터/IT, 과학
+      participantTypes: ['STUDENT'], 
+      region: '서울', 
+      logoUrl: checker 
+    },
+    { 
+      id: 7, 
+      title: '책읽는 사람들', 
+      category: [13, 14], // 외국어, 예술/대중문화
+      participantTypes: ['WORKER'], 
+      region: '광주', 
+      logoUrl: checker 
+    },
   ];
 
   // 검색 로직(예시)
   const filtered = dummyClubs.filter(c =>
     c.title.includes(query) ||
     c.region.includes(query) ||
-    c.target.includes(query)
+    c.participantTypes.some(type => type.includes(query))
   );
 
   // 가입 신청 처리

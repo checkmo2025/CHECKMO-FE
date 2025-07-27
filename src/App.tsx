@@ -9,7 +9,6 @@ import BookRecommendPage from "./pages/BookRecommend/BookRecommendPage";
 import BookRecommendDetailPage from "./pages/BookRecommend/BookRecommendDetailPage";
 import BookRecommendCreatePage from "./pages/BookRecommend/BookRecommendCreatePage";
 import HomePage from "./pages/Main/HomePage";
-import TestHeaderPage from "./pages/TestHeaderPage";
 import MyHomePage from "./pages/Main/Info/My/MyHomePage";
 import MyGroupPage from "./pages/Main/Info/My/MyGroupPage";
 import MySubscriptionPage from "./pages/Main/Info/My/MySubscriptionPage";
@@ -58,6 +57,8 @@ const App = () => {
             <Route path="/home" element={<HomePage />} />
             <Route path="/booksearch" element={<SearchPage />} />
             <Route path="/searchClub" element={<ClubSearchPage />} />
+            <Route path="/createClub" element={<CreateClubPage />} />
+            <Route path="/bookClub/notices" element={<NoticePage />} />
             {/* 마이페이지 하위 라우트 */}
             <Route path="/mypage/group" element={<MyGroupPage />} />
             <Route
@@ -86,7 +87,7 @@ const App = () => {
             <Route index element={<BookClubHomePage />} />
 
             {/* /bookclub/notices → 공지사항 페이지 */}
-            <Route path="notices" element={<NoticePage />} />
+            
             <Route path=":id" element={<Layout />}>
               <Route path="home" element={<BookClubHomePage />} />
 
@@ -112,11 +113,8 @@ const App = () => {
               />
             </Route>
           </Route>
-          <Route path="/test-header" element={<TestHeaderPage />} />
           {/* Others 프로필 라우트 추가 */}
           <Route path="/info/others/:id" element={<OthersProfilePage />} />
-
-          <Route path="/createClub" element={<CreateClubPage />} />
         </Routes>
       </Router>
     </GoogleOAuthProvider>
