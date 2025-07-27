@@ -41,18 +41,7 @@ const App = () => {
           <Route path="/" element={<LoginPage />} />
           <Route path="/signup" element={<SignupPage />} />
           <Route path="/profile" element={<ProfilePage />} />
-          <Route
-            path="/recommend"
-            element={<BookRecommendPage bookRecommendList={dummyList} />}
-          />
-          <Route
-            path="/recommend/:recommendId"
-            element={<BookRecommendDetailPage />}
-          />
-          <Route
-            path="/recommend/create/:bookId"
-            element={<BookRecommendCreatePage />}
-          />
+          
           <Route element={<Layout />}>
             <Route path="/home" element={<HomePage />} />
             <Route path="/booksearch" element={<SearchPage />} />
@@ -111,6 +100,18 @@ const App = () => {
               />
 
               {/* 책 추천 */}
+              <Route
+                path="/recommend"
+                element={<BookRecommendPage bookRecommendList={dummyList} />}
+              />
+              <Route
+                path="/recommend/:recommendId"
+                element={<BookRecommendDetailPage />}
+              />
+              <Route
+                path="/recommend/create/:bookId"
+                element={<BookRecommendCreatePage />}
+              />
               <Route
                 path="recommend/searchrecommendbook"
                 element={<SearchRecommendBookPage />}
