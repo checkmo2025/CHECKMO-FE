@@ -1,22 +1,98 @@
 // src/pages/BookClub/CreateClubPage.tsx
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { ChipToggleGroup } from '../../components/CreateClub/ChipToggleGroup';
+import { createClub } from '../../apis/clubApi';
+import type { ClubDto } from '../../types/dto';
+import { BOOK_CATEGORIES, PARTICIPANT_TYPES } from '../../types/dto';
 
-const BOOK_CATEGORIES = [
-  '국내 도서','소설/시/희곡','에세이','경제/경영','자기계발','인문학',
-  '여행','역사/문화','사회과학','정치/외교/국방','컴퓨터/IT','과학',
-  '외국어','예술/대중문화','아동/청소년',
-];
-const PARTICIPANTS = ['대학생','직장인','온라인','동아리원','오프라인','대면'];
+// 카테고리 옵션 (문자열 배열로 변환)
+const BOOK_CATEGORY_OPTIONS = Object.values(BOOK_CATEGORIES);
+
+// 참여자 유형 옵션 (문자열 배열로 변환)
+const PARTICIPANT_TYPE_OPTIONS = Object.values(PARTICIPANT_TYPES);
+
+// 카테고리 이름을 ID로 변환하는 함수
+const getCategoryId = (categoryName: string): number => {
+  const entry = Object.entries(BOOK_CATEGORIES).find(([id, name]) => name === categoryName);
+  return entry ? parseInt(entry[0]) : 1;
+};
+
+// 참여자 유형 이름을 키로 변환하는 함수
+const getParticipantKey = (participantName: string): string => {
+  const entry = Object.entries(PARTICIPANT_TYPES).find(([key, name]) => name === participantName);
+  return entry ? entry[0] : 'STUDENT';
+};
 
 export default function CreateClubPage(): React.ReactElement {
-  const [visibility, setVisibility] = useState<'공개' | '비공개' | null>(null);
+  const navigate = useNavigate();
+  const [open, setOpen] = useState<boolean | null>(null);
   const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
   const [selectedParticipants, setSelectedParticipants] = useState<string[]>([]);
   const [clubName, setClubName] = useState('');
+  const [clubDescription, setClubDescription] = useState('');
   const [duplicateCheck, setDuplicateCheck] = useState<'pending' | 'duplicate' | 'available' | null>(null);
-  const [sns1Link, setSns1Link] = useState('');
-  const [sns2Link, setSns2Link] = useState('');
+  const [instaLink, setInstaLink] = useState('');
+  const [kakaoLink, setKakaoLink] = useState('');
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  // 클럽 생성 핸들러
+  const handleCreateClub = async () => {
+    if (!clubName.trim()) {
+      alert('모임 이름을 입력해주세요.');
+      return;
+    }
+    if (!clubDescription.trim()) {
+      alert('모임 소개글을 입력해주세요.');
+      return;
+    }
+    if (open === null) {
+      alert('공개/비공개 여부를 선택해주세요.');
+      return;
+    }
+    if (selectedCategories.length === 0) {
+      alert('선호하는 독서 카테고리를 선택해주세요.');
+      return;
+    }
+    if (selectedParticipants.length === 0) {
+      alert('모임 참여 대상을 선택해주세요.');
+      return;
+    }
+
+    setIsSubmitting(true);
+
+    try {
+      const clubData: Omit<ClubDto, 'clubId'> = {
+        name: clubName,
+        description: clubDescription,
+        open: open,
+        category: selectedCategories.map(getCategoryId),
+        participantTypes: selectedParticipants.map(getParticipantKey),
+        region: '서울', // 임시로 서울로 설정, 나중에 지역 선택 기능 추가 필요
+        insta: instaLink || undefined,
+        kakao: kakaoLink || undefined,
+      };
+
+      const response = await createClub(clubData);
+      if (response.isSuccess) {
+        alert('모임이 성공적으로 생성되었습니다!');
+        navigate('/searchClub'); // 모임 검색 페이지로 이동
+      } else {
+        alert(`모임 생성에 실패했습니다: ${response.message}`);
+      }
+    } catch (error: any) {
+      console.error('모임 생성 실패:', error);
+      if (error.response?.status === 409) {
+        alert('이미 존재하는 독서클럽 이름입니다.');
+      } else if (error.response?.status === 400) {
+        alert('유효하지 않은 카테고리가 입력되었습니다. (1 ~ 15 사이의 값이어야 함)');
+      } else {
+        alert('모임 생성에 실패했습니다. 다시 시도해주세요.');
+      }
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
 
   return (
     <div className="flex-1 p-8 min-h-screen">
@@ -74,9 +150,11 @@ export default function CreateClubPage(): React.ReactElement {
             모임의 소개글을 입력해주세요.
           </label>
           <textarea
+            value={clubDescription}
+            onChange={(e) => setClubDescription(e.target.value)}
             placeholder='내용을 입력해주세요.'
-            className="w-[808px] h-[265px] rounded-[16px] border-[2px] border-[#EAE5E2] px-[20px] py-[20px] text-[14px] text-[#BBBBBB] outline-none mt-[16px] resize-none"
-            />
+            className="w-[808px] h-[265px] rounded-[16px] border-[2px] border-[#EAE5E2] px-[20px] py-[20px] text-[14px] text-[#2C2C2C] outline-none mt-[16px] resize-none"
+          />
         </div>
 
         {/* 프로필 사진 업로드 */}
@@ -105,25 +183,25 @@ export default function CreateClubPage(): React.ReactElement {
           {/* 공개 버튼 */}
           <button
             type="button"
-            onClick={() => setVisibility('공개')}
+            onClick={() => setOpen(true)}
             className={`
               w-[178px] h-[53px]
               mt-[16px] flex flex-col items-center justify-center
               rounded-[36px] py-[10px]
               cursor-pointer
-              ${visibility === '공개' 
-                ? 'bg-[#90D26D] text-white' 
+              ${open === true
+                ? 'bg-[#90D26D] text-white'
                 : 'border-[1px] border-[#90D26D]'
               }
             `}
           >
             <span className={`font-pretendard font-semibold text-[12px] leading-[145%] tracking-[-0.1%] text-center ${
-              visibility === '공개' ? 'text-white' : 'text-[#2C2C2C]'
+              open === true ? 'text-white' : 'text-[#2C2C2C]'
             }`}>
               공개
             </span>
             <span className={`font-pretendard font-normal text-[12px] mt-[4px] ${
-              visibility === '공개' ? 'text-white' : 'text-[#8D8D8D]'
+              open === true ? 'text-white' : 'text-[#8D8D8D]'
             }`}>
               누구나 가입 가능
             </span>
@@ -132,25 +210,25 @@ export default function CreateClubPage(): React.ReactElement {
           {/* 비공개 버튼 */}
           <button
             type="button"
-            onClick={() => setVisibility('비공개')}
+            onClick={() => setOpen(false)}
             className={`
               w-[178px] h-[53px]
               mt-[16px] flex flex-col items-center justify-center
               rounded-[36px] py-[10px]
               cursor-pointer
-              ${visibility === '비공개' 
-                ? 'bg-[#90D26D] text-white' 
+              ${open === false
+                ? 'bg-[#90D26D] text-white'
                 : 'border-[1px] border-[#90D26D]'
               }
             `}
           >
             <span className={`font-pretendard font-semibold text-[12px] leading-[145%] tracking-[-0.1%] text-center ${
-              visibility === '비공개' ? 'text-white' : 'text-[#2C2C2C]'
+              open === false ? 'text-white' : 'text-[#2C2C2C]'
             }`}>
               비공개
             </span>
             <span className={`font-pretendard font-normal text-[12px] mt-[4px] ${
-              visibility === '비공개' ? 'text-white' : 'text-[#8D8D8D]'
+              open === false ? 'text-white' : 'text-[#8D8D8D]'
             }`}>
               운영자의 승인 필요
             </span>
@@ -166,7 +244,7 @@ export default function CreateClubPage(): React.ReactElement {
         </label>
         <div className="mt-[16px] max-w-[400px]">
           <ChipToggleGroup
-            options={BOOK_CATEGORIES}
+            options={BOOK_CATEGORY_OPTIONS}
             selected={selectedCategories}
             onToggle={(cat) => {
               if (selectedCategories.includes(cat)) {
@@ -186,7 +264,7 @@ export default function CreateClubPage(): React.ReactElement {
         </label>
         <div className="mt-[16px] max-w-[400px]">
           <ChipToggleGroup
-            options={PARTICIPANTS}
+            options={PARTICIPANT_TYPE_OPTIONS}
             selected={selectedParticipants}
             onToggle={(pt) => {
               if (selectedParticipants.includes(pt)) {
@@ -206,13 +284,13 @@ export default function CreateClubPage(): React.ReactElement {
         </label>
         <div className="mt-[16px] flex flex-col gap-[16px]">
           <input
-            value={sns1Link}
-            onChange={(e) => setSns1Link(e.target.value)}
+            value={instaLink}
+            onChange={(e) => setInstaLink(e.target.value)}
             className="w-[393px] h-[40px] bg-[#F6F5F3] rounded-full px-[17px] py-[10px] text-[14px] text-[#2C2C2C] outline-none placeholder:text-[#BBBBBB]"
           />
           <input
-            value={sns2Link}
-            onChange={(e) => setSns2Link(e.target.value)}
+            value={kakaoLink}
+            onChange={(e) => setKakaoLink(e.target.value)}
             className="w-[393px] h-[40px] bg-[#F6F5F3] rounded-full px-[17px] py-[10px] text-[14px] text-[#2C2C2C] outline-none placeholder:text-[#BBBBBB]"
           />
         </div>
