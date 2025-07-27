@@ -101,15 +101,15 @@ const App = () => {
 
               {/* 책 추천 */}
               <Route
-                path="/recommend"
+                path="recommend"
                 element={<BookRecommendPage bookRecommendList={dummyList} />}
               />
               <Route
-                path="/recommend/:recommendId"
+                path="recommend/:recommendId"
                 element={<BookRecommendDetailPage />}
               />
               <Route
-                path="/recommend/create/:bookId"
+                path="recommend/create/:bookId"
                 element={<BookRecommendCreatePage />}
               />
               <Route
@@ -120,8 +120,6 @@ const App = () => {
           </Route>  
 
           <Route path="/createClub" element={<CreateClubPage />} />
-
-          </Route>
         </Routes>
       </Router>
     </GoogleOAuthProvider>
