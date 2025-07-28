@@ -6,7 +6,7 @@ const dummyBook: BookDto = {
   title: "넥서스",
   author: "유발 하라리",
   imgUrl: "/chess.png",
-  pulisher: "1234",
+  publisher: "1234",
 };
 
 const BookRecommendCreatePage = () => {

@@ -4,7 +4,7 @@ export type BookDto = {
   title: string;
   author: string;
   imgUrl: string;
-  pulisher?: string;
+  publisher?: string;
 };
 
 export type MemberDto = {
@@ -69,28 +69,6 @@ export const PARTICIPANT_TYPES = {
   MEETING: "모임",
   OFFLINE: "대면",
 } as const;
-
-export type MeetingDto = {
-  meetingId: number;
-  title: string;
-  generation: number; // 기수
-  book: BookDto;
-  meetingTime: Date;
-  location: string;
-  participantCount: number;
-  topicCount: number;
-  reviewCount: number;
-  averageRating: number;
-  status: String;
-};
-
-export type TopicDto = {
-  topicId: number;
-  description: string;
-  author: MemberDto; // 발제 작성자
-  createdAt: Date;
-  selectedByTeamCount: number; // 몇 개의 팀에서 선택했는 지
-};
 
 export type ReviewDto = {
   reviewId: number;
