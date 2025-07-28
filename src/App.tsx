@@ -29,6 +29,7 @@ import ScoreDetailPage from "./pages/BookClub/Shelf/ScoreDetailPage";
 import BookStoryHomePage from "./pages/Main/BookStory/BookStoryHomePage";
 import Layout from "./components/layout/Layout";
 import TestPage from "./pages/test";
+import MeetingListPage from "./pages/Meeting/MeetingListPage";
 
 const App = () => {
   return (
@@ -97,10 +98,7 @@ const App = () => {
               />
 
               {/* 책 추천 */}
-              <Route
-                path="recommend"
-                element={<BookRecommendPage bookRecommendList={dummyList} />}
-              />
+              <Route path="recommend" element={<BookRecommendPage />} />
               <Route
                 path="recommend/:recommendId"
                 element={<BookRecommendDetailPage />}
@@ -112,6 +110,12 @@ const App = () => {
               <Route
                 path="recommend/searchrecommendbook"
                 element={<SearchRecommendBookPage />}
+              />
+
+              <Route path="meeting" element={<MeetingListPage />} />
+              <Route
+                path="meeting/:meetingId"
+                element={<BookRecommendDetailPage />}
               />
             </Route>
           </Route>
