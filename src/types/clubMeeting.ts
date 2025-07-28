@@ -25,17 +25,15 @@ export type MeetingListResultDto = {
 export type MeetingListResponse = ApiResponse<MeetingListResultDto>;
 
 // 독서 모임 - 모임 상세 조회
-export interface BaseTopicDto {
+export interface TopicDto {
   topicId: number;
   content: string;
   authorInfo: AuthorDto;
 }
 
-export interface TopicPreviewDto extends BaseTopicDto {
+export interface TopicPreviewDto extends TopicDto {
   selectedTeams: number[]; // 해당 발제를 선택한 조들 (1:A조, 2:B조, 3:C조)
 }
-
-export type TopicDto = BaseTopicDto;
 
 export interface TeamDto {
   teamNumber: number; // 1=A조, 2=B조 …
