@@ -1,43 +1,60 @@
-import type {
-  BookDto,
-  ClubDto,
-  MeetingDto,
-  ReviewDto,
-  StatisticsDto,
-  TeamDto,
-  TopicDto,
-} from "./dto";
+import type { ApiResponse } from "./apiResponse";
+import type { AuthorDto, BookDto } from "./dto";
 
-export type MeetingListResult = {
-  club: ClubDto;
-  meetings: MeetingDto[];
-  totalElements: number;
-  totalPages: number;
-  hasNext: boolean;
-  isFirst: boolean;
-  isLast: boolean;
-};
-
-export type MeetingListDto = {
-  isSuccess: boolean;
-  code: string;
-  message: string;
-  result: MeetingListResult;
-};
-
-export type MeetingDetailResult = {
-  meeting: MeetingDto;
-  club: ClubDto;
+// 독서 모임 - 모임 전체 긴편 조회
+export type MeetingListItemDto = {
+  meetingId: number;
+  tags: string;
+  title: string;
   book: BookDto;
-  topics: TopicDto[];
-  reviews: ReviewDto[];
-  teams: TeamDto[];
-  statistics: StatisticsDto;
+  meetingDate: string;
+  meetingPlace: string;
 };
 
-export type MeetingDetailDto = {
-  isSuccess: boolean;
-  code: string;
-  message: string;
-  result: MeetingDetailResult;
+export type ClubGenerationDto = {
+  generation: number;
+  meetings: MeetingListItemDto[];
 };
+
+export type MeetingListResultDto = {
+  generations: ClubGenerationDto[];
+  hasNext: boolean;
+  nextCursor: number;
+};
+
+export type MeetingListResponse = ApiResponse<MeetingListResultDto>;
+
+// 독서 모임 - 모임 상세 조회
+export interface BaseTopicDto {
+  topicId: number;
+  content: string;
+  authorInfo: AuthorDto;
+}
+
+export interface TopicPreviewDto extends BaseTopicDto {
+  selectedTeams: number[]; // 해당 발제를 선택한 조들 (1:A조, 2:B조, 3:C조)
+}
+
+export type TopicDto = BaseTopicDto;
+
+export interface TeamDto {
+  teamNumber: number; // 1=A조, 2=B조 …
+  topics: TopicDto[];
+}
+
+export interface MeetingDto {
+  meetingId: number;
+  generation: number; // 7기 …
+  tags: string; // "사회"
+  title: string; // "1차 정기모임"
+  book: BookDto;
+  meetingDate: string; // ISO — "2025‑06‑02T18:00"
+  meetingPlace: string; // "제이스 스터디룸"
+}
+
+export interface MeetingDetailResultDto extends MeetingDto {
+  topicPreview: TopicPreviewDto[];
+  teams: TeamDto[];
+}
+
+export type MeetingDetailResponse = ApiResponse<MeetingDetailResultDto>;
