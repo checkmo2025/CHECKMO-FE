@@ -1,6 +1,6 @@
 import type { MeetingDetailResponse } from "../../types/clubMeeting";
 
-export const DummyMeetingList: MeetingDetailResponse = {
+export const DummyMeetingDetail: MeetingDetailResponse = {
   isSuccess: true,
   code: "COMMON200",
   message: "성공입니다.",
