@@ -30,6 +30,8 @@ import BookStoryHomePage from "./pages/Main/BookStory/BookStoryHomePage";
 import Layout from "./components/layout/Layout";
 import TestPage from "./pages/test";
 import MeetingListPage from "./pages/Meeting/MeetingListPage";
+import BookStoryDetailPage from "./pages/Main/BookStory/BookStoryDetailPage";
+import BookStoryWritePage from "./pages/Main/BookStory/BookStoryWritePage";
 
 const App = () => {
   return (
@@ -65,6 +67,11 @@ const App = () => {
             <Route path="/mypage" element={<MyHomePage />} />
             <Route path="/bookstory" element={<BookStoryHomePage />} />
             <Route path="/bookstory/search" element={<BookStorySearchPage />} />
+            <Route
+              path="/bookstory/:storyId/detail"
+              element={<BookStoryDetailPage />}
+            />
+            <Route path="/bookstory/write" element={<BookStoryWritePage />} />
           </Route>
 
           {/* 동적 모임 - 사이드바 확인용 (더기)  */}
