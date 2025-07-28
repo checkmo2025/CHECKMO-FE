@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 const dummyBook = {
   id: 1,
@@ -12,6 +12,7 @@ const dummyBook = {
 };
 
 export default function BookStoryWritePage() {
+  const navigate = useNavigate();
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
 
@@ -32,7 +33,7 @@ export default function BookStoryWritePage() {
     saved.unshift(newStory);
     localStorage.setItem("bookStories", JSON.stringify(saved));
 
-    window.location.href = "/bookstory";
+    navigate("/bookstory");
   };
 
   return (

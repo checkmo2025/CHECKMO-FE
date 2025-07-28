@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import BookStoryCard from "../../../components/BookClub/BookStoryCard";
+import BookStoryCard from "../../../components/BookStory/BookStoryCard";
 import { LayoutGrid, List, Pencil } from "lucide-react";
 import { Link } from "react-router-dom";
 
