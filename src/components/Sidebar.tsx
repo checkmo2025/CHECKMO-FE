@@ -24,21 +24,21 @@ type Menu = {
 
 const dummyBookclubs: Record<string, string> = {
   "1": "북적북적",
-  "2": "책을모아",
-  "3": "슬기로운 독서생활",
+  "2": "책을 모아",
+  "3": "슬기로운 독서",
 };
 
 const Sidebar = () => {
-  const { id } = useParams<{ id?: string }>();
+  const { bookclubId } = useParams<{ bookclubId?: string }>();
   const navigate = useNavigate();
   const [bookclubName, setBookclubName] = useState("모임 이름");
   const [openMenus, setOpenMenus] = useState<Set<string>>(new Set());
 
   useEffect(() => {
-    if (id && dummyBookclubs[id]) {
-      setBookclubName(dummyBookclubs[id]);
+    if ( bookclubId && dummyBookclubs[bookclubId]) {
+      setBookclubName(dummyBookclubs[bookclubId]);
     }
-  }, [id]);
+  }, [bookclubId]);
 
   const toggleMenu = (menuName: string) => {
     setOpenMenus((prev) => {
@@ -52,17 +52,19 @@ const Sidebar = () => {
     });
   };
 
-  const menus: Menu[] = id
+  const menus: Menu[] = bookclubId
     ? [
         {
+          
           name: bookclubName,
+          path: `/bookclub/${bookclubId}/home`,
           icon: homeIcon,
           submenus: [
-            { name: "공지사항", path: `/bookclub/${id}/notice` },
-            { name: "책장", path: `/bookclub/${id}/shelf` },
-            { name: "모임", path: `/bookclub/${id}/meeting` },
-            { name: "책 추천", path: `/bookclub/${id}/recommend` },
-            { name: "일정", path: `/bookclub/${id}/schedule` },
+            { name: "공지사항", path: `/bookclub/${bookclubId}/notices` },
+            { name: "책장", path: `/bookclub/${bookclubId}/shelf` },
+            { name: "모임", path: `/bookclub/${bookclubId}/meeting` },
+            { name: "책 추천", path: `/bookclub/${bookclubId}/recommend` },
+            { name: "일정", path: `/bookclub/${bookclubId}/schedule` },
           ],
         },
         {
@@ -70,8 +72,8 @@ const Sidebar = () => {
           icon: searchIcon,
           submenus: [
             { name: "통합검색", path: "/booksearch" },
-            { name: "국내도서", path: "/booksearch" },
-            { name: "전자책", path: "/booksearch" },
+            { name: "국내도서", path: "/booksearch1" },   // 미구현 추후 모달로 대체 예정
+            { name: "전자책", path: "/booksearc2" },
           ],
         },
         {
@@ -102,12 +104,13 @@ const Sidebar = () => {
         },
         {
           name: "독서 모임",
-          path: "/bookclub",
           icon: bookclubIcon,
           submenus: [
-            { name: "내 모임 바로가기", path: "/bookclub/:id" },
-            { name: "모임 검색하기", path: "/bookclub/search" },
-            { name: "모임 생성하기", path: "/bookclub/create" },
+            { name: "북적북적", path: `/bookclub/1/home` },
+            { name: "책을모아", path: `/bookclub/2/home` },
+            { name: "슬기로운 독서", path: `/bookclub/3/home` },
+            { name: "모임 검색하기", path: "/searhClub" },
+            { name: "모임 생성하기", path: "/createClub" },
           ],
         },
         {
@@ -142,7 +145,7 @@ const Sidebar = () => {
         },
       ];
 
-  const header = id ? (
+  const header = bookclubId ? (
     <div className="flex items-center gap-[0.5rem]">
       <img src={logoImage} alt="logo" className="w-10 h-10 object-contain" />
       <div className="flex flex-col">
