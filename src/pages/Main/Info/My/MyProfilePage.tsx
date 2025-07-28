@@ -4,10 +4,10 @@ import { Camera } from "lucide-react";
 const keywords = [
   "국내 도서", "소설/시/희곡", "에세이", "정치/경제", "자기계발",
   "인문학", "여행", "역사/문화", "사회과학", "정치/외교/군사",
-  "컴퓨터/IT", "과학", "의학", "예술/대중문화", "어린이도서"
+  "컴퓨터/IT", "과학", "의학", "예술/대중문화", "어린이도서", "기타"
 ];
 
-const MyProfilePage: React.FC = () => {
+const MyProfilePage = () => {
   const [nickname] = useState("hy_0716");
   const [bio, setBio] = useState("책을 아는가? 나는 모른다!");
   const [isEditingBio, setIsEditingBio] = useState(false);
@@ -22,7 +22,7 @@ const MyProfilePage: React.FC = () => {
       const reader = new FileReader();
       reader.onload = () => {
         if (typeof reader.result === "string") {
-          setTempProfileImage(reader.result); 
+          setTempProfileImage(reader.result);
         }
       };
       reader.readAsDataURL(e.target.files[0]);
@@ -46,20 +46,15 @@ const MyProfilePage: React.FC = () => {
 
   return (
     <div className="flex w-full min-h-screen bg-[#FAFAFA]">
-      {/* 사이드바 */}
-      <aside className="hidden md:block w-[264px] bg-[#F1F8EF] border-r border-gray-200"></aside>
-
-      {/* 메인 영역 */}
-      <main className="flex justify-center py-10 w-full">
-        <div className="max-w-[1200px] w-full">
-          {/* 헤더와 동일한 위치에 맞춘 제목 */}
-          <h1 className="text-2xl font-bold mb-8 text-[#2C2C2C] px-10">
+      <main className="w-full py-10">
+        <div className="w-full px-4 sm:px-6 md:px-10">
+          <h1 className="text-2xl font-bold mb-8 text-[#2C2C2C]">
             프로필 편집
           </h1>
 
-          <div className="flex gap-16 mb-10">
+          <div className="flex flex-wrap gap-10 mb-10 w-full">
             {/* 프로필 이미지 */}
-            <div className="flex flex-col items-center gap-3">
+            <div className="flex flex-col items-center gap-3 min-w-[212px] mx-auto lg:mx-0">
               <div className="relative">
                 <div
                   className="w-[212px] h-[212px] rounded-full overflow-hidden flex items-center justify-center border"
@@ -86,7 +81,7 @@ const MyProfilePage: React.FC = () => {
                   />
                 </label>
               </div>
-              <p className="text-lg font-semibold text-[#2C2C2C]">{nickname}</p>
+              <p className="text-lg font-semibold text-[#2C2C2C] text-center">{nickname}</p>
               <button
                 onClick={handleSave}
                 className="px-5 py-1 bg-[#90D26D] text-white rounded-full hover:bg-[#7bb95b]"
@@ -96,9 +91,9 @@ const MyProfilePage: React.FC = () => {
             </div>
 
             {/* 소개글 + 키워드 선택 */}
-            <div className="flex-1 flex flex-col gap-6">
+            <div className="flex-1 flex flex-col gap-6 w-full">
               {/* 소개글 */}
-              <div>
+              <div className="w-full">
                 <h2 className="text-lg font-semibold text-[#2C2C2C] mb-2">소개글</h2>
                 {isEditingBio ? (
                   <textarea
@@ -106,49 +101,41 @@ const MyProfilePage: React.FC = () => {
                     onChange={(e) => {
                       if (e.target.value.length <= 30) setTempBio(e.target.value);
                     }}
+                    className="rounded-lg p-3 text-[#5C5C5C] w-full resize-none"
                     style={{
-                      height: "279px",
-                      width: "100%",
+                      minHeight: "200px",
                       backgroundColor: "#F4F2F1",
-                      border: "1px solid #F4F2F1", 
-                      outline: "none"
+                      border: "1px solid #F4F2F1",
+                      outline: "none",
                     }}
-                    className="rounded-lg p-3 text-[#5C5C5C]"
                     placeholder="소개글을 입력하세요 (최대 30자)"
                   />
                 ) : (
                   <div
                     onClick={() => setIsEditingBio(true)}
+                    className="rounded-lg p-3 cursor-pointer w-full"
                     style={{
-                      height: "279px",
-                      width: "100%",
+                      minHeight: "200px",
                       backgroundColor: "#F4F2F1",
-                      border: "1px solid #F4F2F1"
+                      border: "1px solid #F4F2F1",
                     }}
-                    className="rounded-lg p-3 cursor-pointer"
                   >
                     {bio || "소개글을 입력하세요 (최대 30자)"}
                   </div>
                 )}
-                {/* 글자수 표시 */}
-                <div className="flex justify-end w-full mt-1">
+                <div className="flex justify-end mt-1">
                   <p className="text-sm text-[#8D8D8D]">{tempBio.length}/30</p>
                 </div>
               </div>
 
-              {/* 구분선 */}
-              <hr style={{ borderColor: "#EAE5E2", width: "100%" }} />
+              <hr style={{ borderColor: "#EAE5E2" }} />
 
               {/* 키워드 선택 */}
-              <section>
+              <section className="w-full">
                 <h2 className="text-lg font-semibold text-[#2C2C2C] mb-2">키워드 선택</h2>
                 <div
-                  style={{
-                    height: "279px",
-                    width: "100%",
-                    borderColor: "#EAE5E2"
-                  }}
-                  className="border rounded-lg p-5 grid grid-cols-3 gap-3"
+                  className="border rounded-lg p-5 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3 w-full"
+                  style={{ borderColor: "#EAE5E2" }}
                 >
                   {keywords.map((keyword, idx) => (
                     <button

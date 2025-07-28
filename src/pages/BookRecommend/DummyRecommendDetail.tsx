@@ -8,7 +8,7 @@ const dummyRecommendation: RecommendationDto = {
     title: "넥서스",
     author: "유발 하리라",
     imgUrl: "https://example.com/images/book-covers/moon-trip.jpg",
-    pulisher: "김병주",
+    publisher: "김병주",
   },
   memberInfo: {
     memberId: 42,

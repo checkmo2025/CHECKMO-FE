@@ -1,19 +1,24 @@
 import React, { useState, useEffect } from "react";
 import MyPageHeader from "../../../../components/MyPageHeader";
 import { useNavigate } from "react-router-dom";
+import AlertModal from "../../../../components/AlertModal";
 
-interface Group {
+type MyGroupPageProps = {};
+
+type Group = {
   id: number;
   name: string;
   description: string;
   profileImage?: string;
-}
+};
 
-const MyGroupPage: React.FC = () => {
+const MyGroupPage = (props: MyGroupPageProps) => {
   const [groups, setGroups] = useState<Group[]>([]);
   const [page, setPage] = useState(1);
   const [hasMore, setHasMore] = useState(true);
   const navigate = useNavigate();
+  const [showModal, setShowModal] = useState(false);
+  const [selectedGroupId, setSelectedGroupId] = useState<number | null>(null);
 
   const fetchGroups = (pageNumber: number) => {
     const newGroups: Group[] = Array.from({ length: 3 }, (_, idx) => ({
@@ -49,73 +54,64 @@ const MyGroupPage: React.FC = () => {
     return () => window.removeEventListener("scroll", handleScroll);
   }, [hasMore]);
 
-  const handleLeaveGroup = (id: number) => {
-    if (window.confirm("정말 탈퇴하시겠습니까?")) {
-      setGroups(groups.filter(group => group.id !== id));
-      navigate("/");
-    }
-  };
-
   const handleGroupClick = (id: number) => {
     navigate(`/group/${id}`);
   };
 
+  const confirmLeaveGroup = () => {
+    if (selectedGroupId !== null) {
+      setGroups(prev => prev.filter(group => group.id !== selectedGroupId));
+      setSelectedGroupId(null);
+    }
+    setShowModal(false);
+  };
+
   return (
     <div className="flex w-full min-h-screen bg-[#FAFAFA]">
-      {/* 사이드바 */}
-      <aside className="hidden md:block w-[264px] bg-[#F1F8EF] border-r border-gray-200"></aside>
-
       {/* 메인 영역 */}
       <main className="flex-1">
         <MyPageHeader title="내 모임" />
 
-        <div className="px-10 py-8 space-y-4 flex flex-col items-center">
+        <div className="px-4 md:px-10 py-8 space-y-4 flex flex-col items-center">
           {groups.map((group) => (
             <div
               key={group.id}
-              className="flex justify-between bg-white border border-[#EAE5E2] rounded-[16px] px-6 py-4 shadow-sm cursor-pointer hover:bg-[#FAFAFA]"
-              style={{ width: "1080px", height: "151px" }}
+              className="w-full flex flex-col md:flex-row justify-between bg-white border border-[#EAE5E2] rounded-[16px] px-4 md:px-6 py-4 shadow-sm cursor-pointer hover:bg-[#FAFAFA]"
               onClick={() => handleGroupClick(group.id)}
             >
               {/* 왼쪽: 프로필 사진 + 텍스트 */}
-              <div className="flex gap-6">
-                {/* 프로필 사진 */}
-                <div
-                  className="bg-gray-200 rounded-[16px] overflow-hidden"
-                  style={{ width: "119px", height: "119px" }}
-                ></div>
+              <div className="flex gap-4 md:gap-6">
+                <div className="bg-gray-200 rounded-[16px] overflow-hidden w-[80px] h-[80px] md:w-[119px] md:h-[119px] flex-shrink-0" />
 
-                {/* 모임 정보 */}
                 <div className="flex flex-col justify-between">
                   <div>
-                    {/* 뱃지 */}
-                    <div className="flex gap-2 mb-3">
-                      <span className="w-[54px] h-[24px] rounded-[15px] bg-[#90D26D] text-white text-[13px] flex items-center justify-center">
+                    <div className="flex gap-2 mb-2 md:mb-3">
+                      <span className="min-w-[48px] md:min-w-[54px] h-[22px] md:h-[24px] rounded-[15px] bg-[#90D26D] text-white text-[12px] md:text-[13px] flex items-center justify-center px-2">
                         7기
                       </span>
-                      <span className="w-[54px] h-[24px] rounded-[15px] bg-[#90D26D] text-white text-[13px] flex items-center justify-center">
+                      <span className="min-w-[48px] md:min-w-[54px] h-[22px] md:h-[24px] rounded-[15px] bg-[#90D26D] text-white text-[12px] md:text-[13px] flex items-center justify-center px-2">
                         사회
                       </span>
                     </div>
-                    <p className="text-[#2C2C2C] text-[18px] font-semibold">{group.name}</p>
-                    <p className="text-[#5C5C5C] text-[14px]">{group.description}</p>
+                    <p className="text-[#2C2C2C] text-[16px] md:text-[18px] font-semibold break-keep">
+                      {group.name}
+                    </p>
+                    <p className="text-[#5C5C5C] text-[13px] md:text-[14px] break-words">
+                      {group.description}
+                    </p>
                   </div>
                 </div>
               </div>
 
               {/* 오른쪽: 탈퇴 버튼 */}
-              <div className="flex flex-col justify-end">
+              <div className="flex justify-end md:items-end mt-4 md:mt-0">
                 <button
                   onClick={(e) => {
                     e.stopPropagation();
-                    handleLeaveGroup(group.id);
+                    setSelectedGroupId(group.id);
+                    setShowModal(true);
                   }}
-                  className="text-[#5C5C5C] border border-[#EAE5E2] rounded-full hover:bg-[#90D26D] hover:text-[#ffffff]"
-                  style={{
-                    width: "105px",
-                    height: "35px",
-                    marginTop: "40px", 
-                  }}
+                  className="text-[#5C5C5C] border border-[#EAE5E2] rounded-full hover:bg-[#90D26D] hover:text-white w-[90px] md:w-[105px] h-[32px] md:h-[35px] text-sm mt-auto"
                 >
                   탈퇴하기
                 </button>
@@ -128,6 +124,18 @@ const MyGroupPage: React.FC = () => {
           )}
         </div>
       </main>
+
+      {/* 탈퇴 확인 모달 */}
+      {showModal && (
+        <AlertModal
+          message="정말 탈퇴 하시겠습니까?"
+          onConfirm={confirmLeaveGroup}
+          onClose={() => {
+            setShowModal(false);
+            setSelectedGroupId(null);
+          }}
+        />
+      )}
     </div>
   );
 };

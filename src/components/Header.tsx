@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef } from "react";
 import { FiBell } from "react-icons/fi";
 import { useNavigate } from "react-router-dom"; 
 
@@ -14,12 +14,33 @@ type UserProfile = {
 
 interface HeaderProps {
   pageTitle: string;
-  userProfile: UserProfile;
-  notifications: Notification[];
+  userProfile?: UserProfile;
+  notifications?: Notification[];
   customClassName?: string;        // 커스텀으로 각자 페이지에서 조정 가능
 }
 
-const Header: React.FC<HeaderProps> = ({ pageTitle, userProfile, notifications, customClassName }) => {
+// 기본 더미 데이터
+const defaultUserProfile: UserProfile = {
+  username: "hy_0716",
+  bio: "책을 아는가? 나는 모른다",
+};
+
+const defaultNotifications: Notification[] = [
+  { message: "새 댓글이 달렸습니다.", time: "2025-07-11 13:00" },
+  { message: "이현서님이 팔로우했습니다.", time: "2025-07-11 12:45" },
+  { message: "새 모임이 등록되었습니다.", time: "2025-07-10 18:30" },
+  { message: "공지사항이 업데이트되었습니다.", time: "2025-07-09 09:15" },
+  { message: "투표가 시작되었습니다.", time: "2025-07-08 14:20" },
+];
+
+const Header = (props: HeaderProps) => {
+  const {
+    pageTitle,
+    userProfile = defaultUserProfile,
+    notifications = defaultNotifications,
+    customClassName,
+  } = props;
+
   const [isModalOpen, setIsModalOpen] = useState(false);
   const modalRef = useRef<HTMLDivElement>(null);
   const navigate = useNavigate(); 

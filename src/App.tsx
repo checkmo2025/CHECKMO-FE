@@ -7,9 +7,7 @@ import ProfilePage from "./pages/Auth/ProfilePage";
 import BookRecommendPage from "./pages/BookRecommend/BookRecommendPage";
 import BookRecommendDetailPage from "./pages/BookRecommend/BookRecommendDetailPage";
 import BookRecommendCreatePage from "./pages/BookRecommend/BookRecommendCreatePage";
-import MainLayout from "./components/layout/MainLayout";
 import HomePage from "./pages/Main/HomePage";
-import TestHeaderPage from "./pages/TestHeaderPage";
 import MyHomePage from "./pages/Main/Info/My/MyHomePage";
 import MyGroupPage from "./pages/Main/Info/My/MyGroupPage";
 import MySubscriptionPage from "./pages/Main/Info/My/MySubscriptionPage";
@@ -23,13 +21,15 @@ import ClubSearchPage from "./pages/Main/ClubSearchPage"; // 북클럽 검색
 import CreateClubPage from "./pages/Main/CreateClubPage";
 import BookStorySearchPage from "./pages/Main/BookStory/BookStorySearchPage";
 import SearchPage from "./pages/Main/SearchPage";
-import BookAddPage from "./pages/BookClub/Review/BookAddPage";
+import SearchRecommendBookPage from "./pages/BookRecommend/SearchRecommendBookPage";
 import ShelfHomePage from "./pages/BookClub/Shelf/ShelfHomePage";
 import ShelfDetailPage from "./pages/BookClub/Shelf/ShelfDetailPage";
 import ThemeDetailPage from "./pages/BookClub/Shelf/ThemeDetailPage";
 import ScoreDetailPage from "./pages/BookClub/Shelf/ScoreDetailPage";
 import BookStoryHomePage from "./pages/Main/BookStory/BookStoryHomePage";
-import BookClubLayout from "./components/layout/BookClubLayout";
+import Layout from "./components/layout/Layout";
+import TestPage from "./pages/test";
+import MeetingListPage from "./pages/Meeting/MeetingListPage";
 
 const App = () => {
   return (
@@ -39,44 +39,16 @@ const App = () => {
           <Route path="/" element={<LoginPage />} />
           <Route path="/signup" element={<SignupPage />} />
           <Route path="/profile" element={<ProfilePage />} />
-          <Route element={<MainLayout />}>
+
+          <Route element={<Layout />}>
             <Route path="/home" element={<HomePage />} />
-            {/* 메인 사이드바 사용할 페이지는 여기에 넣기 */}
-            <Route path="/search" element={<SearchPage />} />
-            <Route path="/recommend" element={<BookRecommendPage />} />
-            <Route
-              path="/recommend/:recommendId"
-              element={<BookRecommendDetailPage />}
-            />
-            <Route
-              path="/recommend/create/:bookId"
-              element={<BookRecommendCreatePage />}
-            />
-          </Route>
-          <Route path="/test-header" element={<TestHeaderPage />} />
-          <Route path="/mypage" element={<MyHomePage />} />
-          {/* Others 프로필 라우트 추가 */}
-          <Route path="/info/others/:id" element={<OthersProfilePage />} />
-          {/* 마이페이지 하위 라우트 */}
-          <Route path="/mypage/group" element={<MyGroupPage />} />
-          <Route path="/mypage/subscription" element={<MySubscriptionPage />} />
-          <Route path="/mypage/notification" element={<MyNotificationPage />} />
-          <Route path="/mypage/story" element={<MyStoryPage />} />
-          <Route path="/mypage/myprofile" element={<MyProfilePage />} />
-          <Route path="/recommend" element={<BookRecommendPage />} />
-          <Route
-            path="/recommend/:recommendId"
-            element={<BookRecommendDetailPage />}
-          />
-          <Route
-            path="/recommend/create/:bookId"
-            element={<BookRecommendCreatePage />}
-          />
-          <Route element={<MainLayout />}>
-            <Route path="/home" element={<HomePage />} />
-            {/* 메인 사이드바 사용할 페이지는 여기에 넣기 */}
             <Route path="/booksearch" element={<SearchPage />} />
             <Route path="/searchClub" element={<ClubSearchPage />} />
+
+            <Route path="/info/others/:id" element={<OthersProfilePage />} />
+
+            <Route path="/createClub" element={<CreateClubPage />} />
+            <Route path="/bookClub/notices" element={<NoticePage />} />
 
             {/* 마이페이지 하위 라우트 */}
             <Route path="/mypage/group" element={<MyGroupPage />} />
@@ -92,21 +64,25 @@ const App = () => {
             <Route path="/mypage/myprofile" element={<MyProfilePage />} />
             <Route path="/mypage" element={<MyHomePage />} />
             <Route path="/bookstory" element={<BookStoryHomePage />} />
-
             <Route path="/bookstory/search" element={<BookStorySearchPage />} />
           </Route>
+
+          {/* 동적 모임 - 사이드바 확인용 (더기)  */}
+          <Route path=":id" element={<Layout />}>
+            <Route path="test" element={<TestPage />} />
+          </Route>
+
           {/* /bookclub 이하에 북클럽 관련 페이지 묶기 */}
           <Route path="/bookclub">
             {/* /bookclub → 북클럽 홈 */}
             <Route index element={<BookClubHomePage />} />
+
             {/* /bookclub/notices → 공지사항 페이지 */}
-            <Route path="notices" element={<NoticePage />} />
 
-            {/* 동적 모임 - 사이드바 확인용 (더기)  */}
-            <Route path=":id" element={<BookClubLayout />}>
+            <Route path=":id" element={<Layout />}>
               <Route path="home" element={<BookClubHomePage />} />
-              <Route path="bookaddpage" element={<BookAddPage />} />
 
+              {/* 책장 */}
               <Route path="shelf" element={<ShelfHomePage />} />
               <Route
                 path="shelf/:shelfBookIndex"
@@ -120,31 +96,30 @@ const App = () => {
                 path="shelf/:shelfBookIndex/score"
                 element={<ScoreDetailPage />}
               />
+
+              {/* 책 추천 */}
+              <Route path="recommend" element={<BookRecommendPage />} />
+              <Route
+                path="recommend/:recommendId"
+                element={<BookRecommendDetailPage />}
+              />
+              <Route
+                path="recommend/create/:bookId"
+                element={<BookRecommendCreatePage />}
+              />
+              <Route
+                path="recommend/searchrecommendbook"
+                element={<SearchRecommendBookPage />}
+              />
+
+              <Route path="meeting" element={<MeetingListPage />} />
+              <Route
+                path="meeting/:meetingId"
+                element={<BookRecommendDetailPage />}
+              />
             </Route>
           </Route>
-          <Route path="/searchClub" element={<ClubSearchPage />} />
-          <Route path="/createClub" element={<CreateClubPage />} />
-          // 검색 임시 페이지
-          <Route path="/bookstory/search" element={<BookStorySearchPage />} />
-          <Route path="/booksearch" element={<SearchPage />} />
-          <Route path=":prefix/bookaddpage" element={<BookAddPage />} />
-          // 책장
-          <Route path=":prefix/shelf" element={<ShelfHomePage />} />
-          <Route
-            path=":prefix/shelf/:shelfBookIndex"
-            element={<ShelfDetailPage />}
-          />
-          <Route
-            path=":prefix/shelf/:shelfBookIndex/theme"
-            element={<ThemeDetailPage />}
-          />
-          <Route
-            path=":prefix/shelf/:shelfBookIndex/score"
-            element={<ScoreDetailPage />}
-          />
-          <Route path="/test-header" element={<TestHeaderPage />} />
-          {/* Others 프로필 라우트 추가 */}
-          <Route path="/info/others/:id" element={<OthersProfilePage />} />
+
           <Route path="/createClub" element={<CreateClubPage />} />
         </Routes>
       </Router>

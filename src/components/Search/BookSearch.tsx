@@ -9,6 +9,7 @@ export interface Book {
   summary1: string
   summary2: string
   coverUrl?: string
+  translator? : string
 }
 
 export interface Action {
