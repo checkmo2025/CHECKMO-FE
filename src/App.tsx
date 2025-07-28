@@ -4,7 +4,6 @@ import { KEYS } from "./config/key";
 import LoginPage from "./pages/Auth/LoginPage";
 import SignupPage from "./pages/Auth/SignupPage";
 import ProfilePage from "./pages/Auth/ProfilePage";
-import { dummyRecommendList } from "./pages/BookRecommend/DummyRecommendList";
 import BookRecommendPage from "./pages/BookRecommend/BookRecommendPage";
 import BookRecommendDetailPage from "./pages/BookRecommend/BookRecommendDetailPage";
 import BookRecommendCreatePage from "./pages/BookRecommend/BookRecommendCreatePage";
@@ -30,10 +29,9 @@ import ScoreDetailPage from "./pages/BookClub/Shelf/ScoreDetailPage";
 import BookStoryHomePage from "./pages/Main/BookStory/BookStoryHomePage";
 import Layout from "./components/layout/Layout";
 import TestPage from "./pages/test";
+import MeetingListPage from "./pages/Meeting/MeetingListPage";
 
 const App = () => {
-  const dummyList = dummyRecommendList;
-
   return (
     <GoogleOAuthProvider clientId={KEYS.GOOGLE_CLIENT_ID}>
       <Router>
@@ -41,12 +39,12 @@ const App = () => {
           <Route path="/" element={<LoginPage />} />
           <Route path="/signup" element={<SignupPage />} />
           <Route path="/profile" element={<ProfilePage />} />
-          
+
           <Route element={<Layout />}>
             <Route path="/home" element={<HomePage />} />
             <Route path="/booksearch" element={<SearchPage />} />
             <Route path="/searchClub" element={<ClubSearchPage />} />
-            
+
             <Route path="/info/others/:id" element={<OthersProfilePage />} />
 
             <Route path="/createClub" element={<CreateClubPage />} />
@@ -80,7 +78,7 @@ const App = () => {
             <Route index element={<BookClubHomePage />} />
 
             {/* /bookclub/notices → 공지사항 페이지 */}
-            
+
             <Route path=":id" element={<Layout />}>
               <Route path="home" element={<BookClubHomePage />} />
 
@@ -100,10 +98,7 @@ const App = () => {
               />
 
               {/* 책 추천 */}
-              <Route
-                path="recommend"
-                element={<BookRecommendPage bookRecommendList={dummyList} />}
-              />
+              <Route path="recommend" element={<BookRecommendPage />} />
               <Route
                 path="recommend/:recommendId"
                 element={<BookRecommendDetailPage />}
@@ -116,8 +111,14 @@ const App = () => {
                 path="recommend/searchrecommendbook"
                 element={<SearchRecommendBookPage />}
               />
+
+              <Route path="meeting" element={<MeetingListPage />} />
+              <Route
+                path="meeting/:meetingId"
+                element={<BookRecommendDetailPage />}
+              />
             </Route>
-          </Route>  
+          </Route>
 
           <Route path="/createClub" element={<CreateClubPage />} />
         </Routes>

@@ -27,7 +27,7 @@ const BookRecommendCreateCard = ({
         <p className="mt-6 mb-4 text-sm text-gray-500">
           {bookInfo.author}
           {" | "}
-          {bookInfo.pulisher}
+          {bookInfo.publisher}
           {" | "}
           {/* {format(new Date(bookInfo.createdAt), "yyyy.MM.dd")} */}
         </p>

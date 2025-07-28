@@ -13,7 +13,7 @@ export const dummyRecommendList: RecommendListDto = {
           title: "넥서스",
           author: "유발 하라리",
           imgUrl: "https://example.com/covers/nexus.jpg",
-          pulisher: "",
+          publisher: "",
         },
         memberInfo: {
           memberId: 11,
@@ -32,7 +32,7 @@ export const dummyRecommendList: RecommendListDto = {
           title: "데이터 과학 입문",
           author: "박철수",
           imgUrl: "https://example.com/covers/data-science.jpg",
-          pulisher: "",
+          publisher: "",
         },
         memberInfo: {
           memberId: 27,
@@ -51,7 +51,7 @@ export const dummyRecommendList: RecommendListDto = {
           title: "리액트를 다루는 기술",
           author: "홍길동",
           imgUrl: "https://example.com/covers/react-guide.jpg",
-          pulisher: "",
+          publisher: "",
         },
         memberInfo: {
           memberId: 35,
@@ -70,7 +70,7 @@ export const dummyRecommendList: RecommendListDto = {
           title: "SSAFY",
           author: "홍길동123",
           imgUrl: "https://example.com/covers/react-guide.jpg",
-          pulisher: "",
+          publisher: "",
         },
         memberInfo: {
           memberId: 343,
@@ -88,7 +88,7 @@ export const dummyRecommendList: RecommendListDto = {
           title: "SSAFY12",
           author: "홍길동123",
           imgUrl: "https://example.com/covers/react-guide.jpg",
-          pulisher: "",
+          publisher: "",
         },
         memberInfo: {
           memberId: 343,
@@ -106,7 +106,7 @@ export const dummyRecommendList: RecommendListDto = {
           title: "SSAFY14",
           author: "홍길동123",
           imgUrl: "https://example.com/covers/react-guide.jpg",
-          pulisher: "",
+          publisher: "",
         },
         memberInfo: {
           memberId: 343,
