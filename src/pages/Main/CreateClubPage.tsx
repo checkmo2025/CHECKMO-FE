@@ -7,7 +7,6 @@ import { createClub } from '../../apis/clubApi';
 import type { ClubDto } from '../../types/dto';
 import { BOOK_CATEGORIES, PARTICIPANT_TYPES } from '../../types/dto';
 
-
 // 카테고리 옵션 (문자열 배열로 변환)
 const BOOK_CATEGORY_OPTIONS = Object.values(BOOK_CATEGORIES);
 
@@ -28,7 +27,6 @@ const getParticipantKey = (participantName: string): string => {
 
 export default function CreateClubPage(): React.ReactElement {
   const navigate = useNavigate();
-  const [open, setOpen] = useState<boolean | null>(null);
   const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
   const [selectedParticipants, setSelectedParticipants] = useState<string[]>([]);
   const [clubName, setClubName] = useState('');
@@ -37,9 +35,8 @@ export default function CreateClubPage(): React.ReactElement {
   const [activityArea, setActivityArea] = useState('');
   const [sns1Link, setSns1Link] = useState('');
   const [sns2Link, setSns2Link] = useState('');
-  const [instaLink, setInstaLink] = useState('');
-  const [kakaoLink, setKakaoLink] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [visibility, setVisibility] = useState<'공개' | '비공개' | null>(null);
 
   // 클럽 생성 핸들러
   const handleCreateClub = async () => {
@@ -51,7 +48,7 @@ export default function CreateClubPage(): React.ReactElement {
       alert('모임 소개글을 입력해주세요.');
       return;
     }
-    if (open === null) {
+    if (visibility === null) {
       alert('공개/비공개 여부를 선택해주세요.');
       return;
     }
@@ -70,12 +67,12 @@ export default function CreateClubPage(): React.ReactElement {
       const clubData: Omit<ClubDto, 'clubId'> = {
         name: clubName,
         description: clubDescription,
-        open: open,
+        open: visibility === '공개',
         category: selectedCategories.map(getCategoryId),
         participantTypes: selectedParticipants.map(getParticipantKey),
         region: '서울', // 임시로 서울로 설정, 나중에 지역 선택 기능 추가 필요
-        insta: instaLink || undefined,
-        kakao: kakaoLink || undefined,
+        insta: sns1Link || undefined,
+        kakao: sns2Link || undefined,
       };
 
       const response = await createClub(clubData);
@@ -99,7 +96,6 @@ export default function CreateClubPage(): React.ReactElement {
     }
   };
 
-
   return (
     <div className="absolute left-[315px] right-[42px] opacity-100">
       <Header 
@@ -113,7 +109,6 @@ export default function CreateClubPage(): React.ReactElement {
       />
 
       <div className="mt-8 flex flex-col items-center">
-
         {/* 모임 이름 + 중복확인 버튼 */}
         <div className="mt-[36px]">
           <label className="font-pretendard font-medium text-[18px] leading-[135%] tracking-[-0.1%]">
@@ -260,7 +255,7 @@ export default function CreateClubPage(): React.ReactElement {
           </label>
           <div className="mt-[16px] max-w-[400px]">
             <ChipToggleGroup
-              options={BOOK_CATEGORIES}
+              options={BOOK_CATEGORY_OPTIONS}
               selected={selectedCategories}
               onToggle={(cat) => {
                 if (selectedCategories.includes(cat)) {
@@ -273,7 +268,6 @@ export default function CreateClubPage(): React.ReactElement {
           </div>
         </div>
 
-
         {/* 모임 참여 대상 */}
         <div className="mt-[56px]">
           <label className="font-pretendard font-medium text-[18px] leading-[135%] tracking-[-0.1%] px-[6.5px]">
@@ -281,7 +275,7 @@ export default function CreateClubPage(): React.ReactElement {
           </label>
           <div className="mt-[16px] max-w-[400px]">
             <ChipToggleGroup
-              options={PARTICIPANTS}
+              options={PARTICIPANT_TYPE_OPTIONS}
               selected={selectedParticipants}
               onToggle={(pt) => {
                 if (selectedParticipants.includes(pt)) {
@@ -292,24 +286,6 @@ export default function CreateClubPage(): React.ReactElement {
               }}
             />
           </div>
-
-      {/* 독서 카테고리 */}
-      <div className="ml-[394.5px] mt-[56px]">
-        <label className="font-pretendard font-medium text-[18px] leading-[135%] tracking-[-0.1%] px-[6.5px]">
-          선호하는 독서 카테고리를 선택해주세요.
-        </label>
-        <div className="mt-[16px] max-w-[400px]">
-          <ChipToggleGroup
-            options={BOOK_CATEGORY_OPTIONS}
-            selected={selectedCategories}
-            onToggle={(cat) => {
-              if (selectedCategories.includes(cat)) {
-                setSelectedCategories(selectedCategories.filter(c => c !== cat));
-              } else {
-                setSelectedCategories([...selectedCategories, cat]);
-              }
-            }}
-          />
         </div>
 
         {/* 활동 지역 */}
@@ -325,7 +301,6 @@ export default function CreateClubPage(): React.ReactElement {
             />
           </div>
         </div>
-
 
         {/* SNS/카카오톡 링크 연동 (선택) */}
         <div className="mt-[56px]">
@@ -355,12 +330,15 @@ export default function CreateClubPage(): React.ReactElement {
           {/* 등록하기 버튼 */}
           <button
             type="button"
+            onClick={handleCreateClub}
+            disabled={isSubmitting}
             className="
               w-full mt-[12px] py-[12px] bg-[#90D26D] text-white
               rounded-[16px] font-pretendard font-semibold text-[20px]
+              disabled:opacity-50 disabled:cursor-not-allowed
             "
           >
-            등록하기
+            {isSubmitting ? '등록 중...' : '등록하기'}
           </button>
         </div>
         
