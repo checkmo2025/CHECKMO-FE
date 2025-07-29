@@ -137,10 +137,10 @@ const Sidebar = () => {
           path: "/mypage",
           icon: mypageIcon,
           submenus: [
-            { name: "내 모임", path: "/bookclub/my" },
-            { name: "내 책 이야기", path: "/bookstory/my" },
-            { name: "내 알림", path: "/notification" },
-            { name: "내 구독", path: "/subscribe" },
+            { name: "내 모임", path: "/mypage/group" },
+            { name: "내 책 이야기", path: "/mypage/story" },
+            { name: "내 알림", path: "/mypage/notification" },
+            { name: "내 구독", path: "/mypage/subscription" },
           ],
         },
       ];
