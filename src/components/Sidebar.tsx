@@ -73,7 +73,7 @@ const Sidebar = () => {
           submenus: [
             { name: "통합검색", path: "/booksearch" },
             { name: "국내도서", path: "/booksearch1" },   // 미구현 추후 모달로 대체 예정
-            { name: "전자책", path: "/booksearc2" },
+            { name: "전자책", path: "/booksearch2" },
           ],
         },
         {
@@ -109,7 +109,7 @@ const Sidebar = () => {
             { name: "북적북적", path: `/bookclub/1/home` },
             { name: "책을모아", path: `/bookclub/2/home` },
             { name: "슬기로운 독서", path: `/bookclub/3/home` },
-            { name: "모임 검색하기", path: "/searhClub" },
+            { name: "모임 검색하기", path: "/searchClub" },
             { name: "모임 생성하기", path: "/createClub" },
           ],
         },
