@@ -30,6 +30,7 @@ import BookStoryHomePage from "./pages/Main/BookStory/BookStoryHomePage";
 import Layout from "./components/layout/Layout";
 import TestPage from "./pages/test";
 import MeetingListPage from "./pages/Meeting/MeetingListPage";
+import MeetingDetailPage from "./pages/Meeting/MeetingDetailPage";
 
 const App = () => {
   return (
@@ -115,7 +116,7 @@ const App = () => {
               <Route path="meeting" element={<MeetingListPage />} />
               <Route
                 path="meeting/:meetingId"
-                element={<BookRecommendDetailPage />}
+                element={<MeetingDetailPage />}
               />
             </Route>
           </Route>
