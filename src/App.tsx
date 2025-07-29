@@ -28,10 +28,10 @@ import ThemeDetailPage from "./pages/BookClub/Shelf/ThemeDetailPage";
 import ScoreDetailPage from "./pages/BookClub/Shelf/ScoreDetailPage";
 import BookStoryHomePage from "./pages/Main/BookStory/BookStoryHomePage";
 import Layout from "./components/layout/Layout";
-import TestPage from "./pages/test";
 import MeetingListPage from "./pages/Meeting/MeetingListPage";
 import BookStoryDetailPage from "./pages/Main/BookStory/BookStoryDetailPage";
 import BookStoryWritePage from "./pages/Main/BookStory/BookStoryWritePage";
+import MeetingDetailPage from "./pages/BookClub/MeetingNoticeDetailPage";
 
 const App = () => {
   return (
@@ -109,10 +109,7 @@ const App = () => {
               {/* 책 모임 */}
               <Route path="meeting">
                 <Route index element={<MeetingListPage />} />
-                <Route
-                  path=":meetingId"
-                  element={<BookRecommendDetailPage />}
-                />
+                <Route path=":meetingId" element={<MeetingDetailPage />} />
               </Route>
             </Route>
           </Route>
