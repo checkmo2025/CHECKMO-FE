@@ -1,5 +1,6 @@
 // src/components/BookClub/AnnouncementCard.tsx
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import vector from '../../assets/images/vector.png';
 import arrow from '../../assets/images/shortcutArrow.png';
 
@@ -9,6 +10,7 @@ export interface VoteOption {
 }
 
 export interface AnnouncementCardProps {
+  id?: number;
   title: string;
   tag: '모임' | '투표' | '공지';
   
@@ -53,6 +55,7 @@ function AnnouncementCardItem({
   item: AnnouncementCardProps;
 }): React.ReactElement {
   const [selectedVote, setSelectedVote] = useState<string>('');
+  const navigate = useNavigate();
 
   const handleVoteSubmit = () => {
     if (selectedVote && item.onVoteSubmit) {
@@ -60,8 +63,26 @@ function AnnouncementCardItem({
     }
   };
 
+  const handleCardClick = () => {
+    const itemId = item.id || 1;
+    switch (item.tag) {
+      case '모임':
+        navigate(`/notice/meeting/${itemId}`);
+        break;
+      case '투표':
+        navigate(`/notice/vote/${itemId}`);
+        break;
+      case '공지':
+        navigate(`/notice/announcement/${itemId}`);
+        break;
+      default:
+        break;
+    }
+  };
+
   return (
     <div
+      onClick={handleCardClick}
       className="
         relative
         w-[312px] h-[377px]           
@@ -70,7 +91,10 @@ function AnnouncementCardItem({
         border-[#EAE5E2] 
         py-[26px] px-[21.5px]                       
         flex flex-col                       
-        overflow-hidden"
+        overflow-hidden
+        cursor-pointer
+        hover:bg-gray-50
+        transition-colors"
     >
       {/* ── 상단 헤더 ── */}
       <div className="flex justify-between items-center">
@@ -165,7 +189,10 @@ function AnnouncementCardItem({
             <div className="absolute top-[80px] right-[24px]">
               <img src={arrow} alt="icon" className="w-[24px] h-[24px] -mt-2" />
             </div>
-            <div className="w-[269px] h-[207px] mt-[26px] border-[2px] border-[#EAE5E2] rounded-[16px]">
+            <div 
+              onClick={(e) => e.stopPropagation()}
+              className="w-[269px] h-[207px] mt-[26px] border-[2px] border-[#EAE5E2] rounded-[16px]"
+            >
               <form className = "mt-[14.5px]">
                 {item.voteOptions?.map((option) => (
                   <label 
