@@ -1,49 +1,19 @@
-import React, { useState } from "react";
 import MyPageHeader from "../../../../components/MyPageHeader";
-import { Heart, Siren } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
-type MyPageProps = {};
-
-type Story = {
-  id: number;
-  title: string;
-  content: string;
-  liked: boolean;
-  likes: number;
-};
-
-const MyPage = (props: MyPageProps) => {
+const MyPage = () => {
   const navigate = useNavigate();
 
-  const [stories, setStories] = useState<Story[]>(
-    [1, 2, 3].map((id) => ({
-      id,
-      title: "나는 나이든 왕자다",
-      content:
-        "어린 왕자는 비행기 추락으로 사막에 불시착한 조종사가 어린 왕자를 만나 그의 이야기를 들으며 시작됩니다. 어린 왕자는 자신의 고향인 소행성 B-612에서 아름다운 장미와 함께 살다가 세상에 대한 호기심으로 여행을 떠납니다...",
-      liked: false,
-      likes: 12,
-    }))
-  );
-
-  const toggleLike = (id: number) => {
-    setStories((prev) =>
-      prev.map((story) =>
-        story.id === id
-          ? {
-              ...story,
-              liked: !story.liked,
-              likes: story.liked ? story.likes - 1 : story.likes + 1,
-            }
-          : story
-      )
-    );
-  };
-
-  const handleReport = (title: string) => {
-    alert(`'${title}' 글이 신고되었습니다.`);
-  };
+  const groupList = [
+    "북적북적", "짱구야 책읽자", "독서를 하자", "책모", "독서좋아", "북북"
+  ];
+  const followingList = Array.from({ length: 10 }, (_, i) => `팔로잉-${10 - i}`);
+  const followerList = Array.from({ length: 10 }, (_, i) => `팔로워-${10 - i}`);
+  const notificationList = Array.from({ length: 10 }, (_, i) => ({
+    id: i,
+    message: `사용자${10 - i}님이 팔로우했습니다.`,
+    date: `2025-07-${29 - i} 12:${(i + 1).toString().padStart(2, "0")}`
+  }));
 
   return (
     <div className="flex w-full min-h-screen bg-[#FAFAFA]">
@@ -91,7 +61,7 @@ const MyPage = (props: MyPageProps) => {
               </div>
               <div className="bg-white rounded-xl border border-[#EAE5E2] p-5 shadow-sm min-h-[424px]">
                 <ul className="divide-y divide-[#EAE5E2]">
-                  {["북적북적", "꽁꽁아 책읽자", "독서를 하자"].map((name, idx) => (
+                  {groupList.slice(0, 5).map((name, idx) => (
                     <li key={idx} className="py-3">
                       <p className="text-[#2C2C2C] text-[15px]">{name}</p>
                       <p className="text-[13px] text-[#8D8D8D] mt-1">새 공지 1건</p>
@@ -114,20 +84,22 @@ const MyPage = (props: MyPageProps) => {
               </div>
               <div className="bg-white rounded-xl border border-[#EAE5E2] p-5 shadow-sm min-h-[424px]">
                 <div className="grid grid-cols-2 gap-3">
-                  {["팔로잉", "팔로워"].map((label) => (
-                    <div key={label}>
-                      <p className="text-[#90D26D] text-[13px] mb-2">{label}</p>
-                      {[1, 2, 3, 4, 5].map((idx) => (
-                        <div
-                          key={`${label}-${idx}`}
-                          className="bg-[#F4F2F1] rounded-lg px-3 py-2 mb-2 flex items-center gap-2"
-                        >
-                          <div className="w-6 h-6 rounded-full bg-[#DADADA]"></div>
-                          <p className="text-[#2C2C2C] text-[14px] flex-1 text-center">닉네임</p>
-                        </div>
-                      ))}
-                    </div>
-                  ))}
+                  {[{ label: "팔로잉", list: followingList }, { label: "팔로워", list: followerList }].map(
+                    ({ label, list }) => (
+                      <div key={label}>
+                        <p className="text-[#90D26D] text-[13px] mb-3">{label}</p>
+                        {list.slice(0, 5).map((nickname, idx) => (
+                          <div
+                            key={`${label}-${idx}`}
+                            className="bg-[#F4F2F1] rounded-lg px-3 py-3 mb-3 flex items-center gap-2"
+                          >
+                            <div className="w-6 h-6 rounded-full bg-[#DADADA]"></div>
+                            <p className="text-[#2C2C2C] text-[14px] flex-1 text-center">{nickname}</p>
+                          </div>
+                        ))}
+                      </div>
+                    )
+                  )}
                 </div>
               </div>
             </div>
@@ -145,73 +117,17 @@ const MyPage = (props: MyPageProps) => {
               </div>
               <div className="bg-white rounded-xl border border-[#EAE5E2] p-5 shadow-sm min-h-[424px]">
                 <ul className="divide-y divide-[#EAE5E2]">
-                  {[1, 2, 3, 4, 5].map((idx) => (
-                    <li key={idx} className="flex justify-between items-center py-3">
+                  {notificationList.slice(0, 5).map((item) => (
+                    <li key={item.id} className="flex justify-between items-center py-3">
                       <div>
-                        <p className="text-[#2C2C2C] text-[14px]">
-                          이현서님이 팔로우했습니다.
-                        </p>
-                        <p className="text-[12px] text-[#8D8D8D] mt-1">2025-05-21 13:05</p>
+                        <p className="text-[#2C2C2C] text-[14px]">{item.message}</p>
+                        <p className="text-[12px] text-[#8D8D8D] mt-1">{item.date}</p>
                       </div>
                       <div className="w-3 h-3 rounded-full bg-[#90D26D]"></div>
                     </li>
                   ))}
                 </ul>
               </div>
-            </div>
-          </section>
-
-          {/* 내 책 이야기 */}
-          <section>
-            <div className="flex justify-between items-center mb-4">
-              <h2 className="text-xl font-bold text-[#2C2C2C]">내 책 이야기</h2>
-              <button
-                onClick={() => navigate("/mypage/story")}
-                className="text-sm text-[#8D8D8D] hover:underline"
-              >
-                전체보기
-              </button>
-            </div>
-            <div className="space-y-4">
-              {stories.map((story) => (
-                <div
-                  key={story.id}
-                  className="flex gap-4 bg-white rounded-xl border border-[#EAE5E2] px-5 py-4 shadow-sm"
-                >
-                  <div className="w-32 h-40 rounded-md bg-gray-200 flex-shrink-0"></div>
-
-                  <div className="flex-1 ml-4 relative">
-                    <div className="flex items-center gap-2 mb-2">
-                      <div className="w-7 h-7 rounded-full bg-gray-300"></div>
-                      <p className="text-[#2C2C2C] text-[14px]">hy</p>
-                    </div>
-                    <p className="text-[#2C2C2C] text-[16px] font-semibold mb-1">
-                      {story.title}
-                    </p>
-                    <p className="text-[#2C2C2C] text-[14px] overflow-hidden text-ellipsis line-clamp-3">
-                      {story.content}
-                    </p>
-
-                    <div className="flex justify-end gap-5 mt-4">
-                      <button
-                        onClick={() => toggleLike(story.id)}
-                        className={`flex items-center gap-1 text-sm ${
-                          story.liked ? "text-[#90D26D]" : "text-[#2C2C2C]"
-                        }`}
-                      >
-                        <Heart size={20} />
-                        <span>{story.likes}</span>
-                      </button>
-                      <button
-                        onClick={() => handleReport(story.title)}
-                        className="flex items-center gap-1 text-[#2C2C2C] hover:text-[#90D26D] text-sm"
-                      >
-                        <Siren size={20} />
-                      </button>
-                    </div>
-                  </div>
-                </div>
-              ))}
             </div>
           </section>
         </div>
