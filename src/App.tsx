@@ -17,6 +17,7 @@ import MyProfilePage from "./pages/Main/Info/My/MyProfilePage";
 import OthersProfilePage from "./pages/Main/Info/OthersProfilePage";
 import BookClubHomePage from "./pages/BookClub/BookClubHomePage"; // 북클럽 홈
 import NoticePage from "./pages/BookClub/NoticePage"; // 북클럽 공지사항
+import NoticeDetailPage from "./pages/BookClub/NoticeDetailPage"; // 공지사항 상세 (통합)
 import ClubSearchPage from "./pages/Main/ClubSearchPage"; // 북클럽 검색
 import CreateClubPage from "./pages/Main/CreateClubPage";
 import BookStorySearchPage from "./pages/Main/BookStory/BookStorySearchPage";
@@ -32,6 +33,7 @@ import TestPage from "./pages/test";
 import MeetingListPage from "./pages/Meeting/MeetingListPage";
 import BookStoryDetailPage from "./pages/Main/BookStory/BookStoryDetailPage";
 import BookStoryWritePage from "./pages/Main/BookStory/BookStoryWritePage";
+
 
 const App = () => {
   return (
@@ -76,6 +78,7 @@ const App = () => {
             <Route path=":bookclubId" element={<Layout />}>
               <Route path="home" element={<BookClubHomePage />} />
               <Route path="notices" element={<NoticePage />} /> 
+              <Route path="notices/:noticeId" element={<NoticeDetailPage />} />
 
               {/* 책장 */}
               <Route path= "shelf">

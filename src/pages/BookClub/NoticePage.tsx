@@ -5,6 +5,7 @@ import checkerImage from "../../assets/images/checker.png";
 import Header from '../../components/Header';
 
 export default function HomePage(): React.ReactElement {
+  console.log('NoticePage rendering...');
   // 공지사항 더미 데이터
   const dummyAnnouncements: AnnouncementProps[] = [
     {

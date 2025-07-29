@@ -43,10 +43,12 @@ function AnnouncementCardItem({
         navigate(`/bookclub/${bookclubId}/notices/${meetingId}`);
         break;
       case '투표':
-        navigate(`/notice/vote/${itemId}`);
+        const voteId = itemId;
+        navigate(`/bookclub/${bookclubId}/notices/${voteId}`);
         break;
       case '공지':
-        navigate(`/notice/announcement/${itemId}`);
+        const generalId = itemId;
+        navigate(`/bookclub/${bookclubId}/notices/${generalId}`);
         break;
       default:
         break;
