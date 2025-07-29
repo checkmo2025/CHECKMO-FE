@@ -31,7 +31,7 @@ import Layout from "./components/layout/Layout";
 import MeetingListPage from "./pages/Meeting/MeetingListPage";
 import BookStoryDetailPage from "./pages/Main/BookStory/BookStoryDetailPage";
 import BookStoryWritePage from "./pages/Main/BookStory/BookStoryWritePage";
-import MeetingDetailPage from "./pages/BookClub/MeetingNoticeDetailPage";
+import MeetingDetailPage from "./pages/Meeting/MeetingDetailPage";
 
 const App = () => {
   return (
