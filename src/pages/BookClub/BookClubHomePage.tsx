@@ -4,8 +4,13 @@ import { NotificationItem, type NotificationItemProps } from '../../components/B
 import BookStoryCard, { type BookStoryCardProps } from '../../components/BookClub/BookStoryCard';
 import checkerImage from '../../assets/images/checker.png';
 import userImage from '../../assets/images/userImage.png';
+import { useParams } from 'react-router-dom';
+interface Params {
+  bookclubId: string;
+}
 
 export default function HomePage(): React.ReactElement {
+  const { bookclubId } = useParams<Params>();
   // ── 1) 공지사항 더미 데이터 ──
   const dummyAnnouncements: AnnouncementCardProps[] = [
     {
@@ -69,8 +74,8 @@ export default function HomePage(): React.ReactElement {
         {/* ── 공지사항 섹션 ── */}
         <section className="w-[684px]">
           <div className="flex justify-between items-center mb-4">
-            <h2 className="text-[18px] font-semibold">공지사항</h2>
-            <Link to="/bookclub/notices" className="text-[14px] text-[#969696] mr-11 hover:underline">
+            <h2 className="text-[18px] font-semibold">공지사항</h2>  
+            <Link to={`/bookclub/${bookclubId}/notices`} className="text-[14px] text-[#969696] mr-11 hover:underline">
               + 더보기
             </Link>
           </div>
@@ -81,7 +86,7 @@ export default function HomePage(): React.ReactElement {
         <aside className="w-[360px]">
           <div className="flex justify-between items-center mb-4">
             <h2 className="text-[18px] font-semibold">알림</h2>
-            <Link to="/bookclub/notifications" className="text-[14px] text-[#8D8D8D] mr-3 hover:underline">
+            <Link to = {`/bookclub/${bookclubId}/notifications`} className="text-[14px] text-[#8D8D8D] mr-3 hover:underline">
               + 더보기
             </Link>
           </div>
@@ -98,7 +103,7 @@ export default function HomePage(): React.ReactElement {
       <section className="w-[1083px] h-[376px] mt-[36px]">
         <div className="flex justify-between items-center mb-[20px]">
           <h2 className="text-[18px] font-semibold">책 이야기</h2>
-          <Link to="/bookclub/notifications" className="text-[14px] text-[#8D8D8D] mr-3 hover:underline">
+          <Link to={`/bookclub/${bookclubId}/notifications`} className="text-[14px] text-[#8D8D8D] mr-3 hover:underline">
               + 더보기
           </Link>
         </div>
