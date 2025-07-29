@@ -1,38 +1,23 @@
 import React from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { BOOK_CATEGORIES } from '../../types/dto';
+import type { AnnouncementProps } from '../../types/announcement';
 import checkerImage from "../../assets/images/checker.png";
 import backIcon from "../../assets/icons/backIcon.png";
 import calenderIcon from "../../assets/icons/calenderIcon.png";
 import mapIcon from "../../assets/icons/mapIcon.png";
-
-interface MeetingDetailProps {
-  id?: number;
-  title?: string;
-  clubName?: string;
-  meetingDate?: string;
-  meetingPlace?: string;
-  book?: string;
-  bookAuthor?: string;
-  bookPublisher?: string;
-  imageUrl?: string;
-  description?: string;
-  bookDescription?: string;
-  generation?: number; // 기수
-  categories?: number[]; // 카테고리 ID 배열
-}
 
 // 카테고리 ID를 이름으로 변환하는 함수
 const getCategoryName = (categoryId: number): string => {
   return BOOK_CATEGORIES[categoryId as keyof typeof BOOK_CATEGORIES] || '기타';
 };
 
-export default function MeetingDetailPage(): React.ReactElement {
+export default function MeetingNoticeDetailPage(): React.ReactElement {
   const navigate = useNavigate();
   const { meetingId } = useParams<{ meetingId: string }>();
   
   // 더미 데이터 목록 (나중에 API로 받아올 예정)
-  const dummyMeetingData: { [key: string]: MeetingDetailProps } = {
+  const dummyMeetingData: { [key: string]: AnnouncementProps } = {
     '1': {
       id: 1,
       title: '북적북적',
@@ -130,7 +115,7 @@ export default function MeetingDetailPage(): React.ReactElement {
               )}
               
               {/* 독서 카테고리 태그 */}
-              {meetingData.categories?.map((categoryId) => (
+              {meetingData.categories?.map((categoryId: number) => (
                 <span 
                   key={categoryId}
                   className="inline-flex items-center justify-center min-w-[54px] px-[16.5px] h-[24px] bg-[#90D26D] text-white rounded-[15px] font-pretendard font-medium text-[12px] leading-[145%] tracking-[-0.1%]"
