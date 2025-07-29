@@ -2,7 +2,7 @@
 import React, { useEffect } from "react";
 import ReactDOM from "react-dom";
 import type { Book } from "../../components/Search/BookSearch";
-
+import { useNavigate } from "react-router-dom";
 interface Props {
   isOpen: boolean;
   onClose: () => void;
@@ -10,6 +10,7 @@ interface Props {
 }
 
 export default function SearchedBookModal({ isOpen, onClose, book }: Props) {
+  const navigate = useNavigate();
   if (!isOpen) return null;
 
   return ReactDOM.createPortal(
@@ -72,8 +73,8 @@ export default function SearchedBookModal({ isOpen, onClose, book }: Props) {
               <button
                 className="rounded-lg px-4 py-2 bg-[var(--button-brown,#A6917E)] text-white hover:brightness-90"
                 onClick={() => {
-                  // 예: 책 이야기 페이지로 이동
-                  // navigate(`/bookstory/${book.id}`);
+
+                  navigate(`/bookstory/${book.id}/write`);
                   onClose();
                 }}
               >
