@@ -39,7 +39,7 @@ export default function MeetingNoticeContent({ data }: MeetingNoticeContentProps
           {/* 책 정보 */}
           <div className="mb-[20px]">
             <p className="font-pretendard font-normal text-[14px] leading-[145%] tracking-[-0.1%] text-[#8D8D8D]">
-              {data.bookAuthor} 지음 | 출판 {data.bookPublisher}
+              {data.bookAuthor} 지음
             </p>
           </div>
 
