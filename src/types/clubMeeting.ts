@@ -35,7 +35,7 @@ export interface TopicPreviewDto extends TopicDto {
   selectedTeams: number[]; // 해당 발제를 선택한 조들 (1:A조, 2:B조, 3:C조)
 }
 
-export interface TeamDto {
+export interface TeamTopicDto {
   teamNumber: number; // 1=A조, 2=B조 …
   topics: TopicDto[];
 }
@@ -52,7 +52,7 @@ export interface MeetingDto {
 
 export interface MeetingDetailResultDto extends MeetingDto {
   topicPreview: TopicPreviewDto[];
-  teams: TeamDto[];
+  teams: TeamTopicDto[];
 }
 
 export type MeetingDetailResponse = ApiResponse<MeetingDetailResultDto>;

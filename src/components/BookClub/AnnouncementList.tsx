@@ -1,5 +1,6 @@
 // src/components/BookClub/AnnouncementList.tsx
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import checkerImage from '../../assets/images/checker.png';
 import vector from '../../assets/images/vector.png';
 
@@ -29,15 +30,38 @@ export default function AnnouncementList({
 }: {
   items: AnnouncementListItemProps[];
 }): React.ReactElement {
+  const navigate = useNavigate();
+
+  const handleItemClick = (item: AnnouncementListItemProps) => {
+    const itemId = item.id;
+    switch (item.tag) {
+      case '모임':
+        navigate(`/notice/meeting/${itemId}`);
+        break;
+      case '투표':
+        navigate(`/notice/vote/${itemId}`);
+        break;
+      case '공지':
+        navigate(`/notice/announcement/${itemId}`);
+        break;
+      default:
+        break;
+    }
+  };
+
   return (
     <div className="space-y-[12px]">
       {items.map(item => (
         <div
           key={item.id}
+          onClick={() => handleItemClick(item)}
           className="
             w-[1083px] h-[204px]
             relative flex items-start
             bg-white border-[2px] border-[#EAE5E2] rounded-[16px]
+            cursor-pointer
+            hover:bg-gray-50
+            transition-colors
           "
         >
           {/* 왼쪽: 모임 이미지 */}
@@ -121,6 +145,10 @@ export default function AnnouncementList({
 
           {/* 상세보기 버튼 */}
           <button
+            onClick={(e) => {
+              e.stopPropagation();
+              handleItemClick(item);
+            }}
             className="
               absolute bottom-[23px] right-[21.5px]
               w-[105px] h-[35px]
@@ -131,6 +159,8 @@ export default function AnnouncementList({
               text-white
               whitespace-nowrap
               cursor-pointer
+              hover:bg-[#9A8471]
+              transition-colors
             "
           >
             상세보기
