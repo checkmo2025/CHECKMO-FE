@@ -31,6 +31,7 @@ import Layout from "./components/layout/Layout";
 import MeetingListPage from "./pages/Meeting/MeetingListPage";
 import BookStoryDetailPage from "./pages/Main/BookStory/BookStoryDetailPage";
 import BookStoryWritePage from "./pages/Main/BookStory/BookStoryWritePage";
+import GroupManagementPage from "./pages/Manage/GroupManagementPage";
 import MeetingDetailPage from "./pages/Meeting/MeetingDetailPage";
 
 const App = () => {
@@ -47,8 +48,13 @@ const App = () => {
             <Route path="/home" element={<HomePage />} />
             <Route path="/booksearch" element={<SearchPage />} />
             <Route path="/searchClub" element={<ClubSearchPage />} />
-            <Route path="/info/others/:id" element={<OthersProfilePage />} />
+            <Route path="/info/others/:userId" element={<OthersProfilePage />} />
             <Route path="/createClub" element={<CreateClubPage />} />
+
+            {/* 운영진 */}
+            <Route path="manage">
+              <Route path="group" element={<GroupManagementPage />} />
+            </Route>
 
             {/* 마이페이지 */}
             <Route path="mypage">
