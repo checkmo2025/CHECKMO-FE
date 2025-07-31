@@ -2,6 +2,7 @@ import { useState } from "react";
 import type { BookDto } from "../../types/dto";
 import StarSelector from "./StarSelector";
 import Modal from "../Modal";
+import ActionButton from "./ActionButton";
 
 interface BookRecommendCreateCardProps {
   bookInfo: BookDto;
@@ -99,16 +100,9 @@ const BookRecommendCreateCard = ({
           </div>
         </section>
       </div>
-
       <div className="flex justify-end mr-4">
-        <button
-          onClick={openConfirmModal}
-          className="px-7 py-2 bg-[#A6917D] text-white text-xs rounded-2xl hover:bg-amber-600 transition"
-        >
-          등록하기
-        </button>
+        <ActionButton onClick={openConfirmModal} label="등록하기" />
       </div>
-
       <Modal
         isOpen={modalOpen}
         title={modalTitle}
