@@ -18,7 +18,7 @@ export default function SearchPage() {
       label: "책 이야기",
       onClick: (book: Book) => {
         // 책 이야기 페이지로 이동
-        navigate(`/bookstory/${book.id}`);
+        navigate(`/bookstory/${book.id}/write`);
       },
       className: "bg-[var(--button-brown,#A6917E)] text-white",
       iconUrl: "/assets/meteor-icons_pencil.svg", // 연필 아이콘

@@ -7,6 +7,7 @@ export default function HomePage(): React.ReactElement {
   // 공지사항 더미 데이터
   const dummyAnnouncements: AnnouncementCardProps[] = [
     {
+      id: 1,
       title: '북적북적',
       tag: '모임',
       meetingDate: '2025.06.12',  
@@ -14,6 +15,7 @@ export default function HomePage(): React.ReactElement {
       imageUrl: checkerImage,    // 나중에 실제 URL로 교체
     },
     {
+      id: 2,
       title: '5/24 모임 투표',
       tag: '투표',
       meetingDate: '2025.06.12 · 18시',
@@ -30,12 +32,14 @@ export default function HomePage(): React.ReactElement {
       },
     },
     {
+      id: 3,
       title: '북적북적 MT 공지',
       tag: '공지',
       announcementTitle: '북적 북적 엠티가돌아왔다~',
       announcement: '🌲 북적북적 엠티 공지\n 📚 올해도 어김없이 북적이들의 소풍이 돌아왔습니다!\n 책 덮고 자연 속으로, 잠시 감성을 충전하러 떠나요✨\n ✔️ 날짜 / 장소 / 투표: [바로가기]',
     },
     {
+      id: 4,
       title: '북적북적',
       tag: '모임',
       meetingDate: '2025.06.12',  
@@ -43,6 +47,7 @@ export default function HomePage(): React.ReactElement {
       imageUrl: checkerImage,    // 나중에 실제 URL로 교체
     },
     {
+      id: 5,
       title: '5/24 모임 투표',
       tag: '투표',
       meetingDate: '2025.06.12 · 18시',

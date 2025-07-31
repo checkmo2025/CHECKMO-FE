@@ -13,7 +13,7 @@ export default function BookStorySearchPage() {
       label: '선택하기',
       onClick: (book: Book) => {
         // 책 추천페이지로 이동
-        navigate(`/bookstory/${book.id}`)
+        navigate(`/bookstory/${book.id}/write`)
       },
       className: 'bg-[var(--button-brown,#A6917E)] text-white',
     },

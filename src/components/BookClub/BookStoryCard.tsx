@@ -1,14 +1,14 @@
-import React from 'react';
-import checker from '../../assets/images/checker.png';
-import heartIcon from '../../assets/images/heart.png';
-import sirenIcon from '../../assets/images/siren.png';
+import React from "react";
+import checker from "../../assets/images/checker.png";
+import heartIcon from "../../assets/images/heart.png";
+import sirenIcon from "../../assets/images/siren.png";
 
 export interface BookStoryCardProps {
   userImage: string;
   userName: string;
   isSubscribed: boolean;
   title: string;
-  snippet: string;
+  summary: string;
   likes: number;
 }
 
@@ -17,25 +17,22 @@ export default function BookStoryCard({
   userName,
   isSubscribed,
   title,
-  snippet,
+  summary,
   likes,
 }: BookStoryCardProps): React.ReactElement {
   // API에서 받을 이미지 URL 사용 (더미 데이터와 동일한 구조)
-  const avatar = userImage || '/default-avatar.png';
+  const avatar = userImage || "/default-avatar.png";
 
   return (
     <div
       className="
-        w-[528px] h-[332px]
         rounded-[16px]
         border-[2px] border-[#EAE5E2]
         overflow-hidden
       "
     >
       <div className="flex flex-col gap-[10px] p-[28px] h-full">
-        {/* 상단: 표지 + 우측 정보 */}
         <div className="flex gap-[12px] flex-1">
-          {/* 책 표지 */}
           <div className="w-[200px] h-[290px] bg-gray-100 rounded-lg overflow-hidden">
             <img
               src={checker}
@@ -43,10 +40,7 @@ export default function BookStoryCard({
               className="w-full h-full object-cover"
             />
           </div>
-
-          {/* 우측 컨텐츠 */}
           <div className="flex-1 flex flex-col">
-            {/* 프로필 & 구독 버튼 */}
             <div className="flex justify-between items-center">
               <div className="flex items-center gap-[8px]">
                 <img
@@ -75,11 +69,9 @@ export default function BookStoryCard({
                   cursor-pointer    
                 "
               >
-                {isSubscribed ? '구독 중' : '구독하기'}
+                {isSubscribed ? "구독 중" : "구독하기"}
               </span>
             </div>
-
-            {/* 제목 */}
             <h4
               className="
                 mt-[8px]
@@ -89,20 +81,16 @@ export default function BookStoryCard({
             >
               {title}
             </h4>
-
-            {/* 스니펫 */}
-                          <p
-                className="
+            <p
+              className="
                   w-[256px] h-[80px]
                   mt-[4px]
                   font-pretendard font-normal text-[14px]
                   leading-[145%] tracking-[-0.1%] text-[#000000]
                 "
-              >
-              {snippet}
+            >
+              {summary}
             </p>
-
-            {/* 하단 아이콘 & 카운트 */}
             <div className="mt-auto flex items-center justify-end gap-[8px]">
               <img
                 src={heartIcon}

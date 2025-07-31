@@ -1,9 +1,7 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import MyPageHeader from "../../../../components/MyPageHeader";
 import { useNavigate } from "react-router-dom";
 import AlertModal from "../../../../components/AlertModal";
-
-type MyGroupPageProps = {};
 
 type Group = {
   id: number;
@@ -12,17 +10,25 @@ type Group = {
   profileImage?: string;
 };
 
-const MyGroupPage = (props: MyGroupPageProps) => {
+const MyGroupPage = () => {
   const [groups, setGroups] = useState<Group[]>([]);
   const [page, setPage] = useState(1);
   const [hasMore, setHasMore] = useState(true);
-  const navigate = useNavigate();
+  const [isFetching, setIsFetching] = useState(false);
   const [showModal, setShowModal] = useState(false);
   const [selectedGroupId, setSelectedGroupId] = useState<number | null>(null);
+  const navigate = useNavigate();
 
-  const fetchGroups = (pageNumber: number) => {
+  const observerRef = useRef<IntersectionObserver | null>(null);
+
+  const fetchGroups = async () => {
+    if (isFetching || !hasMore) return;
+    setIsFetching(true);
+
+    await new Promise((resolve) => setTimeout(resolve, 500)); 
+
     const newGroups: Group[] = Array.from({ length: 3 }, (_, idx) => ({
-      id: (pageNumber - 1) * 3 + idx + 1,
+      id: (page - 1) * 3 + idx + 1,
       name: ["모임 명", "짱구야 책읽자", "독서를 하자"][idx % 3],
       description: [
         "지치지 말아요~",
@@ -32,27 +38,32 @@ const MyGroupPage = (props: MyGroupPageProps) => {
       profileImage: "",
     }));
 
-    setGroups(prev => [...prev, ...newGroups]);
+    setGroups((prev) => [...prev, ...newGroups]);
+    setPage((prev) => prev + 1);
 
-    if (pageNumber >= 2) setHasMore(false);
+    if (page >= 2) setHasMore(false); //무한스크롤 페이지 조정
+    setIsFetching(false);
   };
 
   useEffect(() => {
-    fetchGroups(page);
-  }, [page]);
+    fetchGroups();
+  }, []);
 
-  useEffect(() => {
-    const handleScroll = () => {
-      if (
-        window.innerHeight + window.scrollY >= document.body.offsetHeight - 100 &&
-        hasMore
-      ) {
-        setPage(prev => prev + 1);
-      }
-    };
-    window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, [hasMore]);
+  const lastElementRef = useCallback(
+    (node: HTMLDivElement | null) => {
+      if (isFetching) return;
+      if (observerRef.current) observerRef.current.disconnect();
+
+      observerRef.current = new IntersectionObserver((entries) => {
+        if (entries[0].isIntersecting && hasMore) {
+          fetchGroups();
+        }
+      });
+
+      if (node) observerRef.current.observe(node);
+    },
+    [isFetching, hasMore]
+  );
 
   const handleGroupClick = (id: number) => {
     navigate(`/group/${id}`);
@@ -60,7 +71,7 @@ const MyGroupPage = (props: MyGroupPageProps) => {
 
   const confirmLeaveGroup = () => {
     if (selectedGroupId !== null) {
-      setGroups(prev => prev.filter(group => group.id !== selectedGroupId));
+      setGroups((prev) => prev.filter((group) => group.id !== selectedGroupId));
       setSelectedGroupId(null);
     }
     setShowModal(false);
@@ -68,14 +79,14 @@ const MyGroupPage = (props: MyGroupPageProps) => {
 
   return (
     <div className="flex w-full min-h-screen bg-[#FAFAFA]">
-      {/* 메인 영역 */}
       <main className="flex-1">
         <MyPageHeader title="내 모임" />
 
         <div className="px-4 md:px-10 py-8 space-y-4 flex flex-col items-center">
-          {groups.map((group) => (
+          {groups.map((group, idx) => (
             <div
               key={group.id}
+              ref={idx === groups.length - 1 ? lastElementRef : null}
               className="w-full flex flex-col md:flex-row justify-between bg-white border border-[#EAE5E2] rounded-[16px] px-4 md:px-6 py-4 shadow-sm cursor-pointer hover:bg-[#FAFAFA]"
               onClick={() => handleGroupClick(group.id)}
             >
@@ -119,13 +130,18 @@ const MyGroupPage = (props: MyGroupPageProps) => {
             </div>
           ))}
 
-          {!hasMore && (
-            <p className="text-center text-gray-400 mt-6">더 이상 모임이 없습니다.</p>
+          {isFetching && (
+            <p className="text-center text-gray-400">불러오는 중...</p>
+          )}
+
+          {!hasMore && !isFetching && (
+            <p className="text-center text-gray-400 mt-6">
+              더 이상 모임이 없습니다.
+            </p>
           )}
         </div>
       </main>
 
-      {/* 탈퇴 확인 모달 */}
       {showModal && (
         <AlertModal
           message="정말 탈퇴 하시겠습니까?"
