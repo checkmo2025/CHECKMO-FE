@@ -21,7 +21,6 @@ import ClubSearchPage from "./pages/Main/ClubSearchPage"; // 북클럽 검색
 import CreateClubPage from "./pages/Main/CreateClubPage";
 import BookStorySearchPage from "./pages/Main/BookStory/BookStorySearchPage";
 import SearchPage from "./pages/Main/SearchPage";
-import SearchRecommendBookPage from "./pages/BookRecommend/SearchRecommendBookPage";
 import ShelfHomePage from "./pages/BookClub/Shelf/ShelfHomePage";
 import ShelfDetailPage from "./pages/BookClub/Shelf/ShelfDetailPage";
 import ThemeDetailPage from "./pages/BookClub/Shelf/ThemeDetailPage";
@@ -32,6 +31,7 @@ import MeetingListPage from "./pages/Meeting/MeetingListPage";
 import BookStoryDetailPage from "./pages/Main/BookStory/BookStoryDetailPage";
 import BookStoryWritePage from "./pages/Main/BookStory/BookStoryWritePage";
 import MeetingDetailPage from "./pages/Meeting/MeetingDetailPage";
+import BookRecommendSearchPage from "./pages/BookRecommend/BookRecommendSearchPage";
 
 const App = () => {
   return (
@@ -100,10 +100,7 @@ const App = () => {
                   path="create/:bookId"
                   element={<BookRecommendCreatePage />}
                 />
-                <Route
-                  path="searchrecommendbook"
-                  element={<SearchRecommendBookPage />}
-                />
+                <Route path="search" element={<BookRecommendSearchPage />} />
               </Route>
 
               {/* 책 모임 */}
