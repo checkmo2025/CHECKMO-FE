@@ -1,4 +1,5 @@
 import React from "react";
+import checker from "../../assets/images/checker.png";
 import likeIcon from "../../assets/icons/likes.png";
 import reportIcon from "../../assets/icons/report.png";
 
@@ -14,57 +15,63 @@ const BookStoriesCard = ({
   story,
   state,
   likes,
-}: BookStoriesCardProps) => {
+}: BookStoriesCardProps): React.ReactElement => {
   return (
-    <div className="flex flex-col w-[33rem] h-[20.75rem] px-[1.3125rem] py-[1.1875rem] justify-center items-center gap-[0.625rem] rounded-[0.9375rem] border-2 border-[#EAE5E2] bg-white">
-      {/* 내부 콘텐츠 영역 (이미지 + 텍스트) */}
-      <div className="flex items-center gap-[1.25rem] self-stretch">
-        {/* 왼쪽 이미지 */}
-        <img
-          className="w-[12.5rem] h-[18.125rem] object-cover rounded-[0.5rem]"
-          src="https://placehold.co/200x290"
-          alt="책 이미지"
-        />
-
-        {/* 오른쪽 텍스트 영역 */}
-        <div className="flex w-[16rem] flex-col justify-center items-end gap-[4.875rem]">
-          {/* 상단: 프로필 + 구독 + 제목 + 내용 */}
-          <div className="flex flex-col justify-end items-end gap-[0.75rem] self-stretch">
-            {/* 프로필 + 구독 */}
-            <div className="flex justify-between items-center self-stretch">
-              <div className="flex items-center gap-2">
-                <div className="w-6 h-6 bg-gray-300 rounded-full" />
-                <div className="text-gray-700 text-sm font-normal font-pretendard leading-tight">
-                  hy
-                </div>
-              </div>
-              <div className="flex w-auto h-[1.5rem] px-5 py-[0.125rem] justify-center items-center gap-[0.625rem] bg-[#A6917D] rounded-[0.9375rem]">
-                <div className="text-white text-xs font-semibold font-pretendard leading-none whitespace-nowrap">
-                  {state}
-                </div>
-              </div>
-            </div>
-
-            {/* 제목 + 내용 */}
-            <div className="flex flex-col items-start gap-[0.875rem] self-stretch">
-              <div className="text-gray-800 text-xl font-semibold font-pretendard leading-7">
-                {title}
-              </div>
-              <div className="text-gray-700 text-sm font-normal font-pretendard leading-tight self-stretch">
-                {story}
-              </div>
-            </div>
+    <div className="rounded-[16px] border-[2px] border-[#EAE5E2] overflow-hidden">
+      <div className="flex flex-col gap-[10px] p-[28px] h-full">
+        <div className="flex gap-[20px] flex-1">
+          {/* 왼쪽 이미지 */}
+          <div className="w-[200px] h-[290px] object-cover bg-gray-100 rounded-lg overflow-hidden">
+            <img
+              src={checker}
+              alt="book cover"
+              className="w-full h-full object-cover"
+            />
           </div>
 
-          {/* 하단: 좋아요 / 신고 */}
-          <div className="flex w-[7.5rem] justify-end items-end gap-[0.6875rem]">
-            <div className="flex items-center gap-[0.125rem]">
-              <img src={likeIcon} alt="좋아요" className="w-5 h-5" />
-              <div className="text-gray-700 text-xs font-medium font-pretendard leading-none">
-                {likes}
+          {/* 오른쪽 텍스트 영역 */}
+          <div className="flex-1 flex flex-col justify-between">
+            {/* 상단: 프로필 + 구독 상태 */}
+            <div className="flex justify-between items-center">
+              <div className="flex items-center gap-[8px]">
+                <div className="w-[24px] h-[24px] bg-gray-300 rounded-full" />
+                <span className="font-pretendard font-normal text-[12px] leading-[145%] text-[#000000]">
+                  hy
+                </span>
               </div>
+              <span className="w-[60px] h-[24px] font-pretendard font-medium text-[12px] leading-[145%] text-white bg-[#A6917D] rounded-[15px] px-[20px] py-[2px] flex items-center justify-center whitespace-nowrap cursor-pointer">
+                {state}
+              </span>
             </div>
-            <img src={reportIcon} alt="신고" className="w-5 h-5" />
+
+            {/* 제목 + 요약 */}
+            <div className="mt-[12px] flex flex-col gap-[14px]">
+              <h4 className="font-pretendard font-semibold text-[20px] leading-[135%] text-[#000000]">
+                {title}
+              </h4>
+              <p className="min-w-[10rem] font-pretendard font-normal text-[14px] leading-[145%] text-[#000000] break-words">
+                {story}
+              </p>
+            </div>
+
+            {/* 하단: 좋아요 + 신고 */}
+            <div className="mt-auto flex items-center justify-end gap-[11px]">
+              <div className="flex items-center gap-[2px]">
+                <img
+                  src={likeIcon}
+                  alt="like"
+                  className="w-[20px] h-[20px] cursor-pointer"
+                />
+                <span className="font-pretendard font-medium text-[12px] text-[#000000]">
+                  {likes}
+                </span>
+              </div>
+              <img
+                src={reportIcon}
+                alt="alert"
+                className="w-[20px] h-[20px] cursor-pointer"
+              />
+            </div>
           </div>
         </div>
       </div>
