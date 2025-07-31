@@ -1,8 +1,10 @@
 import type { ClubGenerationDto } from "../../types/clubMeeting";
 import { DummyMeetingList } from "./DummyMeetingList";
 import { MeetingCard } from "../../components/Meeting/MeetingCard";
+import { Link, useParams } from "react-router-dom";
 
 const MeetingListPage = () => {
+  const { bookclubId } = useParams();
   const { generations } = DummyMeetingList.result;
   // 무한 스크롤 커스텀 훅이 들어올 예정
   return (
@@ -15,11 +17,12 @@ const MeetingListPage = () => {
           <h2 className="text-xl font-semibold mb-4">{group.generation}기</h2>
           <div className="space-y-4">
             {group.meetings.map((meeting) => (
-              <MeetingCard
+              <Link
                 key={meeting.meetingId}
-                meeting={meeting}
-                generation={group.generation}
-              />
+                to={`/bookclub/${bookclubId}/meeting/${meeting.meetingId}`}
+              >
+                <MeetingCard meeting={meeting} generation={group.generation} />
+              </Link>
             ))}
           </div>
         </section>

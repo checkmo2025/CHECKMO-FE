@@ -28,10 +28,10 @@ import ThemeDetailPage from "./pages/BookClub/Shelf/ThemeDetailPage";
 import ScoreDetailPage from "./pages/BookClub/Shelf/ScoreDetailPage";
 import BookStoryHomePage from "./pages/Main/BookStory/BookStoryHomePage";
 import Layout from "./components/layout/Layout";
-import TestPage from "./pages/test";
 import MeetingListPage from "./pages/Meeting/MeetingListPage";
 import BookStoryDetailPage from "./pages/Main/BookStory/BookStoryDetailPage";
 import BookStoryWritePage from "./pages/Main/BookStory/BookStoryWritePage";
+import MeetingDetailPage from "./pages/Meeting/MeetingDetailPage";
 
 const App = () => {
   return (
@@ -49,61 +49,70 @@ const App = () => {
             <Route path="/searchClub" element={<ClubSearchPage />} />
             <Route path="/info/others/:id" element={<OthersProfilePage />} />
             <Route path="/createClub" element={<CreateClubPage />} />
-            
 
             {/* 마이페이지 */}
             <Route path="mypage">
-              <Route index element={<MyHomePage />}/>
+              <Route index element={<MyHomePage />} />
               <Route path="group" element={<MyGroupPage />} />
-              <Route path="subscription" element={<MySubscriptionPage />}/>
-              <Route path="notification" element={<MyNotificationPage />}/>
+              <Route path="subscription" element={<MySubscriptionPage />} />
+              <Route path="notification" element={<MyNotificationPage />} />
               <Route path="story" element={<MyStoryPage />} />
-              <Route path="myprofile" element={<MyProfilePage />} />              
-            </Route>
-            
-            {/* 책이야기 */}
-            <Route path="bookstory">
-            <Route index  element={<BookStoryHomePage />}/>
-              <Route path="search" element={<BookStorySearchPage />} />
-              <Route path=":storyId/detail" element={<BookStoryDetailPage />}/>
-              <Route path=":bookId/write" element={<BookStoryWritePage />} />
+              <Route path="myprofile" element={<MyProfilePage />} />
             </Route>
 
+            {/* 책이야기 */}
+            <Route path="bookstory">
+              <Route index element={<BookStoryHomePage />} />
+              <Route path="search" element={<BookStorySearchPage />} />
+              <Route path=":storyId/detail" element={<BookStoryDetailPage />} />
+              <Route path=":bookId/write" element={<BookStoryWritePage />} />
+            </Route>
           </Route>
 
           {/* /bookclub 이하에 북클럽 관련 페이지 묶기 */}
           <Route path="/bookclub">
             <Route path=":bookclubId" element={<Layout />}>
               <Route path="home" element={<BookClubHomePage />} />
-              <Route path="notices" element={<NoticePage />} /> 
+              <Route path="notices" element={<NoticePage />} />
 
               {/* 책장 */}
-              <Route path= "shelf">
+              <Route path="shelf">
                 <Route index element={<ShelfHomePage />} />
-                <Route path = ":shelfBookIndex" element={<ShelfDetailPage />}/>
-                <Route path = ":shelfBookIndex/theme" element={<ThemeDetailPage />}/>
-                <Route path = ":shelfBookIndex/score" element={<ScoreDetailPage />}/>
+                <Route path=":shelfBookIndex" element={<ShelfDetailPage />} />
+                <Route
+                  path=":shelfBookIndex/theme"
+                  element={<ThemeDetailPage />}
+                />
+                <Route
+                  path=":shelfBookIndex/score"
+                  element={<ScoreDetailPage />}
+                />
               </Route>
-              
 
               {/* 책 추천 */}
-              <Route path= "recommend">
+              <Route path="recommend">
                 <Route index element={<BookRecommendPage />} />
-                <Route path=":recommendId" element={<BookRecommendDetailPage />} />
-                <Route path="create/:bookId" element={<BookRecommendCreatePage />} />
-                <Route path="searchrecommendbook" element={<SearchRecommendBookPage />} />
+                <Route
+                  path=":recommendId"
+                  element={<BookRecommendDetailPage />}
+                />
+                <Route
+                  path="create/:bookId"
+                  element={<BookRecommendCreatePage />}
+                />
+                <Route
+                  path="searchrecommendbook"
+                  element={<SearchRecommendBookPage />}
+                />
               </Route>
-              
 
               {/* 책 모임 */}
-              <Route path="meeting" >
-                 <Route index element={<MeetingListPage />} />
-                <Route path=":meetingId" element={<BookRecommendDetailPage />}/>
+              <Route path="meeting">
+                <Route index element={<MeetingListPage />} />
+                <Route path=":meetingId" element={<MeetingDetailPage />} />
               </Route>
-
             </Route>
           </Route>
-
         </Routes>
       </Router>
     </GoogleOAuthProvider>
