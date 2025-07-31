@@ -97,7 +97,7 @@ const App = () => {
                   element={<BookRecommendDetailPage />}
                 />
                 <Route
-                  path="create/:bookId"
+                  path=":bookId/create"
                   element={<BookRecommendCreatePage />}
                 />
                 <Route path="search" element={<BookRecommendSearchPage />} />
