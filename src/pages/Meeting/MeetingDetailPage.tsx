@@ -1,10 +1,11 @@
 import { useMemo, useCallback } from "react";
-import { Link, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import { DummyMeetingDetail } from "./DummyMeetingDetail";
 import type { MeetingDetailResultDto } from "../../types/clubMeeting";
 import { MeetingCard } from "../../components/Meeting/MeetingCard";
 import { TopicPreviewSection } from "../../components/Meeting/TopicPreviewSection";
 import { TeamTopicSection } from "../../components/Meeting/TeamTopicSection";
+import { NonProfileHeader } from "../../components/NonProfileHeader";
 
 const MeetingDetailPage = () => {
   const { bookclubId } = useParams<{ bookclubId: string }>();
@@ -33,13 +34,8 @@ const MeetingDetailPage = () => {
   }, []);
 
   return (
-    <div className="mx-auto p-10 space-y-10">
-      <Link
-        to={`/bookclub/${bookclubId}/meeting`}
-        className="text-gray-600 hover:underline"
-      >
-        &lt; {detail.title}
-      </Link>
+    <div className="mx-auto px-10 space-y-10">
+      <NonProfileHeader title={detail.title} />
 
       <MeetingCard meeting={meetingForCard} generation={detail.generation} />
 
