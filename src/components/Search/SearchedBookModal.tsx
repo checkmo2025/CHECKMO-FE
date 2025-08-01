@@ -1,15 +1,16 @@
 // src/components/SearchedBookModal.tsx
-import React, { useEffect } from "react";
+
 import ReactDOM from "react-dom";
-import type { Book } from "../../components/Search/BookSearch";
+import type { SearchBook } from "../../types/BookSearchdto";  
 import { useNavigate } from "react-router-dom";
 interface Props {
   isOpen: boolean;
   onClose: () => void;
-  book: Book;
+  searchBook: SearchBook;
 }
 
-export default function SearchedBookModal({ isOpen, onClose, book }: Props) {
+
+export default function SearchedBookModal({ isOpen, onClose, searchBook}: Props) {
   const navigate = useNavigate();
   if (!isOpen) return null;
 
@@ -29,10 +30,10 @@ export default function SearchedBookModal({ isOpen, onClose, book }: Props) {
         <div className="absolute inset-[30px] flex">
           {/* 좌측 커버 */}
           <div className="flex-shrink-0 h-[512px] w-[362px] overflow-hidden rounded-md bg-gray-100">
-            {book.coverUrl ? (
+            {searchBook.imgUrl ? (
               <img
-                src={book.coverUrl}
-                alt={`${book.title} cover`}
+                src={searchBook.imgUrl}
+                alt={`${searchBook.title} cover`}
                 className="h-full w-full object-cover"
               />
             ) : (
@@ -50,16 +51,16 @@ export default function SearchedBookModal({ isOpen, onClose, book }: Props) {
             {/* 제목 / 메타 */}
             <div>
               <h2 className="text-[var(--Gray-1)] font-[Pretendard] text-[32px] font-bold leading-[135%] tracking-[-0.032px]">
-                {book.title}
+                {searchBook.title}
               </h2>
               <p className="mt-1 text-sm text-gray-500">
-                유발 하라리 | 김병주 옮김 | 출판 김영사 | 2024.10.11
+                {searchBook.author} | {searchBook.publisher} | 
               </p>
             </div>
 
             {/* 설명 영역 (스크롤 가능) */}
             <div className="mt-9 flex-1 overflow-y-auto text-gray-700 leading-relaxed">
-              {book.summary1 || "설명이 없습니다."}
+              {searchBook.description || "설명이 없습니다."}
             </div>
 
             {/* 액션 버튼 */}
@@ -74,7 +75,7 @@ export default function SearchedBookModal({ isOpen, onClose, book }: Props) {
                 className="rounded-lg px-4 py-2 bg-[var(--button-brown,#A6917E)] text-white hover:brightness-90"
                 onClick={() => {
 
-                  navigate(`/bookstory/${book.id}/write`);
+                  navigate(`/bookstory/${searchBook.isbn}/write`);
                   onClose();
                 }}
               >

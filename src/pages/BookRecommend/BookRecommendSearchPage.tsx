@@ -1,6 +1,7 @@
 import { useNavigate, useParams } from "react-router-dom";
 import { useCallback } from "react";
-import BookSearch, { type Book } from "../../components/Search/BookSearch";
+import BookSearch from "../../components/Search/BookSearch";
+import type { SearchBook } from "../../types/BookSearchdto";
 import Header from "../../components/Header";
 
 const BookRecommendSearchPage = () => {
@@ -8,8 +9,8 @@ const BookRecommendSearchPage = () => {
   const { bookclubId } = useParams<{ bookclubId: string }>();
 
   const handleBookSelect = useCallback(
-    (book: Book) => {
-      navigate(`/bookclub/${bookclubId}/recommend/create/${book.id}`);
+    (book: SearchBook) => {
+      navigate(`/bookclub/${bookclubId}/recommend/${book.isbn}/create`);
     },
     [navigate, bookclubId]
   );
@@ -28,7 +29,7 @@ const BookRecommendSearchPage = () => {
         pageTitle="책 추천하기"
         userProfile={{
           username: "오즈",
-          bio: "re_turnto_oz",
+  https://github.com/checkmo2025/CHECKMO-FE/pull/114/conflict?name=src%252Fpages%252FBookRecommend%252FBookRecommendSearchPage.tsx&base_oid=8578c04372b09e20bb61e57ebb16ecc00f80acf3&head_oid=d2849136e9191f2c0f403c357c27e502c1a2d1ef        bio: "re_turnto_oz",
         }}
         notifications={[]}
         customClassName="mb-10"
@@ -41,3 +42,4 @@ const BookRecommendSearchPage = () => {
 };
 
 export default BookRecommendSearchPage;
+
