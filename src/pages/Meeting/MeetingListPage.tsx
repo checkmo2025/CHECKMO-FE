@@ -2,15 +2,23 @@ import type { ClubGenerationDto } from "../../types/clubMeeting";
 import { DummyMeetingList } from "./DummyMeetingList";
 import { MeetingCard } from "../../components/Meeting/MeetingCard";
 import { Link, useParams } from "react-router-dom";
+import Header from "../../components/Header";
 
 const MeetingListPage = () => {
   const { bookclubId } = useParams();
   const { generations } = DummyMeetingList.result;
   // 무한 스크롤 커스텀 훅이 들어올 예정
   return (
-    <div className="space-y-8 p-6 bg-gray-50 min-h-screen">
-      {/* 추후에 헤더가 들어 갈 자리 */}
-      <h1 className="text-2xl font-bold">모임</h1>
+    <div className="space-y-8 p-6 min-h-screen">
+      <Header
+        pageTitle={"추천 도서 목록"}
+        userProfile={{
+          username: "오즈",
+          bio: "re_turnto_oz",
+        }}
+        notifications={[]}
+        customClassName="mx-3 my-5"
+      />
 
       {generations.map((group: ClubGenerationDto) => (
         <section key={group.generation}>
