@@ -6,7 +6,6 @@ import type { SearchBook, Action } from "../../types/BookSearchdto";
 import Header from "../../components/Header"
 import SearchedBookModal from "../../components/Search/SearchedBookModal"
 
-
 export default function SearchPage() {
   const navigate = useNavigate();
   const [isOpen, setIsOpen] = useState(false);
@@ -34,9 +33,9 @@ export default function SearchPage() {
   ];
 
   return (
-
     <div>
       <div className="flex h-screen ">
+
       <div className="absolute left-[315px] right-[42px] opacity-100 ">
         <Header pageTitle={'통합검색'} userProfile={{
           username: 'Luke',
@@ -52,10 +51,7 @@ export default function SearchPage() {
         </div>
       </div>
       {bookDetail && <SearchedBookModal isOpen={isOpen} onClose={() => setIsOpen(false)} searchBook={bookDetail} /> }
-      
-
       </div>
     </div>
-    
   );
 }

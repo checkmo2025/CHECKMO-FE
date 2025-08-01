@@ -13,7 +13,7 @@ const StarRating = ({ rate }: StarRatingProps) => {
 
   return (
     <div className="flex items-center">
-      <span className="mr-2 text-sm font-semibold text-gray-700">
+      <span className="mr-2 text-lg font-semibold text-gray-700">
         {popularity.toFixed(1)}
       </span>
       <div className="relative inline-block leading-none">
