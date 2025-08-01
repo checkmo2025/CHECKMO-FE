@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { NavLink, useParams, useNavigate } from "react-router-dom";
+import { NavLink, useParams, useNavigate, useLocation } from "react-router-dom";
 
 import homeIcon from "../assets/icons/home.png";
 import bookclubIcon from "../assets/icons/bookclub.png";
@@ -9,6 +9,9 @@ import mypageIcon from "../assets/icons/mypage.png";
 import logoImage from "../assets/logos/mainlogo.png";
 import toggleClose from "../assets/icons/toggleClose.png";
 import toggleOpen from "../assets/icons/toggleOpen.png";
+import bookIcon from "../assets/icons/book.png";
+import bookShelf from "../assets/icons/bookshelf.png";
+import noticeIcon from "../assets/icons/notice.png";
 
 type Submenu = {
   name: string;
@@ -31,31 +34,20 @@ const dummyBookclubs: Record<string, string> = {
 const Sidebar = () => {
   const { bookclubId } = useParams<{ bookclubId?: string }>();
   const navigate = useNavigate();
+  const location = useLocation();
+
   const [bookclubName, setBookclubName] = useState("모임 이름");
   const [openMenus, setOpenMenus] = useState<Set<string>>(new Set());
 
   useEffect(() => {
-    if ( bookclubId && dummyBookclubs[bookclubId]) {
+    if (bookclubId && dummyBookclubs[bookclubId]) {
       setBookclubName(dummyBookclubs[bookclubId]);
     }
   }, [bookclubId]);
 
-  const toggleMenu = (menuName: string) => {
-    setOpenMenus((prev) => {
-      const updated = new Set(prev);
-      if (updated.has(menuName)) {
-        updated.delete(menuName);
-      } else {
-        updated.add(menuName);
-      }
-      return updated;
-    });
-  };
-
   const menus: Menu[] = bookclubId
     ? [
         {
-          
           name: bookclubName,
           path: `/bookclub/${bookclubId}/home`,
           icon: homeIcon,
@@ -64,7 +56,7 @@ const Sidebar = () => {
             { name: "책장", path: `/bookclub/${bookclubId}/shelf` },
             { name: "모임", path: `/bookclub/${bookclubId}/meeting` },
             { name: "책 추천", path: `/bookclub/${bookclubId}/recommend` },
-            { name: "일정", path: `/bookclub/${bookclubId}/schedule` },
+            // { name: "일정", path: `/bookclub/${bookclubId}/schedule` },
           ],
         },
         {
@@ -72,7 +64,7 @@ const Sidebar = () => {
           icon: searchIcon,
           submenus: [
             { name: "통합검색", path: "/booksearch" },
-            { name: "국내도서", path: "/booksearch1" },   // 미구현 추후 모달로 대체 예정
+            { name: "국내도서", path: "/booksearch1" },
             { name: "전자책", path: "/booksearch2" },
           ],
         },
@@ -88,10 +80,10 @@ const Sidebar = () => {
           name: "마이페이지",
           icon: mypageIcon,
           submenus: [
-            { name: "내 모임", path: "/bookclub/my" },
-            { name: "내 책 이야기", path: "/bookstory/my" },
-            { name: "내 알림", path: "/notification" },
-            { name: "내 구독", path: "/subscribe" },
+            { name: "내 모임", path: "/mypage/group" },
+            { name: "내 책 이야기", path: "/mypage/story" },
+            { name: "내 알림", path: "/mypage/notification" },
+            { name: "내 구독", path: "/mypage/subscription" },
           ],
         },
       ]
@@ -119,7 +111,7 @@ const Sidebar = () => {
           icon: searchIcon,
           submenus: [
             { name: "통합검색", path: "/booksearch" },
-            { name: "국내도서", path: "booksearch1" },
+            { name: "국내도서", path: "/booksearch1" },
             { name: "전자책", path: "/booksearch2" },
           ],
         },
@@ -145,11 +137,37 @@ const Sidebar = () => {
         },
       ];
 
+  useEffect(() => {
+    const currentPath = location.pathname;
+
+    const menuToOpen = menus.find(({ name, path, submenus }) => {
+      if (path === currentPath) return true;
+      if (submenus.some((s) => s.path === currentPath)) return true;
+      return false;
+    });
+
+    if (menuToOpen && !openMenus.has(menuToOpen.name)) {
+      setOpenMenus((prev) => new Set(prev).add(menuToOpen.name));
+    }
+  }, [location.pathname, menus, openMenus]);
+
+  const toggleMenu = (menuName: string) => {
+    setOpenMenus((prev) => {
+      const updated = new Set(prev);
+      if (updated.has(menuName)) {
+        updated.delete(menuName);
+      } else {
+        updated.add(menuName);
+      }
+      return updated;
+    });
+  };
+
   const header = bookclubId ? (
     <div className="flex items-center gap-[0.5rem]">
-      <img src={logoImage} alt="logo" className="w-10 h-10 object-contain" />
+      <img src={logoImage} alt="logo" className="w-10 h-auto" />
       <div className="flex flex-col">
-        <span className="text-[2rem] font-blackHanSans text-[#3D4C35]">
+        <span className="text-[2rem] font-bold text-[#3D4C35]">
           {bookclubName}
         </span>
         <button
@@ -175,60 +193,115 @@ const Sidebar = () => {
       {header}
 
       <nav className="flex flex-col w-full space-y-2 mt-6">
-        {menus.map(({ name, path, icon, submenus }) => (
-          <div key={name} className="w-full">
-            <div
-              onClick={() => {
-                if (submenus.length > 0) toggleMenu(name);
-              }}
-            >
-              <NavLink
-                to={path ?? "#"}
-                className={({ isActive }) =>
-                  `flex items-center justify-between py-2 pl-3 pr-4 w-full rounded-r-lg cursor-pointer hover:bg-[#DDEED6] ${
-                    isActive
-                      ? "text-[#3D4C35] font-semibold border-l-4 border-[#90D26D]"
-                      : "text-[#AAA]"
-                  }`
-                }
-              >
-                <div className="flex items-center gap-3">
-                  <img src={icon} alt={`${name} 아이콘`} className="w-5 h-5" />
-                  <span className="text-[18px] font-medium font-pretendard">
-                    {name}
-                  </span>
-                </div>
-                {submenus.length > 0 && (
-                  <img
-                    src={openMenus.has(name) ? toggleClose : toggleOpen}
-                    alt="토글"
-                    className="w-4 h-4"
-                  />
-                )}
-              </NavLink>
-            </div>
+        {menus.map(({ name, path, icon, submenus }) => {
+          const isMenuOpen = openMenus.has(name);
+          const locationPath = location.pathname;
+          const isCurrentSubmenuActive = submenus.some(
+            (sub) => sub.path === locationPath
+          );
 
-            {openMenus.has(name) && submenus.length > 0 && (
-              <div className="ml-8 mt-1 space-y-1">
-                {submenus.map(({ name: subName, path: subPath }) => (
+          const isBookclubMenu = name === "독서 모임";
+
+          const showBorder = isBookclubMenu
+            ? isCurrentSubmenuActive
+            : path === locationPath ||
+              (path && locationPath.startsWith(path + "/"));
+
+          return (
+            <div key={name} className="w-full">
+              <div className="flex items-center justify-between">
+                {isBookclubMenu ? (
+                  <button
+                    onClick={() => toggleMenu(name)}
+                    className={`flex items-center gap-3 py-2 pl-3 pr-4 w-full rounded-r-lg cursor-pointer hover:bg-[#DDEED6] ${
+                      showBorder
+                        ? "text-[#3D4C35] font-semibold border-l-4 border-[#90D26D]"
+                        : "text-[#AAA]"
+                    }`}
+                  >
+                    <img
+                      src={icon}
+                      alt={`${name} 아이콘`}
+                      className="w-5 h-5"
+                    />
+                    <span className="text-[18px] font-medium font-pretendard">
+                      {name}
+                    </span>
+                  </button>
+                ) : (
                   <NavLink
-                    key={subName}
-                    to={subPath}
+                    to={path ?? submenus[0]?.path ?? "#"}
+                    end
                     className={({ isActive }) =>
-                      `block text-sm py-1 pl-2 pr-3 rounded hover:text-[#3D4C35] ${
-                        isActive
-                          ? "text-[#3D4C35] font-semibold"
+                      `flex items-center gap-3 py-2 pl-3 pr-4 w-full rounded-r-lg cursor-pointer hover:bg-[#DDEED6] ${
+                        showBorder
+                          ? "text-[#3D4C35] font-semibold border-l-4 border-[#90D26D]"
                           : "text-[#AAA]"
                       }`
                     }
+                    onClick={() => {
+                      if (!isMenuOpen) toggleMenu(name);
+                    }}
                   >
-                    {subName}
+                    <img
+                      src={icon}
+                      alt={`${name} 아이콘`}
+                      className="w-5 h-5"
+                    />
+                    <span className="text-[18px] font-medium font-pretendard">
+                      {name}
+                    </span>
                   </NavLink>
-                ))}
+                )}
+
+                {submenus.length > 0 && (
+                  <button
+                    onClick={() => toggleMenu(name)}
+                    className="p-1"
+                    aria-label={`${isMenuOpen ? "접기" : "펼치기"}`}
+                  >
+                    <img
+                      src={isMenuOpen ? toggleClose : toggleOpen}
+                      alt="토글"
+                      className="w-4 h-4"
+                    />
+                  </button>
+                )}
               </div>
-            )}
-          </div>
-        ))}
+
+              {isMenuOpen && submenus.length > 0 && (
+                <div className="ml-8 mt-1 space-y-1">
+                  {submenus.map(({ name: subName, path: subPath }) => {
+                    let icon = null;
+
+                    if (subName === "공지사항") icon = noticeIcon;
+                    else if (subName === "책장") icon = bookShelf;
+                    else if (subName === "모임") icon = bookclubIcon;
+                    else if (subName === "책 추천") icon = bookIcon;
+
+                    return (
+                      <NavLink
+                        key={subName}
+                        to={subPath}
+                        end
+                        className={({ isActive }) =>
+                          `flex items-center gap-2 text-sm py-1 pl-2 pr-3 rounded hover:text-[#3D4C35] ${
+                            isActive
+                              ? "text-[#3D4C35] font-semibold"
+                              : "text-[#AAA]"
+                          }`
+                        }
+                      >
+                        {icon && <img src={icon} alt="" className="w-5 h-5" />}
+                        {subName}
+                      </NavLink>
+                    );
+                  })}
+                </div>
+              )}
+            </div>
+          );
+        })}
       </nav>
     </div>
   );
