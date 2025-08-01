@@ -33,7 +33,6 @@ export default function SearchPage() {
   ];
 
   return (
-
     <div>
       <div className="flex h-screen ">
       <div className="absolute left-[315px] right-[42px] opacity-100 ">
@@ -51,10 +50,7 @@ export default function SearchPage() {
         </div>
       </div>
       {bookDetail && <SearchedBookModal isOpen={isOpen} onClose={() => setIsOpen(false)} searchBook={bookDetail} /> }
-      
-
       </div>
     </div>
-    
   );
 }
