@@ -14,7 +14,7 @@ export const MeetingCard = ({ generation, meeting }: MeetingCardProps) => {
   const dateStr = format(date, "yyyy.MM.dd");
   const timeStr = format(date, "a h시", { locale: ko });
   return (
-    <div className="flex border-2 border-[#EAE5E2] min-w-[500px] rounded-xl p-4 bg-white">
+    <div className="flex border-2 border-[#EAE5E2] min-w-[500px] rounded-xl p-4 bg-white mb-3">
       {/* 왼쪽 이미지 */}
       <div className="w-32 h-40 flex-shrink-0 rounded-lg overflow-hidden bg-gray-100">
         <img
