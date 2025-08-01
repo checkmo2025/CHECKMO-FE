@@ -1,6 +1,7 @@
 import { useNavigate, useParams } from "react-router-dom";
 import { useCallback } from "react";
-import BookSearch, { type Book } from "../../components/Search/BookSearch";
+import BookSearch from "../../components/Search/BookSearch";
+import type { SearchBook } from "../../types/BookSearchdto";
 import Header from "../../components/Header";
 
 const BookRecommendSearchPage = () => {
@@ -8,8 +9,8 @@ const BookRecommendSearchPage = () => {
   const { bookclubId } = useParams<{ bookclubId: string }>();
 
   const handleBookSelect = useCallback(
-    (book: Book) => {
-      navigate(`/bookclub/${bookclubId}/recommend/create/${book.id}`);
+    (book: SearchBook) => {
+      navigate(`/bookclub/${bookclubId}/recommend/${book.isbn}/create`);
     },
     [navigate, bookclubId]
   );
@@ -39,5 +40,4 @@ const BookRecommendSearchPage = () => {
     </div>
   );
 };
-
 export default BookRecommendSearchPage;
