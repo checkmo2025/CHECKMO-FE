@@ -21,7 +21,7 @@ import ClubSearchPage from "./pages/Main/ClubSearchPage"; // 북클럽 검색
 import CreateClubPage from "./pages/Main/CreateClubPage";
 import BookStorySearchPage from "./pages/Main/BookStory/BookStorySearchPage";
 import SearchPage from "./pages/Main/SearchPage";
-import SearchRecommendBookPage from "./pages/BookRecommend/SearchRecommendBookPage";
+import BookRecommendSearchPage from "./pages/BookRecommend/BookRecommendSearchPage";
 import ShelfHomePage from "./pages/BookClub/Shelf/ShelfHomePage";
 import ShelfDetailPage from "./pages/BookClub/Shelf/ShelfDetailPage";
 import ThemeDetailPage from "./pages/BookClub/Shelf/ThemeDetailPage";
@@ -33,7 +33,7 @@ import BookStoryDetailPage from "./pages/Main/BookStory/BookStoryDetailPage";
 import BookStoryWritePage from "./pages/Main/BookStory/BookStoryWritePage";
 import GroupManagementPage from "./pages/Manage/GroupManagementPage";
 import MeetingDetailPage from "./pages/Meeting/MeetingDetailPage";
-
+import CreateMeetingPage from "./pages/Meeting/CreateMeetingPage";
 const App = () => {
   return (
     <GoogleOAuthProvider clientId={KEYS.GOOGLE_CLIENT_ID}>
@@ -103,19 +103,17 @@ const App = () => {
                   element={<BookRecommendDetailPage />}
                 />
                 <Route
-                  path="create/:bookId"
+                  path=":bookId/create"
                   element={<BookRecommendCreatePage />}
                 />
-                <Route
-                  path="searchrecommendbook"
-                  element={<SearchRecommendBookPage />}
-                />
+                <Route path="search" element={<BookRecommendSearchPage />} />
               </Route>
 
               {/* 책 모임 */}
               <Route path="meeting">
                 <Route index element={<MeetingListPage />} />
                 <Route path=":meetingId" element={<MeetingDetailPage />} />
+                <Route path="create" element={<CreateMeetingPage />} />
               </Route>
             </Route>
           </Route>
