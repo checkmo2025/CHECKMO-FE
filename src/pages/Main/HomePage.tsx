@@ -1,4 +1,3 @@
-import React from "react";
 import NoticeCard from "../../components/Main/Notices/NoticeCard";
 import BookStoriesCard from "../../components/Main/BookStoriesCard";
 import Header from "../../components/Header";
