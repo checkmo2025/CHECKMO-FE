@@ -44,8 +44,8 @@ export default function SearchPage() {
               username: "Luke",
               bio: "아 피곤하다.",
             }}
-            notifications={[]}
             customClassName="mt-15"
+            isAdmin={true}
           />
 
           {/* 메인 컨텐츠 자리 */}
