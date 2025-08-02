@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef, useCallback } from "react";
 import MyPageHeader from "../../../../components/MyPageHeader";
 import { Pencil, Trash2, Save } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 type Story = {
   id: number;
@@ -10,6 +11,7 @@ type Story = {
 };
 
 const MyStoryPage = () => {
+  const navigate = useNavigate();
   const [stories, setStories] = useState<Story[]>([]);
   const [page, setPage] = useState(1);
   const [hasMore, setHasMore] = useState(true);
@@ -97,6 +99,7 @@ const MyStoryPage = () => {
               <div
                 key={story.id}
                 ref={idx === stories.length - 1 ? lastElementRef : null}
+                onClick={() => navigate(`/bookstory/${story.id}/detail`)} // 클릭 시 책 상세 이야기로 이동
                 className="flex gap-5 bg-white rounded-xl border border-[#EAE5E2] px-5 py-5 shadow-sm"
               >
                 {/* 책 이미지 */}
