@@ -9,7 +9,7 @@ const MeetingListPage = () => {
   const { generations } = DummyMeetingList.result;
   // 무한 스크롤 커스텀 훅이 들어올 예정
   return (
-    <div className="space-y-8 p-6 min-h-screen">
+    <div className="px-10 space-y-10 min-h-screen">
       <Header
         pageTitle={"추천 도서 목록"}
         userProfile={{
@@ -22,8 +22,8 @@ const MeetingListPage = () => {
 
       {generations.map((group: ClubGenerationDto) => (
         <section key={group.generation}>
-          <h2 className="text-xl font-semibold mb-4">{group.generation}기</h2>
-          <div className="space-y-4">
+          <h2 className="text-xl font-semibold mb-3">{group.generation}기</h2>
+          <div className="flex flex-col space-y-3">
             {group.meetings.map((meeting) => (
               <Link
                 key={meeting.meetingId}
