@@ -11,7 +11,7 @@ const MeetingListPage = () => {
   return (
     <div className="px-10 space-y-10 min-h-screen">
       <Header
-        pageTitle={"추천 도서 목록"}
+        pageTitle={"모임"}
         userProfile={{
           username: "오즈",
           bio: "re_turnto_oz",
@@ -29,7 +29,14 @@ const MeetingListPage = () => {
                 key={meeting.meetingId}
                 to={`/bookclub/${bookclubId}/meeting/${meeting.meetingId}`}
               >
-                <MeetingCard meeting={meeting} generation={group.generation} />
+                <MeetingCard
+                  title={meeting.title}
+                  book={meeting.book}
+                  meetingDate={meeting.meetingDate}
+                  meetingPlace={meeting.meetingPlace}
+                  tags={meeting.tags}
+                  generation={group.generation}
+                />
               </Link>
             ))}
           </div>

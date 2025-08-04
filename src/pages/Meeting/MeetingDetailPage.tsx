@@ -1,4 +1,4 @@
-import { useMemo, useCallback } from "react";
+import { useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import { DummyMeetingDetail } from "./DummyMeetingDetail";
 import type { MeetingDetailResultDto } from "../../types/clubMeeting";
@@ -11,19 +11,6 @@ const MeetingDetailPage = () => {
   const navigate = useNavigate();
   const detail = DummyMeetingDetail.result as MeetingDetailResultDto;
 
-  // useMemo를 사용하여 meeting 객체의 참조 안정성 보장
-  const meetingForCard = useMemo(
-    () => ({
-      meetingId: detail.meetingId,
-      tags: detail.tags,
-      title: detail.title,
-      book: detail.book,
-      meetingDate: detail.meetingDate,
-      meetingPlace: detail.meetingPlace,
-    }),
-    [detail]
-  );
-
   // useCallback으로 이벤트 핸들러의 참조 안정성 보장
   const handleMoreTopics = useCallback(() => {
     navigate("topics", {
@@ -33,7 +20,7 @@ const MeetingDetailPage = () => {
         topics: detail.topicPreview,
       },
     });
-  }, [navigate, detail.title, detail.topicPreview]);
+  }, [navigate, detail.meetingDate, detail.book.title, detail.topicPreview]);
 
   const handleViewAllTeamTopics = useCallback((teamNumber: number) => {
     // TODO: 해당 팀의 토론 전체보기 페이지로 이동하는 로직 구현
@@ -43,7 +30,15 @@ const MeetingDetailPage = () => {
     <div className="mx-auto px-10 space-y-10">
       <NonProfileHeader title={detail.title} />
 
-      <MeetingCard meeting={meetingForCard} generation={detail.generation} />
+      <MeetingCard
+        title={""}
+        book={detail.book}
+        meetingDate={detail.meetingDate}
+        meetingPlace={detail.meetingPlace}
+        tags={detail.tags}
+        generation={detail.generation}
+        className="flex min-w-[500px] px-4 pt-2 pb-4 bg-white mx-5 border-[#EAE5E2] border-b-2"
+      />
 
       <TopicPreviewSection
         previews={detail.topicPreview.slice(0, 4)}
