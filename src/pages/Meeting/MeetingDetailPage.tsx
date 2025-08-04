@@ -1,5 +1,5 @@
 import { useMemo, useCallback } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { DummyMeetingDetail } from "./DummyMeetingDetail";
 import type { MeetingDetailResultDto } from "../../types/clubMeeting";
 import { MeetingCard } from "../../components/Meeting/MeetingCard";
@@ -8,7 +8,7 @@ import { TeamTopicSection } from "../../components/Meeting/TeamTopicSection";
 import { NonProfileHeader } from "../../components/NonProfileHeader";
 
 const MeetingDetailPage = () => {
-  const { bookclubId } = useParams<{ bookclubId: string }>();
+  const navigate = useNavigate();
   const detail = DummyMeetingDetail.result as MeetingDetailResultDto;
 
   // useMemo를 사용하여 meeting 객체의 참조 안정성 보장
@@ -26,8 +26,14 @@ const MeetingDetailPage = () => {
 
   // useCallback으로 이벤트 핸들러의 참조 안정성 보장
   const handleMoreTopics = useCallback(() => {
-    // TODO: 발제 전체보기 페이지로 이동하는 로직 구현
-  }, []);
+    navigate("topics", {
+      state: {
+        date: detail.meetingDate,
+        bookTitle: detail.book.title,
+        topics: detail.topicPreview,
+      },
+    });
+  }, [navigate, detail.title, detail.topicPreview]);
 
   const handleViewAllTeamTopics = useCallback((teamNumber: number) => {
     // TODO: 해당 팀의 토론 전체보기 페이지로 이동하는 로직 구현
@@ -40,7 +46,7 @@ const MeetingDetailPage = () => {
       <MeetingCard meeting={meetingForCard} generation={detail.generation} />
 
       <TopicPreviewSection
-        previews={detail.topicPreview}
+        previews={detail.topicPreview.slice(0, 4)}
         onMoreClick={handleMoreTopics}
       />
 
@@ -48,7 +54,7 @@ const MeetingDetailPage = () => {
         <TeamTopicSection
           key={team.teamNumber}
           teamNumber={team.teamNumber}
-          topics={team.topics}
+          topics={team.topics.slice(0, 4)}
           onViewAllClick={handleViewAllTeamTopics}
         />
       ))}
