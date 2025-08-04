@@ -33,6 +33,7 @@ import BookStoryWritePage from "./pages/Main/BookStory/BookStoryWritePage";
 import GroupManagementPage from "./pages/Manage/GroupManagementPage";
 import MeetingDetailPage from "./pages/Meeting/MeetingDetailPage";
 import BookRecommendSearchPage from "./pages/BookRecommend/BookRecommendSearchPage";
+import MeetingTopicListPage from "./pages/Meeting/MeetingTopicListPage";
 
 const App = () => {
   return (
@@ -48,7 +49,10 @@ const App = () => {
             <Route path="/home" element={<HomePage />} />
             <Route path="/booksearch" element={<SearchPage />} />
             <Route path="/searchClub" element={<ClubSearchPage />} />
-            <Route path="/info/others/:userId" element={<OthersProfilePage />} />
+            <Route
+              path="/info/others/:userId"
+              element={<OthersProfilePage />}
+            />
             <Route path="/createClub" element={<CreateClubPage />} />
 
             {/* 운영진 */}
@@ -113,6 +117,10 @@ const App = () => {
               <Route path="meeting">
                 <Route index element={<MeetingListPage />} />
                 <Route path=":meetingId" element={<MeetingDetailPage />} />
+                <Route
+                  path=":meetingId/topics"
+                  element={<MeetingTopicListPage />}
+                />
               </Route>
             </Route>
           </Route>
