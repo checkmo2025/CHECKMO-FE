@@ -1,10 +1,10 @@
 import { useQuery } from '@tanstack/react-query';
 import { SearchBooks } from '../../apis/BookSearch/search';
-import type { BookSearchResponse } from '../../types/BookSearchdto';
+import type { BookSearchResult } from '../../types/BookSearchdto';
 
 export function useBookSearch(keyword: string, page: number ) {
-  
-  return useQuery<BookSearchResponse, Error, BookSearchResponse['result']>({
+
+  return useQuery<BookSearchResult, Error>({
     queryKey: ['bookSearch', keyword, page],
     queryFn: () => {return SearchBooks(keyword, page);},
     enabled: keyword.trim().length > 0,   // 빈 문자열일 땐 호출 금지

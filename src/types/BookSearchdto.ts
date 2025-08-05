@@ -26,3 +26,5 @@ export type BookSearchResponse = ApiResponse<{
   hasNext: boolean;
   currentPage: number;
 }>
+
+export type BookSearchResult = BookSearchResponse['result'];
