@@ -34,7 +34,7 @@ import GroupManagementPage from "./pages/Manage/GroupManagementPage";
 import MeetingDetailPage from "./pages/Meeting/MeetingDetailPage";
 import BookRecommendSearchPage from "./pages/BookRecommend/BookRecommendSearchPage";
 import MeetingTopicListPage from "./pages/Meeting/MeetingTopicListPage";
-import EditClubPage from "./pages/BookClub/Club/EditPage";
+import EditClubPage from "./pages/BookClub/Club/ClubEditPage";
 
 const App = () => {
   return (
