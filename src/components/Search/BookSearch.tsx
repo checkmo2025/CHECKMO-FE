@@ -16,7 +16,7 @@ export default function BookSearch({SearchResultHeight, actions }: BookSearchPro
   useEffect(() => { setPage(1); }, [debouncedTerm]);
 
   
-  const { data: result, isFetching } = useBookSearch(debouncedTerm, page);
+  const { data : result, isFetching } = useBookSearch(debouncedTerm, page);
   const booksOnPage = result?.bookInfoDetailResponseList;
   const hasNext = result?.hasNext;
 
