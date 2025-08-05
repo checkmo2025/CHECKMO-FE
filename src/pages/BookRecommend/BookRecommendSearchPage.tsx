@@ -40,6 +40,4 @@ const BookRecommendSearchPage = () => {
     </div>
   );
 };
-
 export default BookRecommendSearchPage;
-
