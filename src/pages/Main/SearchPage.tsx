@@ -1,31 +1,29 @@
 import React from "react";
-import { useNavigate } from "react-router-dom";
-import BookSearch, {
-  type Book,
-  type Action,
-} from "../../components/Search/BookSearch";
-import Header from "../../components/Header";
-import SearchedBookModal from "../../components/Search/SearchedBookModal";
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import BookSearch from "../../components/Search/BookSearch";
+import type { SearchBook, Action } from "../../types/BookSearchdto";
+import Header from "../../components/Header"
+import SearchedBookModal from "../../components/Search/SearchedBookModal"
 
 export default function SearchPage() {
   const navigate = useNavigate();
   const [isOpen, setIsOpen] = useState(false);
-  const [bookDetail, setbookDetail] = useState<Book | null>(null);
+  const [bookDetail, setbookDetail] = useState<SearchBook | null>(null);
 
   const actions: Action[] = [
     {
       label: "책 이야기",
-      onClick: (book: Book) => {
+      onClick: (book: SearchBook) => {
         // 책 이야기 페이지로 이동
-        navigate(`/bookstory/${book.id}/write`);
+        navigate(`/bookstory/${book.isbn}/write`);
       },
       className: "bg-[var(--button-brown,#A6917E)] text-white",
       iconUrl: "/assets/meteor-icons_pencil.svg", // 연필 아이콘
     },
     {
       label: "상세 보기",
-      onClick: (book: Book) => {
+      onClick: (book: SearchBook) => {
         setbookDetail(book);
         setIsOpen(true);
       },
@@ -37,29 +35,21 @@ export default function SearchPage() {
   return (
     <div>
       <div className="flex h-screen ">
-        <div className="absolute left-[315px] right-[42px] opacity-100 ">
-          <Header
-            pageTitle={"통합검색"}
-            userProfile={{
-              username: "Luke",
-              bio: "아 피곤하다.",
-            }}
-            notifications={[]}
-            customClassName="mt-15"
-          />
-
-          {/* 메인 컨텐츠 자리 */}
-          <div className="">
-            <BookSearch SearchResultHeight={235} actions={actions} />
-          </div>
+      <div className="absolute left-[315px] right-[42px] opacity-100 ">
+        <Header pageTitle={'통합검색'} userProfile={{
+          username: 'Luke',
+          bio: '아 피곤하다.'
+        }} 
+        notifications={[]}
+        customClassName="mt-15"
+        />
+        
+        {/* 메인 컨텐츠 자리 */}
+        <div className = "">
+          <BookSearch SearchResultHeight = {235} actions={actions}/>
         </div>
-        {bookDetail && (
-          <SearchedBookModal
-            isOpen={isOpen}
-            onClose={() => setIsOpen(false)}
-            book={bookDetail}
-          />
-        )}
+      </div>
+      {bookDetail && <SearchedBookModal isOpen={isOpen} onClose={() => setIsOpen(false)} searchBook={bookDetail} /> }
       </div>
     </div>
   );
