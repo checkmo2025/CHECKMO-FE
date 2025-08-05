@@ -1,9 +1,10 @@
 // src/pages/BookClub/Club/EditPage.tsx
 import React, { useState, useEffect } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import { ChipToggleGroup } from '../../../components/CreateClub/ChipToggleGroup';
 import Header from '../../../components/Header';
 import { BOOK_CATEGORIES, PARTICIPANT_TYPES } from '../../../types/dto';
+// import { getClubDetail, updateClub } from '../../../apis/clubApi'; // API 연동은 나중에
 
 // 카테고리 옵션 (문자열 배열로 변환)
 const BOOK_CATEGORY_OPTIONS = Object.values(BOOK_CATEGORIES);
@@ -13,24 +14,24 @@ const PARTICIPANT_TYPE_OPTIONS = Object.values(PARTICIPANT_TYPES);
 
 // 카테고리 이름을 ID로 변환하는 함수
 const getCategoryId = (categoryName: string): number => {
-  const entry = Object.entries(BOOK_CATEGORIES).find(([id, name]) => name === categoryName);
+  const entry = Object.entries(BOOK_CATEGORIES).find(([, name]) => name === categoryName);
   return entry ? parseInt(entry[0]) : 1;
-};
-
-// 참여자 유형 이름을 키로 변환하는 함수
-const getParticipantKey = (participantName: string): string => {
-  const entry = Object.entries(PARTICIPANT_TYPES).find(([key, name]) => name === participantName);
-  return entry ? entry[0] : 'STUDENT';
 };
 
 // 카테고리 ID를 이름으로 변환하는 함수
 const getCategoryName = (categoryId: number): string => {
-  return BOOK_CATEGORIES[categoryId] || '';
+  return BOOK_CATEGORIES[categoryId as keyof typeof BOOK_CATEGORIES] || "기타";
 };
 
-// 참여자 키를 이름으로 변환하는 함수
+// 참여자 유형 키를 이름으로 변환하는 함수
 const getParticipantName = (participantKey: string): string => {
-  return PARTICIPANT_TYPES[participantKey] || '';
+  return PARTICIPANT_TYPES[participantKey as keyof typeof PARTICIPANT_TYPES] || "기타";
+};
+
+// 참여자 유형 이름을 키로 변환하는 함수
+const getParticipantKey = (participantName: string): string => {
+  const entry = Object.entries(PARTICIPANT_TYPES).find(([_, name]) => name === participantName);
+  return entry ? entry[0] : 'STUDENT';
 };
 
 export default function EditClubPage(): React.ReactElement {
@@ -50,6 +51,7 @@ export default function EditClubPage(): React.ReactElement {
   const [visibility, setVisibility] = useState<'공개' | '비공개' | null>(null);
   const [originalClubName, setOriginalClubName] = useState(''); // 원본 클럽명 저장
 
+
   // 클럽 정보 로드
   useEffect(() => {
     const loadClubData = async () => {
@@ -59,34 +61,42 @@ export default function EditClubPage(): React.ReactElement {
         return;
       }
 
-      try {
-        setIsLoading(true);
-        const clubData = await getClubDetail(Number(bookclubId));
+      // UI 테스트용 더미데이터 - API 연동은 나중에
+      setIsLoading(true);
+      
+      // 더미 로딩 시뮬레이션
+      setTimeout(() => {
+        const dummyClubData = {
+          clubId: 1,
+          name: "독서재량",
+          description: "함께 책을 읽고 토론하며 성장하는 독서 모임입니다. 매주 한 권의 책을 읽고 다양한 관점에서 이야기를 나누어요.",
+          open: true,
+          category: [2, 6, 8], // 소설/시/희곡, 인문학, 역사/문화
+          participantTypes: ["STUDENT", "WORKER"],
+          region: "서울",
+          insta: "https://instagram.com/bookclub",
+          kakao: "https://open.kakao.com/bookclub"
+        };
         
-        // 폼 필드에 기존 데이터 설정
-        setClubName(clubData.name);
-        setOriginalClubName(clubData.name);
-        setClubDescription(clubData.description);
-        setVisibility(clubData.open ? '공개' : '비공개');
-        setActivityArea(clubData.region || '');
-        setSns1Link(clubData.insta || '');
-        setSns2Link(clubData.kakao || '');
+        // 폼 필드에 더미 데이터 설정
+        setClubName(dummyClubData.name);
+        setOriginalClubName(dummyClubData.name);
+        setClubDescription(dummyClubData.description);
+        setVisibility(dummyClubData.open ? '공개' : '비공개');
+        setActivityArea(dummyClubData.region || '');
+        setSns1Link(dummyClubData.insta || '');
+        setSns2Link(dummyClubData.kakao || '');
         
         // 카테고리 설정 (ID를 이름으로 변환)
-        const categoryNames = clubData.category.map(getCategoryName).filter(Boolean);
+        const categoryNames = dummyClubData.category.map(getCategoryName).filter(Boolean);
         setSelectedCategories(categoryNames);
         
         // 참여자 유형 설정 (키를 이름으로 변환)
-        const participantNames = clubData.participantTypes.map(getParticipantName).filter(Boolean);
+        const participantNames = dummyClubData.participantTypes.map(getParticipantName).filter(Boolean);
         setSelectedParticipants(participantNames);
         
-      } catch (error) {
-        console.error('클럽 정보 로드 실패:', error);
-        alert('클럽 정보를 불러오는데 실패했습니다.');
-        navigate('/');
-      } finally {
         setIsLoading(false);
-      }
+      }, 500); // 0.5초 로딩 시뮬레이션
     };
 
     loadClubData();
@@ -117,32 +127,24 @@ export default function EditClubPage(): React.ReactElement {
 
     setIsSubmitting(true);
 
-    try {
-      const clubData: Omit<ClubDto, 'clubId'> = {
-        name: clubName,
-        description: clubDescription,
-        open: visibility === '공개',
-        category: selectedCategories.map(getCategoryId),
-        participantTypes: selectedParticipants.map(getParticipantKey),
-        region: activityArea || '서울',
-        insta: sns1Link || undefined,
-        kakao: sns2Link || undefined,
-      };
+    // UI 테스트용 더미 처리 - API 연동은 나중에
+    console.log('수정할 클럽 데이터:', {
+      name: clubName,
+      description: clubDescription,
+      open: visibility === '공개',
+      category: selectedCategories.map(getCategoryId),
+      participantTypes: selectedParticipants.map(getParticipantKey),
+      region: activityArea || '서울',
+      insta: sns1Link || undefined,
+      kakao: sns2Link || undefined,
+    });
 
-      const response = await updateClub(Number(bookclubId), clubData);
-      if (response.isSuccess) {
-        alert('모임이 성공적으로 수정되었습니다!');
-        navigate(`/bookclub/${bookclubId}/home`); // 클럽 홈 페이지로 이동
-      } else {
-        alert(`모임 수정에 실패했습니다: ${response.message}`);
-      }
-      
-    } catch (error: any) {
-      console.error('모임 수정 실패:', error);
-      alert('모임 수정에 실패했습니다. 다시 시도해주세요.');
-    } finally {
+    // 더미 저장 시뮬레이션
+    setTimeout(() => {
+      alert('모임이 성공적으로 수정되었습니다! (더미 처리)');
       setIsSubmitting(false);
-    }
+      // navigate(`/bookclub/${bookclubId}/home`); // 일단 이동하지 않음
+    }, 1000);
   };
 
   if (isLoading) {
@@ -165,7 +167,7 @@ export default function EditClubPage(): React.ReactElement {
   }
 
   return (
-    <div className="absolute left-[315px] right-[42px] opacity-100">
+    <div className="absolute left-[315px] right-[42px] top-0 bottom-0 opacity-100 flex flex-col">
       <Header 
         pageTitle="모임 편집하기" 
         userProfile={{
@@ -173,11 +175,13 @@ export default function EditClubPage(): React.ReactElement {
           bio: '아 피곤하다.'
         }} 
         notifications={[]}
-        customClassName="mt-[60px]"
+        customClassName="mt-[60px] flex-shrink-0"
       />
 
-      <div className="mt-8 flex flex-col items-center">
-        {/* 모임 이름 + 중복확인 버튼 */}
+      {/* 스크롤 가능한 컨텐츠 영역 */}
+      <div className="flex-1 overflow-y-auto" style={{ msOverflowStyle: 'none', scrollbarWidth: 'none' }}>
+        <div className="mt-8 flex flex-col items-center">
+          {/* 모임 이름 + 중복확인 버튼 */}
         <div className="mt-[36px]">
           <label className="font-pretendard font-medium text-[18px] leading-[135%] tracking-[-0.1%]">
             독서 모임을 입력해주세요.
@@ -253,6 +257,7 @@ export default function EditClubPage(): React.ReactElement {
               mt-[16px]
               w-[216px] h-[216px]
               bg-white rounded-[16px] border-[2px] border-[#EAE5E2]
+              cursor-pointer
               flex flex-col items-center justify-center
             "
           >
@@ -261,20 +266,21 @@ export default function EditClubPage(): React.ReactElement {
         </div>
 
         {/* 모임 공개 여부 */}
-        <div className="mt-[56px]">
+        <div className="mt-[56px] opacity-30">
           <label className="font-pretendard font-medium text-[18px] leading-[135%] tracking-[-0.1%]">
             모임의 공개/비공개 여부를 알려주세요.
           </label>
-          <div className="flex gap-[24px]">
-            {/* 공개 버튼 */}
+            <div className="flex gap-[24px]">
+            {/* 공개 버튼 - 수정 불가 */}
             <button
               type="button"
-              onClick={() => setVisibility('공개')}
+              onClick={() => {}} // 클릭해도 아무 동작 안 함
+              disabled={true}    // 항상 비활성화
               className={`
                 w-[178px] h-[53px]
                 mt-[16px] flex flex-col items-center justify-center
                 rounded-[36px] py-[10px]
-                cursor-pointer
+                cursor-not-allowed
                 ${visibility === '공개' 
                   ? 'bg-[#90D26D] text-white' 
                   : 'border-[1px] border-[#90D26D]'
@@ -293,15 +299,16 @@ export default function EditClubPage(): React.ReactElement {
               </span>
             </button>
 
-            {/* 비공개 버튼 */}
+            {/* 비공개 버튼 - 수정 불가 */}
             <button
               type="button"
-              onClick={() => setVisibility('비공개')}
+              onClick={() => {}} // 클릭해도 아무 동작 안 함
+              disabled={true}    // 항상 비활성화
               className={`
                 w-[178px] h-[53px]
                 mt-[16px] flex flex-col items-center justify-center
                 rounded-[36px] py-[10px]
-                cursor-pointer
+                cursor-not-allowed
                 ${visibility === '비공개' 
                   ? 'bg-[#90D26D] text-white' 
                   : 'border-[1px] border-[#90D26D]'
@@ -399,11 +406,7 @@ export default function EditClubPage(): React.ReactElement {
 
         {/* 유의사항 */}
         <div className="mt-[86px] w-[393px] h-[88px] flex flex-col items-center">
-          <p className="font-pretendard font-normal text-[12px] leading-[145%] tracking-[-0.1%] text-[#FF8045]">
-            수정된 내용은 즉시 반영됩니다. 위 사항을 한 번 더 확인해주세요!
-          </p>
-
-          {/* 수정하기 버튼 */}
+          {/* 저장하기 버튼 */}
           <button
             type="button"
             onClick={handleUpdateClub}
@@ -411,15 +414,17 @@ export default function EditClubPage(): React.ReactElement {
             className="
               w-full mt-[12px] py-[12px] bg-[#90D26D] text-white
               rounded-[16px] font-pretendard font-semibold text-[20px]
+              cursor-pointer
               disabled:opacity-50 disabled:cursor-not-allowed
             "
           >
-            {isSubmitting ? '수정 중...' : '수정하기'}
+            {isSubmitting ? '저장 중...' : '저장하기'}
           </button>
         </div>
         
-        {/* 하단 여백 */}
-        <div className="h-[100px]"></div>
+          {/* 하단 여백 */}
+          <div className="h-[100px]"></div>
+        </div>
       </div>
     </div>
   );
