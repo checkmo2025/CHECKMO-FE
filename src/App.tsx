@@ -34,6 +34,7 @@ import GroupManagementPage from "./pages/Manage/GroupManagementPage";
 import MeetingDetailPage from "./pages/Meeting/MeetingDetailPage";
 import BookRecommendSearchPage from "./pages/BookRecommend/BookRecommendSearchPage";
 import MeetingTopicListPage from "./pages/Meeting/MeetingTopicListPage";
+import EditClubPage from "./pages/BookClub/Club/EditPage";
 
 const App = () => {
   return (
@@ -84,6 +85,7 @@ const App = () => {
             <Route path=":bookclubId" element={<Layout />}>
               <Route path="home" element={<BookClubHomePage />} />
               <Route path="notices" element={<NoticePage />} />
+              <Route path="edit" element={<EditClubPage />} />
 
               {/* 책장 */}
               <Route path="shelf">
