@@ -37,11 +37,10 @@ const BookClubAdminPage = () => {
           </div>
           {/* 태그들 */}
           <div className="flex flex-wrap gap-2 mb-6">
-            {["사회", "사회", "사회", "사회"].map((tag, index) => (
+            {["사회", "인문", "에세이", "자기계발"].map((tag, index) => (
               <span
                 key={index}
-                style={{ backgroundColor: "#90D26D" }}
-                className="text-white font-bold px-3 py-1 rounded-full text-sm"
+                className="text-white font-bold px-3 py-1 rounded-full text-sm bg-[#90D26D]"
               >
                 {tag}
               </span>
@@ -65,7 +64,7 @@ const BookClubAdminPage = () => {
         <button
           style={{ backgroundColor: "#EFF5ED", color: "#90D26D" }}
           className=" px-4 py-2 rounded-full text-sm cursor-pointer"
-          onClick={() => navigate(`/bookclub/${bookclubId}/admin/resister`)}
+          onClick={() => navigate(`/bookclub/${bookclubId}/admin/register`)}
         >
           가입 관리
         </button>
