@@ -1,10 +1,12 @@
+import type { ApiResponse } from './apiResponse';
+
 export interface SearchBook{
-  "isbn": string,
-  "title": string,
-  "author": string,
-  "imgUrl": string,
-  "publisher": string,
-  "description": string
+  isbn: string,
+  title: string,
+  author: string,
+  imgUrl: string,
+  publisher: string,
+  description: string
 }
 
 export interface Action {
@@ -19,8 +21,8 @@ export interface BookSearchProps {
   actions?: Action[]
 }
 
-export interface BookSearchResponse {
+export type BookSearchResponse = ApiResponse<{
   bookInfoDetailResponseList: SearchBook[];
   hasNext: boolean;
   currentPage: number;
-}
+}>
