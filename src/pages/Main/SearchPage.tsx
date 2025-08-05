@@ -4,8 +4,8 @@ import BookSearch, {
   type Book,
   type Action,
 } from "../../components/Search/BookSearch";
-import Header from "../../components/Header"
-import SearchedBookModal from "../../components/Search/SearchedBookModal"
+import Header from "../../components/Header";
+import SearchedBookModal from "../../components/Search/SearchedBookModal";
 import { useState } from "react";
 
 export default function SearchPage() {
@@ -35,28 +35,32 @@ export default function SearchPage() {
   ];
 
   return (
-
     <div>
       <div className="flex h-screen ">
-      <div className="absolute left-[315px] right-[42px] opacity-100 ">
-        <Header pageTitle={'통합검색'} userProfile={{
-          username: 'Luke',
-          bio: '아 피곤하다.'
-        }} 
-        notifications={[]}
-        customClassName="mt-15"
-        />
-        
-        {/* 메인 컨텐츠 자리 */}
-        <div className = "">
-          <BookSearch SearchResultHeight = {235} actions={actions}/>
-        </div>
-      </div>
-      {bookDetail && <SearchedBookModal isOpen={isOpen} onClose={() => setIsOpen(false)} book={bookDetail} /> }
-      
+        <div className="absolute left-[315px] right-[42px] opacity-100 ">
+          <Header
+            pageTitle={"통합검색"}
+            userProfile={{
+              username: "Luke",
+              bio: "아 피곤하다.",
+            }}
+            notifications={[]}
+            customClassName="mt-15"
+          />
 
+          {/* 메인 컨텐츠 자리 */}
+          <div className="">
+            <BookSearch SearchResultHeight={235} actions={actions} />
+          </div>
+        </div>
+        {bookDetail && (
+          <SearchedBookModal
+            isOpen={isOpen}
+            onClose={() => setIsOpen(false)}
+            book={bookDetail}
+          />
+        )}
       </div>
     </div>
-    
   );
 }

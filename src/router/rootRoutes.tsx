@@ -5,7 +5,6 @@ import ProfilePage from "../pages/Auth/ProfilePage";
 import MainLayout from "../components/layout/MainLayout";
 import HomePage from "../pages/Main/HomePage";
 import SearchPage from "../pages/Main/SearchPage";
-import TestHeaderPage from "../pages/TestHeaderPage";
 import MyHomePage from "../pages/Main/Info/My/MyHomePage";
 import MyGroupPage from "../pages/Main/Info/My/MyGroupPage";
 import MySubscriptionPage from "../pages/Main/Info/My/MySubscriptionPage";
@@ -19,10 +18,9 @@ import ShelfHomePage from "../pages/BookClub/Shelf/ShelfHomePage";
 import ShelfDetailPage from "../pages/BookClub/Shelf/ShelfDetailPage";
 import ThemeDetailPage from "../pages/BookClub/Shelf/ThemeDetailPage";
 import ScoreDetailPage from "../pages/BookClub/Shelf/ScoreDetailPage";
-import BookAddPage from "../pages/BookClub/Review/BookAddPage";
 import BookRecommendPage from "../pages/BookRecommend/BookRecommendPage";
 import BookRecommendDetailPage from "../pages/BookRecommend/BookRecommendDetailPage";
-import BookRecommendCreatePage from "../pages/BookRecommend/BookRecommendCreatePage";
+import BookRecommendSearchPage from "../pages/BookRecommend/BookRecommendSearchPage";
 
 export const rootRoutes = createBrowserRouter([
   {
@@ -41,9 +39,6 @@ export const rootRoutes = createBrowserRouter([
       { path: "/search", element: <SearchPage /> },
     ],
   },
-
-  { path: "/test-header", element: <TestHeaderPage /> },
-
   {
     path: "/mypage",
     children: [
@@ -72,15 +67,12 @@ export const rootRoutes = createBrowserRouter([
           { path: ":shelfBookIndex/score", element: <ScoreDetailPage /> },
         ],
       },
-
-      { path: "bookadd", element: <BookAddPage /> },
-
       {
         path: "recommend",
         children: [
           { index: true, element: <BookRecommendPage /> },
           { path: ":recommendId", element: <BookRecommendDetailPage /> },
-          { path: "create/:bookId", element: <BookRecommendCreatePage /> },
+          { path: "search", element: <BookRecommendSearchPage /> },
         ],
       },
     ],

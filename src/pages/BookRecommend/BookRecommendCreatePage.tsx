@@ -1,5 +1,6 @@
 import type { BookDto } from "../../types/dto";
 import BookRecommendCreateCard from "../../components/BookRecommend/BookRecommendCreateCard";
+import { NonProfileHeader } from "../../components/NonProfileHeader";
 
 const dummyBook: BookDto = {
   bookId: 43,
@@ -10,7 +11,12 @@ const dummyBook: BookDto = {
 };
 
 const BookRecommendCreatePage = () => {
-  return <BookRecommendCreateCard bookInfo={dummyBook} />;
+  return (
+    <div className="mx-10">
+      <NonProfileHeader title="책 추천하기" />
+      <BookRecommendCreateCard bookInfo={dummyBook} />
+    </div>
+  );
 };
 
 export default BookRecommendCreatePage;
