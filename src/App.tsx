@@ -34,6 +34,7 @@ import GroupManagementPage from "./pages/Manage/GroupManagementPage";
 import MeetingDetailPage from "./pages/Meeting/MeetingDetailPage";
 import BookRecommendSearchPage from "./pages/BookRecommend/BookRecommendSearchPage";
 import MeetingTopicListPage from "./pages/Meeting/MeetingTopicListPage";
+import MeetingTeamTopicListPage from "./pages/Meeting/MeetingTeamTopicListPage";
 
 const App = () => {
   return (
@@ -120,6 +121,10 @@ const App = () => {
                 <Route
                   path=":meetingId/topics"
                   element={<MeetingTopicListPage />}
+                />
+                <Route
+                  path=":meetingId/teamTopic/:teamId"
+                  element={<MeetingTeamTopicListPage />}
                 />
               </Route>
             </Route>
