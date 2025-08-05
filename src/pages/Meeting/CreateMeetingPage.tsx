@@ -212,19 +212,9 @@ export default function CreateMeetingPage() {
         }}>                  
         버튼
         </button>
-
         </div>
-
       </div>
-      
-            
-      
-
     </div>
 
-
-
-
-      
   )
 }

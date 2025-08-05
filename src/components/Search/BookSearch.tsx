@@ -7,8 +7,6 @@ import { useBookSearch } from '../../hooks/BookSearch/useBookSearch';
 import { useDebounce } from '../../hooks/useDebounce';
 
 export default function BookSearch({SearchResultHeight, actions }: BookSearchProps) {
-
-  
   const [Searchbooks, setSearchBooks] = useState<SearchBook[]>([]);
   const [searchTerm, setSearchTerm] = useState('');
   const [page, setPage] = useState(1);
@@ -129,8 +127,6 @@ export default function BookSearch({SearchResultHeight, actions }: BookSearchPro
         <div className ="mb-10"></div>
       </div>
       ) }
-      
-      
     </div>
   )
 }
