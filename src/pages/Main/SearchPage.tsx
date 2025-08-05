@@ -50,7 +50,6 @@ export default function SearchPage() {
         </div>
       </div>
       {bookDetail && <SearchedBookModal isOpen={isOpen} onClose={() => setIsOpen(false)} searchBook={bookDetail} /> }
-
       </div>
     </div>
   );
