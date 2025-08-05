@@ -21,6 +21,7 @@ import ClubSearchPage from "./pages/Main/ClubSearchPage"; // 북클럽 검색
 import CreateClubPage from "./pages/Main/CreateClubPage";
 import BookStorySearchPage from "./pages/Main/BookStory/BookStorySearchPage";
 import SearchPage from "./pages/Main/SearchPage";
+import BookRecommendSearchPage from "./pages/BookRecommend/BookRecommendSearchPage";
 import ShelfHomePage from "./pages/BookClub/Shelf/ShelfHomePage";
 import ShelfDetailPage from "./pages/BookClub/Shelf/ShelfDetailPage";
 import ThemeDetailPage from "./pages/BookClub/Shelf/ThemeDetailPage";
@@ -32,7 +33,9 @@ import BookStoryDetailPage from "./pages/Main/BookStory/BookStoryDetailPage";
 import BookStoryWritePage from "./pages/Main/BookStory/BookStoryWritePage";
 import GroupManagementPage from "./pages/Manage/GroupManagementPage";
 import MeetingDetailPage from "./pages/Meeting/MeetingDetailPage";
-import BookRecommendSearchPage from "./pages/BookRecommend/BookRecommendSearchPage";
+import CreateMeetingPage from "./pages/Meeting/CreateMeetingPage";
+import MeetingTopicListPage from "./pages/Meeting/MeetingTopicListPage";
+
 
 const App = () => {
   return (
@@ -48,7 +51,10 @@ const App = () => {
             <Route path="/home" element={<HomePage />} />
             <Route path="/booksearch" element={<SearchPage />} />
             <Route path="/searchClub" element={<ClubSearchPage />} />
-            <Route path="/info/others/:userId" element={<OthersProfilePage />} />
+            <Route
+              path="/info/others/:userId"
+              element={<OthersProfilePage />}
+            />
             <Route path="/createClub" element={<CreateClubPage />} />
 
             {/* 운영진 */}
@@ -113,6 +119,11 @@ const App = () => {
               <Route path="meeting">
                 <Route index element={<MeetingListPage />} />
                 <Route path=":meetingId" element={<MeetingDetailPage />} />
+                <Route path="create" element={<CreateMeetingPage />} />
+                <Route
+                  path=":meetingId/topics"
+                  element={<MeetingTopicListPage />}
+                />
               </Route>
             </Route>
           </Route>
