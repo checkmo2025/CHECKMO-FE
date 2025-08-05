@@ -24,8 +24,9 @@ export type VoteStatus = 'active' | 'closed' | 'draft';
 export interface VoteParticipant {
   userId: string;
   userName: string;
+  userImageUrl: string;
+  userDescription: string;
   selectedOptions: string[]; // 선택한 옵션들의 ID
-  votedAt: string; // 투표 시간
 }
 
 // 투표 설정 정보
