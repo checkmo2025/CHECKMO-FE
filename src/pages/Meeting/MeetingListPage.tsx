@@ -5,6 +5,7 @@ import { Link, useParams } from "react-router-dom";
 import Header from "../../components/Header";
 
 const MeetingListPage = () => {
+  const isAdmin = true; // 추후에 로그인 정보로 변경 예정
   const { bookclubId } = useParams();
   const { generations } = DummyMeetingList.result;
   // 무한 스크롤 커스텀 훅이 들어올 예정
@@ -19,11 +20,22 @@ const MeetingListPage = () => {
         notifications={[]}
         customClassName="mx-3 my-5"
       />
+      
+      {/* 모임 추가 */}
+      {isAdmin && (
+        <Link to="create" className="flex w-[204px] h-[48px] bg-[#F6F3F0] rounded-[100px] ml-auto py-[10px] px-5" >
+          <div className = "flex justify-center items-center gap-2 w-full">
+            <img src="/assets/ic_round-plus.svg" alt="모임 추가 아이콘" className="w-7 h-7" />
+            <span className="text-[#2C2C2C] text-[18px] font-semibold">모임 추가하기</span>
+          </div>
+        </Link>
+      )}
 
       {generations.map((group: ClubGenerationDto) => (
         <section key={group.generation}>
           <h2 className="text-xl font-semibold mb-3">{group.generation}기</h2>
           <div className="flex flex-col space-y-3">
+
             {group.meetings.map((meeting) => (
               <Link
                 key={meeting.meetingId}

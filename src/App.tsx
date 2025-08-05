@@ -36,6 +36,7 @@ import MeetingDetailPage from "./pages/Meeting/MeetingDetailPage";
 import CreateMeetingPage from "./pages/Meeting/CreateMeetingPage";
 import MeetingTopicListPage from "./pages/Meeting/MeetingTopicListPage";
 
+
 const App = () => {
   return (
     <GoogleOAuthProvider clientId={KEYS.GOOGLE_CLIENT_ID}>
@@ -123,7 +124,6 @@ const App = () => {
                   path=":meetingId/topics"
                   element={<MeetingTopicListPage />}
                 />
-
               </Route>
             </Route>
           </Route>

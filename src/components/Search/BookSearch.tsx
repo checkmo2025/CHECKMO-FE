@@ -6,7 +6,6 @@ import type { BookSearchProps } from '../../types/BookSearchdto';
 import { useBookSearch } from '../../hooks/BookSearch/useBookSearch';
 import { useDebounce } from '../../hooks/useDebounce';
 
-
 export default function BookSearch({SearchResultHeight, actions }: BookSearchProps) {
   const [Searchbooks, setSearchBooks] = useState<SearchBook[]>([]);
   const [searchTerm, setSearchTerm] = useState('');
@@ -58,9 +57,14 @@ export default function BookSearch({SearchResultHeight, actions }: BookSearchPro
           인상 깊은 책을 모임원들에게 추천해주세요!
         </p>
       )}
-
+      <div className ="h-9"></div>
+      {SearchResultHeight === 290 && (
+        <p className="font-[Pretendard] font-medium text-[18px] text-black pb-4">
+          책 등록
+        </p>
+      )}
       {/* 검색창 */}
-      <div className="mt-9 flex items-center h-[53px] py-[10px] px-[17px] rounded-2xl bg-[var(--Color-4,#F4F2F1)]">
+      <div className="flex items-center h-[53px] py-[10px] px-[17px] rounded-2xl bg-[var(--Color-4,#F4F2F1)]">
         <img
           src="/assets/material-symbols_search-rounded.svg"
           className="w-[33px] h-[33px] "
@@ -73,6 +77,7 @@ export default function BookSearch({SearchResultHeight, actions }: BookSearchPro
       </div>
 
       {/* 검색 결과 리스트 (스크롤은 내부에서만, 바는 숨김) */}
+      {Searchbooks.length > 0 && (
       <div className="mt-[42px] mx-5 flex flex-col overflow-y-auto space-y-6" 
       style={{ msOverflowStyle: 'none', height: `calc(100vh - ${SearchResultHeight}px)`, scrollbarWidth: 'none' }}>
                 {Searchbooks.map((SearchBook) => (
@@ -121,7 +126,7 @@ export default function BookSearch({SearchResultHeight, actions }: BookSearchPro
         <div ref={loadMoreRef} style={{ height: 1 }} />
         <div className ="mb-10"></div>
       </div>
-      
+      ) }
     </div>
   )
 }
