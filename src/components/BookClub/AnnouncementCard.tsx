@@ -235,20 +235,13 @@ function AnnouncementCardItem({
 
         <div className="mt-[9px]">
         {item.tag === '공지' && (
-          <div className="
-            font-pretendard      
+          <div className="   
             font-normal           
             text-[12px]           
-            leading-[145%]        
-            tracking-[-0.1%]      
             text-[#000000]
             space-y-[4px]    
              ">
-            <p className="font-pretendard font-normal text-[12px] leading-[145%] tracking-[-0.1%]">{item.announcementTitle}</p>
-            <p className="mt-[24px] font-pretendard font-normal text-[12px] leading-[145%] tracking-[-0.1%] whitespace-pre-line">{item.announcement}</p>
-            <div className="absolute top-[80px] right-[24px]">
-             <img src={arrow} alt="icon" className="w-[24px] h-[24px] -mt-2" />
-            </div>
+            <p className="mt-[24px] font-normal text-[12px] whitespace-pre-line">{item.announcement}</p>
           </div>
         )}
         </div>
