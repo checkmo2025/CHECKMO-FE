@@ -1,11 +1,13 @@
-import AnnouncementCard, { type AnnouncementCardProps } from '../../components/BookClub/AnnouncementCard';
-import AnnouncementList, { type AnnouncementListItemProps } from '../../components/BookClub/AnnouncementList';
+import AnnouncementCard from '../../components/BookClub/AnnouncementCard';
+import AnnouncementList from '../../components/BookClub/AnnouncementList';
+import type { AnnouncementProps } from '../../types/announcement';
 import checkerImage from "../../assets/images/checker.png";
 import Header from '../../components/Header';
 
 export default function HomePage(): React.ReactElement {
+  console.log('NoticePage rendering...');
   // 공지사항 더미 데이터
-  const dummyAnnouncements: AnnouncementCardProps[] = [
+  const dummyAnnouncements: AnnouncementProps[] = [
     {
       id: 1,
       title: '북적북적',
@@ -22,12 +24,12 @@ export default function HomePage(): React.ReactElement {
       meetingPlace: '홍대 9번 출구',
       afterPartyPlace: '반주시대',
       voteOptions: [
-        { label: '참여', value: 'yes' },
-        { label: '토론만 참여', value: 'talk' },
-        { label: '불참', value: 'no' },
+        { id: '1', label: '참여', value: 'yes' },
+        { id: '2', label: '토론만 참여', value: 'talk' },
+        { id: '3', label: '불참', value: 'no' },
       ],
-      onVoteSubmit: (selectedValue) => {
-        console.log(`Selected vote: ${selectedValue}`);
+      onVoteSubmit: (selectedValues: string[]) => {
+        console.log(`Selected votes: ${selectedValues}`);
         // 투표 처리 로직
       },
     },
@@ -54,18 +56,18 @@ export default function HomePage(): React.ReactElement {
       meetingPlace: '홍대 9번 출구',
       afterPartyPlace: '반주시대',
       voteOptions: [
-        { label: '참여', value: 'yes' },
-        { label: '토론만 참여', value: 'talk' },
-        { label: '불참', value: 'no' },
+        { id: '1', label: '참여', value: 'yes' },
+        { id: '2', label: '토론만 참여', value: 'talk' },
+        { id: '3', label: '불참', value: 'no' },
       ],
-      onVoteSubmit: (selectedValue) => {
-        console.log(`Selected vote: ${selectedValue}`);
+      onVoteSubmit: (selectedValues: string[]) => {
+        console.log(`Selected votes: ${selectedValues}`);
         // 투표 처리 로직
       },
     },
   ];
 
-  const listItems: AnnouncementListItemProps[] = [
+  const listItems: AnnouncementProps[] = [
     {
       id: 1,
       title: '05.24 | 토론 모임 (8)',
@@ -117,23 +119,25 @@ export default function HomePage(): React.ReactElement {
   ];
 
   return (
-    <div className="w-[1083px] flex-1 mt-[36px] ml-[52px] min-h-screen">
-      <Header pageTitle={'공지사항'} userProfile={{
+    <div className="w-full h-full">
+      <div className="flex-1 mt-[36px] ml-[52px] min-h-screen">
+        <Header pageTitle={'공지사항'} userProfile={{
           username: 'Dayoun',
           bio: '아 피곤하다.'
         }} 
         notifications={[]}
         customClassName="mt-15 mb-10"
       />
-        {/* 상단: 중요 공지사항 */}
-        <section>
-          <AnnouncementCard items={dummyAnnouncements.slice(0, 5)} />
-        </section>
+      {/* 상단: 중요 공지사항 */}
+      <section>
+        <AnnouncementCard items={dummyAnnouncements.slice(0, 5)} />
+      </section>
 
-        {/* 하단: 공지사항 목록*/}
-        <section className="mt-[43px]">
-          <AnnouncementList items={listItems} />
-        </section>
-      </div>
+      {/* 하단: 공지사항 목록*/}
+      <section className="mt-[43px]">
+        <AnnouncementList items={listItems} />
+      </section>
+    </div>
+  </div>
   );
 }
