@@ -18,7 +18,7 @@ const MeetingListPage = () => {
           bio: "re_turnto_oz",
         }}
         notifications={[]}
-        customClassName="mx-3 my-5"
+        customClassName="mt-[30px]"
       />
       
       {/* 모임 추가 */}
