@@ -17,6 +17,7 @@ import MyProfilePage from "./pages/Main/Info/My/MyProfilePage";
 import OthersProfilePage from "./pages/Main/Info/OthersProfilePage";
 import BookClubHomePage from "./pages/BookClub/BookClubHomePage"; // 북클럽 홈
 import NoticePage from "./pages/BookClub/NoticePage"; // 북클럽 공지사항
+import NoticeDetailPage from "./pages/BookClub/NoticeDetailPage"; // 공지사항 상세 (통합)
 import ClubSearchPage from "./pages/Main/ClubSearchPage"; // 북클럽 검색
 import CreateClubPage from "./pages/Main/CreateClubPage";
 import BookStorySearchPage from "./pages/Main/BookStory/BookStorySearchPage";
@@ -35,8 +36,12 @@ import GroupManagementPage from "./pages/Manage/GroupManagementPage";
 import MeetingDetailPage from "./pages/Meeting/MeetingDetailPage";
 import CreateMeetingPage from "./pages/Meeting/CreateMeetingPage";
 import MeetingTopicListPage from "./pages/Meeting/MeetingTopicListPage";
+import NoticeManagementPage from "./pages/Manage/NoticeManagementPage";
+import EditClubPage from "./pages/BookClub/Club/ClubEditPage";
+import BookClubAdminPage from "./pages/Admin/BookClubAdminPage";
+import MemberAdminPage from "./pages/Admin/MemberAdminPage";
+import RegisterAdminPage from "./pages/Admin/RegisterAdminPage";
 import MeetingTeamTopicListPage from "./pages/Meeting/MeetingTeamTopicListPage";
-
 
 const App = () => {
   return (
@@ -56,11 +61,17 @@ const App = () => {
               path="/info/others/:userId"
               element={<OthersProfilePage />}
             />
+            <Route
+              path="/info/others/:userId"
+              element={<OthersProfilePage />}
+            />
             <Route path="/createClub" element={<CreateClubPage />} />
 
             {/* 운영진 */}
             <Route path="manage">
               <Route path="group" element={<GroupManagementPage />} />
+              <Route path="notices" element={<NoticeManagementPage />} />{" "}
+              {/* 임시 */}
             </Route>
 
             {/* 마이페이지 */}
@@ -87,6 +98,8 @@ const App = () => {
             <Route path=":bookclubId" element={<Layout />}>
               <Route path="home" element={<BookClubHomePage />} />
               <Route path="notices" element={<NoticePage />} />
+              <Route path="edit" element={<EditClubPage />} />
+              <Route path="notices/:noticeId" element={<NoticeDetailPage />} />
 
               {/* 책장 */}
               <Route path="shelf">
@@ -101,7 +114,6 @@ const App = () => {
                   element={<ScoreDetailPage />}
                 />
               </Route>
-
               {/* 책 추천 */}
               <Route path="recommend">
                 <Route index element={<BookRecommendPage />} />
@@ -115,7 +127,6 @@ const App = () => {
                 />
                 <Route path="search" element={<BookRecommendSearchPage />} />
               </Route>
-
               {/* 책 모임 */}
               <Route path="meeting">
                 <Route index element={<MeetingListPage />} />
@@ -129,6 +140,13 @@ const App = () => {
                   path=":meetingId/teamTopic/:teamId"
                   element={<MeetingTeamTopicListPage />}
                 />
+              </Route>
+
+              {/* 관리자 페이지 */}
+              <Route path="admin">
+                <Route index element={<BookClubAdminPage />} />
+                <Route path="member" element={<MemberAdminPage />} />
+                <Route path="register" element={<RegisterAdminPage />} />
               </Route>
             </Route>
           </Route>

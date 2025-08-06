@@ -9,7 +9,6 @@ interface Props {
   searchBook: SearchBook;
 }
 
-
 export default function SearchedBookModal({ isOpen, onClose, searchBook}: Props) {
   const navigate = useNavigate();
   if (!isOpen) return null;
