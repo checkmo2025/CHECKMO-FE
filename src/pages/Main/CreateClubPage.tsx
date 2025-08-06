@@ -108,7 +108,7 @@ export default function CreateClubPage(): React.ReactElement {
         customClassName="mt-[60px]"
       />
 
-      <div className="mt-8 flex flex-col items-center">
+      <div className="mt-8 flex flex-col items-center overflow-y-auto h-[calc(100vh-120px)] w-full pb-[80px]">
         {/* 모임 이름 + 중복확인 버튼 */}
         <div className="mt-[36px]">
           <label className="font-pretendard font-medium text-[18px] leading-[135%] tracking-[-0.1%]">
@@ -343,7 +343,7 @@ export default function CreateClubPage(): React.ReactElement {
         </div>
         
         {/* 하단 여백 */}
-        <div className="h-[100px]"></div>
+        <div className="h-[20px]"></div>
       </div>
     </div>
   );

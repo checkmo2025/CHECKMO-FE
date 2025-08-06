@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from "react";
-import { FiBell } from "react-icons/fi";
+import { FaBell } from "react-icons/fa";
 import { useNavigate } from "react-router-dom"; 
+import { FaCircleCheck } from "react-icons/fa6";
 
 type Notification = {
   message: string;
@@ -17,6 +18,7 @@ interface HeaderProps {
   userProfile?: UserProfile;
   notifications?: Notification[];
   customClassName?: string;        // 커스텀으로 각자 페이지에서 조정 가능
+  isAdmin?: boolean;    // 운영자 여부 prop 추가
 }
 
 // 기본 더미 데이터
@@ -39,6 +41,7 @@ const Header = (props: HeaderProps) => {
     userProfile = defaultUserProfile,
     notifications = defaultNotifications,
     customClassName,
+    isAdmin = false, // 운영자인 경우 true로 쓰면 됨
   } = props;
 
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -83,7 +86,7 @@ const Header = (props: HeaderProps) => {
           aria-label="Notifications"
           className="w-8 h-8 flex justify-center items-center shrink-0"
         >
-          <FiBell size={36} color="#90D26D" />
+          <FaBell size={32} color="#90D26D" />
         </button>
 
         {/* 알림 모달 */}
@@ -120,9 +123,14 @@ const Header = (props: HeaderProps) => {
         >
           <div className="w-10 h-10 bg-gray-300 rounded-full shrink-0" />
           <div className="flex flex-col justify-center min-w-0">
-            <span className="text-sm md:text-base font-semibold text-[#2C2C2C] truncate">
-              {userProfile.username}
-            </span>
+            <div className="flex items-center gap-3">
+              <span className="text-sm md:text-base font-semibold text-[#2C2C2C] truncate">
+                {userProfile.username}
+              </span>
+              {isAdmin && (
+                <FaCircleCheck size={16} color="#90D26D" /> // 운영자일 때만 체크표시
+              )}
+            </div>
             <span className="text-xs md:text-sm text-[#8D8D8D] truncate">
               {userProfile.bio}
             </span>
