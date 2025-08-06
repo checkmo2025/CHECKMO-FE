@@ -36,6 +36,7 @@ import GroupManagementPage from "./pages/Manage/GroupManagementPage";
 import MeetingDetailPage from "./pages/Meeting/MeetingDetailPage";
 import CreateMeetingPage from "./pages/Meeting/CreateMeetingPage";
 import MeetingTopicListPage from "./pages/Meeting/MeetingTopicListPage";
+import EditClubPage from "./pages/BookClub/Club/ClubEditPage";
 import BookClubAdminPage from "./pages/Admin/BookClubAdminPage";
 import MemberAdminPage from "./pages/Admin/MemberAdminPage";
 import RegisterAdminPage from "./pages/Admin/RegisterAdminPage";
@@ -93,6 +94,7 @@ const App = () => {
             <Route path=":bookclubId" element={<Layout />}>
               <Route path="home" element={<BookClubHomePage />} />
               <Route path="notices" element={<NoticePage />} />
+              <Route path="edit" element={<EditClubPage />} />
               <Route path="notices/:noticeId" element={<NoticeDetailPage />} />
 
               {/* 책장 */}
