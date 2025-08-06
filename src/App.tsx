@@ -36,6 +36,7 @@ import GroupManagementPage from "./pages/Manage/GroupManagementPage";
 import MeetingDetailPage from "./pages/Meeting/MeetingDetailPage";
 import CreateMeetingPage from "./pages/Meeting/CreateMeetingPage";
 import MeetingTopicListPage from "./pages/Meeting/MeetingTopicListPage";
+import NoticeManagementPage from "./pages/Manage/NoticeManagementPage";
 
 
 const App = () => {
@@ -61,6 +62,7 @@ const App = () => {
             {/* 운영진 */}
             <Route path="manage">
               <Route path="group" element={<GroupManagementPage />} />
+              <Route path="notices" element={<NoticeManagementPage />} /> {/* 임시 */}
             </Route>
 
             {/* 마이페이지 */}

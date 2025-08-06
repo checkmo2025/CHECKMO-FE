@@ -39,7 +39,7 @@ export default function AnnouncementList({
           key={item.id}
           onClick={() => handleItemClick(item)}
           className="
-            w-[1083px] h-[204px]
+            w-full h-[204px]
             relative flex items-start
             bg-white border-[2px] border-[#EAE5E2] rounded-[16px]
             cursor-pointer
