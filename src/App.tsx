@@ -36,7 +36,9 @@ import GroupManagementPage from "./pages/Manage/GroupManagementPage";
 import MeetingDetailPage from "./pages/Meeting/MeetingDetailPage";
 import CreateMeetingPage from "./pages/Meeting/CreateMeetingPage";
 import MeetingTopicListPage from "./pages/Meeting/MeetingTopicListPage";
-
+import BookClubAdminPage from "./pages/Admin/BookClubAdminPage";
+import MemberAdminPage from "./pages/Admin/MemberAdminPage";
+import RegisterAdminPage from "./pages/Admin/RegisterAdminPage";
 
 const App = () => {
   return (
@@ -52,6 +54,10 @@ const App = () => {
             <Route path="/home" element={<HomePage />} />
             <Route path="/booksearch" element={<SearchPage />} />
             <Route path="/searchClub" element={<ClubSearchPage />} />
+            <Route
+              path="/info/others/:userId"
+              element={<OthersProfilePage />}
+            />
             <Route
               path="/info/others/:userId"
               element={<OthersProfilePage />}
@@ -86,7 +92,7 @@ const App = () => {
           <Route path="/bookclub">
             <Route path=":bookclubId" element={<Layout />}>
               <Route path="home" element={<BookClubHomePage />} />
-              <Route path="notices" element={<NoticePage />} /> 
+              <Route path="notices" element={<NoticePage />} />
               <Route path="notices/:noticeId" element={<NoticeDetailPage />} />
 
               {/* 책장 */}
@@ -102,7 +108,6 @@ const App = () => {
                   element={<ScoreDetailPage />}
                 />
               </Route>
-
               {/* 책 추천 */}
               <Route path="recommend">
                 <Route index element={<BookRecommendPage />} />
@@ -116,7 +121,6 @@ const App = () => {
                 />
                 <Route path="search" element={<BookRecommendSearchPage />} />
               </Route>
-
               {/* 책 모임 */}
               <Route path="meeting">
                 <Route index element={<MeetingListPage />} />
@@ -126,6 +130,13 @@ const App = () => {
                   path=":meetingId/topics"
                   element={<MeetingTopicListPage />}
                 />
+              </Route>
+
+              {/* 관리자 페이지 */}
+              <Route path="admin">
+                <Route index element={<BookClubAdminPage />} />
+                <Route path="member" element={<MemberAdminPage />} />
+                <Route path="register" element={<RegisterAdminPage />} />
               </Route>
             </Route>
           </Route>
