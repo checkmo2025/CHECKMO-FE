@@ -3,8 +3,6 @@ import { useState } from 'react';
 import BookSearch from '../../components/Search/BookSearch';
 import type { SearchBook, Action } from '../../types/BookSearchdto';
 import { useNavigate } from 'react-router-dom';
-import { ChipToggleGroup } from '../../components/CreateClub/ChipToggleGroup';
-import { BOOK_CATEGORIES } from '../../types/dto';
 
 import type {CreateMeetingRequest} from '../../types/Meeting/CreateMeetingdto';
 
@@ -12,10 +10,8 @@ export default function CreateMeetingPage() {
   const navigate = useNavigate();
 
   const [isSelected, setIsSelected]     = useState(false);
-  const BOOK_CATEGORY_OPTIONS = Object.values(BOOK_CATEGORIES);
-
   const [selectedBook, setSelectedBook] = useState<SearchBook | null>(null);
-  const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
+  const [selectedCategories, setSelectedCategories] = useState<string>('');
   const [generation, setgeneration] = useState<string>('');
   const [meetingTime, setMeetingTime] = useState<string>('');
   const [location, setLocation] = useState<string>('');
@@ -133,13 +129,16 @@ export default function CreateMeetingPage() {
         <label className="font-pretendard font-medium text-[18px] leading-[135%] tracking-[-0.1%] px-[6.5px]">
           종류
         </label>
-        <div className="mt-[16px] max-w-[400px] flex-1 justify-center items-center  ">
-           <ChipToggleGroup
-             options={BOOK_CATEGORY_OPTIONS}
-             selected={selectedCategories}
-             onToggle={(cat) => {
-             setSelectedCategories(prev => prev[0] === cat ? []  : [cat] );
-            }}/>
+        <div className="flex items-center h-[53px] py-[10px] px-[10px] rounded-2xl bg-[var(--Color-4,#F4F2F1)] mt-3">
+          <input type="text" placeholder="최대 6글자로 입력해주세요."  
+          className=" text-[18px] mx-[14px] font-pretendard font-medium bg-transparent outline-none flex-1 leading-[135%] tracking-[-0.1%] text-[var(--Gray-1,#2C2C2C)] ]"
+          value={selectedCategories}
+          maxLength={6}
+          onChange={e => {
+            const v = e.target.value.slice(0, 6);
+            setSelectedCategories(v);
+          }}
+          />
         </div>
       </div>
 
