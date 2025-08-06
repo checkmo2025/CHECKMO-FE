@@ -119,25 +119,27 @@ export default function HomePage(): React.ReactElement {
   ];
 
   return (
-    <div className="w-full h-full">
-      <div className="flex-1 mt-[36px] ml-[52px] min-h-screen">
-        <Header pageTitle={'공지사항'} userProfile={{
-          username: 'Dayoun',
-          bio: '아 피곤하다.'
-        }} 
-        notifications={[]}
-        customClassName="mt-15 mb-10"
+    <div className="w-full h-screen flex flex-col">
+      <Header pageTitle={'공지사항'} userProfile={{
+        username: 'Dayoun',
+        bio: '아 피곤하다.'
+      }} 
+      notifications={[]}
+      customClassName="mt-[30px] ml-[52px] mr-[41px] mb-[36px]"
       />
-      {/* 상단: 중요 공지사항 */}
-      <section>
-        <AnnouncementCard items={dummyAnnouncements.slice(0, 5)} />
-      </section>
 
-      {/* 하단: 공지사항 목록*/}
-      <section className="mt-[43px]">
-        <AnnouncementList items={listItems} />
-      </section>
+      {/* 메인 컨텐츠 - 남은 공간을 모두 사용하며 스크롤 */}
+      <div className="flex-1 overflow-y-auto ml-[52px] mr-4 pb-8">
+        {/* 상단: 중요 공지사항 */}
+        <section className="mb-6">
+          <AnnouncementCard items={dummyAnnouncements.slice(0, 5)} />
+        </section>
+
+        {/* 하단: 공지사항 목록*/}
+        <section className="mt-[43px]">
+          <AnnouncementList items={listItems} />
+        </section>
+      </div>
     </div>
-  </div>
   );
 }
