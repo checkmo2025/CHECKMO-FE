@@ -3,8 +3,8 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import BookSearch from "../../components/Search/BookSearch";
 import type { SearchBook, Action } from "../../types/BookSearchdto";
-import Header from "../../components/Header"
-import SearchedBookModal from "../../components/Search/SearchedBookModal"
+import Header from "../../components/Header";
+import SearchedBookModal from "../../components/Search/SearchedBookModal";
 
 export default function SearchPage() {
   const navigate = useNavigate();
@@ -52,8 +52,13 @@ export default function SearchPage() {
           </div>
         </div>
       </div>
-      {bookDetail && <SearchedBookModal isOpen={isOpen} onClose={() => setIsOpen(false)} searchBook={bookDetail} /> }
-      </div>
+      {bookDetail && (
+        <SearchedBookModal
+          isOpen={isOpen}
+          onClose={() => setIsOpen(false)}
+          searchBook={bookDetail}
+        />
+      )}
     </div>
   );
 }

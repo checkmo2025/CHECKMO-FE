@@ -1,13 +1,16 @@
 import React from "react";
-import { useParams } from "react-router-dom";
-import { Trash2, Edit2 } from "lucide-react";
+import { useParams, useNavigate } from "react-router-dom";
+import { Trash2, Edit2, Heart, AlertCircle } from "lucide-react";
+import backIcon from "../../../assets/icons/backIcon.png";
+
+const currentUser = "hy";
 
 const dummyData = [
   {
     id: 1,
     title: "나는 나이든 왕자다",
     author: "hy",
-    description: "...",
+    description: "어린 왕자는 ...",
     isSubscribed: true,
     likeCount: 12,
     bookInfo: {
@@ -19,7 +22,7 @@ const dummyData = [
     id: 2,
     title: "두 번째 이야기",
     author: "kim",
-    description: "...",
+    description: "두 번째 책에 대한 이야기입니다.",
     isSubscribed: false,
     likeCount: 5,
     bookInfo: {
@@ -31,11 +34,10 @@ const dummyData = [
 
 export default function BookStoryDetailPage() {
   const { storyId } = useParams<{ storyId: string }>();
+  const navigate = useNavigate();
 
-  // storyId가 있을 때 해당 데이터 찾기
   const story = dummyData.find((item) => item.id === Number(storyId));
 
-  // 만약 찾지 못하면 간단히 메시지 띄우기
   if (!story) {
     return <div>해당 스토리를 찾을 수 없습니다.</div>;
   }
@@ -43,46 +45,78 @@ export default function BookStoryDetailPage() {
   const { title, author, description, isSubscribed, likeCount, bookInfo } =
     story;
 
+  const isMyStory = author === currentUser;
+
   return (
     <div>
       <div className="pt-10 pl-10">
-        <button className="text-lg font-semibold mb-4">{`< ${title}`}</button>
+        <button
+          onClick={() => navigate(-1)}
+          className="flex items-center gap-2 text-lg font-semibold mb-4"
+          type="button"
+        >
+          <img src={backIcon} alt="뒤로가기" className="w-5 h-5" />
+          {title}
+        </button>
       </div>
-      <div className="flex gap-8 p-8 max-w-5xl mx-auto">
-        <div className="w-64 h-80 rounded-xl bg-gray-200" />
-        <div className="flex flex-col flex-1">
-          <div className="flex items-center gap-2 mb-6">
-            <div className="w-10 h-10 rounded-full bg-gray-300 flex items-center justify-center text-gray-600 font-semibold">
-              {author}
-            </div>
-            <span className="text-base font-semibold">{author}</span>
-          </div>
-          <h1 className="text-2xl font-semibold mb-4">{title}</h1>
-          <button
-            className={`w-24 py-1 rounded-full text-sm font-semibold ${
-              isSubscribed
-                ? "bg-brown-500 text-white"
-                : "border border-brown-500 text-brown-500"
-            } mb-6`}
-          >
-            {isSubscribed ? "구독 중" : "구독하기"}
-          </button>
 
-          <p className="text-sm leading-relaxed whitespace-pre-line mb-6">
-            {description}
-          </p>
-          <div className="flex items-center justify-between text-gray-400 text-xs">
-            <div>
-              도서 : {bookInfo.name} | {bookInfo.author}
-            </div>
+      <div className="pl-10 mt-12 max-w-5xl mx-auto">
+        <div className="flex items-center gap-2 mb-6">
+          <div className="w-10 h-10 rounded-full bg-gray-300 flex items-center justify-center text-gray-600 font-semibold"></div>
+          <span className="text-base font-semibold">{author}</span>
+        </div>
 
-            <div className="flex items-center gap-4">
-              <button>
-                <Trash2 size={16} />
+        <div className="flex gap-8">
+          {/* 이미지 영역 */}
+          <div className="w-64 h-80 rounded-xl bg-gray-200" />
+
+          {/* 텍스트 영역: 이미지와 높이 맞추기 위해 h-80 동일하게 고정 */}
+          <div className="flex flex-col flex-1 h-80">
+            <h1 className="text-2xl font-semibold mb-4">{title}</h1>
+            {!isMyStory && (
+              <button
+                className={`w-24 py-1 rounded-full text-sm font-semibold ${
+                  isSubscribed
+                    ? "bg-brown-500 text-white"
+                    : "border border-brown-500 text-brown-500"
+                } mb-6`}
+              >
+                {isSubscribed ? "구독 중" : "구독하기"}
               </button>
-              <button>
-                <Edit2 size={16} />
-              </button>
+            )}
+
+            <p className="text-sm leading-relaxed whitespace-pre-line mb-6">
+              {description}
+            </p>
+            <div className="flex-grow" />
+
+            {/* 하단 정보 및 아이콘 */}
+            <div className="flex items-center justify-between text-gray-400 text-xs">
+              <div>
+                도서 : {bookInfo.name} | {bookInfo.author}
+              </div>
+              <div className="flex items-center gap-4">
+                {isMyStory ? (
+                  <>
+                    <button>
+                      <Trash2 size={16} />
+                    </button>
+                    <button>
+                      <Edit2 size={16} />
+                    </button>
+                  </>
+                ) : (
+                  <>
+                    <div className="flex items-center gap-1 text-sm text-gray-600">
+                      <Heart size={16} />
+                      <span>{likeCount}</span>
+                    </div>
+                    <button>
+                      <AlertCircle size={16} />
+                    </button>
+                  </>
+                )}
+              </div>
             </div>
           </div>
         </div>
