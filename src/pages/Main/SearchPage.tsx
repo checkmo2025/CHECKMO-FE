@@ -50,7 +50,6 @@ export default function SearchPage() {
           <div className="">
             <BookSearch SearchResultHeight={235} actions={actions} />
           </div>
-
         </div>
       </div>
       {bookDetail && <SearchedBookModal isOpen={isOpen} onClose={() => setIsOpen(false)} searchBook={bookDetail} /> }
