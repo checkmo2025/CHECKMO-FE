@@ -51,9 +51,9 @@ const MemberAdminPage = () => {
 
       {/* 멤버 리스트 */}
       <ul className="space-y-4">
-        {mockMembers.map((member, idx) => (
+        {mockMembers.map((member) => (
           <li
-            key={idx}
+            key={member.id}
             style={{ borderBottom: "1px solid #EAE5E2" }}
             className="flex items-center justify-between pb-4"
           >

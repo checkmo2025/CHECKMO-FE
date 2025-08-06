@@ -4,7 +4,7 @@ import { useNavigate, useParams } from "react-router-dom";
 
 const BookClubAdminPage = () => {
   const navigate = useNavigate();
-  const bookclubId = useParams();
+  const { bookclubId } = useParams();
 
   return (
     <div className="p-6">
