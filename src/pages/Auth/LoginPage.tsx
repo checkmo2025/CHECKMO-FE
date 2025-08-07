@@ -186,7 +186,7 @@ const LoginPage = () => {
           {/* 로그인 버튼 */}
           <button
             onClick={handleLogin}
-            className="w-full bg-[#90D26D] text-white py-3 rounded mt-6 transition hover:opacity-90"
+            className="w-full bg-[#90D26D] text-white py-3 rounded mt-6 transition hover:opacity-90 cursor-pointer"
           >
             로그인
           </button>
@@ -195,7 +195,7 @@ const LoginPage = () => {
           <div className="flex justify-center mt-3 text-sm">
             <button
               onClick={goToSignup}
-              className="hover:underline font-medium text-[#2C2C2C]"
+              className="hover:underline font-medium text-[#2C2C2C] cursor-pointer"
             >
               회원가입
             </button>
@@ -215,7 +215,7 @@ const LoginPage = () => {
             {/* Kakao Login 버튼 (SDK 내장형) */}
             <button
               onClick={handleKakaoLogin}
-              className="flex items-center justify-center gap-2 bg-[#FEE500] hover:opacity-90 text-[#2C2C2C] font-bold py-2 px-4 rounded w-52 shadow"
+              className="flex items-center justify-center gap-2 bg-[#FEE500] hover:opacity-90 text-[#2C2C2C] font-bold py-2 px-4 rounded w-52 shadow cursor-pointer"
             >
               <img
                 src="/assets/kakao-logo.png"
