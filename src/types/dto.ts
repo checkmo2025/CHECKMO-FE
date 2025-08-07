@@ -18,15 +18,6 @@ export interface AuthorDto {
   profileImageUrl: string;
 }
 
-export type RecommendationDto = {
-  recommendId: number;
-  bookInfo: BookDto;
-  memberInfo: MemberDto;
-  content: string; // 추천평 미리보기
-  rate: number;
-  createdAt: Date;
-};
-
 export type ClubDto = {
   clubId?: number; // 생성 시에는 없고, 조회 시에는 있음
   name: string;
