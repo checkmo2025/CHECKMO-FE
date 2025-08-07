@@ -22,18 +22,18 @@ const MyPageHeader = (props: MyPageHeaderProps) => {
 
   return (
     <>
-      <header className="flex justify-between items-center px-10 py-6 bg-white border-b border-gray-200">
+      <header className="fixed top-0 left-[264px] right-0 z-50 px-10 py-6 bg-white border-b border-gray-200 w-[calc(100%-264px)] flex items-center justify-between">
         <h1 className="text-2xl font-bold text-[#2C2C2C]">{title}</h1>
         <div className="flex items-center gap-3 text-m">
           <button
-            className="text-[#2C2C2C] hover:text-[#90D26D]"
+            className="text-[#2C2C2C] hover:text-[#90D26D] cursor-pointer"
             onClick={() => navigate("/mypage/myprofile")}
           >
             프로필 편집
           </button>
           <span className="text-[#90D26D]">|</span>
           <button
-            className="text-[#2C2C2C] hover:text-[#90D26D]"
+            className="text-[#2C2C2C] hover:text-[#90D26D] cursor-pointer"
             onClick={handleLogout}
           >
             로그아웃

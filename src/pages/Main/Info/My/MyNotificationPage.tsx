@@ -2,7 +2,7 @@ import { useState, useEffect, useRef, useCallback } from "react";
 import MyPageHeader from "../../../../components/MyPageHeader";
 
 type Notification = {
-  id: string; 
+  id: string;
   sender: string;
   content: string;
   timestamp: string;
@@ -18,7 +18,7 @@ const MyNotificationPage = () => {
 
   const generateDummyNotifications = (pageNum: number): Notification[] => {
     const dummy: Notification[] = [];
-    const baseTime = Date.now(); 
+    const baseTime = Date.now();
 
     for (let i = 0; i < 5; i++) {
       const id = `${pageNum}-${i}-${baseTime}`;
@@ -36,14 +36,11 @@ const MyNotificationPage = () => {
   const loadMoreNotifications = async () => {
     if (isFetching || !hasMore) return;
     setIsFetching(true);
-
-    await new Promise((res) => setTimeout(res, 500)); // 지연
-
+    await new Promise((res) => setTimeout(res, 500));
     const newNotifications = generateDummyNotifications(page);
     setNotifications((prev) => [...prev, ...newNotifications]);
     setPage((prev) => prev + 1);
-
-    if (page >= 3) setHasMore(false); // 총 3페이지까지만
+    if (page >= 3) setHasMore(false);
     setIsFetching(false);
   };
 
@@ -74,123 +71,128 @@ const MyNotificationPage = () => {
   };
 
   return (
-    <div className="flex w-full min-h-screen bg-[#FAFAFA]">
-      <main className="flex-1">
-        <MyPageHeader title="내 알림" />
-
-        <div className="px-10 py-8 space-y-8">
-          {/* 오늘 */}
-          <div className="flex justify-between items-center">
-            <h3 className="text-[20px] font-semibold text-[#2C2C2C]">오늘</h3>
-            <button
-              className="text-[#8D8D8D] text-sm hover:underline"
-              onClick={() => alert("알림 설정 페이지로 이동 예정")}
-            >
-              알림 설정
-            </button>
-          </div>
-
-          <div className="bg-white rounded-[8px]">
-            {notifications.filter((n, i) => i < 3).map((n, idx, arr) => (
-              <div
-                key={n.id}
-                className={`flex justify-between items-center px-6 py-4 cursor-pointer ${
-                  idx !== arr.length - 1 ? "border-b border-[#EAE5E2]" : ""
-                }`}
-                onClick={() => handleNotificationClick(n)}
+    <div className="flex w-full h-screen bg-[#FAFAFA] overflow-hidden">
+      <MyPageHeader title="내 알림" />
+      <div className="flex-1 flex flex-col pt-[88px] overflow-hidden">
+        <main className="flex-1 overflow-y-auto">
+          <div className="px-10 py-8 space-y-8">
+            {/* 오늘 */}
+            <div className="flex justify-between items-center">
+              <h3 className="text-[20px] font-semibold text-[#2C2C2C]">오늘</h3>
+              <button
+                className="text-[#8D8D8D] text-sm hover:underline"
+                onClick={() => alert("알림 설정 페이지로 이동 예정")}
               >
-                <div className="flex items-center gap-3">
-                  <div
-                    className={`w-[15px] h-[15px] rounded-full ${
-                      n.isRead ? "bg-gray-300" : "bg-[#90D26D]"
-                    }`}
-                  />
-                  <div>
-                    <p className="text-[14px] text-[#2C2C2C]">
-                      {n.sender}{" "}
-                      <span className="font-medium">{n.content}</span>
-                    </p>
-                    <p className="text-[12px] text-[#8D8D8D]">{n.timestamp}</p>
+                알림 설정
+              </button>
+            </div>
+
+            <div className="bg-white rounded-[8px]">
+              {notifications.filter((n, i) => i < 3).map((n, idx, arr) => (
+                <div
+                  key={n.id}
+                  className={`flex justify-between items-center px-6 py-4 cursor-pointer ${
+                    idx !== arr.length - 1 ? "border-b border-[#EAE5E2]" : ""
+                  }`}
+                  onClick={() => handleNotificationClick(n)}
+                >
+                  <div className="flex items-center gap-3">
+                    <div
+                      className={`w-[15px] h-[15px] rounded-full ${
+                        n.isRead ? "bg-gray-300" : "bg-[#90D26D]"
+                      }`}
+                    />
+                    <div>
+                      <p className="text-[14px] text-[#2C2C2C]">
+                        {n.sender}{" "}
+                        <span className="font-medium">{n.content}</span>
+                      </p>
+                      <p className="text-[12px] text-[#8D8D8D]">{n.timestamp}</p>
+                    </div>
                   </div>
                 </div>
+              ))}
+            </div>
+
+            {/* 어제 */}
+            <section>
+              <h3 className="text-[20px] font-semibold text-[#2C2C2C] mb-4">어제</h3>
+              <div className="bg-white rounded-[8px]">
+                {notifications
+                  .filter((_, i) => i >= 3 && i < 6)
+                  .map((n, idx, arr) => (
+                    <div
+                      key={n.id}
+                      className={`flex justify-between items-center px-6 py-4 cursor-pointer ${
+                        idx !== arr.length - 1 ? "border-b border-[#EAE5E2]" : ""
+                      }`}
+                      onClick={() => handleNotificationClick(n)}
+                    >
+                      <div className="flex items-center gap-3">
+                        <div
+                          className={`w-[15px] h-[15px] rounded-full ${
+                            n.isRead ? "bg-gray-300" : "bg-[#90D26D]"
+                          }`}
+                        />
+                        <div>
+                          <p className="text-[14px] text-[#2C2C2C]">
+                            {n.sender}{" "}
+                            <span className="font-medium">{n.content}</span>
+                          </p>
+                          <p className="text-[12px] text-[#8D8D8D]">{n.timestamp}</p>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
               </div>
-            ))}
+            </section>
+
+            {/* 최근 7일 */}
+            <section>
+              <h3 className="text-[20px] font-semibold text-[#2C2C2C] mb-4">최근 7일</h3>
+              <div className="bg-white rounded-[8px]">
+                {notifications
+                  .filter((_, i) => i >= 6)
+                  .map((n, idx, arr) => (
+                    <div
+                      key={n.id}
+                      ref={idx === arr.length - 1 ? lastElementRef : null}
+                      className={`flex justify-between items-center px-6 py-4 cursor-pointer ${
+                        idx !== arr.length - 1 ? "border-b border-[#EAE5E2]" : ""
+                      }`}
+                      onClick={() => handleNotificationClick(n)}
+                    >
+                      <div className="flex items-center gap-3">
+                        <div
+                          className={`w-[15px] h-[15px] rounded-full ${
+                            n.isRead ? "bg-gray-300" : "bg-[#90D26D]"
+                          }`}
+                        />
+                        <div>
+                          <p className="text-[14px] text-[#2C2C2C]">
+                            {n.sender}{" "}
+                            <span className="font-medium">{n.content}</span>
+                          </p>
+                          <p className="text-[12px] text-[#8D8D8D]">{n.timestamp}</p>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+              </div>
+            </section>
+
+            {/* 상태 메시지 */}
+            {isFetching && (
+              <p className="text-center text-gray-400">불러오는 중...</p>
+            )}
+            {!hasMore && !isFetching && (
+              <p className="text-center text-gray-400 mt-4">
+                더 이상 알림이 없습니다.
+              </p>
+            )}
           </div>
-
-          {/* 어제 */}
-          <section>
-            <h3 className="text-[20px] font-semibold text-[#2C2C2C] mb-4">어제</h3>
-            <div className="bg-white rounded-[8px]">
-              {notifications.filter((_, i) => i >= 3 && i < 6).map((n, idx, arr) => (
-                <div
-                  key={n.id}
-                  className={`flex justify-between items-center px-6 py-4 cursor-pointer ${
-                    idx !== arr.length - 1 ? "border-b border-[#EAE5E2]" : ""
-                  }`}
-                  onClick={() => handleNotificationClick(n)}
-                >
-                  <div className="flex items-center gap-3">
-                    <div
-                      className={`w-[15px] h-[15px] rounded-full ${
-                        n.isRead ? "bg-gray-300" : "bg-[#90D26D]"
-                      }`}
-                    />
-                    <div>
-                      <p className="text-[14px] text-[#2C2C2C]">
-                        {n.sender}{" "}
-                        <span className="font-medium">{n.content}</span>
-                      </p>
-                      <p className="text-[12px] text-[#8D8D8D]">{n.timestamp}</p>
-                    </div>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </section>
-
-          {/* 최근 7일 */}
-          <section>
-            <h3 className="text-[20px] font-semibold text-[#2C2C2C] mb-4">최근 7일</h3>
-            <div className="bg-white rounded-[8px]">
-              {notifications.filter((_, i) => i >= 6).map((n, idx, arr) => (
-                <div
-                  key={n.id}
-                  ref={idx === arr.length - 1 ? lastElementRef : null}
-                  className={`flex justify-between items-center px-6 py-4 cursor-pointer ${
-                    idx !== arr.length - 1 ? "border-b border-[#EAE5E2]" : ""
-                  }`}
-                  onClick={() => handleNotificationClick(n)}
-                >
-                  <div className="flex items-center gap-3">
-                    <div
-                      className={`w-[15px] h-[15px] rounded-full ${
-                        n.isRead ? "bg-gray-300" : "bg-[#90D26D]"
-                      }`}
-                    />
-                    <div>
-                      <p className="text-[14px] text-[#2C2C2C]">
-                        {n.sender}{" "}
-                        <span className="font-medium">{n.content}</span>
-                      </p>
-                      <p className="text-[12px] text-[#8D8D8D]">{n.timestamp}</p>
-                    </div>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </section>
-
-          {/* 상태 메시지 */}
-          {isFetching && (
-            <p className="text-center text-gray-400">불러오는 중...</p>
-          )}
-          {!hasMore && !isFetching && (
-            <p className="text-center text-gray-400 mt-4">
-              더 이상 알림이 없습니다.
-            </p>
-          )}
-        </div>
-      </main>
+        </main>
+      </div>
     </div>
   );
 };

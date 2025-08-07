@@ -25,7 +25,7 @@ const MyGroupPage = () => {
     if (isFetching || !hasMore) return;
     setIsFetching(true);
 
-    await new Promise((resolve) => setTimeout(resolve, 500)); 
+    await new Promise((resolve) => setTimeout(resolve, 500));
 
     const newGroups: Group[] = Array.from({ length: 3 }, (_, idx) => ({
       id: (page - 1) * 3 + idx + 1,
@@ -41,7 +41,7 @@ const MyGroupPage = () => {
     setGroups((prev) => [...prev, ...newGroups]);
     setPage((prev) => prev + 1);
 
-    if (page >= 2) setHasMore(false); //무한스크롤 페이지 조정
+    if (page >= 2) setHasMore(false); // 무한스크롤 페이지 조정
     setIsFetching(false);
   };
 
@@ -78,69 +78,71 @@ const MyGroupPage = () => {
   };
 
   return (
-    <div className="flex w-full min-h-screen bg-[#FAFAFA]">
-      <main className="flex-1">
-        <MyPageHeader title="내 모임" />
+    <div className="flex w-full h-screen bg-[#FAFAFA] overflow-hidden">
+      <MyPageHeader title="내 모임" />
 
-        <div className="px-4 md:px-10 py-8 space-y-4 flex flex-col items-center">
-          {groups.map((group, idx) => (
-            <div
-              key={group.id}
-              ref={idx === groups.length - 1 ? lastElementRef : null}
-              className="w-full flex flex-col md:flex-row justify-between bg-white border border-[#EAE5E2] rounded-[16px] px-4 md:px-6 py-4 shadow-sm cursor-pointer hover:bg-[#FAFAFA]"
-              onClick={() => handleGroupClick(group.id)}
-            >
-              {/* 왼쪽: 프로필 사진 + 텍스트 */}
-              <div className="flex gap-4 md:gap-6">
-                <div className="bg-gray-200 rounded-[16px] overflow-hidden w-[80px] h-[80px] md:w-[119px] md:h-[119px] flex-shrink-0" />
+      <div className="flex-1 flex flex-col pt-[96px] overflow-hidden">
+        <main className="flex-1 overflow-y-auto">
+          <div className="px-4 md:px-10 py-8 space-y-4 flex flex-col items-center">
+            {groups.map((group, idx) => (
+              <div
+                key={group.id}
+                ref={idx === groups.length - 1 ? lastElementRef : null}
+                className="w-full flex flex-col md:flex-row justify-between bg-white border border-[#EAE5E2] rounded-[16px] px-4 md:px-6 py-4 shadow-sm cursor-pointer hover:bg-[#FAFAFA]"
+                onClick={() => handleGroupClick(group.id)}
+              >
+                {/* 왼쪽: 프로필 사진 + 텍스트 */}
+                <div className="flex gap-4 md:gap-6">
+                  <div className="bg-gray-200 rounded-[16px] overflow-hidden w-[80px] h-[80px] md:w-[119px] md:h-[119px] flex-shrink-0" />
 
-                <div className="flex flex-col justify-between">
-                  <div>
-                    <div className="flex gap-2 mb-2 md:mb-3">
-                      <span className="min-w-[48px] md:min-w-[54px] h-[22px] md:h-[24px] rounded-[15px] bg-[#90D26D] text-white text-[12px] md:text-[13px] flex items-center justify-center px-2">
-                        7기
-                      </span>
-                      <span className="min-w-[48px] md:min-w-[54px] h-[22px] md:h-[24px] rounded-[15px] bg-[#90D26D] text-white text-[12px] md:text-[13px] flex items-center justify-center px-2">
-                        사회
-                      </span>
+                  <div className="flex flex-col justify-between">
+                    <div>
+                      <div className="flex gap-2 mb-2 md:mb-3">
+                        <span className="min-w-[48px] md:min-w-[54px] h-[22px] md:h-[24px] rounded-[15px] bg-[#90D26D] text-white text-[12px] md:text-[13px] flex items-center justify-center px-2">
+                          7기
+                        </span>
+                        <span className="min-w-[48px] md:min-w-[54px] h-[22px] md:h-[24px] rounded-[15px] bg-[#90D26D] text-white text-[12px] md:text-[13px] flex items-center justify-center px-2">
+                          사회
+                        </span>
+                      </div>
+                      <p className="text-[#2C2C2C] text-[16px] md:text-[18px] font-semibold break-keep">
+                        {group.name}
+                      </p>
+                      <p className="text-[#5C5C5C] text-[13px] md:text-[14px] break-words">
+                        {group.description}
+                      </p>
                     </div>
-                    <p className="text-[#2C2C2C] text-[16px] md:text-[18px] font-semibold break-keep">
-                      {group.name}
-                    </p>
-                    <p className="text-[#5C5C5C] text-[13px] md:text-[14px] break-words">
-                      {group.description}
-                    </p>
                   </div>
                 </div>
+
+                {/* 오른쪽: 탈퇴 버튼 */}
+                <div className="flex justify-end md:items-end mt-4 md:mt-0">
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setSelectedGroupId(group.id);
+                      setShowModal(true);
+                    }}
+                    className="text-[#5C5C5C] border border-[#EAE5E2] rounded-full hover:bg-[#90D26D] hover:text-white w-[90px] md:w-[105px] h-[32px] md:h-[35px] text-sm mt-auto"
+                  >
+                    탈퇴하기
+                  </button>
+                </div>
               </div>
+            ))}
 
-              {/* 오른쪽: 탈퇴 버튼 */}
-              <div className="flex justify-end md:items-end mt-4 md:mt-0">
-                <button
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    setSelectedGroupId(group.id);
-                    setShowModal(true);
-                  }}
-                  className="text-[#5C5C5C] border border-[#EAE5E2] rounded-full hover:bg-[#90D26D] hover:text-white w-[90px] md:w-[105px] h-[32px] md:h-[35px] text-sm mt-auto"
-                >
-                  탈퇴하기
-                </button>
-              </div>
-            </div>
-          ))}
+            {isFetching && (
+              <p className="text-center text-gray-400">불러오는 중...</p>
+            )}
 
-          {isFetching && (
-            <p className="text-center text-gray-400">불러오는 중...</p>
-          )}
-
-          {!hasMore && !isFetching && (
-            <p className="text-center text-gray-400 mt-6">
-              더 이상 모임이 없습니다.
-            </p>
-          )}
-        </div>
-      </main>
+            {!hasMore && !isFetching && (
+              <p className="text-center text-gray-400 mt-6">
+                더 이상 모임이 없습니다.
+              </p>
+            )}
+          </div>
+        </main>
+      </div>
 
       {showModal && (
         <AlertModal

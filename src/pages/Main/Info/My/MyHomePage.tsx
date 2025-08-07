@@ -16,10 +16,10 @@ const MyPage = () => {
   }));
 
   return (
-    <div className="flex w-full min-h-screen bg-[#FAFAFA]">
-      <main className="flex-1">
-        <MyPageHeader title="마이페이지" />
+    <div className="relative w-full h-screen bg-[#FAFAFA] overflow-hidden">
+      <MyPageHeader title="마이페이지" />
 
+      <main className="absolute top-[88px] left-0 right-0 bottom-0 overflow-y-auto">
         <div className="px-10 py-8 space-y-10">
           {/* 프로필 상단 */}
           <div className="w-full bg-white rounded-[12px] px-4 md:px-6 py-4 mb-5 flex flex-col gap-3">
@@ -54,7 +54,7 @@ const MyPage = () => {
                 <h2 className="text-lg font-bold text-[#2C2C2C]">내 모임</h2>
                 <button
                   onClick={() => navigate("/mypage/group")}
-                  className="text-sm text-[#8D8D8D] hover:underline"
+                  className="text-sm text-[#8D8D8D] hover:underline cursor-pointer"
                 >
                   전체보기
                 </button>
@@ -77,7 +77,7 @@ const MyPage = () => {
                 <h2 className="text-lg font-bold text-[#2C2C2C]">내 구독</h2>
                 <button
                   onClick={() => navigate("/mypage/subscription")}
-                  className="text-sm text-[#8D8D8D] hover:underline"
+                  className="text-sm text-[#8D8D8D] hover:underline cursor-pointer"
                 >
                   전체보기
                 </button>
@@ -110,7 +110,7 @@ const MyPage = () => {
                 <h2 className="text-lg font-bold text-[#2C2C2C]">내 알림</h2>
                 <button
                   onClick={() => navigate("/mypage/notification")}
-                  className="text-sm text-[#8D8D8D] hover:underline"
+                  className="text-sm text-[#8D8D8D] hover:underline cursor-pointer"
                 >
                   전체보기
                 </button>

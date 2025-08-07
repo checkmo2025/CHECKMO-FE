@@ -137,42 +137,48 @@ const MySubscriptionPage = () => {
     </section>
   );
 
-  return (
-    <div className="flex w-full min-h-screen bg-[#FAFAFA]">
-      <main className="flex-1">
-        <MyPageHeader title="내 구독" />
+   return (
+   <div className="flex w-full h-screen bg-[#FAFAFA] overflow-hidden">
+     {/* 헤더는 고정 */}
+     <MyPageHeader title="내 구독" />
 
-        <div className="flex px-10 pt-8 gap-8">
-          <button
-            className={`text-[16px] font-semibold pb-1 border-b-2 ${
-              activeTab === "followers"
-                ? "text-[#2C2C2C] border-[#90D26D]"
-                : "text-gray-400 border-transparent"
-            }`}
-            onClick={() => setActiveTab("followers")}
-          >
-            구독자
-          </button>
-          <button
-            className={`text-[16px] font-semibold pb-1 border-b-2 ${
-              activeTab === "following"
-                ? "text-[#2C2C2C] border-[#90D26D]"
-                : "text-gray-400 border-transparent"
-            }`}
-            onClick={() => setActiveTab("following")}
-          >
+     {/* 헤더 높이 제외한 나머지를 따로 감싸서 스크롤 */}
+     <div className="flex-1 flex flex-col pt-[88px] overflow-hidden">
+       <main className="flex-1 overflow-y-auto">
+         {/* 탭 */}
+         <div className="flex px-10 pt-8 gap-8">
+           <button
+             className={`text-[16px] font-semibold pb-1 border-b-2 ${
+               activeTab === "followers"
+                 ? "text-[#2C2C2C] border-[#90D26D]"
+                 : "text-gray-400 border-transparent"
+             }`}
+             onClick={() => setActiveTab("followers")}
+           >
+             구독자
+           </button>
+           <button
+             className={`text-[16px] font-semibold pb-1 border-b-2 ${
+               activeTab === "following"
+                 ? "text-[#2C2C2C] border-[#90D26D]"
+                 : "text-gray-400 border-transparent"
+             }`}
+             onClick={() => setActiveTab("following")}
+           >
             구독 중
-          </button>
-        </div>
+           </button>
+         </div>
 
-        <div className="px-10 pt-6 pb-12">
-          {activeTab === "followers"
-            ? renderList(followers, setFollowers)
-            : renderList(following, setFollowing)}
-        </div>
-      </main>
+         {/* 리스트 */}
+         <div className="px-10 pt-6 pb-12">
+           {activeTab === "followers"
+             ? renderList(followers, setFollowers)
+             : renderList(following, setFollowing)}
+         </div>
+       </main>
     </div>
-  );
+  </div>
+);
 };
 
 export default MySubscriptionPage;
