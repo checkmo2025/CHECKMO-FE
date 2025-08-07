@@ -1,18 +1,28 @@
-import { useQuery } from "@tanstack/react-query";
-import { getRecommendDetail, getRecommendList } from "../apis/recommendApi";
+import { useInfiniteQuery, useQuery } from "@tanstack/react-query";
+import {
+  getBookRecommends,
+  getBookRecommendDetail,
+} from "../apis/BookRecommend/recommendApi";
 
-export const useRecommendList = (clubId: number) => {
-  useQuery({
-    queryKey: ["recommendList", clubId],
-    queryFn: () => getRecommendList(clubId),
-    staleTime: 1000 * 60 * 5,
+export const useBookRecommends = (clubId: number) => {
+  return useInfiniteQuery({
+    queryKey: ["bookRecommends", clubId],
+    queryFn: ({ pageParam }) => getBookRecommends(clubId, pageParam),
+    initialPageParam: 10,
+    getNextPageParam: (lastPage) => {
+      if (lastPage.result.hasNext) {
+        return lastPage.result.nextCursor;
+      }
+      return undefined;
+    },
+    staleTime: 1000 * 60 * 5, // 5분
   });
 };
 
 export const useRecommendDetail = (clubId: number, recommendId: number) => {
-  useQuery({
+  return useQuery({
     queryKey: ["recommendDetail", clubId, recommendId],
-    queryFn: () => getRecommendDetail(clubId, recommendId),
+    queryFn: () => getBookRecommendDetail(clubId, recommendId),
     enabled: !!recommendId,
     staleTime: 1000 * 60 * 5,
   });
