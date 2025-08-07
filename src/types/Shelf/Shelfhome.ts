@@ -2,8 +2,8 @@ import type { ApiResponse } from "../apiResponse";
 
 export interface ShelfHomeRequest {
   clubId:     number;
-  cursorId?:  number;
-  size?:      number;
+  cursorId?:  number | null;
+  size?:      number ;
   generation?: number;
 }
 
@@ -15,14 +15,10 @@ export interface BookInfo {
 }
 
 export interface MeetingInfo {
-  meetingId:     number;
-  title:         string;
-  meetingTime:   string;  
-  location:      string;
-  generation:    number;
-  tag:           string;
-  content:       string;
-  bookInfo:      BookInfo;
+  meetingId:   number;
+  generation:  number;
+  tag:         string;
+  averageRate: number;
 }
 
 export interface BookShelfInfo {
