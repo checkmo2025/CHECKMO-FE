@@ -41,6 +41,7 @@ import EditClubPage from "./pages/BookClub/Club/ClubEditPage";
 import BookClubAdminPage from "./pages/Admin/BookClubAdminPage";
 import MemberAdminPage from "./pages/Admin/MemberAdminPage";
 import RegisterAdminPage from "./pages/Admin/RegisterAdminPage";
+import MeetingTeamTopicListPage from "./pages/Meeting/MeetingTeamTopicListPage";
 import AxiosTest from "./pages/Axiostest";
 
 const App = () => {
@@ -70,9 +71,10 @@ const App = () => {
             {/* 운영진 */}
             <Route path="manage">
               <Route path="group" element={<GroupManagementPage />} />
-              <Route path="notices" element={<NoticeManagementPage />} /> {/* 임시 */}
+              <Route path="notices" element={<NoticeManagementPage />} />{" "}
+              {/* 임시 */}
             </Route>
-
+            <Route path="/test" element={<AxiosTest/>} />
             {/* 마이페이지 */}
             <Route path="mypage">
               <Route index element={<MyHomePage />} />
@@ -135,6 +137,10 @@ const App = () => {
                   path=":meetingId/topics"
                   element={<MeetingTopicListPage />}
                 />
+                <Route
+                  path=":meetingId/teamTopic/:teamId"
+                  element={<MeetingTeamTopicListPage />}
+                />
               </Route>
 
               {/* 관리자 페이지 */}
@@ -144,7 +150,7 @@ const App = () => {
                 <Route path="register" element={<RegisterAdminPage />} />
               </Route>
 
-              <Route path="/test" element={<AxiosTest/>} />
+              
 
             </Route>
           </Route>

@@ -1,7 +1,10 @@
 import { useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import { DummyMeetingDetail } from "./DummyMeetingDetail";
-import type { MeetingDetailResultDto } from "../../types/clubMeeting";
+import type {
+  MeetingDetailResultDto,
+  TeamTopicDto,
+} from "../../types/clubMeeting";
 import { MeetingCard } from "../../components/Meeting/MeetingCard";
 import { TopicPreviewSection } from "../../components/Meeting/TopicPreviewSection";
 import { TeamTopicSection } from "../../components/Meeting/TeamTopicSection";
@@ -22,9 +25,19 @@ const MeetingDetailPage = () => {
     });
   }, [navigate, detail.meetingDate, detail.book.title, detail.topicPreview]);
 
-  const handleViewAllTeamTopics = useCallback((teamNumber: number) => {
-    // TODO: 해당 팀의 토론 전체보기 페이지로 이동하는 로직 구현
-  }, []);
+  const handleViewAllTeamTopics = useCallback(
+    (team: TeamTopicDto) => {
+      // TODO: 해당 팀 별 발제 전체보기 페이지로 이동하는 로직 구현
+      navigate(`teamTopic/${team.teamNumber}`, {
+        state: {
+          date: detail.meetingDate,
+          bookTitle: detail.book.title,
+          topics: team.topics,
+        },
+      });
+    },
+    [navigate, detail.meetingDate, detail.book.title]
+  );
 
   return (
     <div className="mx-auto px-10 space-y-10">
@@ -50,7 +63,7 @@ const MeetingDetailPage = () => {
           key={team.teamNumber}
           teamNumber={team.teamNumber}
           topics={team.topics.slice(0, 4)}
-          onViewAllClick={handleViewAllTeamTopics}
+          onViewAllClick={() => handleViewAllTeamTopics(team)}
         />
       ))}
     </div>

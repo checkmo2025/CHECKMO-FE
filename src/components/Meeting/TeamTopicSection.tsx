@@ -5,7 +5,7 @@ import { TopicCard } from "./TopicCard";
 interface TeamTopicSectionProps {
   teamNumber: number;
   topics: TopicDto[];
-  onViewAllClick?: (teamNumber: number) => void;
+  onViewAllClick?: () => void;
 }
 
 const TeamTopicSectionComponent = ({
@@ -22,7 +22,7 @@ const TeamTopicSectionComponent = ({
         <h2 className="font-semibold">{getTeamName(teamNumber)}</h2>
         {onViewAllClick && (
           <button
-            onClick={() => onViewAllClick(teamNumber)}
+            onClick={onViewAllClick}
             className="text-sm text-gray-500 hover:underline"
           >
             전체보기
