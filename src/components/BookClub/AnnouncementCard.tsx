@@ -1,42 +1,14 @@
 // src/components/BookClub/AnnouncementCard.tsx
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams, type Params } from 'react-router-dom';
+import type { AnnouncementProps, VoteOption } from '../../types/announcement';
 import vector from '../../assets/images/vector.png';
 import arrow from '../../assets/images/shortcutArrow.png';
-
-export interface VoteOption {
-  label: string;
-  value: string;
-}
-
-export interface AnnouncementCardProps {
-  id?: number;
-  title: string;
-  tag: '모임' | '투표' | '공지';
-  
-  // 모임
-  meetingDate?: string;
-  book?: string;
-  
-  // 투표
-  voteLink?: string;
-  meetingPlace?: string;
-  afterPartyPlace?: string;
-  voteOptions?: VoteOption[];
-  onVoteSubmit?: (selectedValue: string) => void;
-  
-  // 공지
-  announcementTitle?: string;
-  announcement?: string;
-
-  // 이미지
-  imageUrl?: string;
-}
 
 export default function AnnouncementCard({
   items,
 }: {
-  items: AnnouncementCardProps[];
+  items: AnnouncementProps[];
 }): React.ReactElement {
   return (
     <div className="overflow-x-auto">
@@ -52,11 +24,11 @@ export default function AnnouncementCard({
 function AnnouncementCardItem({
   item,
 }: {
-  item: AnnouncementCardProps;
+  item: AnnouncementProps;
 }): React.ReactElement {
   const [selectedVote, setSelectedVote] = useState<string>('');
   const navigate = useNavigate();
-
+  const { bookclubId } = useParams<Params>();
   const handleVoteSubmit = () => {
     if (selectedVote && item.onVoteSubmit) {
       item.onVoteSubmit(selectedVote);
@@ -65,15 +37,18 @@ function AnnouncementCardItem({
 
   const handleCardClick = () => {
     const itemId = item.id || 1;
-    switch (item.tag) {
+    switch (item.tag) { 
       case '모임':
-        navigate(`/notice/meeting/${itemId}`);
+        const meetingId = itemId;
+        navigate(`/bookclub/${bookclubId}/notices/${meetingId}`);
         break;
       case '투표':
-        navigate(`/notice/vote/${itemId}`);
+        const voteId = itemId;
+        navigate(`/bookclub/${bookclubId}/notices/${voteId}`);
         break;
       case '공지':
-        navigate(`/notice/announcement/${itemId}`);
+        const generalId = itemId;
+        navigate(`/bookclub/${bookclubId}/notices/${generalId}`);
         break;
       default:
         break;
@@ -194,7 +169,7 @@ function AnnouncementCardItem({
               className="w-[269px] h-[207px] mt-[26px] border-[2px] border-[#EAE5E2] rounded-[16px]"
             >
               <form className = "mt-[14.5px]">
-                {item.voteOptions?.map((option) => (
+                {item.voteOptions?.map((option: VoteOption) => (
                   <label 
                     key={option.value} 
                     className="
@@ -260,20 +235,13 @@ function AnnouncementCardItem({
 
         <div className="mt-[9px]">
         {item.tag === '공지' && (
-          <div className="
-            font-pretendard      
+          <div className="   
             font-normal           
             text-[12px]           
-            leading-[145%]        
-            tracking-[-0.1%]      
             text-[#000000]
             space-y-[4px]    
              ">
-            <p className="font-pretendard font-normal text-[12px] leading-[145%] tracking-[-0.1%]">{item.announcementTitle}</p>
-            <p className="mt-[24px] font-pretendard font-normal text-[12px] leading-[145%] tracking-[-0.1%] whitespace-pre-line">{item.announcement}</p>
-            <div className="absolute top-[80px] right-[24px]">
-             <img src={arrow} alt="icon" className="w-[24px] h-[24px] -mt-2" />
-            </div>
+            <p className="mt-[24px] font-normal text-[12px] whitespace-pre-line">{item.announcement}</p>
           </div>
         )}
         </div>

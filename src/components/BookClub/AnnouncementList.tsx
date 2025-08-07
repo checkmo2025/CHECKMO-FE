@@ -1,48 +1,31 @@
 // src/components/BookClub/AnnouncementList.tsx
 import React from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, type Params, useParams } from 'react-router-dom';
 import checkerImage from '../../assets/images/checker.png';
 import vector from '../../assets/images/vector.png';
-
-export interface AnnouncementListItemProps {
-  id: number;
-  title: string;
-  tag: '모임' | '투표' | '공지';
-  imageUrl?: string;
-  clubName?: string;
-
-  // 모임
-  meetingDate?: string;
-  book?: string;
-  bookAuthor?: string;
-
-  // 투표
-  meetingPlace?: string;
-  afterPartyPlace?: string;
-
-  // 공지
-  announcementTitle?: string;
-  announcement?: string;
-}
+import type { AnnouncementProps } from '../../types/announcement';
 
 export default function AnnouncementList({
   items,
 }: {
-  items: AnnouncementListItemProps[];
+  items: AnnouncementProps[];
 }): React.ReactElement {
   const navigate = useNavigate();
-
-  const handleItemClick = (item: AnnouncementListItemProps) => {
+  const { bookclubId } = useParams<Params>();
+  const handleItemClick = (item: AnnouncementProps) => {
     const itemId = item.id;
     switch (item.tag) {
       case '모임':
-        navigate(`/notice/meeting/${itemId}`);
+        const meetingId = itemId;
+        navigate(`/bookclub/${bookclubId}/notices/${meetingId}`);
         break;
       case '투표':
-        navigate(`/notice/vote/${itemId}`);
+        const voteId = itemId;
+        navigate(`/bookclub/${bookclubId}/notices/${voteId}`);
         break;
       case '공지':
-        navigate(`/notice/announcement/${itemId}`);
+        const generalId = itemId;
+        navigate(`/bookclub/${bookclubId}/notices/${generalId}`);
         break;
       default:
         break;
@@ -56,7 +39,7 @@ export default function AnnouncementList({
           key={item.id}
           onClick={() => handleItemClick(item)}
           className="
-            w-[1083px] h-[204px]
+            w-full h-[204px]
             relative flex items-start
             bg-white border-[2px] border-[#EAE5E2] rounded-[16px]
             cursor-pointer

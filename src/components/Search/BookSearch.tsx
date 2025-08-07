@@ -15,15 +15,13 @@ export default function BookSearch({SearchResultHeight, actions }: BookSearchPro
   // 새로운 내용일 시 페이지 초기화
   useEffect(() => { setPage(1); }, [debouncedTerm]);
 
-  
-  const { data, isFetching } = useBookSearch(debouncedTerm, page);
-  const booksOnPage = data?.bookInfoDetailResponseList;
-  const hasNext = data?.hasNext;
-
+  const { data : result, isFetching } = useBookSearch(debouncedTerm, page);
+  const booksOnPage = result?.bookInfoDetailResponseList;
+  const hasNext = result?.hasNext;
   
   useEffect(() => {
     
-    if (!data){return;}
+    if (!result){return;}
     if (page === 1) {
       setSearchBooks(booksOnPage);
     } else {
