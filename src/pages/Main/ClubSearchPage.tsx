@@ -2,14 +2,13 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import ClubCard, { type ClubCardProps } from '../../components/SearchClub/ClubCard';
-import ClubJoinAlertModal from '../../components/SearchClub/ClubJoinAlertModal';
+import Modal from '../../components/Modal';
 import checker from '../../assets/images/checker.png';
 import Header from '../../components/Header.tsx';
 
 export default function ClubSearchPage(): React.ReactElement {
   const [query, setQuery] = useState('');
   const [showAlert, setShowAlert] = useState(false);
-  const [alertMessage, setAlertMessage] = useState('');
 
   // 예시 더미 데이터
   const dummyClubs: ClubCardProps[] = [
@@ -81,7 +80,6 @@ export default function ClubSearchPage(): React.ReactElement {
   // 가입 신청 처리
   const handleJoinRequest = (clubId: number, message: string) => {
     if (message === 'already_member') {
-      setAlertMessage('이미 가입한 독서모임입니다.');
       setShowAlert(true);
       return;
     }
@@ -95,7 +93,7 @@ export default function ClubSearchPage(): React.ReactElement {
             bio: '아 피곤하다.'
           }} 
           notifications={[]}
-          customClassName="mt-[60px]"
+          customClassName="mt-[30px]"
           />
 
         <div className='flex flex-col flex-1'>
@@ -142,7 +140,7 @@ export default function ClubSearchPage(): React.ReactElement {
             </div>
 
             {/* ── 동아리 리스트 ── */}
-            <div className= "flex-col flex items-center space-y-[15px] overflow-y-auto h-[calc(100vh-250px)] w- f"  style={{ msOverflowStyle: 'none', scrollbarWidth: 'none' }}
+            <div className= "flex-col flex items-center space-y-[15px] overflow-y-auto h-[calc(100vh-220px)] w-full"  style={{ msOverflowStyle: 'none', scrollbarWidth: 'none' }}
             >
               {filtered.map(club => (
                 <div key={club.id} className='h-full'>
@@ -156,9 +154,17 @@ export default function ClubSearchPage(): React.ReactElement {
 
       {/* 알림 모달 */}
       {showAlert && (
-        <ClubJoinAlertModal
-          message={alertMessage}
-          onClose={() => setShowAlert(false)}
+        <Modal
+          isOpen={showAlert}
+          title="이미 가입한 독서모임입니다."
+          buttons={[
+            {
+              label: "돌아가기",
+              onClick: () => setShowAlert(false),
+              variant: "primary"
+            }
+          ]}
+          onBackdrop={() => setShowAlert(false)}
         />
       )}
     </>
