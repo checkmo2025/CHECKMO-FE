@@ -129,7 +129,7 @@ export default function HomePage(): React.ReactElement {
       />
 
       {/* 메인 컨텐츠 - 남은 공간을 모두 사용하며 스크롤 */}
-      <div className="flex-1 overflow-y-auto ml-[52px] mr-4 pb-8">
+      <div className="flex-1 overflow-y-auto mt-[15px] ml-[52px] mr-4 pb-8">
         {/* 상단: 중요 공지사항 */}
         <section className="mb-6">
           <AnnouncementCard items={dummyAnnouncements.slice(0, 5)} />
