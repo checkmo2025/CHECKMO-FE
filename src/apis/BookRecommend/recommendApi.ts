@@ -1,10 +1,12 @@
 import { axiosInstance } from "../axiosInstance";
 import type {
+  PostRecommendDto,
   RecommendListResult,
   RecommendationDto,
   UpdateRecommendDto,
 } from "../../types/bookRecommend";
 
+// 추천 책 전체 조회
 export const getBookRecommends = async (
   clubId: number,
   cursorId?: number
@@ -21,6 +23,7 @@ export const getBookRecommends = async (
   return response;
 };
 
+// 추천 책 상세 조회
 export const getBookRecommendDetail = async (
   clubId: number,
   recommendId: number
@@ -31,8 +34,20 @@ export const getBookRecommendDetail = async (
   return response;
 };
 
+// 추천 책 등록
+export const postBookRecommend = async (
+  clubId: number,
+  data: PostRecommendDto
+) => {
+  const response = await axiosInstance.post(
+    `/clubs/${clubId}/recommendations`,
+    data
+  );
+  return response;
+};
+
+// 추천 책 수정
 export const updateBookRecommend = async (
-  // 추천 책 수정
   clubId: number,
   recommendId: number,
   data: UpdateRecommendDto
@@ -44,8 +59,8 @@ export const updateBookRecommend = async (
   return response;
 };
 
+// 추천 책 삭제
 export const deleteBookRecommend = async (
-  // 추천 책 수정
   clubId: number,
   recommendId: number
 ) => {

@@ -9,8 +9,12 @@ import {
   getBookRecommendDetail,
   updateBookRecommend,
   deleteBookRecommend,
+  postBookRecommend,
 } from "../apis/BookRecommend/recommendApi";
-import type { UpdateRecommendDto } from "../types/bookRecommend";
+import type {
+  UpdateRecommendDto,
+  PostRecommendDto,
+} from "../types/bookRecommend";
 import { useNavigate } from "react-router-dom";
 
 export const useBookRecommends = (clubId: number) => {
@@ -66,6 +70,23 @@ export const useDeleteRecommend = (clubId: number, recommendId: number) => {
     },
     onError: (error) => {
       alert("삭제 실패: " + error.message);
+    },
+  });
+};
+
+export const useCreateRecommend = (clubId: number) => {
+  const queryClient = useQueryClient();
+  const navigate = useNavigate();
+
+  return useMutation<unknown, Error, PostRecommendDto>({
+    mutationFn: (data: PostRecommendDto) => postBookRecommend(clubId, data),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["bookRecommends", clubId] });
+      alert("추천 도서가 성공적으로 등록되었습니다.");
+      navigate(`/bookclub/${clubId}/recommend`);
+    },
+    onError: (error) => {
+      alert("등록 실패: " + error.message);
     },
   });
 };

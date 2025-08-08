@@ -26,6 +26,23 @@ export type RecommendationsResponse = ApiResponse<RecommendListResult>;
 // 추천 책 상세 조회 응답
 export type RecommendDetailResponse = ApiResponse<RecommendationDto>;
 
+export type BookDetail = {
+  isbn: "string";
+  title: "string";
+  author: "string";
+  imgUrl: "string";
+  publisher: "string";
+  description: "string";
+};
+
+export type PostRecommendDto = {
+  title: string;
+  bookDetail: BookDetail;
+  content: string;
+  rate: number;
+  tag: string;
+};
+
 export type UpdateRecommendDto = {
   title: string;
   content: string;
