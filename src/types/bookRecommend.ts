@@ -1,25 +1,51 @@
-import type { RecommendationDto } from "./dto";
+import type { ApiResponse } from "./apiResponse";
+import type { AuthorDto, BookDto } from "./dto";
+
+export type RecommendationDto = {
+  id: number;
+  title: string;
+  content: string;
+  rate: number;
+  tag: string;
+  bookInfo: BookDto;
+  authorInfo: AuthorDto;
+  staff: boolean; // 본인이 해당 클럽의 스탭인 지 여부
+  author: boolean; // 본인이 해당 글의 작성자인 지 여부
+};
 
 export type RecommendListResult = {
-  recommendations: RecommendationDto[];
-  hasNext: false;
-  totalElements: number;
+  bookRecommendList: RecommendationDto[];
+  hasNext: boolean;
+  nextCursor: number;
+  pageSize: number;
 };
 
-export type RecommendDetailResult = {
-  recommend: RecommendationDto;
-  isMyRecommendation: boolean; // 내가 작성했는 지 여부에 따라 수정/삭제 버튼 띄우기
+// 추천 책 전체 조회 응답
+export type RecommendationsResponse = ApiResponse<RecommendListResult>;
+
+// 추천 책 상세 조회 응답
+export type RecommendDetailResponse = ApiResponse<RecommendationDto>;
+
+export type BookDetail = {
+  isbn: "string";
+  title: "string";
+  author: "string";
+  imgUrl: "string";
+  publisher: "string";
+  description: "string";
 };
 
-export type RecommendListDto = {
-  isSuccess: boolean;
-  code: string;
-  message: string;
-  result: RecommendListResult;
+export type PostRecommendDto = {
+  title: string;
+  bookDetail: BookDetail;
+  content: string;
+  rate: number;
+  tag: string;
 };
 
-export type RecommendDetailDto = {
-  isSuccess: boolean;
-  code: string;
-  result: RecommendDetailResult;
+export type UpdateRecommendDto = {
+  title: string;
+  content: string;
+  rate: number;
+  tag: string;
 };
