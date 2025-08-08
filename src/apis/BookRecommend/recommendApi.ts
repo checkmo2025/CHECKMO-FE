@@ -1,31 +1,31 @@
 import { axiosInstance } from "../axiosInstance";
 import type {
-  RecommendationsResponse,
-  RecommendDetailResponse,
+  RecommendListResult,
+  RecommendationDto,
 } from "../../types/bookRecommend";
 
 export const getBookRecommends = async (
   clubId: number,
   cursorId?: number
-): Promise<RecommendationsResponse> => {
+): Promise<RecommendListResult> => {
   const params: { [key: string]: number } = {};
-  if (cursorId) {
+  if (cursorId && cursorId > 0) {
     params.cursorId = cursorId;
   }
 
-  const response = await axiosInstance.get<RecommendationsResponse>(
+  const response: RecommendListResult = await axiosInstance.get(
     `/clubs/${clubId}/recommendations`,
     { params }
   );
-  return response.data;
+  return response;
 };
 
 export const getBookRecommendDetail = async (
   clubId: number,
   recommendId: number
-): Promise<RecommendDetailResponse> => {
-  const response = await axiosInstance.get<RecommendDetailResponse>(
+): Promise<RecommendationDto> => {
+  const response: RecommendationDto = await axiosInstance.get(
     `/clubs/${clubId}/recommendations/${recommendId}`
   );
-  return response.data;
+  return response;
 };

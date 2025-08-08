@@ -6,12 +6,12 @@ import {
 
 export const useBookRecommends = (clubId: number) => {
   return useInfiniteQuery({
-    queryKey: ["bookRecommends", clubId],
     queryFn: ({ pageParam }) => getBookRecommends(clubId, pageParam),
-    initialPageParam: 10,
+    queryKey: ["bookRecommends", clubId],
+    initialPageParam: 0,
     getNextPageParam: (lastPage) => {
-      if (lastPage.result.hasNext) {
-        return lastPage.result.nextCursor;
+      if (lastPage.hasNext) {
+        return lastPage.nextCursor;
       }
       return undefined;
     },
