@@ -95,7 +95,7 @@ export default function ClubSearchPage(): React.ReactElement {
             bio: '아 피곤하다.'
           }} 
           notifications={[]}
-          customClassName="mt-[60px]"
+          customClassName="mt-[30px]"
           />
 
         <div className='flex flex-col flex-1'>
