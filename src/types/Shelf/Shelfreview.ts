@@ -15,7 +15,7 @@ export interface ReviewItem {
 // 조회 
 export interface ReviewListRequest {
   meetingId: number;
-  cursorId?: number;
+  cursorId?: number | unknown;
   size:      number;
 }
 

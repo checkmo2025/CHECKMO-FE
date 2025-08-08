@@ -1,6 +1,6 @@
 import { useNavigate, useParams } from 'react-router-dom'
 import React, { useState, useRef } from 'react'
-import { getStarIcon } from './ShelfDetailPage'
+import { getStarIcon } from './getStarIcon'
 
 export interface ScoreItem {
   id: string
@@ -115,8 +115,6 @@ export default function ScoreDetailPage() {
                           ))}
                     </div>
                 </div>
-                
-
                 
                 {/* 한줄평 내용 영역 */}
                 <p className="flex items-center font-pretendard text-sm font-medium leading-[145%] tracking-[-0.014px] text-[var(--Gray-1,#2C2C2C)] [font-feature-settings:'case' on] mr-[20px] whitespace-pre-wrap">{item.comment}</p>

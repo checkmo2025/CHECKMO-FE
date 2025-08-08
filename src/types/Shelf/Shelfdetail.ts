@@ -2,13 +2,6 @@ import type { ApiResponse } from "../apiResponse";
 
 export interface ShelfDetailRequest { meetingId: number; }
 
-export interface MeetingInfo {
-  meetingId:   number;
-  generation:  number;
-  tag:         string;
-  averageRate: number;
-}
-
 /** 책 상세 정보 */
 export interface BookDetailInfo {
   bookId:      string;
@@ -17,6 +10,13 @@ export interface BookDetailInfo {
   imgUrl:      string;
   publisher:   string;
   description: string;
+}
+
+export interface MeetingInfo {
+  meetingId:   number;
+  generation:  number;
+  tag:         string;
+  averageRate: number;
 }
 
 /** 토픽 작성자 정보 */

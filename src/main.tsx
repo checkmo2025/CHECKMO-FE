@@ -12,6 +12,9 @@ const queryClient = new QueryClient({
       retry: 2, // 실패 시 2회 재시도
       refetchOnWindowFocus: false, // 탭 포커스 시 재요청 꺼두기
     },
+    mutations: {
+      retry: 2, // 실패 시 2회 재시도
+    },
   },
 });
 

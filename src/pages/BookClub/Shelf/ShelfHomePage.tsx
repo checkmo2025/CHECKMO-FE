@@ -4,16 +4,7 @@ import Header from '../../../components/Header'
 
 import { useShelfHome } from '../../../hooks/Shelf/useShelfHome';
 import type { ShelfHomeRequest, BookShelfInfo, } from '../../../types/Shelf/Shelfhome'
-
-function getStarIcon(average_score: number, i: number) {
-    if (average_score >= i + 1) {
-      return "/assets/material-symbols_star-rounded.svg" // 꽉 찬 별
-    } else if (average_score >= i + 0.5) {
-      return "/assets/uim_star-half-alt.svg" // 반만 찬 별
-    } else {
-      return "/assets/material-symbols_star-emptyrounded.svg" // 빈 별
-    }
-}
+import { getStarIcon } from './getStarIcon';
 
 export default function ShelfHomePage() {
   const { bookclubId } = useParams<{ bookclubId: string }>();
@@ -195,4 +186,6 @@ export default function ShelfHomePage() {
     </div>
   )
 }
+
+
 

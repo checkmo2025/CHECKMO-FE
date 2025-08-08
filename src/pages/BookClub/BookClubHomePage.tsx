@@ -19,7 +19,7 @@ export default function BookClubHomePage(): React.ReactElement {
   // ── ClubDto 더미 데이터 ──
   const dummyClubData: ClubDto = {
     clubId: Number(clubId) || 1,
-    name: '북적북적 독서클럽',
+    name: '북적북적',
     description: '함께 읽고 토론하는 즐거운 독서 모임입니다. 매주 다양한 책을 읽고 의견을 나눕니다.',
     profileImageUrl: checkerImage,
     open: true,
@@ -87,47 +87,28 @@ export default function BookClubHomePage(): React.ReactElement {
 
   return (
     <div className="absolute left-[315px] right-[42px] opacity-100">
-      <Header pageTitle={'모임 검색하기'} userProfile={{
+      <Header pageTitle={`${dummyClubData.name} 홈`} userProfile={{
           username: 'dayoun',
           bio: '아 피곤하다.'
         }} 
-        notifications={[]}
-        customClassName="mt-[60px]"
+        customClassName="mt-[30px]"
         />
       { /* ── 메인 컨텐츠 ── */}
-      <div className="overflow-y-auto h-[calc(100vh-120px)] w-full">
-        <div className="flex-1 pt-[57px] pl-[52px] pr-[52px] pb-[80px] bg-[#FFFFFF]">
-          <div className="flex gap-[36px]">
-            {/* ── 공지사항 섹션 ── */}
-            <section className="w-[684px]">
-              <div className="flex justify-between items-center mb-4">
-                <h2 className="text-[18px] font-semibold">공지사항</h2>  
-                <Link to={`/bookclub/${clubId}/notices`} className="text-[14px] text-[#969696] mr-11 hover:underline">
-                  + 더보기
-                </Link>
-              </div>
-              <AnnouncementCard items={dummyAnnouncements} />
-            </section>
-
-            {/* ── 알림 섹션 ── */}
-            <aside className="w-[360px]">
-              <div className="flex justify-between items-center mb-4">
-                <h2 className="text-[18px] font-semibold">알림</h2>
-                <Link to = {`/bookclub/${clubId}/notifications`} className="text-[14px] text-[#8D8D8D] mr-3 hover:underline">
-                  + 더보기
-                </Link>
-              </div>
-              <ul className="w-[360px] h-[380px] rounded-[15px] border-2 border-[#EAE5E2]
-                py-[17px] px-[17px] gap-[10px] flex flex-col overflow-hidden">
-                {dummyNotifications.map((n, idx) => (
-                  <NotificationItem key={idx} {...n} />
-                ))}
-              </ul>
-            </aside>
-          </div>
+      <div className="overflow-y-auto h-[calc(100vh-80px)] w-full flex-1 pt-[57px] pl-[2px] pr-[30px] bg-[#FFFFFF]">
+        <div className="flex flex-col gap-[36px]">
+          {/* ── 공지사항 섹션 ── */}
+          <section className="w-full">
+            <div className="flex justify-between items-center mb-4">
+              <h2 className="text-[18px] font-semibold">공지사항</h2>  
+              <Link to={`/bookclub/${clubId}/notices`} className="text-[14px] text-[#969696] mr-11 hover:underline">
+                + 더보기
+              </Link>
+            </div>
+            <AnnouncementCard items={dummyAnnouncements} />
+          </section>
 
           {/* ── 책 이야기 섹션 ── */}
-          <section className="w-[1083px] h-[376px] mt-[36px]">
+          <section className="w-full h-[376px] mb-[60px]">
             <div className="flex justify-between items-center mb-[20px]">
               <h2 className="text-[18px] font-semibold">책 이야기</h2>
               <Link to={`/bookclub/${clubId}/notifications`} className="text-[14px] text-[#8D8D8D] mr-3 hover:underline">
@@ -140,7 +121,7 @@ export default function BookClubHomePage(): React.ReactElement {
               ))}
             </div>
           </section>
-      </div>
+        </div>
       </div>
     </div>
   );

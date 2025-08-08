@@ -1,4 +1,4 @@
-import type { RecommendationDto } from "../../types/dto";
+import type { RecommendationDto } from "../../types/bookRecommend";
 import BookRecommendHeader from "./BookRecommendHeader";
 import StarRating from "./StarRating";
 
@@ -7,21 +7,30 @@ interface BookRecommendCardProps {
 }
 
 const BookRecommendCard = ({ recommend }: BookRecommendCardProps) => {
-  const { memberInfo, bookInfo, content, rate } = recommend;
+  const { authorInfo, bookInfo, content, rate } = recommend;
 
   return (
     <div
       className="font-pretendard relative rounded-xl overflow-hidden 
     border-2 border-gray-200 transition-transform duration-300 transform hover:shadow-lg 
-    hover:scale-105 bg-white min-h-[350px] flex flex-col"
+    hover:scale-105 bg-white min-h-[350px] min-w-[300px] flex flex-col"
     >
-      <BookRecommendHeader memberInfo={memberInfo} />
+      <BookRecommendHeader
+        author={{
+          nickname: authorInfo.nickname,
+          profileImageUrl: authorInfo.profileImageUrl,
+        }}
+      />
 
       <div className="mt-2 mb-4 mx-4 flex-1 flex">
         <img
-          // src={bookInfo.imgUrl}
-          src="/chess.png"
-          className="w-1/3 object-cover rounded-lg"
+          src={bookInfo.imgUrl.replace(/^(https?:)?\/\//, "//") || "/chess.png"} // 이미지가 없을 경우 기본 이미지
+          className="w-1/3 object-cover rounded-lg min-w-[200px]"
+          onError={(e) => {
+            const target = e.target as HTMLImageElement;
+            target.onerror = null; // 무한 루프 방지
+            target.src = "/chess.png";
+          }}
         />
         <div className="ml-4 flex-1 flex flex-col">
           <h4 className="text-xl font-semibold text-gray-900">

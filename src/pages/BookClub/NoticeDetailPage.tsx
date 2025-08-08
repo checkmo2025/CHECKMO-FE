@@ -119,9 +119,9 @@ export default function NoticeDetailPage(): React.ReactElement {
   };
 
   return (
-    <div className="mt-[60px] ml-[51px]">
+    <div className="mt-[30px] ml-[51px]">
       {/* 공통 헤더 */}
-      <div className="flex items-center mb-[36px]">
+      <div className="flex items-center mb-[25px]">
         <button 
           onClick={() => navigate(-1)}
           className="w-[24px] h-[24px] mr-[3px] cursor-pointer"
@@ -133,8 +133,10 @@ export default function NoticeDetailPage(): React.ReactElement {
         </h1>
       </div>
 
-      {/* 타입별 컨텐츠 */}
-      {renderNoticeContent()}
+      <div className=" overflow-y-auto h-[calc(100vh-100px)] w-full">
+        {/* 타입별 컨텐츠 */}
+        {renderNoticeContent()}
+      </div>
     </div>
   );
 } 

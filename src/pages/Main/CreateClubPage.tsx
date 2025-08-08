@@ -105,10 +105,10 @@ export default function CreateClubPage(): React.ReactElement {
           bio: '아 피곤하다.'
         }} 
         notifications={[]}
-        customClassName="mt-[60px]"
+        customClassName="mt-[30px]"
       />
 
-      <div className="mt-8 flex flex-col items-center overflow-y-auto h-[calc(100vh-120px)] w-full pb-[80px]">
+      <div className="mt-[15px] flex flex-col items-center overflow-y-auto h-[calc(100vh-120px)] w-full pb-[80px]">
         {/* 모임 이름 + 중복확인 버튼 */}
         <div className="mt-[36px]">
           <label className="font-pretendard font-medium text-[18px] leading-[135%] tracking-[-0.1%]">
@@ -180,6 +180,7 @@ export default function CreateClubPage(): React.ReactElement {
               w-[216px] h-[216px]
               bg-white rounded-[16px] border-[2px] border-[#EAE5E2]
               flex flex-col items-center justify-center
+              cursor-pointer
             "
           >
             <span className="text-[24px] text-gray-300">＋</span>
@@ -336,6 +337,7 @@ export default function CreateClubPage(): React.ReactElement {
               w-full mt-[12px] py-[12px] bg-[#90D26D] text-white
               rounded-[16px] font-pretendard font-semibold text-[20px]
               disabled:opacity-50 disabled:cursor-not-allowed
+              cursor-pointer
             "
           >
             {isSubmitting ? '등록 중...' : '등록하기'}

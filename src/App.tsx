@@ -32,7 +32,7 @@ import Layout from "./components/layout/Layout";
 import MeetingListPage from "./pages/Meeting/MeetingListPage";
 import BookStoryDetailPage from "./pages/Main/BookStory/BookStoryDetailPage";
 import BookStoryWritePage from "./pages/Main/BookStory/BookStoryWritePage";
-import GroupManagementPage from "./pages/Manage/GroupManagementPage";
+import GroupManagementPage from "./pages/Admin/GroupAdminPage";
 import MeetingDetailPage from "./pages/Meeting/MeetingDetailPage";
 import CreateMeetingPage from "./pages/Meeting/CreateMeetingPage";
 import MeetingTopicListPage from "./pages/Meeting/MeetingTopicListPage";
@@ -42,8 +42,8 @@ import BookClubAdminPage from "./pages/Admin/BookClubAdminPage";
 import MemberAdminPage from "./pages/Admin/MemberAdminPage";
 import RegisterAdminPage from "./pages/Admin/RegisterAdminPage";
 import MeetingTeamTopicListPage from "./pages/Meeting/MeetingTeamTopicListPage";
+import BookRecommendEditPage from "./pages/BookRecommend/BookRecommendEditPage";
 import AxiosTest from "./pages/Axiostest";
-
 const App = () => {
   return (
     <GoogleOAuthProvider clientId={KEYS.GOOGLE_CLIENT_ID}>
@@ -105,13 +105,13 @@ const App = () => {
               {/* 책장 */}
               <Route path="shelf">
                 <Route index element={<ShelfHomePage />} />
-                <Route path=":shelfBookIndex" element={<ShelfDetailPage />} />
+                <Route path=":ShelfmeetingId" element={<ShelfDetailPage />} />
                 <Route
-                  path=":shelfBookIndex/theme"
+                  path=":ShelfmeetingId/theme"
                   element={<ThemeDetailPage />}
                 />
                 <Route
-                  path=":shelfBookIndex/score"
+                  path=":ShelfmeetingId/score"
                   element={<ScoreDetailPage />}
                 />
               </Route>
@@ -121,6 +121,10 @@ const App = () => {
                 <Route
                   path=":recommendId"
                   element={<BookRecommendDetailPage />}
+                />
+                <Route
+                  path=":recommendId/edit"
+                  element={<BookRecommendEditPage />}
                 />
                 <Route
                   path=":bookId/create"

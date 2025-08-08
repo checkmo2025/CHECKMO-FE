@@ -1,5 +1,8 @@
+
+
 import { useState } from 'react';
 
+import { useShelfHome } from '../hooks/Shelf/useShelfHome';
 import type { TopicListRequest } from "../types/Shelf/Shelftopics";
 import { useTopicList } from '../hooks/Shelf/useTopicList';
 import { useTopicCreate } from '../hooks/Shelf/useTopicCreate';
@@ -76,10 +79,6 @@ export default function AxiosTest() {
   return (
     <div className="p-8 space-y-6">
       <h1 className="text-2xl font-bold">Topic CRUD Test</h1>
-
-     
-
-
       {/* review 선택 드롭다운 */}
       <div>
         <label htmlFor="reviewSelect" className="mr-2">Select Review:</label>
@@ -124,8 +123,5 @@ export default function AxiosTest() {
 
 
 
-
-
     </div>
-  );
-}
+  )};
