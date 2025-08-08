@@ -142,7 +142,7 @@ export default function ClubSearchPage(): React.ReactElement {
             </div>
 
             {/* ── 동아리 리스트 ── */}
-            <div className= "flex-col flex items-center space-y-[15px] overflow-y-auto h-[calc(100vh-250px)] w- f"  style={{ msOverflowStyle: 'none', scrollbarWidth: 'none' }}
+            <div className= "flex-col flex items-center space-y-[15px] overflow-y-auto h-[calc(100vh-220px)] w-full"  style={{ msOverflowStyle: 'none', scrollbarWidth: 'none' }}
             >
               {filtered.map(club => (
                 <div key={club.id} className='h-full'>
