@@ -119,13 +119,13 @@ export default function HomePage(): React.ReactElement {
   ];
 
   return (
-    <div className="w-full h-screen flex flex-col">
+    <div className="absolute left-[315px] right-[42px] opacity-100 h-screen flex flex-col">
       <Header pageTitle={'공지사항'} userProfile={{
-        username: 'Dayoun',
+        username: 'dayoun',
         bio: '아 피곤하다.'
       }} 
       notifications={[]}
-      customClassName="mt-[30px] ml-[52px] mr-[41px] mb-[36px]"
+      customClassName="mt-[30px]"
       />
 
       {/* 메인 컨텐츠 - 남은 공간을 모두 사용하며 스크롤 */}
