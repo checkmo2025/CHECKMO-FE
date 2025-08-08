@@ -43,3 +43,14 @@ export const updateBookRecommend = async (
   );
   return response;
 };
+
+export const deleteBookRecommend = async (
+  // 추천 책 수정
+  clubId: number,
+  recommendId: number
+) => {
+  const response = await axiosInstance.delete(
+    `/clubs/${clubId}/recommendations/${recommendId}`
+  );
+  return response;
+};

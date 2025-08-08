@@ -8,8 +8,10 @@ import {
   getBookRecommends,
   getBookRecommendDetail,
   updateBookRecommend,
+  deleteBookRecommend,
 } from "../apis/BookRecommend/recommendApi";
 import type { UpdateRecommendDto } from "../types/bookRecommend";
+import { useNavigate } from "react-router-dom";
 
 export const useBookRecommends = (clubId: number) => {
   return useInfiniteQuery({
@@ -42,8 +44,28 @@ export const useEditRecommend = (clubId: number, recommendId: number) => {
     mutationFn: (data: UpdateRecommendDto) =>
       updateBookRecommend(clubId, recommendId, data),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["recommendDetail", clubId, recommendId] });
-        queryClient.invalidateQueries({ queryKey: ["bookRecommends", clubId] });
+      queryClient.invalidateQueries({
+        queryKey: ["recommendDetail", clubId, recommendId],
+      });
+      queryClient.invalidateQueries({ queryKey: ["bookRecommends", clubId] });
+    },
+  });
+};
+
+export const useDeleteRecommend = (clubId: number, recommendId: number) => {
+  const queryClient = useQueryClient();
+  const navigate = useNavigate();
+
+  return useMutation({
+    mutationFn: () => deleteBookRecommend(clubId, recommendId),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["bookRecommends", clubId] });
+      // 공통 모달로 변경하기
+      alert("추천 도서가 삭제되었습니다.");
+      navigate(`/bookclub/${clubId}/recommend`);
+    },
+    onError: (error) => {
+      alert("삭제 실패: " + error.message);
     },
   });
 };
