@@ -2,6 +2,7 @@ import { axiosInstance } from "../axiosInstance";
 import type {
   RecommendListResult,
   RecommendationDto,
+  UpdateRecommendDto,
 } from "../../types/bookRecommend";
 
 export const getBookRecommends = async (
@@ -26,6 +27,19 @@ export const getBookRecommendDetail = async (
 ): Promise<RecommendationDto> => {
   const response: RecommendationDto = await axiosInstance.get(
     `/clubs/${clubId}/recommendations/${recommendId}`
+  );
+  return response;
+};
+
+export const updateBookRecommend = async (
+  // 추천 책 수정
+  clubId: number,
+  recommendId: number,
+  data: UpdateRecommendDto
+) => {
+  const response = await axiosInstance.patch(
+    `/clubs/${clubId}/recommendations/${recommendId}`,
+    data
   );
   return response;
 };

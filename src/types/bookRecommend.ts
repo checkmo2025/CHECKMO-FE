@@ -25,3 +25,10 @@ export type RecommendationsResponse = ApiResponse<RecommendListResult>;
 
 // 추천 책 상세 조회 응답
 export type RecommendDetailResponse = ApiResponse<RecommendationDto>;
+
+export type UpdateRecommendDto = {
+  title: string;
+  content: string;
+  rate: number;
+  tag: string;
+};
