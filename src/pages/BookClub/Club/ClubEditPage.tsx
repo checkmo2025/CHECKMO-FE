@@ -175,7 +175,7 @@ export default function EditClubPage(): React.ReactElement {
           bio: '아 피곤하다.'
         }} 
         notifications={[]}
-        customClassName="mt-[60px] flex-shrink-0"
+        customClassName="mt-[30px] flex-shrink-0"
       />
 
       {/* 스크롤 가능한 컨텐츠 영역 */}
