@@ -125,7 +125,7 @@ export default function HomePage(): React.ReactElement {
           bio: '아 피곤하다.'
         }} 
         notifications={[]}
-        customClassName="mt-[30px] ml-[52px] mr-[41px]"
+        customClassName="mt-[30px] ml-[52px] mr-[41px] mb-[15px]"
       />
 
       {/* 메인 컨텐츠 - 남은 공간을 모두 사용하며 스크롤 */}
