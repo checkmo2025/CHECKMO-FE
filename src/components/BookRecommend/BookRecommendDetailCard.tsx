@@ -1,19 +1,25 @@
+import { useNavigate } from "react-router-dom";
 import type { RecommendationDto } from "../../types/bookRecommend";
 import ActionButton from "./ActionButton";
 import StarRating from "./StarRating";
 
 interface BookRecommendDetailCardProps {
+  clubId: number;
   recommendDetail: RecommendationDto;
 }
 
 const BookRecommendDetailCard = ({
+  clubId,
   recommendDetail,
 }: BookRecommendDetailCardProps) => {
+  const navigate = useNavigate();
   const { id, title, content, rate, tag, bookInfo, authorInfo, staff, author } =
     recommendDetail;
+
   const handleEdit = () => {
-    // TODO: 추후 API 호출 로직으로 대체
-    console.log("수정하기 버튼 클릭");
+    navigate(`/bookclub/${clubId}/recommend/${id}/edit`, {
+      state: { recommendDetail },
+    });
   };
 
   const handleDelete = () => {
@@ -46,10 +52,7 @@ const BookRecommendDetailCard = ({
           <div className="flex-grow overflow-y-auto pr-4">
             <div className="flex flex-wrap gap-2">
               <span className="px-4 py-1 rounded-full bg-[#90D26D] text-xs font-normal text-white">
-                사회
-              </span>
-              <span className="px-4 py-1 rounded-full bg-[#90D26D] text-xs font-normal text-white">
-                사회
+                {tag}
               </span>
             </div>
 
@@ -76,18 +79,20 @@ const BookRecommendDetailCard = ({
             <div className="mb-4 flex items-center">
               <StarRating rate={rate} />
             </div>
-            <div className="flex flex-col sm:flex-row sm:justify-end sm:space-x-2 space-y-2 sm:space-y-0">
-              <ActionButton
-                onClick={handleEdit}
-                label="수정하기"
-                className="w-full sm:w-auto px-7.5 py-2 bg-[#A6917D] text-white text-xs border-2 border-[#A6917D] rounded-2xl hover:bg-[#907E66] transition"
-              />
-              <ActionButton
-                onClick={handleDelete}
-                label="삭제하기"
-                className="w-full sm:w-auto px-7.5 py-2 bg-white text-black text-xs border-2 border-[#A6917D] rounded-2xl hover:bg-gray-200 transition"
-              />
-            </div>
+            {author && (
+              <div className="flex flex-col sm:flex-row sm:justify-end sm:space-x-2 space-y-2 sm:space-y-0">
+                <ActionButton
+                  onClick={handleEdit}
+                  label="수정하기"
+                  className="w-full sm:w-auto px-7.5 py-2 bg-[#A6917D] text-white text-xs border-2 border-[#A6917D] rounded-2xl hover:bg-[#907E66] transition"
+                />
+                <ActionButton
+                  onClick={handleDelete}
+                  label="삭제하기"
+                  className="w-full sm:w-auto px-7.5 py-2 bg-white text-black text-xs border-2 border-[#A6917D] rounded-2xl hover:bg-gray-200 transition"
+                />
+              </div>
+            )}
           </div>
         </div>
       </section>

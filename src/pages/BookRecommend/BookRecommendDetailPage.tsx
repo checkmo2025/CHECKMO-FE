@@ -38,7 +38,12 @@ const BookRecommendDetailPage = () => {
         />
       </div>
       <div className="flex-grow overflow-y-auto">
-        {data && <BookRecommendDetailCard recommendDetail={data} />}
+        {data && (
+          <BookRecommendDetailCard
+            clubId={numericClubId!}
+            recommendDetail={data}
+          />
+        )}
       </div>
     </div>
   );
