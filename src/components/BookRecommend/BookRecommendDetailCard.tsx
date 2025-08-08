@@ -2,6 +2,7 @@ import { useNavigate } from "react-router-dom";
 import type { RecommendationDto } from "../../types/bookRecommend";
 import ActionButton from "./ActionButton";
 import StarRating from "./StarRating";
+import { useDeleteRecommend } from "../../hooks/useRecommend";
 
 interface BookRecommendDetailCardProps {
   clubId: number;
@@ -16,6 +17,8 @@ const BookRecommendDetailCard = ({
   const { id, title, content, rate, tag, bookInfo, authorInfo, staff, author } =
     recommendDetail;
 
+  const { mutate: deleteRecommend } = useDeleteRecommend(clubId, id);
+
   const handleEdit = () => {
     navigate(`/bookclub/${clubId}/recommend/${id}/edit`, {
       state: { recommendDetail },
@@ -23,8 +26,9 @@ const BookRecommendDetailCard = ({
   };
 
   const handleDelete = () => {
-    // TODO: 추후 API 호출 로직으로 대체
-    console.log("삭제하기 버튼 클릭");
+    if (window.confirm("정말로 이 추천 도서를 삭제하시겠습니까?")) {
+      deleteRecommend();
+    }
   };
 
   return (
