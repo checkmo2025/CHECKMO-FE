@@ -152,7 +152,7 @@ const ProfilePage = () => {
                   type="button"
                   disabled={!nickname.trim()}
                   className={`absolute right-2 top-1/2 -translate-y-1/2 rounded-full text-[12px] font-semibold
-                    ${nickname.trim() ? "bg-[#90D26D] text-white" : "bg-[#EFF5ED] text-[#90D26D]"}`}
+                    ${nickname.trim() ? "bg-[#90D26D] text-white" : "bg-[#EFF5ED] text-[#90D26D] cursor-pointer"}`}
                   style={{ width: "70px", height: "28px", lineHeight: "17px", padding: 0 }}
                 >
                   중복 확인
@@ -217,8 +217,8 @@ const ProfilePage = () => {
                         className={`w-full min-w-[90px] h-10 rounded-full text-sm font-medium border transition
                           ${
                             selectedCategories.includes(category)
-                              ? "bg-[#F8FFEF] text-[#90D26D] border-[#90D26D]"
-                              : "bg-[#e6e4e4] text-[#8D8D8D] border-[#8D8D8D]"
+                              ? "bg-[#F8FFEF] text-[#90D26D] border-[#90D26D] cursor-pointer"
+                              : "bg-[#e6e4e4] text-[#8D8D8D] border-[#8D8D8D] cursor-pointer"
                           }`}
                       >
                         {category}
@@ -231,7 +231,7 @@ const ProfilePage = () => {
               {/* 다음 버튼 */}
               <button
                 onClick={handleNext}
-                className="w-full bg-[#90D26D] text-white py-3 rounded transition hover:opacity-90"
+                className="w-full bg-[#90D26D] text-white py-3 rounded transition hover:opacity-90 cursor-pointer"
               >
                 다음
               </button>
@@ -264,19 +264,19 @@ const ProfilePage = () => {
               {/* 모임 선택 버튼들 */}
               <button
                 onClick={goToClubSearch}
-                className="w-full bg-[#90D26D] text-white py-2 rounded mb-4 transition hover:opacity-90"
+                className="w-full bg-[#90D26D] text-white py-2 rounded mb-4 transition hover:opacity-90 cursor-pointer"
               >
                 모임 검색하기
               </button>
               <button
                 onClick={goToCreateClub}
-                className="w-full bg-[#90D26D] text-white py-2 rounded mb-4 transition hover:opacity-90"
+                className="w-full bg-[#90D26D] text-white py-2 rounded mb-4 transition hover:opacity-90 cursor-pointer"
               >
                 모임 생성하기
               </button>
               <button
                 onClick={goToHomePage}
-                className="w-full bg-[#90D26D] text-white py-2 rounded mb-3 transition hover:opacity-90"
+                className="w-full bg-[#90D26D] text-white py-2 rounded mb-3 transition hover:opacity-90 cursor-pointer"
               >
                 모임 없이 이용하기
               </button>

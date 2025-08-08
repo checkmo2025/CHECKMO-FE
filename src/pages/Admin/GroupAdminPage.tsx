@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
-const GroupManagementPage = () => {
+const GroupAdminPage = () => {
   const navigate = useNavigate();
   const [groups, setGroups] = useState<string[]>([]);
   const [participants, setParticipants] = useState<string[]>(
@@ -139,4 +139,4 @@ const GroupManagementPage = () => {
   );
 };
 
-export default GroupManagementPage;
+export default GroupAdminPage;

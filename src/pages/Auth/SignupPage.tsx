@@ -212,7 +212,7 @@ const SignupPage = () => {
                 <div className="w-full">
                   <button
                     onClick={handleSendCode}
-                    className="w-full bg-[#90D26D] text-white py-3 rounded transition hover:opacity-90"
+                    className="w-full bg-[#90D26D] text-white py-3 rounded transition hover:opacity-90 cursor-pointer"
                   >
                     인증번호 발송
                   </button>
@@ -237,7 +237,7 @@ const SignupPage = () => {
                       onClick={handleVerifyCode}
                       disabled={isVerified}
                       className={`absolute right-2 top-1/2 transform -translate-y-1/2 px-3 py-1.5 rounded text-white text-xs ${
-                        isVerified ? "bg-gray-400" : "bg-[#90D26D]"
+                        isVerified ? "bg-gray-400" : "bg-[#90D26D] cursor-pointer"
                       }`}
                     >
                       {isVerified ? "완료" : "확인"}
@@ -319,8 +319,8 @@ const SignupPage = () => {
                       }
                       className={`px-4 py-1 rounded-full text-sm ${
                         agreements[item.key as keyof typeof agreements]
-                          ? "bg-[#90D26D] text-white"
-                          : "bg-[#EFF5ED] text-[#7FCF6C]"
+                          ? "bg-[#90D26D] text-white cursor-pointer"
+                          : "bg-[#EFF5ED] text-[#7FCF6C] cursor-pointer"
                       }`}
                     >
                       {agreements[item.key as keyof typeof agreements]
@@ -337,7 +337,7 @@ const SignupPage = () => {
           <div className="w-full max-w-md mt-25">
             <button
               onClick={handleNextStep}
-              className="w-full bg-[#90D26D] text-white py-3 rounded transition hover:opacity-90"
+              className="w-full bg-[#90D26D] text-white py-3 rounded transition hover:opacity-90 cursor-pointer"
             >
               {step === 3 ? "다음" : "다음"}
             </button>

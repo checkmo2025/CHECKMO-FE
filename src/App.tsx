@@ -32,7 +32,7 @@ import Layout from "./components/layout/Layout";
 import MeetingListPage from "./pages/Meeting/MeetingListPage";
 import BookStoryDetailPage from "./pages/Main/BookStory/BookStoryDetailPage";
 import BookStoryWritePage from "./pages/Main/BookStory/BookStoryWritePage";
-import GroupManagementPage from "./pages/Manage/GroupManagementPage";
+import GroupManagementPage from "./pages/Admin/GroupAdminPage";
 import MeetingDetailPage from "./pages/Meeting/MeetingDetailPage";
 import CreateMeetingPage from "./pages/Meeting/CreateMeetingPage";
 import MeetingTopicListPage from "./pages/Meeting/MeetingTopicListPage";
