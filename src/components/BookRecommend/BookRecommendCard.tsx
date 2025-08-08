@@ -13,7 +13,7 @@ const BookRecommendCard = ({ recommend }: BookRecommendCardProps) => {
     <div
       className="font-pretendard relative rounded-xl overflow-hidden 
     border-2 border-gray-200 transition-transform duration-300 transform hover:shadow-lg 
-    hover:scale-105 bg-white min-h-[350px] flex flex-col"
+    hover:scale-105 bg-white min-h-[350px] min-w-[300px] flex flex-col"
     >
       <BookRecommendHeader
         author={{
@@ -25,7 +25,7 @@ const BookRecommendCard = ({ recommend }: BookRecommendCardProps) => {
       <div className="mt-2 mb-4 mx-4 flex-1 flex">
         <img
           src={bookInfo.imgUrl.replace(/^(https?:)?\/\//, "//") || "/chess.png"} // 이미지가 없을 경우 기본 이미지
-          className="w-1/3 object-cover rounded-lg"
+          className="w-1/3 object-cover rounded-lg min-w-[200px]"
           onError={(e) => {
             const target = e.target as HTMLImageElement;
             target.onerror = null; // 무한 루프 방지
