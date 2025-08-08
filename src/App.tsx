@@ -42,6 +42,7 @@ import BookClubAdminPage from "./pages/Admin/BookClubAdminPage";
 import MemberAdminPage from "./pages/Admin/MemberAdminPage";
 import RegisterAdminPage from "./pages/Admin/RegisterAdminPage";
 import MeetingTeamTopicListPage from "./pages/Meeting/MeetingTeamTopicListPage";
+import BookRecommendEditPage from "./pages/BookRecommend/BookRecommendEditPage";
 
 const App = () => {
   return (
@@ -120,6 +121,10 @@ const App = () => {
                 <Route
                   path=":recommendId"
                   element={<BookRecommendDetailPage />}
+                />
+                <Route
+                  path=":recommendId/edit"
+                  element={<BookRecommendEditPage />}
                 />
                 <Route
                   path=":bookId/create"
