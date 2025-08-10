@@ -1,4 +1,4 @@
-import axiosInstance from "../lib/axiosInstance";
+import { axiosInstance } from "./axiosInstance";
 import type { ClubDto } from "../types/dto";
 
 // 클럽 목록 조회
