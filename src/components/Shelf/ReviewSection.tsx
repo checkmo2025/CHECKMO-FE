@@ -108,7 +108,7 @@ export default function ReviewSection({ meetingId,  currentUser,  size,}:
       </span>
 
       {/* 등록 영역 */}
-      <div className="flex py-2 shadow rounded-2xl border-2 border-[var(--sub-color-2-brown,#EAE5E2)] w-full mb-[22px]">
+      <div className="flex py-2 shadow rounded-2xl border-2 border-[var(--sub-color-2-brown,#EAE5E2)] w-full mb-3">
         <div className="flex items-center justify-between h-[48px] w-[270px] flex-none ml-[12px] mr-[34px]">
           <img
             src={currentUser.profileImageUrl}
@@ -142,7 +142,7 @@ export default function ReviewSection({ meetingId,  currentUser,  size,}:
       </div>
 
       {/* 리스트 영역 */}
-      <div className="flex flex-col gap-[22px]">
+      <div className="flex flex-col gap-3">
         {ReviewList.map((review) => (
           <div key={review.bookReviewId} className="flex py-2 shadow rounded-2xl border-2 border-[var(--sub-color-2-brown,#EAE5E2)]">
             <div className="flex items-center justify-between h-[48px] w-[270px] flex-none ml-[12px] mr-[34px]">
