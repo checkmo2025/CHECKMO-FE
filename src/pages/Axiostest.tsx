@@ -8,12 +8,13 @@ import { useTopicList } from '../hooks/Shelf/useTopicList';
 import { useTopicCreate } from '../hooks/Shelf/useTopicCreate';
 import { useTopicUpdate } from '../hooks/Shelf/useTopicUpdate';
 import { useTopicDelete } from '../hooks/Shelf/useTopicDelete';
-
+import { useReviewInfinite } from '../hooks/Shelf/useReviewInfinite';
 import type { ReviewListRequest } from "../types/Shelf/Shelfreview";
-import { useReviewList } from '../hooks/Shelf/useReviewList';
+
 import { useReviewCreate } from '../hooks/Shelf/useReviewCreate';
 import { useReviewUpdate } from '../hooks/Shelf/useReviewUpdate';
 import { useReviewDelete } from '../hooks/Shelf/useReviewDelete';
+import ReviewSection from '../components/Shelf/ReviewSection';
 
 export default function AxiosTest() {
   // 테스트용 Request DTO
@@ -36,7 +37,7 @@ export default function AxiosTest() {
     cursorId: 202,
     size:      5,
   };
-  const { data, isLoading, isError, error} =  useReviewList(reviewReq)
+  const { data, isLoading, isError, error} =  useReviewInfinite(reviewReq)
 
   const [selectedReviewId, setSelectedReviewId] = useState<number>(null);
   const createReviewMut = useReviewCreate(reviewReq);
@@ -77,51 +78,9 @@ export default function AxiosTest() {
   if (isError ) return <p className="text-red-500">Error: {error?.message}</p>;
 
   return (
-    <div className="p-8 space-y-6">
-      <h1 className="text-2xl font-bold">Topic CRUD Test</h1>
-      {/* review 선택 드롭다운 */}
-      <div>
-        <label htmlFor="reviewSelect" className="mr-2">Select Review:</label>
-       <select
-         id="reviewSelect"
-         value={selectedReviewId ?? ''}
-          onChange={e => setSelectedReviewId(e.target.value ? Number(e.target.value) : null)}
-          className="border rounded px-2 py-1"
-        >
-          <option value="">-- none --</option>
-          {data.bookReviewList.map(r => (
-            <option key={r.bookReviewId} value={r.bookReviewId}>
-              {r.bookReviewId}: {r.description} ({r.rate})
-            </option>
-          ))}
-        </select>
-      </div>
-      
-      <div className="flex gap-2">
-          <button onClick={handleCreateReview} className="btn" disabled={createReviewMut.isLoading}>
-          {createReviewMut.isLoading ? 'Creating Review...' : 'Create Review'}
-        </button>
-        <button onClick={handleUpdateReview} className="btn" disabled={!selectedReviewId || updateReviewMut.isLoading}>
-          {updateReviewMut.isLoading ? 'Updating Review...' : 'Update Review'}
-        </button>
-        <button onClick={handleDeleteReview} className="btn" disabled={!selectedReviewId || deleteReviewMut.isLoading}>
-          {deleteReviewMut.isLoading ? 'Deleting Review...' : 'Delete Review'}
-        </button>
+    <div>
 
-      </div>
-      
-      <div>
-        <h2 className="font-semibold">Current Reviews</h2>
-        <ul className="list-disc pl-5">
-          {data?.bookReviewList.map(r => (
-            <li key={r.bookReviewId} className="py-1">
-              <strong>{r.bookReviewId}</strong>: {r.description} (★{r.rate})
-            </li>
-          ))}
-        </ul>
-      </div>
-
-
+      <ReviewSection meetingId={Number(1)} currentUser={{ nickname: "dd", profileImageUrl: "!!" }} size={5} />
 
     </div>
   )};

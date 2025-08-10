@@ -150,7 +150,7 @@ export default function ShelfHomePage() {
                     </div>
                   </Link>
                   <div  className="block">
-                    <Link to={`${location.pathname}/${Shelf.meetingInfo.meetingId}/score`} className="block" onClick={(e) => { e.stopPropagation();}}>
+                    <Link to={`${location.pathname}/${Shelf.meetingInfo.meetingId}/score`} state={{ bookTitle: Shelf.bookInfo.title }} className="block" onClick={(e) => { e.stopPropagation();}}>
                       <div className=" w-[128px] h-[24px] border-b-[1px] border-[var(--sub-color-2-brown,#EAE5E2)] flex items-center justify-between">
                       <span className="text-[12px] font-[Pretendard] font-medium leading-[145%] text-[#2C2C2C] items-center">
                         한줄평</span>

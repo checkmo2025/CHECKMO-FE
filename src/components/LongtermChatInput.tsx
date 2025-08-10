@@ -1,13 +1,20 @@
-import React, { useRef } from 'react';
+import React, { useEffect, useRef } from 'react';
 
 interface ChatInputProps {
   onSend: (text: string) => void;
   placeholder?: string;
   buttonIconSrc?: string;
   className?: string;
+  initialValue?: string;
 }
 
-const LongtermChatInput = ({ onSend, placeholder, buttonIconSrc, className }: ChatInputProps) => {
+const LongtermChatInput = ({
+  onSend,
+  placeholder,
+  buttonIconSrc,
+  className,
+  initialValue,
+}: ChatInputProps) => {
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 
   const adjustHeight = () => {
@@ -17,7 +24,7 @@ const LongtermChatInput = ({ onSend, placeholder, buttonIconSrc, className }: Ch
     ta.style.height = ta.scrollHeight + 'px';
   };
 
-  const handleInput = (e: React.FormEvent<HTMLTextAreaElement>) => {
+  const handleInput = () => {
     adjustHeight();
   };
 
@@ -43,8 +50,19 @@ const LongtermChatInput = ({ onSend, placeholder, buttonIconSrc, className }: Ch
     adjustHeight();
   };
 
+  // Prefill when initialValue is provided or changes
+  useEffect(() => {
+    if (initialValue === undefined) return;
+    const ta = textareaRef.current;
+    if (!ta) return;
+    ta.value = initialValue;
+    adjustHeight();
+  }, [initialValue]);
+
   return (
-    <div className={`flex-1 mr-[20px] min-h-[48px] flex items-center ${className}`}>
+    <div
+      className={`flex-1 mr-[20px] min-h-[48px] flex items-center ${className}`}
+    >
       <textarea
         ref={textareaRef}
         rows={1}
