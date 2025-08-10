@@ -114,7 +114,7 @@ export default function ThemeDetailPage() {
             <span className= "mt-[34px] mb-[22px] text-[18px] font-[Pretendard] font-medium leading-[135%] text-black">발제</span>
 
             {/* 등록 영역 */}
-            <div className=" py-3 flex bg-[#F4F2F1] shadow rounded-2xl border-2 border-[var(--sub-color-2-brown,#EAE5E2)] mb-[22px]">
+            <div className=" py-2 flex shadow rounded-2xl border-2 border-[var(--sub-color-2-brown,#EAE5E2)] mb-3">
               <div className="flex-shrink-0 items-center w-[222px] h-[48px] ml-[12px] flex gap-[19px] mr-[15px]">
                 <img src={MyUrl} className="w-[48px] h-[48px] rounded-full object-cover"  alt="프로필"/>
                 <div className="flex-1 font-semibold text-[15px] text-gray-800">
@@ -125,9 +125,9 @@ export default function ThemeDetailPage() {
             </div>
             
             {/* 발제 리스트 */}
-            <div className="flex flex-col gap-[22px]">
+            <div className="flex flex-col gap-3">
               {TopicList.map((Topic: TopicItem) => (
-                <div key={Topic.topicId} className="flex py-3 flex bg-[#F4F2F1] shadow rounded-2xl border-2 border-[var(--sub-color-2-brown,#EAE5E2)]">
+                <div key={Topic.topicId} className="flex py-2 flex shadow rounded-2xl border-2 border-[var(--sub-color-2-brown,#EAE5E2)]">
                     <div className= "flex-shrink-0 items-center w-[222px] h-[48px] ml-[12px] flex gap-[19px] mr-[15px] " >
                       <img src= "/assets/ix_user-profile-filled.svg" className="w-[48px] h-[48px] rounded-full object-cover" />
                       <div className="font-semibold text-[15px] text-gray-800 mb-1">{Topic.authorInfo.nickname}</div>
