@@ -1,30 +1,24 @@
-import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { deleteShelfTopic } from "../../apis/Shelf/fetchShelftopics";
-import type {TopicListRequest, TopicListResponseResult} from '../../types/Shelf/Shelftopics';
+import { useMutation, useQueryClient, type InfiniteData } from "@tanstack/react-query";
+import { deleteShelfTopic } from "../../apis/Shelf/fetchShelfTopics";
+import {buildTopicKey, type TopicListRequest, type TopicListResponseResult} from '../../types/Shelf/Shelftopics';
 
 export function useTopicDelete(req: TopicListRequest) {
   const qc = useQueryClient();
   
-  return useMutation<
-    null,
-    Error,
-    number
-    >({
+  return useMutation<null, Error, number, { previousData: InfiniteData<TopicListResponseResult> | undefined }>({
     mutationFn: (topicId: number) => deleteShelfTopic(req.meetingId, topicId),
-    // 낙관적 업데이트
-    onMutate : async (topicId) => {
-      await qc.cancelQueries({ queryKey: ["topicList", req] });
-      const previous = qc.getQueryData(["topicList", req]);
+    onMutate: async (topicId: number) => {
+          const key = buildTopicKey({ meetingId: req.meetingId, size: req.size });
+          await qc.cancelQueries({ queryKey: ['topicList', req] });
 
-      qc.setQueryData<TopicListResponseResult>(["topicList", req], (old) => {
-        if (!old) return old;
-        return {
-          ...old,
-          topics: old.topics.filter((t) => t.topicId !== topicId),
-        };
-      });
-      return { previous };
-    },
+         const previousData = qc.getQueryData<InfiniteData<TopicListResponseResult>>(key);
+
+         qc.setQueryData<InfiniteData<TopicListResponseResult>>(key, (old) => {
+          if (!old) return old; 
+          return { ...old, pages: old.pages.map((page) => ({ ...page, topics: page.topics.filter((t) => t.topicId !== topicId), })), }; });
+
+          return { previousData };
+        },
 
     onError: (_err,  context) => {
       if (context) {
@@ -39,3 +33,4 @@ export function useTopicDelete(req: TopicListRequest) {
     },
   });
 }
+

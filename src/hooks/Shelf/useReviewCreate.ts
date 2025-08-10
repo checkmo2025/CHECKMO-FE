@@ -22,7 +22,7 @@ export function useReviewCreate({ meetingId, size, currentUser }: CreateParams) 
       } else {
         tempId = 0;
       }
-      
+
       const tempReview: ReviewItem = {
         bookReviewId: tempId,
         description: newReview.description,
