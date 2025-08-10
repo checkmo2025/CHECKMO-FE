@@ -20,16 +20,11 @@ export function useTopicDelete(req: TopicListRequest) {
           return { previousData };
         },
 
-    onError: (_err,  context) => {
-      if (context) {
-        qc.setQueryData(["topicList", req] , context);
-      }
+    onError: (_error, _newTopic, context) => {
+         qc.setQueryData(buildTopicKey({ meetingId: req.meetingId, size: req.size }), context?.previousData);
     },
-
     onSettled: () => {
-      qc.invalidateQueries({
-        queryKey: ["topicList", req],
-      });
+         qc.invalidateQueries({ queryKey: buildTopicKey({ meetingId: req.meetingId, size: req.size }) });
     },
   });
 }
