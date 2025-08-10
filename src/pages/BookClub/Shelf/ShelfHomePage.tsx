@@ -4,7 +4,7 @@ import Header from '../../../components/Header'
 
 import { useShelfHome } from '../../../hooks/Shelf/useShelfHome';
 import type { ShelfHomeRequest, BookShelfInfo, } from '../../../types/Shelf/Shelfhome'
-import { getStarIcon } from './getStarIcon';
+import { getStarIcon } from '../../../components/Shelf/getStarIcon';
 
 export default function ShelfHomePage() {
   const { bookclubId } = useParams<{ bookclubId: string }>();
