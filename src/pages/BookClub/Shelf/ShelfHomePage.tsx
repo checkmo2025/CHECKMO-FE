@@ -142,7 +142,7 @@ export default function ShelfHomePage() {
 
                 {/* 링크 3개 */}
                 <div className="mt-[24px] flex flex-col">
-                  <Link to={`${location.pathname}/${Shelf.meetingInfo.meetingId}/theme`} className="block" onClick={(e) => { e.stopPropagation();}}>
+                  <Link to={`${location.pathname}/${Shelf.meetingInfo.meetingId}/topic`} state={{ bookTitle: Shelf.bookInfo.title }} className="block" onClick={(e) => { e.stopPropagation();}}>
                     <div className=" w-[128px] h-[24px] border-b-[1px] border-[var(--sub-color-2-brown,#EAE5E2)] flex items-center justify-between">
                       <span className="text-[12px] font-[Pretendard] font-medium leading-[145%] text-[#2C2C2C] items-center">
                         발제</span>

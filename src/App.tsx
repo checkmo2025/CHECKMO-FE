@@ -25,7 +25,7 @@ import SearchPage from "./pages/Main/SearchPage";
 import BookRecommendSearchPage from "./pages/BookRecommend/BookRecommendSearchPage";
 import ShelfHomePage from "./pages/BookClub/Shelf/ShelfHomePage";
 import ShelfDetailPage from "./pages/BookClub/Shelf/ShelfDetailPage";
-import ThemeDetailPage from "./pages/BookClub/Shelf/ThemeDetailPage";
+import TopicDetailPage from "./pages/BookClub/Shelf/TopicDetailPage";
 import ScoreDetailPage from "./pages/BookClub/Shelf/ScoreDetailPage";
 import BookStoryHomePage from "./pages/Main/BookStory/BookStoryHomePage";
 import Layout from "./components/layout/Layout";
@@ -43,7 +43,7 @@ import MemberAdminPage from "./pages/Admin/MemberAdminPage";
 import RegisterAdminPage from "./pages/Admin/RegisterAdminPage";
 import MeetingTeamTopicListPage from "./pages/Meeting/MeetingTeamTopicListPage";
 import BookRecommendEditPage from "./pages/BookRecommend/BookRecommendEditPage";
-import AxiosTest from "./pages/Axiostest";
+
 const App = () => {
   return (
     <GoogleOAuthProvider clientId={KEYS.GOOGLE_CLIENT_ID}>
@@ -74,7 +74,6 @@ const App = () => {
               <Route path="notices" element={<NoticeManagementPage />} />{" "}
               {/* 임시 */}
             </Route>
-            <Route path="/test" element={<AxiosTest/>} />
             {/* 마이페이지 */}
             <Route path="mypage">
               <Route index element={<MyHomePage />} />
@@ -107,8 +106,8 @@ const App = () => {
                 <Route index element={<ShelfHomePage />} />
                 <Route path=":ShelfmeetingId" element={<ShelfDetailPage />} />
                 <Route
-                  path=":ShelfmeetingId/theme"
-                  element={<ThemeDetailPage />}
+                  path=":ShelfmeetingId/topic"
+                  element={<TopicDetailPage />}
                 />
                 <Route
                   path=":ShelfmeetingId/score"

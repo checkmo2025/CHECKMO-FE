@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { useNavigate, useParams } from 'react-router-dom'
+import { Link, useNavigate, useParams } from 'react-router-dom'
 import { useShelfDetail } from '../../../hooks/Shelf/useShelfDetail'
 
 import type { ShelfDetailRequest, TopicItem } from '../../../types/Shelf/Shelfdetail'
@@ -86,9 +86,9 @@ export default function ShelfDetailPage() {
               ))}
             </div>
             <div className="mt-[11px] mr-2 flex justify-end">
-              <button onClick={() => navigate(`${location.pathname}/theme`)} className="text-[14px] font-medium text-[var(--button-brown,#969696) leading-[145%] hover:cursor-pointer">
+              <Link to={`${location.pathname}/topic`} state={{ bookTitle: ShelfDetail.bookDetailInfo.title }} className="text-[14px] font-medium text-[var(--button-brown,#969696) leading-[145%] hover:cursor-pointer">
                 +더보기
-              </button>
+              </Link>
             </div>
           </div>
 
