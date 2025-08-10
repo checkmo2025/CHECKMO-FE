@@ -175,7 +175,7 @@ export default function ReviewSection({ meetingId,  currentUser,  size,}:
               ) : (review.description)}
             </div>
 
-            {/* editingReviewId가 있을 때, 내 아이디가 아닐 때 3가지 경우*/}
+            {/* editingReviewId가 있을 때, 내 아이디가 아닐 때 2가지 경우*/}
             {editingReviewId !== review.bookReviewId && review.authorInfo.nickname === currentUser.nickname && (
               <div className="ml-auto flex gap-[9px] mr-[25px] flex-shrink-0">
                 {editingReviewId === review.bookReviewId ? (

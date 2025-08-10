@@ -1,5 +1,8 @@
 import type { ApiResponse } from "../apiResponse";
 
+export const buildTopicKey = (params: { meetingId: number; size?: number }) =>
+  ['topics', params];
+
 export interface TopicAuthorInfo {
   nickname:        string;
   profileImageUrl: string;
@@ -15,7 +18,7 @@ export interface TopicItem {
 //조회 
 export interface TopicListRequest {
   meetingId: number;
-  cursorId?: number;
+  cursorId?: number | null;
   size:      number;
 }
 
@@ -28,6 +31,11 @@ export type TopicListResponse = ApiResponse<{
 export type TopicListResponseResult = TopicListResponse["result"];
 
 // 작성
+export type CreateParams = {
+  meetingId: number;
+  size: number;
+  currentUser: { nickname: string; profileImageUrl: string };
+};
 export interface TopicCreateRequest {
   description: string;
 }
