@@ -9,7 +9,7 @@ export function useTopicDelete(req: TopicListRequest) {
     mutationFn: (topicId: number) => deleteShelfTopic(req.meetingId, topicId),
     onMutate: async (topicId: number) => {
           const key = buildTopicKey({ meetingId: req.meetingId, size: req.size });
-          await qc.cancelQueries({ queryKey: ['topicList', req] });
+          await qc.cancelQueries({ queryKey: key });
 
          const previousData = qc.getQueryData<InfiniteData<TopicListResponseResult>>(key);
 
