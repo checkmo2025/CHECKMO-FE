@@ -9,7 +9,7 @@ export function useReviewDelete(req: ReviewListRequest) {
     mutationFn: (bookReviewId: number) => deleteShelfReview(req.meetingId, bookReviewId),
     onMutate: async (bookReviewId: number) => {
       const key = buildReviewsKey({ meetingId: req.meetingId, size: req.size });
-      await qc.cancelQueries({ queryKey: ['reviewList', req] });
+      await qc.cancelQueries({queryKey: key });
       
      const previousData = qc.getQueryData<InfiniteData<ReviewListResponseResult>>(key);
 
