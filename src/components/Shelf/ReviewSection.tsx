@@ -55,8 +55,8 @@ export default function ReviewSection({ meetingId,  currentUser,  size,}:
   // Create
   const createReviewMut = useReviewCreate({ meetingId, size, currentUser });
   const handleSend = (description: string) => {
-    if (newRating <= 1) {
-      alert('별점은 1보다 커야 합니다.');
+    if (newRating < 1) {
+      alert('별점은 1점보다 크거나 같아야 합니다.');
       return;
     }
     if (!description.trim()) {
@@ -80,8 +80,8 @@ export default function ReviewSection({ meetingId,  currentUser,  size,}:
   };
 
   const handleUpdate = (newDescription: string) => {
-    if (editRating <= 1) {
-      alert('별점은 1보다 커야 합니다.');
+    if (editRating < 1) {
+      alert('별점은 1점보다 크거나 같아야 합니다.');
       return;
     }
     if (!newDescription.trim()) {
@@ -89,10 +89,12 @@ export default function ReviewSection({ meetingId,  currentUser,  size,}:
       return;
     }
     const payload: ReviewUpdateRequest = { reviewId: editingReviewId!, description: newDescription, rate: editRating };
-    updateMut.mutate(payload);
-
-    setEditingReviewId(null);
-    setEditingInitialText('');
+    updateMut.mutate(payload, {
+      onSuccess: () => {
+        setEditingReviewId(null);
+        setEditingInitialText('');
+      },
+    });
   };
 
   // Delete
