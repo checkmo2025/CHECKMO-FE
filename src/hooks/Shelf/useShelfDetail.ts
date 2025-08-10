@@ -1,6 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import { fetchShelfDetail } from "../../apis/Shelf/fetchShelfdetail";
-import type { ShelfDetailRequest,ShelfDetailResponseResult } from "../../types/Shelf/Shelfdetail";
+import type { ShelfDetailRequest,ShelfDetailResponseResult } from "../../types/Shelf/ShelfDetail";
 
 
 export function useShelfDetail(req: ShelfDetailRequest) {
