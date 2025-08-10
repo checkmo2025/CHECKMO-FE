@@ -72,7 +72,7 @@ export default function ShelfDetailPage() {
           <div className="mt-[64px] flex flex-col">
             <span className= "mb-[22px] text-[18px] font-[Pretendard] font-medium leading-[135%] text-black">발제</span>
             {/* 발제 리스트 */}
-            <div className="flex flex-col gap-[22px] ">
+            <div className="flex flex-col gap-3 ">
               {topics!.map((topic : TopicItem) => (
                 <div key={topic.topicId} className="py-2 flex shadow rounded-2xl border-2 border-[var(--sub-color-2-brown,#EAE5E2)]">
                   <div className= "flex h-[48px] ml-[12px] gap-[19px] items-center w-[222px] flex-shrink-0" >
