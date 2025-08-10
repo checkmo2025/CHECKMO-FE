@@ -13,7 +13,7 @@ import type {
 } from '../../types/Shelf/Shelfreview';
 
 import LongtermChatInput from '../LongtermChatInput';
-import { getStarIcon } from '../../pages/BookClub/Shelf/getStarIcon';
+import { getStarIcon } from './getStarIcon';
 
 
 
