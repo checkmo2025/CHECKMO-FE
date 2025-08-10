@@ -1,5 +1,9 @@
 import type { ApiResponse } from "../apiResponse";
 
+
+export const buildReviewsKey = (params: { meetingId: number; size?: number }) =>
+  ['reviews', params];
+
 export interface ReviewAuthorInfo {
   nickname:        string;
   profileImageUrl: string;
@@ -28,6 +32,13 @@ export type ReviewListResponse = ApiResponse<{
 export type ReviewListResponseResult = ReviewListResponse["result"];
 
 // 작성
+
+export type CreateParams = {
+  meetingId: number;
+  size: number;
+  currentUser: { nickname: string; profileImageUrl: string };
+};
+
 export interface ReviewCreateRequest {
   description: string;
   rate:        number;

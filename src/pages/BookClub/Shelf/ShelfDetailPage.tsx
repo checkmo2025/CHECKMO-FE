@@ -1,76 +1,30 @@
-import { useState, useEffect, useRef } from 'react'
+import { useState, useEffect } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
-import { useShelfDetail } from '../../../hooks/Shelf/useShelfDetail';
-import { useReviewList } from '../../../hooks/Shelf/useReviewList'
-import { useReviewCreate } from '../../../hooks/Shelf/useReviewCreate'
+import { useShelfDetail } from '../../../hooks/Shelf/useShelfDetail'
+
 import type { ShelfDetailRequest, TopicItem } from '../../../types/Shelf/Shelfdetail'
-import type { ReviewListRequest, ReviewItem, ReviewCreateRequest, ReviewCreateResponse } from '../../../types/Shelf/Shelfreview'
-import LongtermChatInput from '../../../components/LongtermChatInput'
-import { getStarIcon } from './getStarIcon'
+import ReviewSection from '../../../components/Shelf/ReviewSection'
 
 export default function ShelfDetailPage() {
   const navigate = useNavigate();
   const { ShelfmeetingId } = useParams<{ ShelfmeetingId: string }>()
-  const [Cursor, setCursor]  = useState<number | null | undefined>(null)
-  const [ReviewList, setReviewList] = useState<ReviewItem[]>([])
-  const [newRating, setNewRating] = useState<number>(0)
   const [Mynickname, setMynickname] = useState<string>('')
   const [MyUrl, setUrl] = useState<string>('')
 
   const Req: ShelfDetailRequest ={
     meetingId : Number(ShelfmeetingId),
   }
-  const ReviewReq : ReviewListRequest = {
-    meetingId: Number(ShelfmeetingId),
-    cursorId: Cursor,
-    size: 5,
-  }
-
   const { data : ShelfDetail, isLoading, isError, error} =  useShelfDetail(Req)
-  const { data : ReviewResult, isLoading : ReviewisLoading, isError : ReviewisError, error : Reviewerror} =  useReviewList(ReviewReq)
-
-
   const topics = ShelfDetail?.topicList.topics
-  const hasNext = ReviewResult?.hasNext 
-  const nextCursor = ReviewResult?.nextCursor
 
   useEffect(() => {
     setMynickname('oz')
     setUrl('/assets/ix_user-profile-filled.svg')
-  }, []) //단 한 번만 실행
-
-  useEffect(() => {
-    if (!ReviewResult){return;}
-    setReviewList(prev => [...prev, ...ReviewResult.bookReviewList]);
-    console.log(ReviewResult)
-  }, [ReviewResult]);
-
-  const loadMoreRef = useRef<HTMLDivElement>(null);
-  useEffect(() => {
-    if (!hasNext || isLoading) return;
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting) {
-          setCursor(nextCursor);
-        }
-      }
-    );
-    const el = loadMoreRef.current;
-    if (el) observer.observe(el);
-    return () => observer.disconnect();
-  }, [hasNext, isLoading, nextCursor]);
-
-  const createReviewMut = useReviewCreate(ReviewReq);
-  function handleSend(description: string) {
-    if (newRating <= 1) { alert('별점은 1보다 커야 합니다.');  return;} 
-    else if (!description.trim()) { alert('한줄평을 입력해주세요.'); return;}
-
-    const payload : ReviewCreateRequest = { description: description, rate: newRating}
-    createReviewMut.mutate(payload);
-  }
+  }, []) 
 
   if (isLoading) return <div className = "font-[Pretendard] font-semibold text-[16px] text-[#8D8D8D]">로딩 중…</div>
-  if (!ShelfDetail || isError || ReviewisError) return <p className="text-red-500">Error: {error?.message} OR {Reviewerror?.message}</p>;
+  if (!ShelfDetail || isError) return <p className="text-red-500">Error: {error?.message} </p>;
+
   return (
     <div className="flex h-screen">
       {/* 메인 */}
@@ -137,64 +91,11 @@ export default function ShelfDetailPage() {
               </button>
             </div>
           </div>
-          {/* 한줄평*/}
-          <div className="mt-[64px] flex flex-col mb-[73px]">
 
-            <span className="mb-[22px] text-[18px] font-[Pretendard] font-medium leading-[135%] text-black">한줄평</span>
-            {/* 등록 */}
-            <div className="flex mt-[22px] py-2 shadow rounded-2xl border-2 border-[var(--sub-color-2-brown,#EAE5E2)] w-full mb-[22px]">
-              <div className = "flex items-center justify-between h-[48px] w-[270px] flex-none ml-[12px] mr-[34px]">
-                <img src={MyUrl} className="w-[48px] h-[48px] rounded-full object-cover"/>
-                <div className="flex-1 ml-[19px]  font-semibold text-[15px] text-gray-800"> {Mynickname}</div>
-                  <div className="flex justify-end items-center">
-                    {[0, 1, 2, 3, 4].map((i) => (
-                      <img
-                        key={i} className="w-[20px] h-[20px] cursor-pointer"
-                        src={getStarIcon(newRating, i)}
-                        onClick={() => {
-                          setNewRating(prev => prev === i+1 ? i + 0.5 : i + 1)
-                        }}
-                      />
-                    ))}
-                  </div>  
-                </div>
-               <LongtermChatInput onSend={handleSend} placeholder = "한줄평을 입력해 주세요" buttonIconSrc="/assets/등록.svg" className = ''/>
-            </div>
 
-            {/* 리스트 */}
-            <div className="flex flex-col gap-[22px]">
-              {ReviewList.map((Review : ReviewItem) => (
-                <div key={Review.bookReviewId}  className="flex py-2 shadow rounded-2xl border-2 border-[var(--sub-color-2-brown,#EAE5E2)]">
-                      <div className="flex items-center justify-between h-[48px] w-[270px] flex-none] ml-[12px] mr-[34px]">
-                        <img src={Review.authorInfo.profileImageUrl || '/assets/ix_user-profile-filled.svg'} className="w-[48px] h-[48px] rounded-full object-cover"/>
-                        <div className="flex-1 ml-[19px]  font-semibold text-[15px] text-gray-800">{Review.authorInfo.nickname}</div>
-                        <div className="flex justify-end items-center ">
-                        {[0, 1, 2, 3, 4].map((i) => (
-                          <img key={i} src={getStarIcon(Review.rate, i)} className="w-[20px] h-[20px]"/>
-                          ))}
-                      </div>
-                  
-                    </div>
-                    <div className="flex-1 flex items-center font-pretendard text-sm font-medium leading-[145%] tracking-[-0.014px]  break-words mr-[20px] whitespace-pre-wrap">
-                      {Review.description}
-                    </div>
-                    {Review.authorInfo.nickname === Mynickname && (
-                        <div className="ml-auto flex gap-[9px] mr-[25px] flex-shrink-0">
-                          <button onClick={() => {/* TODO: edit */}}>
-                            <img src="/assets/글쓰기.svg" className="w-6 h-6" alt="글쓰기" />
-                          </button>
-                          <button onClick={() => {/* TODO: delete */}}>
-                            <img src="/assets/삭제.svg" className="w-6 h-6" alt="삭제" />
-                          </button>
-                        </div>
-                      )}
-                </div>
-              ))}
-              {ReviewisLoading && <div className = "font-[Pretendard] font-semibold text-[16px] text-[#8D8D8D]">추가 불러오는 중…</div>}
-              <div ref={loadMoreRef} style={{ height: 1 }} />
-              <div className ="h-20"></div>
-            </div>
-          </div>
+          {/* 한줄평 */}
+          <ReviewSection meetingId={Number(ShelfmeetingId)} currentUser={{ nickname: Mynickname, profileImageUrl: MyUrl }} size={5} />
+          
         </div>
       </div>
     </div>
