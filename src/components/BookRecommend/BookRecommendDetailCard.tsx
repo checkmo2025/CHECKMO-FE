@@ -17,6 +17,8 @@ const BookRecommendDetailCard = ({
   const { id, title, content, rate, tag, bookInfo, authorInfo, staff, author } =
     recommendDetail;
 
+  const tags = tag.split(",");
+
   const { mutate: deleteRecommend } = useDeleteRecommend(clubId, id);
 
   const handleEdit = () => {
@@ -55,9 +57,14 @@ const BookRecommendDetailCard = ({
           {/* Scrollable content area */}
           <div className="flex-grow overflow-y-auto pr-4">
             <div className="flex flex-wrap gap-2">
-              <span className="px-4 py-1 rounded-full bg-[#90D26D] text-xs font-normal text-white">
-                {tag}
-              </span>
+              {tags.map((tag) => (
+                <span
+                  key={tag}
+                  className="px-4 py-1 rounded-full bg-[#90D26D] text-xs font-normal text-white"
+                >
+                  {tag}
+                </span>
+              ))}
             </div>
 
             <div className="flex items-center my-4 space-x-3">
