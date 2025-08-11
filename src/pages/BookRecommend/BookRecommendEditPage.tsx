@@ -47,7 +47,9 @@ const BookRecommendEditPage = () => {
       {
         onSuccess: () => {
           alert("수정이 완료되었습니다.");
-          navigate(`/bookclub/${numericClubId}/recommend/${numericRecommendId}`);
+          navigate(
+            `/bookclub/${numericClubId}/recommend/${numericRecommendId}`
+          );
         },
         onError: (error) => {
           alert("수정 실패: " + error.message);
@@ -87,9 +89,8 @@ const BookRecommendEditPage = () => {
 
             <div className="flex flex-col flex-1 min-h-0">
               <div className="flex-grow flex flex-col space-y-4 pr-2">
-                {/* 태그 수정 */}
                 <div>
-                  <label className="font-semibold text-gray-700">제목</label>
+                  <label className="font-semibold">제목</label>
                   <input
                     type="text"
                     value={title}
@@ -98,7 +99,7 @@ const BookRecommendEditPage = () => {
                   />
                 </div>
                 <div>
-                  <label className="font-semibold text-gray-700">태그</label>
+                  <label className="font-semibold">태그</label>
                   <input
                     type="text"
                     value={tag}
@@ -115,14 +116,11 @@ const BookRecommendEditPage = () => {
 
                 {/* 추천 내용 수정 */}
                 <div className="flex flex-col flex-grow">
-                  <label className="font-semibold text-gray-700">
-                    추천 내용
-                  </label>
+                  <label className="font-semibold">추천 내용</label>
                   <textarea
                     value={content}
                     onChange={(e) => setContent(e.target.value)}
-                    className="mt-1 block w-full flex-grow px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-                    rows={10}
+                    className="flex-1 w-full p-4 border border-gray-300 rounded-lg resize-none focus:outline-none focus:ring-2 focus:ring-amber-400"
                   />
                 </div>
               </div>
