@@ -1,6 +1,20 @@
 import type { ClubDto, CreateClubRequestDto } from "../types/bookClub";
 import { axiosInstance } from "./axiosInstance";
 
+// 이미지 업로드
+export const uploadImage = async (file: File): Promise<string> => {
+  const formData = new FormData();
+  formData.append('file', file);
+
+  const response = await axiosInstance.post('/upload/image', formData, {
+    headers: {
+      'Content-Type': 'multipart/form-data',
+    },
+  });
+
+  return response.data.imageUrl;
+};
+
 // 클럽 생성 (현재 구현)
 export const createClub = async (clubData: CreateClubRequestDto): Promise<ClubDto> => {
   const headers = {

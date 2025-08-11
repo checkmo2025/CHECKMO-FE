@@ -5,6 +5,7 @@ import Header from '../../components/Header';
 import { useCreateClub } from '../../hooks/useCreateClub';
 import type { CreateClubRequestDto } from '../../types/bookClub';
 import { BOOK_CATEGORIES, PARTICIPANT_TYPES } from '../../types/bookClub';
+import { uploadImage } from '../../apis/clubApi';
 
 // 카테고리 옵션 (문자열 배열로 변환)
 const BOOK_CATEGORY_OPTIONS = Object.values(BOOK_CATEGORIES);
@@ -37,9 +38,26 @@ export default function CreateClubPage(): React.ReactElement {
   const [activityArea, setActivityArea] = useState('');
   const [insta, setInsta] = useState('');
   const [kakao, setKakao] = useState('');
+  const [selectedImage, setSelectedImage] = useState<string | null>(null);
+  const [imageFile, setImageFile] = useState<File | null>(null);
+
+  // 이미지 변경 핸들러
+  const handleImageChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    // 이미지 미리보기 생성
+    const reader = new FileReader();
+    reader.onloadend = () => {
+      setSelectedImage(reader.result as string);
+    };
+    reader.readAsDataURL(file);
+    
+    setImageFile(file);
+  };
 
   // 클럽 생성 핸들러
-  const handleCreateClub = () => {
+  const handleCreateClub = async () => {
     if (!clubName.trim()) {
       alert('모임 이름을 입력해주세요.');
       return;
@@ -61,30 +79,46 @@ export default function CreateClubPage(): React.ReactElement {
       return;
     }
 
-    const clubData: CreateClubRequestDto = {
-      name: clubName,
-      description: clubDescription,
-      open: visibility === '공개',
-      category: selectedCategories.map(getCategoryId),
-      participantTypes: selectedParticipants.map(getParticipantKey),
-      region: activityArea || '서울', // 활동 지역 입력값 사용, 없으면 기본값
-      insta: insta || undefined,
-      kakao: kakao || undefined,
-    };
+    try {
+      let profileImageUrl: string | undefined;
+      
+      if (imageFile) {
+        profileImageUrl = await uploadImage(imageFile);
+      }
 
-    createClubMutation.mutate(clubData);
+      const clubData: CreateClubRequestDto = {
+        name: clubName,
+        description: clubDescription,
+        profileImageUrl,
+        open: visibility === '공개',
+        category: selectedCategories.map(getCategoryId),
+        participantTypes: selectedParticipants.map(getParticipantKey),
+        region: activityArea || '서울', // 활동 지역 입력값 사용, 없으면 기본값
+        insta: insta || undefined,
+        kakao: kakao || undefined,
+      };
+
+      createClubMutation.mutate(clubData);
+    } catch (error) {
+      console.error('이미지 업로드 실패:', error);
+      alert('이미지 업로드에 실패했습니다. 다시 시도해주세요.');
+    }
   };
 
   return (
     <div className="absolute left-[315px] right-[42px] opacity-100">
       <Header 
         pageTitle="모임 생성하기" 
+        userProfile={{
+          username: 'Dayoun',
+          bio: '아 피곤하다.'
+        }} 
         notifications={[]}
         customClassName="mt-[30px]"
       />
 
       <div className="mt-[15px] flex flex-col items-center overflow-y-auto h-[calc(100vh-120px)] w-full pb-[80px]">
-        {/* 모임 이름 + 중복확인 버튼 */}
+        {/* 모임 이름 */}
         <div className="mt-[36px]">
           <label className="font-pretendard font-medium text-[18px] leading-[135%] tracking-[-0.1%]">
             독서 모임을 입력해주세요.
@@ -110,6 +144,42 @@ export default function CreateClubPage(): React.ReactElement {
             placeholder='내용을 입력해주세요.'
             className="w-[808px] h-[265px] rounded-[16px] border-[2px] border-[#EAE5E2] px-[20px] py-[20px] text-[14px] text-[#BBBBBB] outline-none mt-[16px] resize-none"
           />
+        </div>
+
+        {/* 프로필 사진 업로드 */}
+        <div className="mt-[56px] flex flex-col items-center">
+          <label className="font-pretendard font-medium text-[18px] leading-[135%] tracking-[-0.1%] ">
+            모임의 프로필 사진을 업로드 해주세요.
+          </label>
+          <label
+            htmlFor="profile-upload"
+            className="
+              mt-[16px]
+              w-[216px] h-[216px]
+              bg-white rounded-[16px] border-[2px] border-[#EAE5E2]
+              flex flex-col items-center justify-center
+              cursor-pointer
+              relative
+              overflow-hidden
+            "
+          >
+            {selectedImage ? (
+              <img
+                src={selectedImage}
+                alt="프로필 미리보기"
+                className="w-full h-full object-cover"
+              />
+            ) : (
+              <span className="text-[24px] text-gray-300">＋</span>
+            )}
+            <input
+              type="file"
+              id="profile-upload"
+              accept="image/*"
+              onChange={handleImageChange}
+              className="hidden"
+            />
+          </label>
         </div>
 
         {/* 모임 공개 여부 */}
