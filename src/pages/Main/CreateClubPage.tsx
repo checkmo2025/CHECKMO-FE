@@ -3,9 +3,9 @@ import React, { useState } from 'react';
 import { ChipToggleGroup } from '../../components/CreateClub/ChipToggleGroup';
 import Header from '../../components/Header';
 import { useCreateClub } from '../../hooks/useCreateClub';
+import { useUploadImage } from '../../hooks/useUploadImage';
 import type { CreateClubRequestDto } from '../../types/bookClub';
 import { BOOK_CATEGORIES, PARTICIPANT_TYPES } from '../../types/bookClub';
-import { uploadImage } from '../../apis/clubApi';
 
 // 카테고리 옵션 (문자열 배열로 변환)
 const BOOK_CATEGORY_OPTIONS = Object.values(BOOK_CATEGORIES);
@@ -28,6 +28,7 @@ const getParticipantKey = (participantName: string): string => {
 export default function CreateClubPage(): React.ReactElement {
   // React Query hooks
   const createClubMutation = useCreateClub();
+  const uploadImageMutation = useUploadImage();
   
   // State
   const [clubName, setClubName] = useState('');
@@ -42,7 +43,7 @@ export default function CreateClubPage(): React.ReactElement {
   const [imageFile, setImageFile] = useState<File | null>(null);
 
   // 이미지 변경 핸들러
-  const handleImageChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
 
@@ -79,45 +80,38 @@ export default function CreateClubPage(): React.ReactElement {
       return;
     }
 
-    try {
-      let profileImageUrl: string | undefined;
-      
-      if (imageFile) {
-        profileImageUrl = await uploadImage(imageFile);
-      }
-
-      const clubData: CreateClubRequestDto = {
-        name: clubName,
-        description: clubDescription,
-        profileImageUrl,
-        open: visibility === '공개',
-        category: selectedCategories.map(getCategoryId),
-        participantTypes: selectedParticipants.map(getParticipantKey),
-        region: activityArea || '서울', // 활동 지역 입력값 사용, 없으면 기본값
-        insta: insta || undefined,
-        kakao: kakao || undefined,
-      };
-
-      createClubMutation.mutate(clubData);
-    } catch (error) {
-      console.error('이미지 업로드 실패:', error);
-      alert('이미지 업로드에 실패했습니다. 다시 시도해주세요.');
+    let profileImageUrl: string | undefined;
+    
+    // 이미지가 있는 경우 presigned URL 발급 및 비동기 업로드
+    if (imageFile) {
+      profileImageUrl = await uploadImageMutation.mutateAsync(imageFile);
+      // uploadImage는 즉시 imageUrl을 반환하고 S3 업로드는 백그라운드에서 진행
     }
+
+    const clubData: CreateClubRequestDto = {
+      name: clubName,
+      description: clubDescription,
+      profileImageUrl,
+      open: visibility === '공개',
+      category: selectedCategories.map(getCategoryId),
+      participantTypes: selectedParticipants.map(getParticipantKey),
+      region: activityArea || '서울', // 활동 지역 입력값 사용, 없으면 기본값
+      insta: insta || undefined,
+      kakao: kakao || undefined,
+    };
+
+    createClubMutation.mutate(clubData);
   };
 
   return (
     <div className="absolute left-[315px] right-[42px] opacity-100">
       <Header 
         pageTitle="모임 생성하기" 
-        userProfile={{
-          username: 'Dayoun',
-          bio: '아 피곤하다.'
-        }} 
         notifications={[]}
         customClassName="mt-[30px]"
       />
 
-      <div className="mt-[15px] flex flex-col items-center overflow-y-auto h-[calc(100vh-120px)] w-full pb-[80px]">
+      <div className="mt-[15px] flex flex-col items-center overflow-y-auto h-[calc(100vh-90px)] w-full pb-[80px]">
         {/* 모임 이름 */}
         <div className="mt-[36px]">
           <label className="font-pretendard font-medium text-[18px] leading-[135%] tracking-[-0.1%]">
@@ -313,7 +307,7 @@ export default function CreateClubPage(): React.ReactElement {
           <button
             type="button"
             onClick={handleCreateClub}
-            disabled={createClubMutation.isPending}
+            disabled={createClubMutation.isPending || uploadImageMutation.isPending}
             className="
               w-full mt-[12px] py-[12px] bg-[#90D26D] text-white
               rounded-[16px] font-pretendard font-semibold text-[20px]
@@ -321,7 +315,7 @@ export default function CreateClubPage(): React.ReactElement {
               cursor-pointer
             "
           >
-            {createClubMutation.isPending ? '등록 중...' : '등록하기'}
+            {createClubMutation.isPending || uploadImageMutation.isPending ? '등록 중...' : '등록하기'}
           </button>
         </div>
         
