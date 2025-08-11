@@ -14,6 +14,8 @@ export const useCreateClub = () => {
   return useMutation<ClubDto, Error, CreateClubRequestDto>({
     mutationFn: createClub,
     onSuccess: () => {
+      console.log("클럽 생성 성공");
+      
       // 클럽 목록 캐시 무효화
       queryClient.invalidateQueries({ queryKey: ["clubs"] });
       
