@@ -17,12 +17,8 @@ export const uploadImage = async (file: File): Promise<string> => {
 
 // 클럽 생성 (현재 구현)
 export const createClub = async (clubData: CreateClubRequestDto): Promise<ClubDto> => {
-  const headers = {
-    'MemberId': 'mem_001' // 임시로 고정값 사용, 나중에 시큐리티 구현 후 삭제
-  };
-  
   // axiosInstance가 이미 data.result를 반환하므로 직접 타입 캐스팅
-  return axiosInstance.post('/clubs', clubData, { headers }) as Promise<ClubDto>;
+  return axiosInstance.post('/clubs', clubData) as Promise<ClubDto>;
 };
 
 // 클럽 상세 조회
