@@ -45,12 +45,12 @@ export default function BookStoryWritePage() {
     >
       {/* 헤더 */}
       <Header
-        pageTitle="책 이야기 작성"
+        pageTitle="책 이야기"
         userProfile={{
           username: "yujin",
           bio: "가나다",
         }}
-        customClassName="mt-[30px] px-0"
+        customClassName="mt-[30px]"
       />
 
       {/* 메인 컨텐츠 */}
