@@ -222,7 +222,7 @@ export default function CreateClubPage(): React.ReactElement {
             <input
               type="file"
               id="profile-upload"
-              accept="image/*"
+              accept="image/jpeg,image/jpg,image/png,image/webp,image/gif"
               onChange={handleImageChange}
               className="hidden"
             />
