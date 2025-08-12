@@ -1,49 +1,94 @@
 import { axiosInstance } from "./axiosInstance";
-import type { LoginRequest, LoginResponse } from "../types/auth";
-import type { AdditionalInfoRequest, AdditionalInfoResult } from "../types/auth";
-import type { CheckNicknameResult } from "../types/auth";
+import type {
+  LoginRequest,
+  LoginResponse,
+  AdditionalInfoRequest,
+  AdditionalInfoResult,
+  CheckNicknameResult,
+  SignupRequest,
+  SignupResult,
+  EmailVerificationConfirmRequest,
+  EmailVerificationConfirmResult,
+  EmailVerificationSendResult,
+} from "../types/auth";
 
-// axiosInstance가 이미 data.result를 반환한다고 가정
-// 로그인 API
+// 로그인
 export async function postLogin(payload: LoginRequest): Promise<LoginResponse> {
   const res: LoginResponse = await axiosInstance.post("/auth/login", payload);
   return res; // { nickname: string }
 }
 
-// 회원추가정보 API
+// 회원 추가 정보 입력
 export async function postAdditionalInfo(
   payload: AdditionalInfoRequest
 ): Promise<AdditionalInfoResult> {
-  // axiosInstance가 bookRecommend처럼 data.result만 반환한다고 가정
   const res: AdditionalInfoResult = await axiosInstance.post(
     "/auth/additional-info",
     payload
   );
-  return res; // {} (사용할 값은 없음)
+  return res; // {}
 }
 
-// 닉네임 중복 확인 API
-// 서버가 result=true 를 중복으로 줌 > 프론트에는 "사용 가능 여부"로 반환
+// 닉네임 중복 확인 — 쿠키 없이, POST + query
 export async function checkNickname(nickname: string): Promise<CheckNicknameResult> {
-  // axiosInstance가 data.result만 반환한다고 가정 => rawResult에 바로 담김
-  const rawResult: unknown = await axiosInstance.post(
-    "/auth/check-nickname",
-    null,
-    { params: { nickname } }
-  );
+  const url = `/api/auth/check-nickname?nickname=${encodeURIComponent(nickname)}`;
 
-  if (typeof rawResult === "boolean") {
-    // true = duplicated(중복) 이라고 가정 > 사용 가능
-    return !rawResult;
-  }
-  if (rawResult && typeof rawResult === "object") {
-    const anyRes = rawResult as Record<string, unknown>;
-    if ("duplicated" in anyRes) return !Boolean(anyRes.duplicated);
-    if ("isDuplicated" in anyRes) return !Boolean(anyRes.isDuplicated);
-    if ("available" in anyRes) return Boolean(anyRes.available);
-    if ("isAvailable" in anyRes) return Boolean(anyRes.isAvailable);
+  const resp = await fetch(url, {
+    method: "POST",
+    credentials: "omit",
+    headers: { Accept: "application/json" },
+    body: null,
+  });
+
+// HTTP 에러 처리
+  const data = await resp.json().catch(() => null);
+  if (!resp.ok) {
+    const msg = data?.message || `HTTP ${resp.status}`;
+    const code = data?.code;
+    throw new Error(code ? `${code}: ${msg}` : msg);
   }
 
-  // 형태를 못 알아낸 경우: 안전하게 "사용 불가" 처리
+// API 표준 처리
+  if (!data?.isSuccess) throw new Error(`${data?.code}: ${data?.message}`);
+
+  const r = data.result;
+
+  if (typeof r === "boolean") return !r;
+
+  if (r && typeof r === "object") {
+    const anyRes = r as Record<string, unknown>;
+    if ("available" in anyRes)     return Boolean(anyRes.available);
+    if ("isAvailable" in anyRes)   return Boolean(anyRes.isAvailable);
+    if ("duplicated" in anyRes)    return !Boolean(anyRes.duplicated);
+    if ("isDuplicated" in anyRes)  return !Boolean(anyRes.isDuplicated);
+  }
   return false;
+}
+
+// 이메일 인증(요청/확인)
+export async function requestEmailVerification(
+  email: string
+): Promise<EmailVerificationSendResult> {
+  const res: EmailVerificationSendResult = await axiosInstance.post(
+    "/auth/email-verification",
+    null,
+    { params: { email } }
+  );
+  return res;
+}
+
+export async function confirmEmailVerification(
+  payload: EmailVerificationConfirmRequest
+): Promise<EmailVerificationConfirmResult> {
+  const res: EmailVerificationConfirmResult = await axiosInstance.post(
+    "/auth/email-verification/confirm",
+    payload
+  );
+  return res;
+}
+
+// 회원가입
+export async function postSignup(payload: SignupRequest): Promise<SignupResult> {
+  const res: SignupResult = await axiosInstance.post("/auth/signup", payload);
+  return res; // { email, profileCompleted }
 }
