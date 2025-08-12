@@ -22,7 +22,7 @@ export default function ClubSearchPage(): React.ReactElement {
     size: 10,
   }), [debouncedKeyword]);
 
-  const { data, fetchNextPage, hasNextPage, isFetchingNextPage, status } = useBookClubList(requestParams);
+  const { data, fetchNextPage, hasNextPage, isFetchingNextPage, status, error } = useBookClubList(requestParams);
 
   const flatClubs: ClubListDto[] = useMemo(
     () => data?.pages.flatMap(p => p.clubList) ?? [],
@@ -107,6 +107,12 @@ export default function ClubSearchPage(): React.ReactElement {
               {status === 'pending' && (
                 <div className="py-8 text-sm text-gray-500">로딩 중...</div>
               )}
+              {status === 'error' && (
+                <div className="py-8 text-sm text-red-500">
+                  데이터를 불러오는 중 오류가 발생했습니다.
+                  {error?.message && <p className="text-xs mt-2">{error.message}</p>}
+                </div>
+              )}
               {status === 'success' && flatClubs.map(({ club, member }) => (
                 <div key={club.clubId} className='h-full'>
                   <ClubCard
@@ -116,8 +122,6 @@ export default function ClubSearchPage(): React.ReactElement {
                     participantTypes={club.participantTypes}
                     region={club.region}
                     logoUrl={club.profileImageUrl}
-                    kakao={club.kakao}
-                    insta={club.insta}
                     isMember={member}
                     onJoinRequest={handleJoinRequest}
                   />
