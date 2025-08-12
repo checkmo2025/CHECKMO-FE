@@ -1,84 +1,35 @@
 // src/pages/BookClub/ClubSearchPage.tsx
-import React, { useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
-import ClubCard, { type ClubCardProps } from '../../components/SearchClub/ClubCard';
+import ClubCard from '../../components/SearchClub/ClubCard';
 import Modal from '../../components/Modal';
-import checker from '../../assets/images/checker.png';
 import Header from '../../components/Header.tsx';
+import { useBookClubList } from '../../hooks/useBookClubList';
+import { useDebounce } from '../../hooks/useDebounce';
+import type { ClubListDto } from '../../types/bookClub';
 
 export default function ClubSearchPage(): React.ReactElement {
   const [query, setQuery] = useState('');
   const [showAlert, setShowAlert] = useState(false);
 
-  // 예시 더미 데이터
-  const dummyClubs: ClubCardProps[] = [
-    { 
-      id: 1, 
-      title: '북적북적 독서모임', 
-      category: [6], // 인문학
-      participantTypes: ['STUDENT'], 
-      region: '서울', 
-      logoUrl: checker 
-    },
-    { 
-      id: 2, 
-      title: '책을모아', 
-      category: [9, 10], // 사회과학, 정치/외교/국방
-      participantTypes: ['WORKER'], 
-      region: '부산', 
-      logoUrl: checker 
-    },
-    { 
-      id: 3, 
-      title: '슬기로운 독서생활', 
-      category: [2, 3, 7], // 소설/시/희곡, 에세이, 여행
-      participantTypes: ['STUDENT'], 
-      region: '대구', 
-      logoUrl: checker 
-    },
-    { 
-      id: 4, 
-      title: '독서재량', 
-      category: [4, 5], // 경제/경영, 자기계발
-      participantTypes: ['WORKER'], 
-      region: '서울', 
-      logoUrl: checker 
-    },
-    { 
-      id: 5, 
-      title: '책사랑', 
-      category: [8], // 역사/문화
-      participantTypes: ['STUDENT'], 
-      region: '인천', 
-      logoUrl: checker 
-    },
-    { 
-      id: 6, 
-      title: '독서모임', 
-      category: [11, 12], // 컴퓨터/IT, 과학
-      participantTypes: ['STUDENT'], 
-      region: '서울', 
-      logoUrl: checker 
-    },
-    { 
-      id: 7, 
-      title: '책읽는 사람들', 
-      category: [13, 14], // 외국어, 예술/대중문화
-      participantTypes: ['WORKER'], 
-      region: '광주', 
-      logoUrl: checker 
-    },
-  ];
+  // 검색 파라미터 구성 (규칙: keyword 없으면 전체 조회)
+  const debouncedKeyword = useDebounce(query.trim(), 400);
+  const requestParams = useMemo(() => ({
+    keyword: debouncedKeyword || undefined,
+    region: 0 as 0 | 1,
+    participants: 0 as 0 | 1,
+    size: 10,
+  }), [debouncedKeyword]);
 
-  // 검색 로직(예시)
-  const filtered = dummyClubs.filter(c =>
-    c.title.includes(query) ||
-    c.region.includes(query) ||
-    c.participantTypes.some(type => type.includes(query))
+  const { data, fetchNextPage, hasNextPage, isFetchingNextPage, status } = useBookClubList(requestParams);
+
+  const flatClubs: ClubListDto[] = useMemo(
+    () => data?.pages.flatMap(p => p.clubList) ?? [],
+    [data]
   );
 
   // 가입 신청 처리
-  const handleJoinRequest = (clubId: number, message: string) => {
+  const handleJoinRequest = (_clubId: number, message: string) => {
     if (message === 'already_member') {
       setShowAlert(true);
       return;
@@ -88,10 +39,7 @@ export default function ClubSearchPage(): React.ReactElement {
   return (
     <>
       <div className="absolute left-[315px] right-[42px] opacity-100">
-        <Header pageTitle={'모임 검색하기'} userProfile={{
-            username: 'dayoun',
-            bio: '아 피곤하다.'
-          }} 
+        <Header pageTitle={'모임 검색하기'}
           notifications={[]}
           customClassName="mt-[30px]"
           />
@@ -100,7 +48,7 @@ export default function ClubSearchPage(): React.ReactElement {
                 {/* ── 검색 바 ── */}
           <div>
               <div className="mt-9 flex items-center h-[53px] py-[10px] px-[17px] rounded-2xl bg-[var(--Color-4,#F4F2F1)]">
-                <img src="/assets/material-symbols_search-rounded.svg" // PNG파일이 좀 연하더라고요~
+                <img src="/assets/material-symbols_search-rounded.svg"
                 alt="search" className="w-[33px] h-[33px]" />
                 <input
                   type="text"
@@ -141,12 +89,35 @@ export default function ClubSearchPage(): React.ReactElement {
 
             {/* ── 동아리 리스트 ── */}
             <div className= "flex-col flex items-center space-y-[15px] overflow-y-auto h-[calc(100vh-220px)] w-full"  style={{ msOverflowStyle: 'none', scrollbarWidth: 'none' }}
+              onScroll={(e) => {
+                const el = e.currentTarget;
+                if (hasNextPage && !isFetchingNextPage && el.scrollTop + el.clientHeight >= el.scrollHeight - 40) {
+                  fetchNextPage();
+                }
+              }}
             >
-              {filtered.map(club => (
-                <div key={club.id} className='h-full'>
-                  <ClubCard {...club} onJoinRequest={handleJoinRequest} />
+              {status === 'pending' && (
+                <div className="py-8 text-sm text-gray-500">로딩 중...</div>
+              )}
+              {status === 'success' && flatClubs.map(({ club }) => (
+                <div key={club.clubId} className='h-full'>
+                  <ClubCard
+                    id={club.clubId}
+                    title={club.name}
+                    category={club.category}
+                    participantTypes={club.participantTypes}
+                    region={club.region}
+                    logoUrl={club.profileImageUrl}
+                    onJoinRequest={handleJoinRequest}
+                  />
                 </div>
               ))}
+              {status === 'success' && flatClubs.length === 0 && (
+                <div className="py-8 text-sm text-gray-500">검색 결과가 없습니다.</div>
+              )}
+              {isFetchingNextPage && (
+                <div className="py-4 text-xs text-gray-400">더 불러오는 중...</div>
+              )}
             </div>
           </div>
         </div>
