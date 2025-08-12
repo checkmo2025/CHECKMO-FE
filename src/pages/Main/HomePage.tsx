@@ -8,7 +8,7 @@ const notices = [
     title: "북적북적",
     date: "2025. 06. 12",
     book: "넥서스",
-    type: "모임" as const,
+    type: "모임",
     imageUrl: "https://placehold.co/262x232?text=Book1",
     content: "내용내용내용내용내용내용내용내용",
   },
@@ -17,7 +17,7 @@ const notices = [
     title: "책방산책",
     date: "2025. 07. 03",
     book: "어린 왕자",
-    type: "투표" as const,
+    type: "투표",
     imageUrl: "https://placehold.co/262x232?text=Book2",
     content: "내용내용내용내용내용내용내용내용",
   },
@@ -26,12 +26,12 @@ const notices = [
     title: "책사모",
     date: "2025. 10. 03",
     book: "디어 에반 핸슨",
-    type: "공지" as const,
+    type: "공지",
     imageUrl: "https://placehold.co/262x232?text=Book3",
     content:
-      "내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용",
+      "내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용",
   },
-];
+] as const;
 
 const bookstories = [
   {
@@ -68,12 +68,22 @@ const bookstories = [
   },
 ];
 
-const HomePage = () => {
+export default function HomePage() {
   return (
-    <>
-      <Header pageTitle="책모 홈" />
-      {/* TODO: margin 수정하기 */}
-      <div className="mt-20 px-6 py-8">
+    <div className="absolute left-[315px] right-[42px] opacity-100">
+      {/* 헤더 */}
+      <Header
+        pageTitle="책모 홈"
+        userProfile={{
+          username: "yujin",
+          bio: "가나다",
+        }}
+        customClassName="mt-[30px]"
+      />
+
+      {/* 메인 컨텐츠 */}
+      <div className="overflow-y-auto h-[calc(100vh-80px)] w-full flex-1 pt-[30px] pl-[2px] pr-[30px] bg-[#FFFFFF]">
+        {/* 공지사항 */}
         <div className="text-xl font-semibold text-gray-800 mb-4">공지사항</div>
         <div className="flex gap-4 overflow-x-auto flex-nowrap scroll-smooth mb-12 scrollbar-hide">
           {notices.map((notice) => (
@@ -81,6 +91,7 @@ const HomePage = () => {
           ))}
         </div>
 
+        {/* 책 이야기 */}
         <div className="text-xl font-semibold text-gray-800 mb-4">
           책 이야기
         </div>
@@ -92,8 +103,6 @@ const HomePage = () => {
           ))}
         </div>
       </div>
-    </>
+    </div>
   );
-};
-
-export default HomePage;
+}
