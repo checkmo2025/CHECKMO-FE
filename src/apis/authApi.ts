@@ -53,6 +53,12 @@ export async function postAdditionalInfo(
   return res; // {}
 }
 
+// 로그아웃 
+export async function postLogout(): Promise<void> {
+  // axiosInstance는 {isSuccess, result}에서 result만 돌려주도록 인터셉터가 잡혀있음
+  await axiosInstance.post("/auth/logout");
+}
+
 // 공개 API (쿠키 불필요) 
 
 // 닉네임 중복 확인 — POST + query, 비로그인 호출
