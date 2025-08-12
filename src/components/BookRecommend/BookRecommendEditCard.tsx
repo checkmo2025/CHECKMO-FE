@@ -85,26 +85,19 @@ const BookRecommendEditCard = ({
 
   return (
     <>
-      <div className="mx-5 p-4">
-        <h1 className="text-3xl font-bold">{bookInfo.title}</h1>
-        <p className="mt-6 mb-4 text-sm text-gray-500">
-          {bookInfo.author}
-          {" | "}
-          {bookInfo.publisher}
-        </p>
+      <div className="mt-2 p-4">
+        <h1 className="text-3xl font-bold min-w-[650px]">{bookInfo.title}</h1>
+        <p className="mt-6 mb-4 text-sm text-gray-500">{bookInfo.author}</p>
 
-        <section className="flex h-2/3 min-h-[500px]">
-          {/* 왼쪽: 표지 */}
-          <div className="w-1/3 min-w-[300px] rounded-xl overflow-hidden">
+        <section className="flex h-2/3 min-h-[500px] flex-col md:flex-row">
+          <div className="min-w-[350px] rounded-xl overflow-hidden">
             <img
               src={bookInfo.imgUrl}
               alt={bookInfo.title}
               className="w-full h-full object-cover"
             />
           </div>
-
-          {/* 오른쪽: 폼 */}
-          <div className="ml-8 flex flex-col w-2/3 min-w-[300px]">
+          <div className="flex flex-col w-2/3 min-w-[300px]  ml-8 mt-6 md:mt-0">
             <label className="block mb-2 font-semibold">제목</label>
             <input
               value={title}
@@ -139,8 +132,7 @@ const BookRecommendEditCard = ({
         </section>
       </div>
 
-      {/* 하단 버튼 */}
-      <div className="flex flex-col mt-10 my-8 sm:flex-row sm:justify-end sm:space-x-2 space-y-2 sm:space-y-0 mr-4">
+      <div className="flex flex-col mt-10 my-8 md:flex-row md:justify-end md:space-x-2 space-y-2 md:space-y-0 mr-4">
         <ActionButton
           onClick={openConfirm}
           label="수정완료"

@@ -266,8 +266,16 @@ const BookRecommendEditPage = () => {
   return (
     <>
       <div className="flex flex-col h-screen ml-5 mr-10">
-        <Header pageTitle="추천 도서 수정" />
-        <div className="flex-grow overflow-y-auto mt-20">
+        <Header
+          pageTitle={"추천 도서 수정"}
+          userProfile={{
+            username: "오즈",
+            bio: "re_turnto_oz",
+          }}
+          notifications={[]}
+          customClassName="mx-3 mb-5 mt-[30px]"
+        />
+        <div className="flex-grow overflow-y-auto">
           <BookRecommendEditCard
             bookInfo={bookInfo}
             defaultValues={defaultValues}
@@ -277,7 +285,6 @@ const BookRecommendEditPage = () => {
         </div>
       </div>
 
-      {/* 성공/실패 알림 모달 */}
       <Modal
         isOpen={infoOpen}
         title={infoTitle}
