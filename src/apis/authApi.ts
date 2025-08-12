@@ -57,23 +57,21 @@ export async function postAdditionalInfo(
 
 // 닉네임 중복 확인 — POST + query, 비로그인 호출
 export async function checkNickname(nickname: string): Promise<CheckNicknameResult> {
-  // 서버가 result를 boolean 혹은 객체로 줄 수 있어 케이스 노멀라이즈
   const raw = await publicPost<unknown>("/auth/check-nickname", null, {
     params: { nickname },
   });
 
   if (typeof raw === "boolean") {
-    // 서버가 true/false를 바로 주는 경우: true=사용 가능으로 해석
-    return raw;
+    // 서버 true/false → true = 사용 불가, false = 사용 가능
+    return !raw;
   }
   if (raw && typeof raw === "object") {
     const anyRes = raw as Record<string, unknown>;
     if ("available" in anyRes)     return Boolean(anyRes.available);
     if ("isAvailable" in anyRes)   return Boolean(anyRes.isAvailable);
-    if ("duplicated" in anyRes)    return !Boolean(anyRes.duplicated);
-    if ("isDuplicated" in anyRes)  return !Boolean(anyRes.isDuplicated);
+    if ("duplicated" in anyRes)    return Boolean(anyRes.duplicated) === false;
+    if ("isDuplicated" in anyRes)  return Boolean(anyRes.isDuplicated) === false;
   }
-  // 형태를 모르면 안전하게 "불가"
   return false;
 }
 

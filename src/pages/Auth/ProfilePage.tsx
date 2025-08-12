@@ -68,7 +68,7 @@ const ProfilePage = () => {
 
     if (!trimmed) {
       setIsNicknameAvailable(null);
-      setNicknameMessage("닉네임을 입력해주세요.");
+      setNicknameMessage("닉네임을 입력해주세요. (영어 소문자/ 숫자/ 특수문자 포함 6자, 공백 불가");
       return;
     }
 
