@@ -3,19 +3,15 @@ import type { ReactNode } from "react";
 
 type ButtonVariant = "primary" | "outline" | "danger";
 
-interface ModalButton {
-  /** 버튼에 표시될 텍스트 */
+export interface ModalButton {
   label: string;
-  /** 클릭 시 실행될 함수 */
   onClick: () => void;
-  /** 스타일 */
   variant?: ButtonVariant;
 }
 
 interface ModalProps {
   isOpen: boolean;
   title: ReactNode;
-  content?: ReactNode;
   buttons: ModalButton[]; // 버튼 배열(개수·순서 자유)
   onBackdrop?: () => void; // 바깥 영역 클릭 시
 }
@@ -29,7 +25,7 @@ const variantClass: Record<ButtonVariant, string> = {
   danger: `${baseBtn} bg-red-500 text-white hover:bg-red-600 focus:ring-red-500`,
 };
 
-const Modal = ({ isOpen, title, content, buttons, onBackdrop }: ModalProps) => {
+const Modal = ({ isOpen, title, buttons, onBackdrop }: ModalProps) => {
   if (!isOpen) return null;
 
   return (
@@ -44,12 +40,6 @@ const Modal = ({ isOpen, title, content, buttons, onBackdrop }: ModalProps) => {
         <h2 className="text-xl font-semibold text-gray-800 text-center mt-2 mb-10">
           {title}
         </h2>
-
-        {/* {content && (
-          <p className="text-sm text-gray-800 text-center mb-6 whitespace-pre-wrap">
-            {content}
-          </p>
-        )} */}
 
         <div className="w-2/3 space-y-2 mb-1">
           {buttons.map(({ label, onClick, variant = "primary" }, i) => (
