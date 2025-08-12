@@ -17,15 +17,16 @@ export const useClubNameValidation = () => {
 
     setIsValidating(true);
     setError(null);
-    setHasManualCheck(true);
 
     try {
       const duplicateFromServer: boolean = await validateClubName(clubName);
       // 스펙: true = 이미 존재(중복), false = 사용 가능
       setIsDuplicate(duplicateFromServer);
+      setHasManualCheck(true);
     } catch (err) {
       setError('네트워크 오류가 발생했습니다.');
       setIsDuplicate(null);
+      setHasManualCheck(false);
     } finally {
       setIsValidating(false);
     }
