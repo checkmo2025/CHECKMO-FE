@@ -4,6 +4,7 @@ import { ChipToggleGroup } from '../../components/CreateClub/ChipToggleGroup';
 import Header from '../../components/Header';
 import { useCreateClub } from '../../hooks/useCreateClub';
 import { useUploadImage } from '../../hooks/useUploadImage';
+import { useClubNameValidation } from '../../hooks/useClubNameValidation';
 import type { CreateClubRequestDto } from '../../types/bookClub';
 import { BOOK_CATEGORIES, PARTICIPANT_TYPES } from '../../types/bookClub';
 
@@ -41,6 +42,9 @@ export default function CreateClubPage(): React.ReactElement {
   const [kakao, setKakao] = useState('');
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
   const [imageFile, setImageFile] = useState<File | null>(null);
+  
+  // 중복검사 훅
+  const { isValidating, isAvailable, isDuplicate, error, checkClubName, hasManualCheck } = useClubNameValidation();
 
   // 이미지 변경 핸들러
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -61,6 +65,18 @@ export default function CreateClubPage(): React.ReactElement {
   const handleCreateClub = async () => {
     if (!clubName.trim()) {
       alert('모임 이름을 입력해주세요.');
+      return;
+    }
+    if (!hasManualCheck) {
+      alert('중복확인 버튼을 눌러 모임 이름을 확인해주세요.');
+      return;
+    }
+    if (isDuplicate === true) {
+      alert('이미 존재하는 모임 이름입니다. 다른 이름을 입력해주세요.');
+      return;
+    }
+    if (isValidating) {
+      alert('모임 이름을 확인 중입니다. 잠시 후 다시 시도해주세요.');
       return;
     }
     if (!clubDescription.trim()) {
@@ -95,7 +111,7 @@ export default function CreateClubPage(): React.ReactElement {
       open: visibility === '공개',
       category: selectedCategories.map(getCategoryId),
       participantTypes: selectedParticipants.map(getParticipantKey),
-      region: activityArea || '서울', // 활동 지역 입력값 사용, 없으면 기본값
+      region: activityArea || '서울',
       insta: insta || undefined,
       kakao: kakao || undefined,
     };
@@ -118,12 +134,45 @@ export default function CreateClubPage(): React.ReactElement {
             독서 모임을 입력해주세요.
           </label>
           <div className="flex flex-col mt-[16px]">
-            <input
-              value={clubName}
-              onChange={(e) => setClubName(e.target.value)}
-              className="w-[808px] h-[40px] rounded-[16px] px-[17px] py-[10px] bg-[#F4F2F1] text-[14px] text-[#2C2C2C] outline-none"
-              placeholder="모임 이름을 입력해주세요"
-            />
+            <div className="flex gap-[12px] items-center">
+              <input
+                value={clubName}
+                onChange={(e) => setClubName(e.target.value)}
+                className={`w-[699px] h-[40px] rounded-[16px] px-[17px] py-[10px] bg-[#F4F2F1] text-[14px] text-[#2C2C2C] outline-none`}
+              />
+              <button
+                type="button"
+                onClick={() => checkClubName(clubName)}
+                disabled={!clubName.trim() || isValidating}
+                className="
+                  w-[90px] h-[35px] 
+                  bg-[#90D26D] text-white
+                  rounded-[16px] font-medium text-[12px]
+                  disabled:opacity-50 disabled:cursor-not-allowed
+                  cursor-pointer hover:bg-[#7BC55A] transition-colors
+                "
+              >
+                {isValidating ? '확인중' : '중복확인'}
+              </button>
+            </div>
+            {/* 중복검사 결과 표시 */}
+            {isAvailable === true && (
+              <p className="mt-[10px] font-medium text-[12px] text-[#367216]">
+                사용가능한 독서 이름 입니다.
+              </p>
+            )}
+            {isDuplicate === true && (
+              <p className="mt-[10px] font-pretendard font-medium text-[12px] leading-[145%] tracking-[-0.1%] text-[#FF8045]">
+                다른 이름을 입력하거나, 기수 또는 지역명을 추가해 구분해 주세요.
+                <br />
+                예) 독서재량 2기, 독서재량 서울, 북적북적 인문학팀
+              </p>
+            )}
+            {error && (
+              <div className="mt-2 text-red-500 text-sm">
+                {error}
+              </div>
+            )}
           </div>
         </div>
 
@@ -307,7 +356,13 @@ export default function CreateClubPage(): React.ReactElement {
           <button
             type="button"
             onClick={handleCreateClub}
-            disabled={createClubMutation.isPending || uploadImageMutation.isPending}
+            disabled={
+              createClubMutation.isPending || 
+              uploadImageMutation.isPending || 
+              isValidating || 
+              isDuplicate === true ||
+              !clubName.trim()
+            }
             className="
               w-full mt-[12px] py-[12px] bg-[#90D26D] text-white
               rounded-[16px] font-pretendard font-semibold text-[20px]
