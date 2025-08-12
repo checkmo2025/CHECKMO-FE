@@ -7,6 +7,7 @@ import Header from '../../components/Header.tsx';
 import { useBookClubList } from '../../hooks/useBookClubList';
 import { useDebounce } from '../../hooks/useDebounce';
 import type { ClubListDto } from '../../types/bookClub';
+import { useClubJoin } from '../../hooks/useClubJoin';
 
 export default function ClubSearchPage(): React.ReactElement {
   const [query, setQuery] = useState('');
@@ -28,12 +29,19 @@ export default function ClubSearchPage(): React.ReactElement {
     [data]
   );
 
+  const { mutate: joinClub } = useClubJoin();
+
   // 가입 신청 처리
-  const handleJoinRequest = (_clubId: number, message: string) => {
+  const handleJoinRequest = (clubId: number, message: string) => {
     if (message === 'already_member') {
       setShowAlert(true);
       return;
     }
+    if (message === 'no_message') {
+      alert('가입 메시지를 작성해주세요.');
+      return;
+    }
+    joinClub({ clubId, joinMessage: message });
   };
 
   return (
@@ -73,7 +81,7 @@ export default function ClubSearchPage(): React.ReactElement {
                 독서모임 운영진이신가요?
               </span>
               <Link
-                to="/bookclub/apply"
+                to="/createClub"
                 className="
                   w-[105px] h-[32px]
                   bg-[#DED6CD] rounded-[16px]
@@ -99,7 +107,7 @@ export default function ClubSearchPage(): React.ReactElement {
               {status === 'pending' && (
                 <div className="py-8 text-sm text-gray-500">로딩 중...</div>
               )}
-              {status === 'success' && flatClubs.map(({ club }) => (
+              {status === 'success' && flatClubs.map(({ club, member }) => (
                 <div key={club.clubId} className='h-full'>
                   <ClubCard
                     id={club.clubId}
@@ -108,6 +116,9 @@ export default function ClubSearchPage(): React.ReactElement {
                     participantTypes={club.participantTypes}
                     region={club.region}
                     logoUrl={club.profileImageUrl}
+                    kakao={club.kakao}
+                    insta={club.insta}
+                    isMember={member}
                     onJoinRequest={handleJoinRequest}
                   />
                 </div>

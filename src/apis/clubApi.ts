@@ -1,4 +1,4 @@
-import type { ClubDto, CreateClubRequestDto, ClubListResult } from "../types/bookClub";
+import type { ClubDto, CreateClubRequestDto, ClubListResult, JoinClubRequest, JoinClubResult } from "../types/bookClub";
 import { axiosInstance } from "./axiosInstance";
 
 // 클럽 생성
@@ -28,5 +28,14 @@ export const fetchClubList = async (
       cursorId: params.cursorId ?? undefined,
     },
   });
+  return result;
+};
+
+// 클럽 가입 신청
+export const requestJoinClub = async (
+  clubId: number,
+  payload: JoinClubRequest
+): Promise<JoinClubResult> => {
+  const result: JoinClubResult = await axiosInstance.post(`/clubs/${clubId}/join`, payload);
   return result;
 };
