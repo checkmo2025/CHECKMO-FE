@@ -70,7 +70,7 @@ export default function BookStoryDetailPage() {
           {/* 이미지 영역 */}
           <div className="w-64 h-80 rounded-xl bg-gray-200" />
 
-          {/* 텍스트 영역: 이미지와 높이 맞추기 위해 h-80 동일하게 고정 */}
+          {/* 텍스트 영역*/}
           <div className="flex flex-col flex-1 h-80">
             <h1 className="text-2xl font-semibold mb-4">{title}</h1>
             {!isMyStory && (

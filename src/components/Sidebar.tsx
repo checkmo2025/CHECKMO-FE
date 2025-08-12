@@ -167,7 +167,7 @@ const Sidebar = () => {
     <div className="flex items-center gap-[0.5rem]">
       <img src={logoImage} alt="logo" className="w-10 h-auto" />
       <div className="flex flex-col">
-        <span className="text-[2rem] font-bold text-[#3D4C35]">
+        <span className="text-[2rem] font-bold font-blackHanSans text-[#3D4C35]">
           {bookclubName}
         </span>
         <button
@@ -182,7 +182,7 @@ const Sidebar = () => {
   ) : (
     <div className="flex items-center gap-4">
       <img src={logoImage} alt="logo" className="w-10 h-auto" />
-      <span className="text-4xl font-bold text-[#3D4C35] font-pretendard">
+      <span className="text-4xl font-bold text-[#3D4C35] font-blackHanSans">
         책모
       </span>
     </div>
