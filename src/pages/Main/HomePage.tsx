@@ -21,7 +21,7 @@ export default function HomePage() {
     setLoadingBooks(true);
     fetchBookStories({ scope: "ALL" })
       .then((data) => {
-        setBookStories(data.bookStoryResponses);
+        setBookStories(data?.bookStoryResponses ?? []);
       })
       .catch((e) => setErrorBooks(e.message ?? "책 이야기 불러오기 실패"))
       .finally(() => setLoadingBooks(false));
@@ -29,7 +29,7 @@ export default function HomePage() {
     setLoadingNotices(true);
     fetchNotices({ onlyImportant: false })
       .then((data) => {
-        setNotices(data.noticeList);
+        setNotices(data?.noticeList ?? []);
       })
       .catch((e) => setErrorNotices(e.message ?? "공지사항 불러오기 실패"))
       .finally(() => setLoadingNotices(false));
@@ -84,19 +84,28 @@ export default function HomePage() {
           <p className="text-red-500">책 이야기 에러: {errorBooks}</p>
         )}
         <div className="flex gap-4 overflow-x-auto flex-nowrap scroll-smooth scrollbar-hide">
-          {bookStories.map((story) => (
-            <div key={story.bookStoryId} className="flex-shrink-0 w-[33rem]">
-              <BookStoriesCard
-                title={story.bookStoryTitle}
-                story={story.description}
-                state={story.writtenByMe ? "내 이야기" : "구독 중"}
-                likes={story.likes}
-                authorNickname={story.authorInfo.nickname}
-                authorProfileImageUrl={story.authorInfo.profileImageUrl}
-                bookCoverImageUrl={story.bookInfo.profileImageUrl}
-              />
-            </div>
-          ))}
+          {bookStories.map((story) => {
+            const state: "내 이야기" | "구독 중" | "구독하기" =
+              story.writtenByMe
+                ? "내 이야기"
+                : story.authorInfo.following
+                ? "구독 중"
+                : "구독하기";
+
+            return (
+              <div key={story.bookStoryId} className="flex-shrink-0 w-[33rem]">
+                <BookStoriesCard
+                  title={story.bookStoryTitle}
+                  story={story.description}
+                  state={state}
+                  likes={story.likes}
+                  authorNickname={story.authorInfo.nickname}
+                  authorProfileImageUrl={story.authorInfo.profileImageUrl}
+                  bookCoverImageUrl={story.bookInfo.profileImageUrl}
+                />
+              </div>
+            );
+          })}
         </div>
       </div>
     </div>

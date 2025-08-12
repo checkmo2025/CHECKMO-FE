@@ -6,7 +6,7 @@ import reportIcon from "../../assets/icons/report.png";
 interface BookStoriesCardProps {
   title: string;
   story: string;
-  state: string;
+  state: "내 이야기" | "구독 중" | "구독하기";
   likes: number;
   authorNickname: string;
   authorProfileImageUrl?: string;
@@ -22,6 +22,14 @@ const BookStoriesCard = ({
   authorProfileImageUrl,
   bookCoverImageUrl,
 }: BookStoriesCardProps): React.ReactElement => {
+  // 상태별 버튼 스타일 클래스
+  const stateClass =
+    state === "내 이야기"
+      ? "text-white bg-[#4A5568]"
+      : state === "구독 중"
+      ? "text-white bg-[#A6917D]"
+      : "text-[#A6917D] border border-[#A6917D]";
+
   return (
     <div className="rounded-[16px] border-[2px] border-[#EAE5E2] overflow-hidden">
       <div className="flex flex-col gap-[10px] p-[28px] h-full">
@@ -31,13 +39,14 @@ const BookStoriesCard = ({
             <img
               src={bookCoverImageUrl ?? checker}
               alt={`${title} 책 표지`}
+              loading="lazy"
               className="w-full h-full object-cover"
             />
           </div>
 
           {/* 오른쪽 텍스트 영역 */}
           <div className="flex-1 flex flex-col justify-between">
-            {/* 상단: 프로필 + 구독 상태 */}
+            {/* 상단: 프로필 + 상태 */}
             <div className="flex justify-between items-center">
               <div className="flex items-center gap-[8px]">
                 {/* 프로필 이미지 */}
@@ -54,7 +63,9 @@ const BookStoriesCard = ({
                   {authorNickname}
                 </span>
               </div>
-              <span className="w-[60px] h-[24px] font-pretendard font-medium text-[12px] leading-[145%] text-white bg-[#A6917D] rounded-[15px] px-[20px] py-[2px] flex items-center justify-center whitespace-nowrap cursor-pointer">
+              <span
+                className={`w-[60px] h-[24px] font-pretendard font-medium text-[12px] leading-[145%] rounded-[15px] px-[20px] py-[2px] flex items-center justify-center whitespace-nowrap cursor-pointer ${stateClass}`}
+              >
                 {state}
               </span>
             </div>
