@@ -1,6 +1,4 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import { GoogleOAuthProvider } from "@react-oauth/google";
-import { KEYS } from "./config/key";
 import LoginPage from "./pages/Auth/LoginPage";
 import SignupPage from "./pages/Auth/SignupPage";
 import ProfilePage from "./pages/Auth/ProfilePage";
@@ -26,7 +24,7 @@ import SearchPage from "./pages/Main/SearchPage";
 import BookRecommendSearchPage from "./pages/BookRecommend/BookRecommendSearchPage";
 import ShelfHomePage from "./pages/BookClub/Shelf/ShelfHomePage";
 import ShelfDetailPage from "./pages/BookClub/Shelf/ShelfDetailPage";
-import ThemeDetailPage from "./pages/BookClub/Shelf/ThemeDetailPage";
+import TopicDetailPage from "./pages/BookClub/Shelf/TopicDetailPage";
 import ScoreDetailPage from "./pages/BookClub/Shelf/ScoreDetailPage";
 import BookStoryHomePage from "./pages/Main/BookStory/BookStoryHomePage";
 import Layout from "./components/layout/Layout";
@@ -47,7 +45,6 @@ import BookRecommendEditPage from "./pages/BookRecommend/BookRecommendEditPage";
 
 const App = () => {
   return (
-    <GoogleOAuthProvider clientId={KEYS.GOOGLE_CLIENT_ID}>
       <Router>
         <Routes>
           {/* 로그인 / 회원가입 */}
@@ -75,7 +72,6 @@ const App = () => {
               <Route path="notices" element={<NoticeManagementPage />} />{" "}
               {/* 임시 */}
             </Route>
-
             {/* 마이페이지 */}
             <Route path="mypage">
               <Route index element={<MyHomePage />} />
@@ -107,13 +103,13 @@ const App = () => {
               {/* 책장 */}
               <Route path="shelf">
                 <Route index element={<ShelfHomePage />} />
-                <Route path=":shelfBookIndex" element={<ShelfDetailPage />} />
+                <Route path=":ShelfmeetingId" element={<ShelfDetailPage />} />
                 <Route
-                  path=":shelfBookIndex/theme"
-                  element={<ThemeDetailPage />}
+                  path=":ShelfmeetingId/topic"
+                  element={<TopicDetailPage />}
                 />
                 <Route
-                  path=":shelfBookIndex/score"
+                  path=":ShelfmeetingId/score"
                   element={<ScoreDetailPage />}
                 />
               </Route>
@@ -155,11 +151,13 @@ const App = () => {
                 <Route path="member" element={<MemberAdminPage />} />
                 <Route path="register" element={<RegisterAdminPage />} />
               </Route>
+
+              
+
             </Route>
           </Route>
         </Routes>
       </Router>
-    </GoogleOAuthProvider>
   );
 };
 

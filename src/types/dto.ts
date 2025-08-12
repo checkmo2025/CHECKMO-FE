@@ -27,7 +27,6 @@ export type ClubDto = {
   category: number[]; // 카테고리 ID 배열 (1~15)
   participantTypes: string[]; // 참여자 유형 배열
   region: string;
-  purpose?: string;
   insta?: string;
   kakao?: string;
 };

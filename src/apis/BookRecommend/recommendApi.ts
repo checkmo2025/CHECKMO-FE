@@ -1,5 +1,6 @@
 import { axiosInstance } from "../axiosInstance";
 import type {
+  BookDetail,
   PostRecommendDto,
   RecommendListResult,
   RecommendationDto,
@@ -67,5 +68,11 @@ export const deleteBookRecommend = async (
   const response = await axiosInstance.delete(
     `/clubs/${clubId}/recommendations/${recommendId}`
   );
+  return response;
+};
+
+// 추천 책 등록을 위한 책 정보 조회
+export const getBookDetail = async (isbn: string): Promise<BookDetail> => {
+  const response: BookDetail = await axiosInstance.get(`/books/${isbn}`);
   return response;
 };
