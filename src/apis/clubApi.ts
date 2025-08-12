@@ -3,7 +3,9 @@ import { axiosInstance } from "./axiosInstance";
 
 // 클럽 생성
 export const createClub = async (clubData: CreateClubRequestDto): Promise<ClubDto> => {
-  return axiosInstance.post('/clubs', clubData) as Promise<ClubDto>;
+  const { data } = await axiosInstance.post<ClubDto>('/clubs', clubData);
+  return data;
+};
 
 // 클럽 상세 조회
 export const getClubDetail = async (clubId: number): Promise<ClubDto> =>
