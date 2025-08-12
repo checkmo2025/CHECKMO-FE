@@ -100,8 +100,12 @@ export default function CreateClubPage(): React.ReactElement {
     
     // 이미지가 있는 경우 presigned URL 발급 및 비동기 업로드
     if (imageFile) {
-      profileImageUrl = await uploadImageMutation.mutateAsync(imageFile);
       // uploadImage는 즉시 imageUrl을 반환하고 S3 업로드는 백그라운드에서 진행
+      try {
+        profileImageUrl = await uploadImageMutation.mutateAsync(imageFile);
+      } catch (error) {
+        return;
+      }
     }
 
     const clubData: CreateClubRequestDto = {
