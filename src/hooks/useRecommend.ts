@@ -10,6 +10,7 @@ import {
   updateBookRecommend,
   deleteBookRecommend,
   postBookRecommend,
+  getBookDetail,
 } from "../apis/BookRecommend/recommendApi";
 import type {
   UpdateRecommendDto,
@@ -71,6 +72,15 @@ export const useDeleteRecommend = (clubId: number, recommendId: number) => {
     onError: (error) => {
       alert("삭제 실패: " + error.message);
     },
+  });
+};
+
+export const useGetBookInfo = (isbn: string) => {
+  return useQuery({
+    queryKey: ["BookInfo", isbn],
+    queryFn: () => getBookDetail(isbn),
+    enabled: !!isbn,
+    staleTime: 1000 * 60 * 5,
   });
 };
 
