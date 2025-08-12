@@ -1,29 +1,42 @@
 import type { ApiResponse } from "./apiResponse";
 
-// 로그인 요청 DTO
+// 회원가입 & 이메일 인증 DTO 
+export interface SignupRequest {
+  email: string;
+  password: string;
+}
+export interface SignupResult {
+  email: string;
+  profileCompleted: boolean;
+}
+
+// 이메일 인증
+export interface EmailVerificationConfirmRequest {
+  email: string;
+  verificationCode: string;
+}
+export type EmailVerificationSendResult = string;      // 인증번호 요청 응답(메시지 문자열)
+export type EmailVerificationConfirmResult = boolean;  // 인증 성공 여부
+
+// 로그인 
 export interface LoginRequest {
   email: string;
   password: string;
 }
 
-// 로그인 응답(result) DTO — ApiResponse<T>의 result 페이로드
 export interface LoginResponse {
-  nickname: string;
-  // 토큰은 cookie 형식으로 오기 때문에 상관없음
+  nickname: string; // 토큰은 쿠키로 오므로 별도 필드 없음
 }
-
-// 회원 추가 정보 입력 요청 DTO
-export interface AdditionalInfoRequest {
-  nickname: string;
-  description: string;   // 소개
-  imgUrl?: string;       // 이미지 업로드 연동 전이면 생략 가능
-  categoryIds: number[]; // 관심 카테고리 ID 배열
-}
-
-// 서버 스웨거가 result:{} 이므로 반환 실데이터는 없음
-export type AdditionalInfoResult = Record<string, never>;
-
 export type LoginApiResponse = ApiResponse<LoginResponse>;
 
-// 닉네임 중복 확인 결과
+// 추가 정보 입력
+export interface AdditionalInfoRequest {
+  nickname: string;
+  description: string;   
+  imgUrl?: string;       // 프로필 이미지 URL(선택)
+  categoryIds: number[]; 
+}
+export type AdditionalInfoResult = Record<string, never>; // 서버 result:{}
+
+// 기타 
 export type CheckNicknameResult = boolean;
