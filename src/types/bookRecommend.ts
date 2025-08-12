@@ -35,6 +35,9 @@ export type BookDetail = {
   description: "string";
 };
 
+// 책 상세 조회 응답
+export type BookInfoResponse = ApiResponse<BookDetail>;
+
 export type PostRecommendDto = {
   title: string;
   bookDetail: BookDetail;
