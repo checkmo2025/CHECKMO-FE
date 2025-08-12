@@ -59,18 +59,15 @@ export const useEditRecommend = (clubId: number, recommendId: number) => {
 
 export const useDeleteRecommend = (clubId: number, recommendId: number) => {
   const queryClient = useQueryClient();
-  const navigate = useNavigate();
 
   return useMutation({
     mutationFn: () => deleteBookRecommend(clubId, recommendId),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["bookRecommends", clubId] });
-      // 공통 모달로 변경하기
-      alert("추천 도서가 삭제되었습니다.");
-      navigate(`/bookclub/${clubId}/recommend`);
     },
     onError: (error) => {
-      alert("삭제 실패: " + error.message);
+      // 전역 에러 처리 모달로 교체하는 것을 권장합니다.
+      console.error("삭제 실패: ", error);
     },
   });
 };
