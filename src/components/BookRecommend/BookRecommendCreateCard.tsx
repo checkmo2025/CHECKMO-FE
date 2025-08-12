@@ -64,6 +64,8 @@ const BookRecommendCreateCard = ({
       setModalButtons([{ label: "확인", onClick: () => setModalOpen(false) }]);
       return;
     }
+    // 모달을 먼저 닫고, 부모에게 submit 이벤트를 전달합니다.
+    setModalOpen(false);
     doSubmit(processedTag);
   };
 

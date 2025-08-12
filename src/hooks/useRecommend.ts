@@ -86,16 +86,14 @@ export const useGetBookInfo = (isbn: string) => {
 
 export const useCreateRecommend = (clubId: number) => {
   const queryClient = useQueryClient();
-  const navigate = useNavigate();
 
   return useMutation<unknown, Error, PostRecommendDto>({
     mutationFn: (data: PostRecommendDto) => postBookRecommend(clubId, data),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["bookRecommends", clubId] });
-      alert("추천 도서가 성공적으로 등록되었습니다.");
-      navigate(`/bookclub/${clubId}/recommend`);
     },
     onError: (error) => {
+      // 나중에 전역 에러 처리 모달로 교체하면 더 좋습니다.
       alert("등록 실패: " + error.message);
     },
   });
