@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import AuthLeftPanel from "../../components/AuthLeftPanel";
-import { isValidEmail, isValidPassword, getPasswordError } from "../../utils/validators";
+import { isValidEmail, getPasswordError } from "../../utils/validators";
 import ReactivateAccountModal from "../../components/ReactivateAccountModal";
 import AlertModal from "../../components/AlertModal";
 import {
