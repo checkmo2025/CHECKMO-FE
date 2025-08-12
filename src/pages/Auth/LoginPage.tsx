@@ -5,10 +5,7 @@ import { isValidEmail } from "../../utils/validators";
 import ReactivateAccountModal from "../../components/ReactivateAccountModal";
 import AlertModal from "../../components/AlertModal";
 import { useLogin } from "../../hooks/useAuth";
-
-// 백엔드 소셜 로그인 엔드포인트 (리다이렉트만)
-const GOOGLE_OAUTH_URL = "https://checkmo.shop/oauth2/authorization/google";
-const KAKAO_OAUTH_URL = "https://checkmo.shop/oauth2/authorization/kakao";
+import { GOOGLE_OAUTH_URL, KAKAO_OAUTH_URL } from "../../config";
 
 const LoginPage = () => {
   const navigate = useNavigate();
@@ -158,7 +155,7 @@ const LoginPage = () => {
                 onClick={() => redirectTo(KAKAO_OAUTH_URL)}
                 className="flex items-center justify-center gap-2 bg-[#FEE500] hover:opacity-90 text-[#2C2C2C] text-[13px] font-bold py-2 px-4 rounded w-75 shadow cursor-pointer"
               >
-                <img src="/assets/kakao-logo.png" alt="Kakao" className="w-5 h-5"  />
+                <img src="/assets/kakao-logo.png" alt="Kakao" className="w-5 h-5" />
                 카카오로 로그인
               </button>
             </div>
@@ -178,7 +175,9 @@ const LoginPage = () => {
         />
       )}
 
-      {alertMessage && <AlertModal message={alertMessage} onClose={() => setAlertMessage("")} />}
+      {alertMessage && (
+        <AlertModal message={alertMessage} onClose={() => setAlertMessage("")} />
+      )}
     </div>
   );
 };
