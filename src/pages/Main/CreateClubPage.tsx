@@ -44,7 +44,7 @@ export default function CreateClubPage(): React.ReactElement {
   const [imageFile, setImageFile] = useState<File | null>(null);
   
   // 중복검사 훅
-  const { isValidating, isAvailable, isDuplicate, error, checkClubName, hasManualCheck } = useClubNameValidation();
+  const { isValidating, isAvailable, isDuplicate, error, checkClubName, hasManualCheck, resetValidation } = useClubNameValidation();
 
   // 이미지 변경 핸들러
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -141,7 +141,10 @@ export default function CreateClubPage(): React.ReactElement {
             <div className="flex gap-[12px] items-center">
               <input
                 value={clubName}
-                onChange={(e) => setClubName(e.target.value)}
+                onChange={(e) => {
+                  setClubName(e.target.value);
+                  resetValidation();
+                }}
                 className={`w-[699px] h-[40px] rounded-[16px] px-[17px] py-[10px] bg-[#F4F2F1] text-[14px] text-[#2C2C2C] outline-none`}
               />
               <button
