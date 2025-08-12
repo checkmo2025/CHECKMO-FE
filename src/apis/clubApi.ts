@@ -1,31 +1,10 @@
+import type { ClubDto, CreateClubRequestDto } from "../types/bookClub";
 import { axiosInstance } from "./axiosInstance";
-import type { ClubDto } from "../types/dto";
-
-// 클럽 목록 조회
-export const getClubList = async (): Promise<ClubDto[]> =>
-  axiosInstance.get<ClubDto[]>("/api/clubs").then((r) => r.data);
 
 // 클럽 생성
-export const createClub = async (
-  clubData: Omit<ClubDto, "clubId">
-): Promise<{
-  isSuccess: boolean;
-  code: string;
-  message: string;
-  result: ClubDto;
-}> => {
-  const headers = {
-    MemberId: "mem_001", // 임시로 고정값 사용, 나중에 시큐리티 구현 후 삭제
-  };
-
-  return axiosInstance
-    .post<{
-      isSuccess: boolean;
-      code: string;
-      message: string;
-      result: ClubDto;
-    }>("/api/clubs", clubData, { headers })
-    .then((r) => r.data);
+export const createClub = async (clubData: CreateClubRequestDto): Promise<ClubDto> => {
+  const { data } = await axiosInstance.post<ClubDto>('/clubs', clubData);
+  return data;
 };
 
 // 클럽 상세 조회
