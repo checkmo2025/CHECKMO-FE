@@ -8,6 +8,9 @@ interface BookStoriesCardProps {
   story: string;
   state: string;
   likes: number;
+  authorNickname: string;
+  authorProfileImageUrl?: string;
+  bookCoverImageUrl?: string;
 }
 
 const BookStoriesCard = ({
@@ -15,16 +18,19 @@ const BookStoriesCard = ({
   story,
   state,
   likes,
+  authorNickname,
+  authorProfileImageUrl,
+  bookCoverImageUrl,
 }: BookStoriesCardProps): React.ReactElement => {
   return (
     <div className="rounded-[16px] border-[2px] border-[#EAE5E2] overflow-hidden">
       <div className="flex flex-col gap-[10px] p-[28px] h-full">
         <div className="flex gap-[20px] flex-1">
-          {/* 왼쪽 이미지 */}
-          <div className="w-[200px] h-[290px] object-cover bg-gray-100 rounded-lg overflow-hidden">
+          {/* 왼쪽 책 이미지 */}
+          <div className="w-[200px] h-[290px] bg-gray-100 rounded-lg overflow-hidden">
             <img
-              src={checker}
-              alt="book cover"
+              src={bookCoverImageUrl ?? checker}
+              alt={`${title} 책 표지`}
               className="w-full h-full object-cover"
             />
           </div>
@@ -34,9 +40,18 @@ const BookStoriesCard = ({
             {/* 상단: 프로필 + 구독 상태 */}
             <div className="flex justify-between items-center">
               <div className="flex items-center gap-[8px]">
-                <div className="w-[24px] h-[24px] bg-gray-300 rounded-full" />
+                {/* 프로필 이미지 */}
+                {authorProfileImageUrl ? (
+                  <img
+                    src={authorProfileImageUrl}
+                    alt={`${authorNickname} 프로필 이미지`}
+                    className="w-[24px] h-[24px] rounded-full object-cover"
+                  />
+                ) : (
+                  <div className="w-[24px] h-[24px] bg-gray-300 rounded-full" />
+                )}
                 <span className="font-pretendard font-normal text-[12px] leading-[145%] text-[#000000]">
-                  hy
+                  {authorNickname}
                 </span>
               </div>
               <span className="w-[60px] h-[24px] font-pretendard font-medium text-[12px] leading-[145%] text-white bg-[#A6917D] rounded-[15px] px-[20px] py-[2px] flex items-center justify-center whitespace-nowrap cursor-pointer">
