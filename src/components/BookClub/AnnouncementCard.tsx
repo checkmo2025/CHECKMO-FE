@@ -160,10 +160,10 @@ function AnnouncementCardItem({
               <img src={arrow} alt="icon" className="w-[24px] h-[24px] -mt-2" />
             </div>
             <div 
-              className="w-[269px] h-[207px] mt-[26px] border-[2px] border-[#EAE5E2] rounded-[16px]"
+              className="relative w-[269px] h-[207px] mt-[26px] border-[2px] border-[#EAE5E2] rounded-[16px]"
             >
               <div className = "mt-[14.5px] pointer-events-none" aria-hidden="true">
-                {item.voteOptions?.map((option: VoteOption) => (
+                {item.voteOptions?.slice(0, 3).map((option: VoteOption) => (
                   <label 
                     key={option.value} 
                     className="
@@ -172,11 +172,8 @@ function AnnouncementCardItem({
                       w-[224px] h-[46px]
                       cursor-pointer
                       border-b-2 border-[#EAE5E2]
-                      font-pretendard
                       font-medium
                       text-[14px]
-                      leading-[145%]
-                      tracking-[-0.1%]
                       text-[#434343]
                     "
                   >
@@ -195,18 +192,16 @@ function AnnouncementCardItem({
               ))}
               <div
                 className="
-                  ml-[177.5px] mt-[16px]
+                  absolute
+                  right-[22.5px] bottom-[16px]
                   w-[69px] h-[24px]
                   bg-[#FF8045] 
                   text-white 
                   rounded-[15px]
-                  font-pretendard
                   font-semibold
-                  text-[12px]
-                  leading-[145%]
-                  tracking-[-0.1%]                 
+                  text-[12px]               
                   whitespace-nowrap
-                  cursor-pointer
+                  flex items-center justify-center
                 "
               >
                 투표하기
