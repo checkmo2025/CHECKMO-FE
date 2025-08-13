@@ -42,15 +42,12 @@ const LongtermChatInput = ({
 
   const handleSendClick = () => {
     const ta = textareaRef.current;
-    if (!ta) return;
     const text = ta.value.trim();
-    if (!text) return;
     onSend(text);
     ta.value = '';
     adjustHeight();
   };
 
-  // Prefill when initialValue is provided or changes
   useEffect(() => {
     if (initialValue === undefined) return;
     const ta = textareaRef.current;
