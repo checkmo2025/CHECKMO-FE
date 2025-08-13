@@ -29,16 +29,11 @@ function AnnouncementCardItem({
   type RouteParams = { bookclubId?: string };
   const { bookclubId } = useParams<RouteParams>();
 
-  const handleCardClick = () => {
-    const itemId = item.id || 1;
-    if (item.tag === '모임') {
-      navigate(`/bookclub/${bookclubId}/notices/${itemId}`);
-    } else if (item.tag === '투표') {
-      navigate(`/bookclub/${bookclubId}/notices/${itemId}`);
-    } else if (item.tag === '공지') {
-      navigate(`/bookclub/${bookclubId}/notices/${itemId}`);
-    }
-  };
+	const handleCardClick = () => {
+		if (!bookclubId) return;
+		const noticeId = item.id;
+		navigate(`/bookclub/${bookclubId}/notices/${noticeId}`);
+	};
 
   return (
     <div
