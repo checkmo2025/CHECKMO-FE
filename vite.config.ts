@@ -9,11 +9,19 @@ export default defineConfig(({ mode }) => {
     plugins: [react(), tailwindcss()],
     server: {
       proxy: {
-        // /api/books/search → https://{서버 도메인}/api/books/search 로 포워딩
         "/api": {
           target: env.VITE_API_URL,
           changeOrigin: true,
-          secure: true,
+          secure: false,
+        },
+      },
+    },
+    preview: {
+      proxy: {
+        "/api": {
+          target: env.VITE_API_URL,
+          changeOrigin: true,
+          secure: false,
         },
       },
     },
