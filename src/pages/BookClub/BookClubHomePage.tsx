@@ -1,11 +1,12 @@
 import { Link } from 'react-router-dom';
 import { useParams } from 'react-router-dom';
 import AnnouncementCard from '../../components/BookClub/AnnouncementCard';
-import BookStoryCard, { type BookStoryCardProps } from '../../components/BookClub/BookStoryCard';
+import  { type BookStoryCardProps } from '../../components/BookClub/BookStoryCard';
 import type { noticeListItemDto } from '../../types/clubNotice';
 import { useClubNotices } from '../../hooks/BookClub/useClubNotices';
 import userImage from '../../assets/images/userImage.png';
 import Header from '../../components/Header';
+import BookStoriesCard from '../../components/Main/BookStoriesCard';
 interface Params {
   bookclubId: string;
   [key: string]: string | undefined;
@@ -29,22 +30,38 @@ export default function BookClubHomePage(): React.ReactElement {
     notice.tag === '공지' || notice.tag === '투표'
   );
 
-  const dummyStories: BookStoryCardProps[] = [
+  const bookstories = [
     {
-      userName: 'hy',
-      userImage: userImage,
-      isSubscribed: false,
-      title: '나는 나이든 왕자다',
-      summary: '어린 왕자는 소행성의 주인이므로 어린 군주라는 뜻이다.어린 왕자는 B-612에서 바오밥나무 싹을 캐거나 석양을 보며 살고 있다. B-612는 크기가 너무 ...',
+      id: 1,
+      title: "북적북적",
+      story:
+        "줄거리 들어갈 부분입니다. 줄거리 들어갈 부분입니다. 줄거리 들어갈 부분입니다.줄거리 들어갈 부분입니다.줄거리 들어갈 부분입니다.",
+      state: "구독 중",
       likes: 12,
     },
     {
-      userName: 'lee',
-      userImage: userImage,
-      isSubscribed: true,
-      title: '나는 나이든 왕자다',
-      summary: '어린 왕자는 소행성의 주인이므로 어린 군주라는 뜻이다.어린 왕자는 B-612에서 바오밥나무 싹을 캐거나 석양을 보며 살고 있다. B-612는 크기가 너무 ...',
-      likes: 8,
+      id: 2,
+      title: "인간실격",
+      story:
+        "줄거리 들어갈 부분입니다. 줄거리 들어갈 부분입니다. 줄거리 들어갈 부분입니다.줄거리 들어갈 부분입니다.줄거리 들어갈 부분입니다.",
+      state: "구독 중",
+      likes: 193,
+    },
+    {
+      id: 3,
+      title: "홍학의 자리",
+      story:
+        "줄거리 들어갈 부분입니다. 줄거리 들어갈 부분입니다. 줄거리 들어갈 부분입니다.줄거리 들어갈 부분입니다.줄거리 들어갈 부분입니다.",
+      state: "구독 중",
+      likes: 2003,
+    },
+    {
+      id: 4,
+      title: "홍학의 자리",
+      story:
+        "줄거리 들어갈 부분입니다. 줄거리 들어갈 부분입니다. 줄거리 들어갈 부분입니다.줄거리 들어갈 부분입니다.줄거리 들어갈 부분입니다.",
+      state: "구독 중",
+      likes: 2003,
     },
   ];
 
@@ -101,8 +118,10 @@ export default function BookClubHomePage(): React.ReactElement {
               </Link>
             </div>
             <div className="grid grid-cols-2 gap-[25px]">
-              {dummyStories.map((s, idx) => (
-                <BookStoryCard key={idx} {...s} />
+              {bookstories.map((story) => (
+                <div key={story.id} className="flex-shrink-0 w-[33rem]">
+                  <BookStoriesCard {...story} />
+                </div>
               ))}
             </div>
           </section>
