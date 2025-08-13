@@ -1,4 +1,4 @@
-import type { noticeListResult } from '../../types/clubNotice';
+import type { noticeListResult, meetingInfoDto } from '../../types/clubNotice';
 import { axiosInstance } from '../axiosInstance';
 
 export const getClubNotices = async (
@@ -24,6 +24,26 @@ export const getClubNotices = async (
     return response as unknown as noticeListResult;
   } catch (error) {
     console.error('공지사항 조회 실패:', error);
+    throw error;
+  }
+};
+
+// 모임 공지사항 상세 조회
+export const getMeetingNoticeDetail = async (
+  clubId: number,
+  noticeId: number
+): Promise<meetingInfoDto> => {
+  try {
+    const response = await axiosInstance.get(
+      `/clubs/${clubId}/notices/meeting/${noticeId}`
+    );
+    // 인터셉터가 data.result를 반환한다고 가정
+    // 명세 예시: result.noticeItem.meetingInfoDTO
+    const result = response as any;
+    const meetingInfo: meetingInfoDto = result?.noticeItem?.meetingInfoDTO ?? result?.meetingInfo ?? result;
+    return meetingInfo as meetingInfoDto;
+  } catch (error) {
+    console.error('모임 공지 상세 조회 실패:', error);
     throw error;
   }
 };

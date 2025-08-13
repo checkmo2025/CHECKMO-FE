@@ -1,35 +1,20 @@
 // src/components/BookClub/AnnouncementList.tsx
 import React from 'react';
-import { useNavigate, type Params, useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import checkerImage from '../../assets/images/checker.png';
 import vector from '../../assets/images/vector.png';
-import type { AnnouncementProps } from '../../types/announcement';
+import type { noticeListItemDto, voteItemDto } from '../../types/clubNotice';
 
 export default function AnnouncementList({
   items,
 }: {
-  items: AnnouncementProps[];
+  items: noticeListItemDto[];
 }): React.ReactElement {
   const navigate = useNavigate();
-  const { bookclubId } = useParams<Params>();
-  const handleItemClick = (item: AnnouncementProps) => {
-    const itemId = item.id;
-    switch (item.tag) {
-      case '모임':
-        const meetingId = itemId;
-        navigate(`/bookclub/${bookclubId}/notices/${meetingId}`);
-        break;
-      case '투표':
-        const voteId = itemId;
-        navigate(`/bookclub/${bookclubId}/notices/${voteId}`);
-        break;
-      case '공지':
-        const generalId = itemId;
-        navigate(`/bookclub/${bookclubId}/notices/${generalId}`);
-        break;
-      default:
-        break;
-    }
+  const { bookclubId } = useParams<{ bookclubId: string }>();
+  const handleItemClick = (item: noticeListItemDto) => {
+    const noticeId = item.id;
+    navigate(`/bookclub/${bookclubId}/notices/${noticeId}`);
   };
 
   return (
@@ -47,10 +32,10 @@ export default function AnnouncementList({
             transition-colors
           "
         >
-          {/* 왼쪽: 모임 이미지 */}
+          {/* 왼쪽: 이미지 (모임이면 책 이미지, 아니면 플레이스홀더) */}
           <img
-            src={item.imageUrl ?? checkerImage}
-            alt="club profile"
+            src={item.tag === '모임' && item.meetingInfoDTO?.bookInfo?.imgUrl ? item.meetingInfoDTO.bookInfo.imgUrl : checkerImage}
+            alt="notice thumbnail"
             className="w-[128px] h-[164px] ml-[21.5px] mt-[20px] rounded-lg object-cover"
           />
 
@@ -66,42 +51,34 @@ export default function AnnouncementList({
 
             {/* 본문 */}
             <div className="mt-[18px] space-y-[5px] font-pretendard font-medium text-[14px] leading-[145%] tracking-[-0.1%] text-[#8D8D8D]">
-              {item.tag === '모임' && item.meetingDate && item.book && (
+              {item.tag === '모임' && item.meetingInfoDTO && (
                 <>
                   <p>
-                    {item.clubName}의 다음 모임 날짜: {item.meetingDate}
+                    다음 모임 날짜: {item.meetingInfoDTO.meetingTime}
                   </p>
                   <p>
-                    {item.clubName}의 다음 모임 책: {item.book} | {item.bookAuthor}
+                    다음 모임 책: {item.meetingInfoDTO.bookInfo?.title} | {item.meetingInfoDTO.bookInfo?.author}
                   </p>
                 </>
               )}
 
-              {item.tag === '투표' && item.meetingDate && (
+              {item.tag === '투표' && (
                 <>
-                  <p>
-                  {item.clubName}의 모임 날짜: {item.meetingDate}
-                  </p>
-                  {item.meetingPlace && (
-                    <p>
-                      {item.clubName}의 모임 장소: {item.meetingPlace}
-                    </p>
-                  )}
-                  {item.afterPartyPlace && (
-                    <p>
-                      {item.clubName}의 뒤풀이 장소: {item.afterPartyPlace}
-                    </p>
+                  <p className="whitespace-pre-line">{item.content}</p>
+                  {Array.isArray(item.items) && item.items.length > 0 && (
+                    <div className="mt-[8px] text-[13px] text-[#8D8D8D]">
+                      {item.items.slice(0, 3).map((opt: voteItemDto, i: number) => (
+                        <span key={`${opt.item}-${i}`} className="mr-2">• {opt.item}</span>
+                      ))}
+                    </div>
                   )}
                 </>
               )}
 
-              {item.tag === '공지' && item.announcementTitle && item.announcement && (
+              {item.tag === '공지' && item.content && (
                 <>
-                  <p>
-                    {item.announcementTitle}
-                  </p>
                   <p className="whitespace-pre-line">
-                    {item.announcement}
+                    {item.content}
                   </p>
                 </>
               )}
