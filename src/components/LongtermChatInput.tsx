@@ -42,6 +42,7 @@ const LongtermChatInput = ({
 
   const handleSendClick = () => {
     const ta = textareaRef.current;
+    if (!ta) return;
     const text = ta.value.trim();
     onSend(text);
     ta.value = '';
