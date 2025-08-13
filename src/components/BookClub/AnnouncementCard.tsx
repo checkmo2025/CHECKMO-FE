@@ -31,13 +31,13 @@ function AnnouncementCardItem({
   const { bookclubId } = useParams<Params>();
   const handleVoteSubmit = () => {
     if (selectedVote && item.onVoteSubmit) {
-      item.onVoteSubmit(selectedVote);
+      item.onVoteSubmit([selectedVote]);
     }
   };
 
   const handleCardClick = () => {
     const itemId = item.id || 1;
-    switch (item.tag) { 
+    switch (item.tag) {
       case '모임':
         const meetingId = itemId;
         navigate(`/bookclub/${bookclubId}/notices/${meetingId}`);
@@ -85,8 +85,8 @@ function AnnouncementCardItem({
               tracking-[-0.1%]
             "
           >
-           {item.title}
-         </h3>
+            {item.title}
+          </h3>
         </div>
         {/* 태그 */}
         <span
@@ -127,7 +127,7 @@ function AnnouncementCardItem({
             <p>다음 모임 날짜: {item.meetingDate}</p>
             <p>다음 모임 책: {item.book}</p>
             <div className="absolute top-[80px] right-[24px]">
-             <img src={arrow} alt="icon" className="w-[24px] h-[24px] -mt-2" />
+              <img src={arrow} alt="icon" className="w-[24px] h-[24px] -mt-2" />
             </div>
             <div className="absolute bottom-[24.5px]">
               <div
@@ -164,14 +164,14 @@ function AnnouncementCardItem({
             <div className="absolute top-[80px] right-[24px]">
               <img src={arrow} alt="icon" className="w-[24px] h-[24px] -mt-2" />
             </div>
-            <div 
+            <div
               onClick={(e) => e.stopPropagation()}
               className="w-[269px] h-[207px] mt-[26px] border-[2px] border-[#EAE5E2] rounded-[16px]"
             >
-              <form className = "mt-[14.5px]">
+              <form className="mt-[14.5px]">
                 {item.voteOptions?.map((option: VoteOption) => (
-                  <label 
-                    key={option.value} 
+                  <label
+                    key={option.value}
                     className="
                       ml-[22.5px]
                       flex items-center
@@ -186,13 +186,13 @@ function AnnouncementCardItem({
                       text-[#434343]
                     "
                   >
-                  <input
-                    type="radio"
-                    name="vote"
-                    value={option.value}
-                    checked={selectedVote === option.value}
-                    onChange={(e) => setSelectedVote(e.target.value)}
-                    className="
+                    <input
+                      type="radio"
+                      name="vote"
+                      value={option.value}
+                      checked={selectedVote === option.value}
+                      onChange={(e) => setSelectedVote(e.target.value)}
+                      className="
                       w-[24px] h-[24px]
                       border-2 border-[#BBBBBB]
                       rounded-full
@@ -203,15 +203,15 @@ function AnnouncementCardItem({
                       bg-white
                       transition-all duration-200
                     "
-                  />
-                  <span className="ml-[12px]">{option.label}</span>
-                </label>
-              ))}
-              <button
-                type="button"
-                onClick={handleVoteSubmit}
-                disabled={!selectedVote}
-                className="
+                    />
+                    <span className="ml-[12px]">{option.label}</span>
+                  </label>
+                ))}
+                <button
+                  type="button"
+                  onClick={handleVoteSubmit}
+                  disabled={!selectedVote}
+                  className="
                   ml-[177.5px] mt-[16px]
                   w-[69px] h-[24px]
                   bg-[#FF8045] 
@@ -225,25 +225,25 @@ function AnnouncementCardItem({
                   whitespace-nowrap
                   cursor-pointer
                 "
-              >
-                투표하기
-              </button>
-            </form>
+                >
+                  투표하기
+                </button>
+              </form>
+            </div>
           </div>
-        </div>
         )}
 
         <div className="mt-[9px]">
-        {item.tag === '공지' && (
-          <div className="   
+          {item.tag === '공지' && (
+            <div className="   
             font-normal           
             text-[12px]           
             text-[#000000]
             space-y-[4px]    
              ">
-            <p className="mt-[24px] font-normal text-[12px] whitespace-pre-line">{item.announcement}</p>
-          </div>
-        )}
+              <p className="mt-[24px] font-normal text-[12px] whitespace-pre-line">{item.announcement}</p>
+            </div>
+          )}
         </div>
       </div>
     </div>

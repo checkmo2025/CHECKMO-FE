@@ -88,7 +88,7 @@ const MyNotificationPage = () => {
             </div>
 
             <div className="bg-white rounded-[8px]">
-              {notifications.filter((n, i) => i < 3).map((n, idx, arr) => (
+              {notifications.filter((_, i) => i < 3).map((n, idx, arr) => (
                 <div
                   key={n.id}
                   className={`flex justify-between items-center px-6 py-4 cursor-pointer ${

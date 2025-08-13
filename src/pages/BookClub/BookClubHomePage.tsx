@@ -1,13 +1,14 @@
 import { Link } from 'react-router-dom';
 import { useParams } from 'react-router-dom';
-import AnnouncementCard, { type AnnouncementCardProps } from '../../components/BookClub/AnnouncementCard';
-import { NotificationItem, type NotificationItemProps } from '../../components/BookClub/NotificationItem';
+import AnnouncementCard from '../../components/BookClub/AnnouncementCard';
+
 import BookStoryCard, { type BookStoryCardProps } from '../../components/BookClub/BookStoryCard';
 import type { ClubDto } from '../../types/dto';
-import { BOOK_CATEGORIES, PARTICIPANT_TYPES } from '../../types/dto';
+import { PARTICIPANT_TYPES } from '../../types/dto';
 import checkerImage from '../../assets/images/checker.png';
 import userImage from '../../assets/images/userImage.png';
 import Header from '../../components/Header';
+import type { AnnouncementProps } from '../../types/announcement';
 interface Params {
   clubId: string;
   [key: string]: string | undefined;
@@ -26,13 +27,13 @@ export default function BookClubHomePage(): React.ReactElement {
     category: [2, 3, 6], // 소설/시/희곡, 에세이, 인문학
     participantTypes: [PARTICIPANT_TYPES.STUDENT, PARTICIPANT_TYPES.WORKER, PARTICIPANT_TYPES.OFFLINE],
     region: '서울',
-    purpose: '독서 토론 및 친목 도모',
+    
     insta: '@bookclub_official',
     kakao: 'bookclub_chat'
   };
 
   // ── 더미 데이터 (임시) ──
-  const dummyAnnouncements: AnnouncementCardProps[] = [
+  const dummyAnnouncements: AnnouncementProps[] = [
     {
       title: '북적북적',
       tag: '모임',
@@ -47,24 +48,17 @@ export default function BookClubHomePage(): React.ReactElement {
       meetingPlace: '카페 모임',
       afterPartyPlace: '맛집',
       voteOptions: [
-        { label: '참여', value: 'yes' },
-        { label: '토론만 참여', value: 'talk' },
-        { label: '불참', value: 'no' },
+        { id: 'yes', label: '참여', value: 'yes' },
+        { id: 'talk', label: '토론만 참여', value: 'talk' },
+        { id: 'no', label: '불참', value: 'no' },
       ],
-      onVoteSubmit: (selectedValue) => {
+      onVoteSubmit: (selectedValue: string[]) => {
         console.log(`Selected vote: ${selectedValue}`);
       },
     },
   ];
 
-  const dummyNotifications: NotificationItemProps[] = [
-    { message: '이현서님이 팔로우했습니다.', date: '2025.05.21 13:05 ', read: false },
-    { message: '이현서님이 팔로우했습니다.', date: '2025.05.21 13:05 ', read: false },
-    { message: '이현서님이 팔로우했습니다.', date: '2025.05.21 13:05 ', read: false },
-    { message: '이현서님이 팔로우했습니다.', date: '2025.05.21 13:05 ', read: false },
-    { message: '이현서님이 팔로우했습니다.', date: '2025.05.21 13:05 ', read: false },
-    { message: '이현서님이 팔로우했습니다.', date: '2025.05.21 13:05 ', read: false },
-  ];
+  
 
   const dummyStories: BookStoryCardProps[] = [
     {

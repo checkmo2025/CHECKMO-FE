@@ -6,7 +6,7 @@ interface StarRatingProps {
 }
 
 const StarRating = ({ rate }: StarRatingProps) => {
-  const [popularity, setPopularity] = useState(rate);
+  const [popularity] = useState(rate);
 
   const fillPercent = Math.min(Math.max(popularity / 5, 0), 1) * 100;
   const iconSizeClass = `w-[16px] h-[16px] shrink-0`;

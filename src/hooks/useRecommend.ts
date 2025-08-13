@@ -16,7 +16,7 @@ import type {
   UpdateRecommendDto,
   PostRecommendDto,
 } from "../types/bookRecommend";
-import { useNavigate } from "react-router-dom";
+
 
 export const useBookRecommends = (clubId: number) => {
   return useInfiniteQuery({
