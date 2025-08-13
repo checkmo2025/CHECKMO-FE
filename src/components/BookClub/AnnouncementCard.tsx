@@ -1,14 +1,13 @@
-// src/components/BookClub/AnnouncementCard.tsx
-import React, { useState } from 'react';
-import { useNavigate, useParams, type Params } from 'react-router-dom';
-import type { AnnouncementProps, VoteOption } from '../../types/announcement';
+import React from 'react';
+import { useNavigate, useParams } from 'react-router-dom';
+import type { noticeListItemDto, voteItemDto } from '../../types/clubNotice';
 import vector from '../../assets/images/vector.png';
 import arrow from '../../assets/images/shortcutArrow.png';
-
+ 
 export default function AnnouncementCard({
   items,
 }: {
-  items: AnnouncementProps[];
+  items: noticeListItemDto[];
 }): React.ReactElement {
   return (
     <div className="overflow-x-auto">
@@ -24,9 +23,8 @@ export default function AnnouncementCard({
 function AnnouncementCardItem({
   item,
 }: {
-  item: AnnouncementProps;
+  item: noticeListItemDto;
 }): React.ReactElement {
-  const [selectedVote, setSelectedVote] = useState<string>('');
   const navigate = useNavigate();
   const { bookclubId } = useParams<Params>();
   const handleVoteSubmit = () => {
@@ -58,20 +56,8 @@ function AnnouncementCardItem({
   return (
     <div
       onClick={handleCardClick}
-      className="
-        relative
-        w-[312px] h-[377px]           
-        rounded-[16px]                      
-        border-2                             
-        border-[#EAE5E2] 
-        py-[26px] px-[21.5px]                       
-        flex flex-col                       
-        overflow-hidden
-        cursor-pointer
-        hover:bg-gray-50
-        transition-colors"
+      className="relative w-[312px] h-[377px] rounded-[16px] border-2 border-[#EAE5E2] py-[26px] px-[21.5px] flex flex-col overflow-hidden cursor-pointer select-none hover:bg-gray-50 transition-colors"
     >
-      {/* ── 상단 헤더 ── */}
       <div className="flex justify-between items-center">
         <div className="flex items-center">
           <img src={vector} alt="icon" className="w-[24px] h-[21px]" />
@@ -88,79 +74,40 @@ function AnnouncementCardItem({
             {item.title}
           </h3>
         </div>
-        {/* 태그 */}
         <span
-          className={`
-            inline-flex
-            items-center
-            justify-center
-            w-[52px] h-[22px]
-            opacity-100
-            rounded-[15px]
-            text-[12px] text-[#FFFFFF]
-            font-pretendard
-            font-semibold
-            leading-[145%]
-            tracking-[-0.1%]
-            whitespace-nowrap
-            ${item.tag === '모임' ? 'bg-[#90D26D]' : ''}
-            ${item.tag === '투표' ? 'bg-[#FF8045]' : ''}
-            ${item.tag === '공지' ? 'bg-[#FFC648]' : ''}
-          `}
+          className={`inline-flex items-center justify-center w-[52px] h-[22px] opacity-100 rounded-[15px] text-[12px] text-[#FFFFFF] font-pretendard font-semibold leading-[145%] tracking-[-0.1%] whitespace-nowrap ${
+            item.tag === '모임' ? 'bg-[#90D26D]' : 
+            item.tag === '투표' ? 'bg-[#FF8045]' : 
+            item.tag === '공지' ? 'bg-[#FFC648]' : ''
+          }`}
         >
           {item.tag}
         </span>
       </div>
 
-      {/* ── 본문: 모임 vs 투표 vs 공지 ── */}
       <div className="mt-[9px]">
-        {item.tag === '모임' && item.meetingDate && item.book && (
-          <div className="
-            font-pretendard      
-            font-normal           
-            text-[12px]           
-            leading-[145%]        
-            tracking-[-0.1%]      
-            text-[#000000]
-            space-y-[4px]    
-             ">
-            <p>다음 모임 날짜: {item.meetingDate}</p>
-            <p>다음 모임 책: {item.book}</p>
+        {item.tag === '모임' && item.meetingInfoDTO && (
+          <div className="font-pretendard font-normal text-[12px] leading-[145%] tracking-[-0.1%] text-[#000000] space-y-[4px]">
+            <p>다음 모임 날짜: {item.meetingInfoDTO.meetingTime}</p>
+            <p>다음 모임 책: {item.meetingInfoDTO.bookInfo.title}</p>
             <div className="absolute top-[80px] right-[24px]">
               <img src={arrow} alt="icon" className="w-[24px] h-[24px] -mt-2" />
             </div>
             <div className="absolute bottom-[24.5px]">
-              <div
-                className="
-                  relative
-                  w-[262px] h-[232px]
-                  bg-gray-100 rounded-lg
-                  overflow-hidden
-                  flex items-center justify-center
-                "
-              >
-                {item.imageUrl
-                  ? <img src={item.imageUrl} alt={item.title} className="w-full h-full object-cover" />
-                  : <div className="w-full h-full bg-gray-200" />
-                }
+              <div className="relative w-[262px] h-[232px] bg-gray-100 rounded-lg overflow-hidden flex items-center justify-center">
+                {item.meetingInfoDTO.bookInfo.imgUrl ? (
+                  <img src={item.meetingInfoDTO.bookInfo.imgUrl} alt={item.title} className="w-full h-full object-cover" />
+                ) : (
+                  <div className="w-full h-full bg-gray-200" />
+                )}
               </div>
             </div>
           </div>
         )}
 
-        {item.tag === '투표' && item.meetingDate && (
-          <div className="
-            font-pretendard      
-            font-normal           
-            text-[12px]           
-            leading-[145%]        
-            tracking-[-0.1%]      
-            text-[#000000]  
-            space-y-[4px]    
-           ">
-            <p>모임 날짜: {item.meetingDate}</p>
-            {item.meetingPlace && <p>모임 장소: {item.meetingPlace}</p>}
-            {item.afterPartyPlace && <p>뒤풀이 장소: {item.afterPartyPlace}</p>}
+        {item.tag === '투표' && (
+          <div className="font-pretendard font-normal text-[12px] leading-[145%] tracking-[-0.1%] text-[#000000] space-y-[4px]">
+            <p className="mt-[24px] mb-[16px] whitespace-pre-line">{item.content}</p>
             <div className="absolute top-[80px] right-[24px]">
               <img src={arrow} alt="icon" className="w-[24px] h-[24px] -mt-2" />
             </div>
