@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { useParams, useNavigate, useLocation } from "react-router-dom";
 import Header from "../../components/Header";
-import Modal from "../../components/Modal";
+import Modal, { type ModalButton } from "../../components/Modal";
 import BookRecommendEditCard from "../../components/BookRecommend/BookRecommendEditCard";
 import { useEditRecommend } from "../../hooks/useRecommend";
 
@@ -20,13 +20,7 @@ const BookRecommendEditPage = () => {
   // 성공/실패 알림 모달 (페이지 레벨)
   const [infoOpen, setInfoOpen] = useState(false);
   const [infoTitle, setInfoTitle] = useState("");
-  const [infoButtons, setInfoButtons] = useState<
-    {
-      label: string;
-      onClick: () => void;
-      variant?: "primary" | "outline" | "danger";
-    }[]
-  >([]);
+  const [infoButtons, setInfoButtons] = useState<ModalButton[]>([]);
 
   const { mutate: editRecommend } = useEditRecommend(clubId, recId);
 
