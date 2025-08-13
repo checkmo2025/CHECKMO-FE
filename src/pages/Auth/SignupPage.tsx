@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import AuthLeftPanel from "../../components/AuthLeftPanel";
 import { isValidEmail, getPasswordError } from "../../utils/validators";
@@ -9,9 +9,31 @@ import {
   useConfirmEmailCode,
   useSignup,
 } from "../../hooks/useAuth";
+import { useQueryClient } from "@tanstack/react-query"; //  qc
+import { getMyProfile } from "../../apis/My/memberApi"; //  getMyProfile
+import { QK } from "../../hooks/useHeader"; //  QK
 
 const SignupPage = () => {
   const navigate = useNavigate();
+  const qc = useQueryClient();
+
+  // 로그인 상태면 접근 차단 & 프로필 캐시 채운 후 /home 이동
+    useEffect(() => {
+      const isLoggedIn = Boolean(localStorage.getItem("nickname"));
+      const blockedPaths = ["/", "/signup", "/profile"];
+  
+      if (isLoggedIn && blockedPaths.includes(location.pathname)) {
+        (async () => {
+          try {
+            const profile = await getMyProfile();
+            qc.setQueryData(QK.me, profile);
+          } catch (err) {
+            console.error("프로필 불러오기 실패:", err);
+          }
+          navigate("/home", { replace: true });
+        })();
+      }
+    }, [location.pathname, navigate, qc]);
 
   // 단계/입력 상태
   const [step, setStep] = useState(1);
@@ -21,7 +43,6 @@ const SignupPage = () => {
   const [isCustomDomain, setIsCustomDomain] = useState(false);
 
   const [verificationCode, setVerificationCode] = useState("");
-  
   const [isVerified, setIsVerified] = useState(false);
   const [verificationMessage, setVerificationMessage] = useState("");
 
@@ -41,7 +62,7 @@ const SignupPage = () => {
   const [showReactivateModal, setShowReactivateModal] = useState(false);
   const [reactivateEmail, setReactivateEmail] = useState("");
 
-  const withdrawnEmails = ["2jw@gmail.com"]; // TODO: 서버에서 판단하도록 바꾸면 제거
+  const withdrawnEmails = ["2jw@gmail.com"]; // TODO: 서버에서 판단하도록 변경
 
   const [alertMessage, setAlertMessage] = useState("");
 
@@ -64,7 +85,6 @@ const SignupPage = () => {
       return;
     }
 
-    // 탈퇴 계정인 경우 모달
     if (withdrawnEmails.includes(fullEmail)) {
       setReactivateEmail(fullEmail);
       setShowReactivateModal(true);
@@ -75,7 +95,6 @@ const SignupPage = () => {
     requestEmailCode(fullEmail, {
       onSuccess: (msg) => {
         setAlertMessage(msg || `인증번호가 ${fullEmail}로 발송되었습니다!`);
-        
         setVerificationMessage("");
       },
       onError: (err) => {
@@ -116,7 +135,6 @@ const SignupPage = () => {
     }
   };
 
-  // 비밀번호 입력 시: 백엔드 규칙과 동일한 메시지로 즉시 검증
   const handlePasswordChange = (value: string) => {
     setPassword(value);
     const err = getPasswordError(value);
@@ -144,7 +162,6 @@ const SignupPage = () => {
     }
 
     if (step === 2) {
-      // 백엔드와 동일 기준으로 재검증
       const pwErr = getPasswordError(password);
       if (pwErr) {
         setPasswordError(`ⓘ ${pwErr}`);
@@ -165,12 +182,10 @@ const SignupPage = () => {
         alert("필수 약관에 동의해주세요.");
         return;
       }
-      // 회원가입 호출
       signup(
         { email: getFullEmail(), password },
         {
           onSuccess: () => {
-            // 성공 시 프로필 추가 페이지로 이동
             navigate("/profile");
           },
           onError: (err) => {
@@ -191,26 +206,21 @@ const SignupPage = () => {
         <AuthLeftPanel />
       </div>
 
-      {/* 오른쪽 영역 */}
       <div className="flex-1 overflow-y-auto">
         <div className="flex flex-col items-center w-full min-h-screen px-6 py-20">
-          {/* 책모 타이틀 */}
           <div className="mb-16 text-center">
             <h1 className="text-5xl sm:text-6xl md:text-7xl font-extrabold text-[#90D26D] break-keep">
               책모
             </h1>
           </div>
 
-          {/* 상단 고정 회원가입 글씨 */}
           <div className="mb-20">
             <h2 className="text-2xl text-[#2C2C2C] font-bold">회원가입</h2>
           </div>
 
-          {/* 아래쪽 박스 */}
           <div className="w-[80%] max-w-md space-y-10">
             {step === 1 && (
               <>
-                {/* 아이디 입력 */}
                 <div className="mb-7">
                   <label className="block mb-3 text-[#2C2C2C] text-sm font-semibold">
                     아이디
@@ -251,13 +261,11 @@ const SignupPage = () => {
                       </select>
                     )}
                   </div>
-                  {/* 이메일 오류 메시지 */}
                   {emailError && (
                     <p className="text-[#FF8045] mt-2 text-sm">{emailError}</p>
                   )}
                 </div>
 
-                {/* 인증번호 발송 버튼 */}
                 {emailId && (
                   <div className="w-full">
                     <button
@@ -270,7 +278,6 @@ const SignupPage = () => {
                   </div>
                 )}
 
-                {/* 인증번호 입력 */}
                 <div>
                   <label className="block mb-2 text-[#2C2C2C] text-sm font-semibold">
                     인증번호
@@ -297,7 +304,6 @@ const SignupPage = () => {
                   </div>
                 </div>
 
-                {/* 인증 메시지 */}
                 {verificationMessage && (
                   <p
                     className={` text-[14px] mt-1 ${
@@ -312,7 +318,6 @@ const SignupPage = () => {
 
             {step === 2 && (
               <>
-                {/* 비밀번호 입력 */}
                 <div className="mb-7">
                   <label className="block mb-3 text-[#2C2C2C] text-sm font-semibold">
                     비밀번호
@@ -324,7 +329,6 @@ const SignupPage = () => {
                     onChange={(e) => handlePasswordChange(e.target.value)}
                     className="w-full border-b border-[#DADFE3] px-2 py-2 focus:outline-none"
                   />
-                  {/* 비밀번호 조건 에러 메시지 */}
                   {passwordError && (
                     <p className="text-[#FF8045] font-medium text-[14px] mt-2">
                       {passwordError}
@@ -332,7 +336,6 @@ const SignupPage = () => {
                   )}
                 </div>
 
-                {/* 비밀번호 확인 */}
                 <div className="mb-6">
                   <label className="block mb-3 text-[#2C2C2C] text-[14px] font-semibold">
                     비밀번호 확인
@@ -344,7 +347,6 @@ const SignupPage = () => {
                     onChange={(e) => handlePasswordConfirmChange(e.target.value)}
                     className="w-full border-b border-[#DADFE3] px-3 py-2 focus:outline-none"
                   />
-                  {/* 비밀번호 불일치 에러 메시지 */}
                   {passwordConfirmError && (
                     <p className="text-[#FF8045] font-medium text-[14px] mt-2">
                       {passwordConfirmError}
@@ -380,7 +382,6 @@ const SignupPage = () => {
               </>
             )}
 
-            {/* 다음 버튼 고정 */}
             <div className="w-full max-w-md mt-25">
               <button
                 onClick={handleNextStep}
@@ -400,7 +401,6 @@ const SignupPage = () => {
           onConfirm={() => {
             setAlertMessage(`${reactivateEmail} 계정이 복구되었습니다.`);
             setShowReactivateModal(false);
-            // 인증 확인 처리 (강제로 인증 성공 처리)
             setIsVerified(true);
             navigate("/");
           }}
@@ -409,10 +409,7 @@ const SignupPage = () => {
       )}
 
       {alertMessage && (
-        <AlertModal
-          message={alertMessage}
-          onClose={() => setAlertMessage("")}
-        />
+        <AlertModal message={alertMessage} onClose={() => setAlertMessage("")} />
       )}
     </div>
   );
