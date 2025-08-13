@@ -24,6 +24,10 @@ function Checkdescription(description: string, Rating : number) {
       alert('한줄평을 입력해주세요.');
       return;
   }
+  else if (description.length > 100) {
+    alert('한줄평은 40자 이내로 입력해주세요.');
+    return;
+  }
   return;
 }
 

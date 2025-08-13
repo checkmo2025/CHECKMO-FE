@@ -24,9 +24,15 @@ export default function ThemeDetailPage() {
   const {  data: TopicResult,  fetchNextPage,  hasNextPage,  isFetchingNextPage,} = useTopicInfinite(Req);
 
   useEffect(() => {
-      setMynickname('oz')
-      setUrl('/assets/ix_user-profile-filled.svg')
-    }, []) 
+    const nickname = localStorage.getItem('nickname');
+    const profileImageUrl = localStorage.getItem('profileImageUrl');
+    if(!nickname || !profileImageUrl) {
+      console.log("error처리")
+      return;
+    }
+    setMynickname(nickname);
+    setUrl(profileImageUrl);
+  }, []) 
   
   useEffect(() => {
     if (TopicResult) {
@@ -58,6 +64,9 @@ export default function ThemeDetailPage() {
   const handleSend = (description: string) => {
     if (!description.trim()) {
       alert('발제를 입력해주세요.');
+      return;
+    } else if (description.length > 255) {
+      alert('발제는 255자 이내로 입력해주세요.');
       return;
     }
     const payload: TopicCreateRequest = { description };
@@ -129,7 +138,7 @@ export default function ThemeDetailPage() {
               {TopicList.map((Topic: TopicItem) => (
                 <div key={Topic.topicId} className="flex py-2 flex shadow rounded-2xl border-2 border-[var(--sub-color-2-brown,#EAE5E2)]">
                     <div className= "flex-shrink-0 items-center w-[222px] h-[48px] ml-[12px] flex gap-[19px] mr-[15px] " >
-                      <img src= "/assets/ix_user-profile-filled.svg" className="w-[48px] h-[48px] rounded-full object-cover" />
+                      <img src= {Topic.authorInfo.profileImageUrl || '/assets/ix_user-profile-filled.svg'} className="w-[48px] h-[48px] rounded-full object-cover" />
                       <div className="font-semibold text-[15px] text-gray-800 mb-1">{Topic.authorInfo.nickname}</div>
                     </div>
                     
