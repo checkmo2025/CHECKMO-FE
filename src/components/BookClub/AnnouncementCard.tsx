@@ -1,10 +1,10 @@
 // src/components/BookClub/AnnouncementCard.tsx
-import React, { useState } from 'react';
+import React from 'react';
 import { useNavigate, useParams, type Params } from 'react-router-dom';
 import type { AnnouncementProps, VoteOption } from '../../types/announcement';
 import vector from '../../assets/images/vector.png';
 import arrow from '../../assets/images/shortcutArrow.png';
-
+ 
 export default function AnnouncementCard({
   items,
 }: {
@@ -26,14 +26,8 @@ function AnnouncementCardItem({
 }: {
   item: AnnouncementProps;
 }): React.ReactElement {
-  const [selectedVote, setSelectedVote] = useState<string>('');
   const navigate = useNavigate();
   const { bookclubId } = useParams<Params>();
-  const handleVoteSubmit = () => {
-    if (selectedVote && item.onVoteSubmit) {
-      item.onVoteSubmit(selectedVote);
-    }
-  };
 
   const handleCardClick = () => {
     const itemId = item.id || 1;
@@ -68,6 +62,7 @@ function AnnouncementCardItem({
         flex flex-col                       
         overflow-hidden
         cursor-pointer
+        select-none
         hover:bg-gray-50
         transition-colors"
     >
@@ -165,10 +160,9 @@ function AnnouncementCardItem({
               <img src={arrow} alt="icon" className="w-[24px] h-[24px] -mt-2" />
             </div>
             <div 
-              onClick={(e) => e.stopPropagation()}
               className="w-[269px] h-[207px] mt-[26px] border-[2px] border-[#EAE5E2] rounded-[16px]"
             >
-              <form className = "mt-[14.5px]">
+              <div className = "mt-[14.5px] pointer-events-none" aria-hidden="true">
                 {item.voteOptions?.map((option: VoteOption) => (
                   <label 
                     key={option.value} 
@@ -186,31 +180,20 @@ function AnnouncementCardItem({
                       text-[#434343]
                     "
                   >
-                  <input
-                    type="radio"
-                    name="vote"
-                    value={option.value}
-                    checked={selectedVote === option.value}
-                    onChange={(e) => setSelectedVote(e.target.value)}
+                  <span
+                    aria-hidden="true"
                     className="
                       w-[24px] h-[24px]
                       border-2 border-[#BBBBBB]
                       rounded-full
-                      appearance-none
-                      cursor-pointer
                       mr-2
-                      checked:bg-[#FF8045]
                       bg-white
-                      transition-all duration-200
                     "
                   />
                   <span className="ml-[12px]">{option.label}</span>
                 </label>
               ))}
-              <button
-                type="button"
-                onClick={handleVoteSubmit}
-                disabled={!selectedVote}
+              <div
                 className="
                   ml-[177.5px] mt-[16px]
                   w-[69px] h-[24px]
@@ -227,8 +210,8 @@ function AnnouncementCardItem({
                 "
               >
                 투표하기
-              </button>
-            </form>
+              </div>
+            </div>
           </div>
         </div>
         )}
