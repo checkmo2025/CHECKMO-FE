@@ -49,7 +49,7 @@ const BookRecommendDetailPage = () => {
         ]);
         setIsModalOpen(true);
       },
-      onError: (error) => {
+      onError: () => {
         setModalTitle("삭제 실패");
         setModalButtons([{ label: "확인", onClick: closeModal }]);
         setIsModalOpen(true);

@@ -21,7 +21,7 @@ const SignupPage = () => {
   const [isCustomDomain, setIsCustomDomain] = useState(false);
 
   const [verificationCode, setVerificationCode] = useState("");
-  const [isCodeSent, setIsCodeSent] = useState(false);
+  
   const [isVerified, setIsVerified] = useState(false);
   const [verificationMessage, setVerificationMessage] = useState("");
 
@@ -75,7 +75,7 @@ const SignupPage = () => {
     requestEmailCode(fullEmail, {
       onSuccess: (msg) => {
         setAlertMessage(msg || `인증번호가 ${fullEmail}로 발송되었습니다!`);
-        setIsCodeSent(true);
+        
         setVerificationMessage("");
       },
       onError: (err) => {

@@ -1,4 +1,4 @@
-import React from "react";
+
 import backIcon from "../../assets/icons/backIcon.png";
 import { useNavigate } from "react-router-dom";
 import { FaUserCircle } from "react-icons/fa";
