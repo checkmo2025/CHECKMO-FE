@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import AlertModal from "./AlertModal";
+import { useLogout } from "../hooks/useAuth"; 
 
 type MyPageHeaderProps = {
   title: string;
@@ -11,13 +12,25 @@ const MyPageHeader = (props: MyPageHeaderProps) => {
   const navigate = useNavigate();
   const [showLogoutModal, setShowLogoutModal] = useState(false);
 
+  // 로그아웃 훅
+  const { mutate: logout, isPending } = useLogout();
+
   const handleLogout = () => {
     setShowLogoutModal(true);
   };
 
   const handleConfirmLogout = () => {
-    setShowLogoutModal(false);
-    navigate("/");
+
+    logout(undefined, {
+      onSuccess: () => {
+        setShowLogoutModal(false);
+        navigate("/"); 
+      },
+      onError: (e) => {
+        setShowLogoutModal(false);
+        alert(e?.message || "로그아웃에 실패했습니다.");
+      },
+    });
   };
 
   return (
@@ -33,10 +46,11 @@ const MyPageHeader = (props: MyPageHeaderProps) => {
           </button>
           <span className="text-[#90D26D]">|</span>
           <button
-            className="text-[#2C2C2C] hover:text-[#90D26D] cursor-pointer"
+            className="text-[#2C2C2C] hover:text-[#90D26D] cursor-pointer disabled:opacity-60"
             onClick={handleLogout}
+            disabled={isPending} 
           >
-            로그아웃
+            {isPending ? "로그아웃 중..." : "로그아웃"}
           </button>
         </div>
       </header>
