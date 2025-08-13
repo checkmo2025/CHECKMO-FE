@@ -31,7 +31,7 @@ import Layout from "./components/layout/Layout";
 import MeetingListPage from "./pages/Meeting/MeetingListPage";
 import BookStoryDetailPage from "./pages/Main/BookStory/BookStoryDetailPage";
 import BookStoryWritePage from "./pages/Main/BookStory/BookStoryWritePage";
-import GroupManagementPage from "./pages/Admin/GroupAdminPage";
+import DetailMeatingManagePage from "./pages/Meeting/DetailMeatingManagePage";
 import MeetingDetailPage from "./pages/Meeting/MeetingDetailPage";
 import CreateMeetingPage from "./pages/Meeting/CreateMeetingPage";
 import MeetingTopicListPage from "./pages/Meeting/MeetingTopicListPage";
@@ -68,8 +68,7 @@ const App = () => {
 
             {/* 운영진 */}
             <Route path="manage">
-              <Route path="group" element={<GroupManagementPage />} />
-              <Route path="notices" element={<NoticeManagementPage />} />{" "}
+              <Route path="notices" element={<NoticeManagementPage />} />
               {/* 임시 */}
             </Route>
             {/* 마이페이지 */}
@@ -135,6 +134,7 @@ const App = () => {
                 <Route index element={<MeetingListPage />} />
                 <Route path=":meetingId" element={<MeetingDetailPage />} />
                 <Route path="create" element={<CreateMeetingPage />} />
+                <Route path=":meetingId/manage" element={<DetailMeatingManagePage />} />
                 <Route
                   path=":meetingId/topics"
                   element={<MeetingTopicListPage />}
