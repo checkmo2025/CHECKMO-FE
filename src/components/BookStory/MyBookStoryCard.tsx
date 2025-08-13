@@ -44,7 +44,7 @@ export default function MyBookStoryCard({
         <h3 className="text-lg font-semibold mb-2">{title}</h3>
 
         {/* 요약 */}
-        <p className="text-gray-700 text-sm mb-2 line-clamp-6">{summary}</p>
+        <p className="text-gray-700 text-sm mb-2 line-clamp-2">{summary}</p>
 
         {/* 책 정보 */}
         <div className="text-gray-500 text-xs mb-2">
