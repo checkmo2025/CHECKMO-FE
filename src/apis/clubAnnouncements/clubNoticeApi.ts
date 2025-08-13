@@ -13,7 +13,7 @@ export const getClubNotices = async (
       size: Math.min(size, 10) // 최대 10개로 제한
     };
 
-    if (cursorId) {
+    if (cursorId != null) {
       params.cursorId = cursorId;
     }
 
