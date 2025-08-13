@@ -23,3 +23,21 @@ export const fetchBookStories = async (
   });
   return result;
 };
+
+// 책 이야기 등록 API
+export type CreateBookStoryRequest = {
+  bookInfo: {
+    isbn: string;
+    title: string;
+    author: string;
+    imgUrl: string;
+    publisher: string;
+    description: string;
+  };
+  title: string;
+  description: string;
+};
+
+export const createBookStory = async (payload: CreateBookStoryRequest) => {
+  return await axiosInstance.post("/book-stories", payload);
+};

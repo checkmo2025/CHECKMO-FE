@@ -3,119 +3,84 @@ import BookStoryCard from "../../../components/BookStory/BookStoryCard";
 import { LayoutGrid, List, Pencil } from "lucide-react";
 import { Link } from "react-router-dom";
 import Header from "../../../components/Header";
+import { axiosInstance } from "../../../apis/axiosInstance";
+import { fetchBookStories } from "../../../apis/BookStory/bookstories";
+import type { BookStoryResponseDto } from "../../../types/bookStories";
 
-const dummyData = [
-  {
-    imageUrl: "/placeholder/book1.png",
-    profileUrl: "/placeholder/profile1.png",
-    userName: "hy",
-    isSubscribed: true,
-    title: "나는 나이트 왕자다",
-    summary:
-      "어린 왕자는 소행성의 주인이므로 어린 군주라는 뜻이다. 어린 왕자는 B-612에서 바오밥나무 씨앗을 캐거나 석양을 보며 살고 있다. B-612는 크기가 너무 ...",
-    bookTitle: "어린 왕자",
-    author: "헤밍웨이",
-    likes: 12,
-  },
-  {
-    imageUrl: "/placeholder/book2.png",
-    profileUrl: "/placeholder/profile2.png",
-    userName: "sally",
-    isSubscribed: false,
-    title: "행복한 삶을 위하여",
-    summary:
-      "우리는 모두 행복을 추구한다. 그러나 그 방법은 저마다 다르다. 이 책은 그 다양한 길을 소개한다...",
-    bookTitle: "행복론",
-    author: "알랭",
-    likes: 5,
-  },
-  {
-    imageUrl: "/placeholder/book3.png",
-    profileUrl: "/placeholder/profile3.png",
-    userName: "min",
-    isSubscribed: true,
-    title: "시간을 파는 상점",
-    summary:
-      "고등학생 소녀가 시간 판매 상점을 운영하면서 벌어지는 사건들. 시간을 통해 삶을 되돌아보게 만든다...",
-    bookTitle: "시간을 파는 상점",
-    author: "김선영",
-    likes: 22,
-  },
-  {
-    imageUrl: "/placeholder/book4.png",
-    profileUrl: "/placeholder/profile4.png",
-    userName: "jake",
-    isSubscribed: false,
-    title: "죽음에 관하여",
-    summary:
-      "삶의 끝은 죽음이다. 그러나 우리는 그것을 회피하려고만 한다. 죽음을 직면하는 법을 이 책은 말해준다...",
-    bookTitle: "죽음의 수용소에서",
-    author: "빅터 프랭클",
-    likes: 17,
-  },
-  {
-    imageUrl: "/placeholder/book5.png",
-    profileUrl: "/placeholder/profile5.png",
-    userName: "yuna",
-    isSubscribed: true,
-    title: "감정 수업",
-    summary:
-      "감정은 우리를 움직이게 만든다. 그 감정을 어떻게 받아들이고 다룰 수 있을까에 대해 설명한다...",
-    bookTitle: "감정 수업",
-    author: "롤프 젤린",
-    likes: 30,
-  },
-  {
-    imageUrl: "/placeholder/book6.png",
-    profileUrl: "/placeholder/profile6.png",
-    userName: "daniel",
-    isSubscribed: false,
-    title: "어둠 속에서",
-    summary:
-      "이 책은 어둠을 어떻게 견뎌내는지에 대한 이야기다. 우리는 모두 한 번쯤 그 어둠을 마주하게 된다...",
-    bookTitle: "어둠의 왼손",
-    author: "어슐러 K. 르 귄",
-    likes: 9,
-  },
-];
+type Tab = {
+  label: string;
+  scope: "ALL" | "FOLLOWING" | "MY" | "CLUB";
+  clubId?: number;
+};
 
-const tabs = [
-  "전체 보기",
-  "구독 중 보기",
-  "복작복작 보기",
-  "짱구의 독서모임 보기",
-];
+type Club = {
+  clubId: number;
+  clubName: string;
+  open: boolean;
+};
 
 export default function BookStoryHomePage() {
+  const [tabs, setTabs] = useState<Tab[]>([
+    { label: "전체 보기", scope: "ALL" },
+    { label: "구독 중 보기", scope: "FOLLOWING" },
+    { label: "내 이야기", scope: "MY" },
+  ]);
   const [activeTab, setActiveTab] = useState(0);
+  const [stories, setStories] = useState<BookStoryResponseDto[]>([]);
   const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
-  const [stories, setStories] = useState(dummyData);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    const savedStories = JSON.parse(
-      localStorage.getItem("bookStories") || "[]"
-    );
-    setStories([...savedStories, ...dummyData]);
+    const loadMyClubs = async () => {
+      try {
+        const res = await axiosInstance.get("/clubs/myClubs");
+        const clubList: Club[] = res.result?.clubList || [];
+        // 기존 탭 뒤에 클럽별 탭 추가
+        setTabs((prev) => [
+          ...prev,
+          ...clubList.map((club) => ({
+            label: club.clubName,
+            scope: "CLUB" as const,
+            clubId: club.clubId,
+          })),
+        ]);
+      } catch (error) {
+        console.error("내 모임 조회 실패", error);
+      }
+    };
+    loadMyClubs();
   }, []);
 
-  const filteredStories =
-    activeTab === 1 ? stories.filter((story) => story.isSubscribed) : stories;
+  // activeTab, tabs 변경될 때마다 책 이야기 조회
+  useEffect(() => {
+    const loadStories = async () => {
+      if (!tabs[activeTab]) return;
+      setLoading(true);
+      try {
+        const { scope, clubId } = tabs[activeTab];
+        const data = await fetchBookStories({ scope, clubId });
+        console.log(data.bookStoryResponses);
+        setStories(data.bookStoryResponses || []);
+      } catch (error) {
+        console.error("책 이야기 조회 실패", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    loadStories();
+  }, [activeTab, tabs]);
 
   return (
     <div className="absolute left-[315px] right-[42px] opacity-100">
       {/* 헤더 */}
       <Header
         pageTitle="책 이야기"
-        userProfile={{
-          username: "yujin",
-          bio: "가나다",
-        }}
+        userProfile={{ username: "yujin", bio: "가나다" }}
         customClassName="mt-[30px]"
       />
 
-      {/* 메인 컨텐츠 */}
+      {/* 탭 */}
       <div className="overflow-y-auto h-[calc(100vh-80px)] w-full flex-1 pt-[30px] pl-[2px] pr-[30px] bg-[#FFFFFF]">
-        {/* 탭 */}
         <div className="flex gap-6 border-b border-gray-200 mb-6">
           {tabs.map((tab, index) => (
             <button
@@ -127,7 +92,7 @@ export default function BookStoryHomePage() {
                   : "text-gray-400 hover:text-black"
               }`}
             >
-              {tab}
+              {tab.label}
             </button>
           ))}
         </div>
@@ -164,9 +129,27 @@ export default function BookStoryHomePage() {
               : "flex flex-col gap-4 w-full"
           }`}
         >
-          {filteredStories.map((story, index) => (
-            <BookStoryCard key={index} {...story} viewMode={viewMode} />
-          ))}
+          {loading ? (
+            <div>로딩 중...</div>
+          ) : stories.length > 0 ? (
+            stories.map((story) => (
+              <BookStoryCard
+                key={story.bookStoryId}
+                imageUrl={story.bookInfo.imgUrl}
+                profileUrl={story.authorInfo.profileImageUrl}
+                userName={story.authorInfo.nickname}
+                isSubscribed={story.authorInfo.following}
+                title={story.bookStoryTitle}
+                summary={story.description}
+                bookTitle={story.bookStoryTitle}
+                author={story.bookInfo.author}
+                likes={story.likes}
+                viewMode={viewMode}
+              />
+            ))
+          ) : (
+            <div>데이터가 없습니다.</div>
+          )}
         </div>
       </div>
     </div>

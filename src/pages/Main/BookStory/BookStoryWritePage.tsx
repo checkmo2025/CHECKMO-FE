@@ -1,41 +1,50 @@
 import { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 import bookIcon from "../../../assets/icons/booktitle.png";
 import Header from "../../../components/Header";
-
-const dummyBook = {
-  id: 1,
-  title: "넥서스",
-  author: "유발 하라리",
-  publisher: "출판 김영사",
-  description:
-    "글로벌 베스트셀러 《사피엔스》 《호모 데우스》 《21세기를 위한 21가지 제언》으로 우리 시대 가장 중요한 사상가이자 반열에 오른 유발 하라리 교수가 압도적 통찰로 AI 혁명의 의미와 본질을 꿰뚫어 보고 인류에게 남은 기회를 냉철하게 성찰하는 신작으로 돌아왔다.",
-  imageUrl: "",
-};
+import { createBookStory } from "../../../apis/BookStory/bookstories";
 
 export default function BookStoryWritePage() {
   const navigate = useNavigate();
+  const location = useLocation();
+  const book = location.state?.book;
+
+  if (!book) {
+    navigate("/bookstory/search");
+    return null;
+  }
+
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
+  const [loading, setLoading] = useState(false);
 
-  const handleAddStory = () => {
-    const newStory = {
-      imageUrl: "/placeholder/book7.png",
-      profileUrl: "/placeholder/profile-default.png",
-      userName: "guest",
-      isSubscribed: false,
-      title: title,
-      summary: content.slice(0, 80) + "...",
-      bookTitle: dummyBook.title,
-      author: dummyBook.author,
-      likes: 0,
-    };
+  const handleAddStory = async () => {
+    try {
+      setLoading(true);
 
-    const saved = JSON.parse(localStorage.getItem("bookStories") || "[]");
-    saved.unshift(newStory);
-    localStorage.setItem("bookStories", JSON.stringify(saved));
+      const payload = {
+        bookInfo: {
+          isbn: book.isbn || "",
+          title: book.title,
+          author: book.author,
+          imgUrl: book.imgUrl || "",
+          publisher: book.publisher || "",
+          description: book.description || "",
+        },
+        title: title,
+        description: content,
+      };
 
-    navigate("/bookstory");
+      await createBookStory(payload);
+
+      alert("책 이야기가 등록되었습니다!"); //이거 모달로 바꾸고 지우기
+      navigate("/bookstory");
+    } catch (error) {
+      console.error("책 이야기 등록 실패", error);
+      alert("등록에 실패했습니다. 다시 시도해주세요.");
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -43,7 +52,6 @@ export default function BookStoryWritePage() {
       className="absolute left-[315px] right-[42px] top-0 bottom-0 flex flex-col opacity-100"
       style={{ maxWidth: "1080px", margin: "0 auto" }}
     >
-      {/* 헤더 */}
       <Header
         pageTitle="책 이야기"
         userProfile={{
@@ -53,19 +61,15 @@ export default function BookStoryWritePage() {
         customClassName="mt-[30px]"
       />
 
-      {/* 메인 컨텐츠 */}
-      <main
-        className="overflow-y-auto flex-grow pt-[30px] px-0"
-        style={{ paddingLeft: 0, paddingRight: 0 }}
-      >
-        <div className="max-w-full mx-auto p-0 space-y-8 font-sans text-gray-900">
+      <main className="overflow-y-auto flex-grow pt-[30px] px-0">
+        <div className="max-w-full mx-auto p-0 space-y-8 text-gray-900">
           {/* 책 정보 */}
           <section className="relative flex items-start gap-6 p-6 border border-[#EAE5E2] rounded-xl bg-white">
             <div className="w-28 h-36 rounded-lg bg-gray-200 flex-shrink-0">
-              {dummyBook.imageUrl ? (
+              {book.imgUrl ? (
                 <img
-                  src={dummyBook.imageUrl}
-                  alt={dummyBook.title}
+                  src={book.imgUrl}
+                  alt={book.title}
                   className="w-full h-full object-cover rounded-lg"
                 />
               ) : null}
@@ -77,15 +81,15 @@ export default function BookStoryWritePage() {
                   alt="profile"
                   className="w-6 h-6 rounded-full"
                 />
-                <span>{dummyBook.title}</span>
+                <span>{book.title}</span>
               </div>
 
               <div className="text-xs text-gray-500 mt-1 mb-2">
-                {dummyBook.author} | {dummyBook.publisher}
+                {book.author} | {book.publisher}
               </div>
 
-              <p className="mt-2 text-xs leading-relaxed text-gray-800 whitespace-pre-line">
-                {dummyBook.description}
+              <p className="mt-2 text-xs leading-relaxed text-gray-800 whitespace-pre-line pr-28">
+                {book.description}
               </p>
             </div>
 
@@ -119,12 +123,12 @@ export default function BookStoryWritePage() {
             />
 
             <div className="mt-4 flex justify-end gap-4">
-              <button className="rounded-[1rem] border border-[#A6917D] px-6 py-2 text-sm text-beige-700 hover:bg-beige-100">
+              <button className="rounded-[1rem] border border-[#A6917D] px-6 py-2 text-sm text-beige-700 hover:bg-beige-100 w-[6.5625rem]">
                 임시저장
               </button>
               <button
                 onClick={handleAddStory}
-                className="rounded-[1rem] bg-[#A6917D] px-6 py-2 text-sm font-semibold text-white hover:bg-beige-600"
+                className="rounded-[1rem] bg-[#A6917D] px-6 py-2 text-sm font-semibold text-white hover:bg-beige-600 w-[6.5625rem]"
               >
                 등록
               </button>

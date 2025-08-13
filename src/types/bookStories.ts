@@ -1,6 +1,6 @@
 export interface BookInfoDto {
-  nickname: string;
-  profileImageUrl: string;
+  author: string;
+  imgUrl: string;
 }
 
 export interface AuthorInfoDto {
