@@ -45,7 +45,7 @@ export const generateMockVoteResults = (options: VoteOption[]) => {
 };
 
 // API 호출을 시뮬레이션하는 함수
-export const fetchVoteResults = async (voteId: string, options: VoteOption[]) => {
+export const fetchVoteResults = async (options: VoteOption[]) => {
   // 실제 API 호출을 시뮬레이션 (지연 시간 포함)
   await new Promise(resolve => setTimeout(resolve, 1000));
   

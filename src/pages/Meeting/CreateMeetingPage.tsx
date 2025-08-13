@@ -4,7 +4,7 @@ import BookSearch from '../../components/Search/BookSearch';
 import type { SearchBook, Action } from '../../types/BookSearchdto';
 import { useNavigate } from 'react-router-dom';
 
-import type {CreateMeetingRequest} from '../../types/Meeting/CreateMeetingdto';
+
 
 export default function CreateMeetingPage() {
   const navigate = useNavigate();
@@ -65,7 +65,7 @@ export default function CreateMeetingPage() {
         <BookSearch SearchResultHeight = {290} actions={actions}/>
       )}
 
-      {isSelected && (
+      {isSelected && selectedBook && (
         <div className="flex border-2 border-[var(--sub-color-2-brown,#EAE5E2)] rounded-2xl bg-[var(--White,#FFF)] shadow-sm mt-9"> 
                   {/* 좌측 */}
                     <div className="flex-1 flex p-[10px] gap-[20px]">
