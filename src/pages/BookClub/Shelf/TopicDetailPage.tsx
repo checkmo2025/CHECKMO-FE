@@ -24,7 +24,7 @@ export default function ThemeDetailPage() {
   const [infoTitle, setInfoTitle] = useState('');
   const infoButtons: ModalButton[] = [
     {
-      label: '돌아가기',
+      label: '확인',
       onClick: () => setInfoOpen(false),
     },
   ];
