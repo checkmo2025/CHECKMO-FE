@@ -32,7 +32,8 @@ function AnnouncementCardItem({
 	const handleCardClick = () => {
 		if (!bookclubId) return;
 		const noticeId = item.id;
-		navigate(`/bookclub/${bookclubId}/notices/${noticeId}`);
+		const type = item.tag === '모임' ? 'meeting' : item.tag === '투표' ? 'vote' : 'general';
+		navigate(`/bookclub/${bookclubId}/notices/${noticeId}?type=${type}`);
 	};
 
   return (

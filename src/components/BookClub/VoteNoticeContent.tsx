@@ -4,26 +4,28 @@
 // =============================================================================
 
 import React from 'react';
-import { useNavigate } from 'react-router-dom';
-import type { AnnouncementProps, VoteOption, VoteParticipant } from '../../types/announcement';
+import { useNavigate, useParams } from 'react-router-dom';
+import type { voteNoticeItemDto, voteItemDto } from '../../types/clubNotice';
+import { submitVoteNotice } from '../../apis/clubAnnouncements/clubNoticeApi';
 import VoteNoticeModal from './VoteNoticeModal';
 import VoterDropdown from './VoterDropdown';
-import { generateMockVoteResults } from '../../mocks/voteData';
 
 interface VoteNoticeContentProps {
-  data: AnnouncementProps;
+  data: voteNoticeItemDto;
+  registerBackBlocker?: (fn: () => boolean) => void;
 }
 
-export default function VoteNoticeContent({ data }: VoteNoticeContentProps): React.ReactElement {
+export default function VoteNoticeContent({ data, registerBackBlocker }: VoteNoticeContentProps): React.ReactElement {
   // =============================================================================
   // HOOKS & STATE 관리
   // =============================================================================
   const navigate = useNavigate();
+  const { bookclubId } = useParams<{ bookclubId: string }>();
   
   // 투표 관련 상태
-  const [selectedVotes, setSelectedVotes] = React.useState<string[]>([]); // 사용자가 선택한 투표 옵션들
+  const [selectedIndexes, setSelectedIndexes] = React.useState<number[]>([]); // 사용자가 선택한 투표 옵션 index들
   const [hasVoted, setHasVoted] = React.useState<boolean>(false); // 투표 완료 여부 (UI 전환의 핵심 상태)
-  const [voteResults, setVoteResults] = React.useState<{[key: string]: {count: number, voters: VoteParticipant[]}}>({});
+  const [current, setCurrent] = React.useState<voteNoticeItemDto>(data);
   
   // 모달 관련 상태
   const [showModal, setShowModal] = React.useState<boolean>(false); // 페이지 나가기 확인 모달
@@ -38,19 +40,42 @@ export default function VoteNoticeContent({ data }: VoteNoticeContentProps): Rea
   // EFFECTS - 부수 효과 처리
   // =============================================================================
   
-  // 투표 완료 후 결과 데이터 생성 (실제로는 API 호출)
+  // 데이터 변경 시 현재 상태 최신화
   React.useEffect(() => {
-    if (hasVoted && data.voteOptions) {
-      const mockResults = generateMockVoteResults(data.voteOptions);
-      setVoteResults(mockResults);
-    }
-  }, [hasVoted, data.voteOptions]);
+    setCurrent(data);
+  }, [data]);
+
+  // 상단 뒤로가기 버튼 커스텀 이벤트 처리
+  React.useEffect(() => {
+    const onTryGoBack = () => {
+      if (!hasVoted && selectedIndexes.length > 0) {
+        setShowModal(true);
+      } else {
+        window.history.back();
+      }
+    };
+    window.addEventListener('try-go-back', onTryGoBack);
+    return () => window.removeEventListener('try-go-back', onTryGoBack);
+  }, [selectedIndexes, hasVoted]);
+
+  // 부모의 뒤로가기 클릭 차단기 등록 (선택적)
+  React.useEffect(() => {
+    if (!registerBackBlocker) return;
+    const blocker = () => {
+      if (!hasVoted && selectedIndexes.length > 0) {
+        setShowModal(true);
+        return true; // 차단됨
+      }
+      return false; // 차단 안 함
+    };
+    registerBackBlocker(blocker);
+  }, [registerBackBlocker, selectedIndexes, hasVoted]);
 
   // 브라우저 뒤로가기 감지 및 처리
   React.useEffect(() => {
     const handlePopState = () => {
       // 투표 중에 뒤로가기 시 확인 모달 표시
-      if (selectedVotes.length > 0 && !hasVoted && historyAdded) {
+      if (selectedIndexes.length > 0 && !hasVoted && historyAdded) {
         // 뒤로가기를 막고 현재 페이지 유지 후 모달 표시
         window.history.pushState(null, '', window.location.href);
         setShowModal(true);
@@ -61,7 +86,7 @@ export default function VoteNoticeContent({ data }: VoteNoticeContentProps): Rea
     return () => {
       window.removeEventListener('popstate', handlePopState);
     };
-  }, [selectedVotes, hasVoted, historyAdded]);
+  }, [selectedIndexes, hasVoted, historyAdded]);
 
   // 투표자 드롭다운 외부 클릭 시 닫기
   React.useEffect(() => {
@@ -86,15 +111,15 @@ export default function VoteNoticeContent({ data }: VoteNoticeContentProps): Rea
   // ---------------------------------------------------------------------------
   
   // 투표 옵션 선택/해제 처리
-  const handleVoteChange = (value: string, event: React.MouseEvent<HTMLInputElement>) => {
+  const handleVoteChange = (index: number, event: React.MouseEvent<HTMLInputElement>) => {
     event.preventDefault();
     
     if (hasVoted) return; // 투표 완료 후에는 변경 불가
     
-    setSelectedVotes(prev => {
-      const newVotes = prev.includes(value) 
-        ? prev.filter(v => v !== value) // 이미 선택된 경우 제거
-        : [...prev, value]; // 새로 선택
+    setSelectedIndexes(prev => {
+      const newVotes = prev.includes(index) 
+        ? prev.filter(v => v !== index) // 이미 선택된 경우 제거
+        : [...prev, index]; // 새로 선택
       
       // 투표 선택 상태에 따라 브라우저 히스토리 조작 (뒤로가기 방지용)
       if (newVotes.length > 0 && !historyAdded) {
@@ -112,18 +137,30 @@ export default function VoteNoticeContent({ data }: VoteNoticeContentProps): Rea
   };
 
   // 투표 제출 처리
-  const handleVoteSubmit = (e?: React.FormEvent) => {
+  const handleVoteSubmit = async (e?: React.FormEvent) => {
     if (e) {
       e.preventDefault(); // form submit으로 인한 페이지 리로드 방지
     }
     
-    if (selectedVotes.length === 0) {
+    if (selectedIndexes.length === 0) {
       return; // 선택된 투표가 없으면 실행 안함
     }
 
-    // 부모 컴포넌트로 투표 결과 전달
-    if (data.onVoteSubmit) {
-      data.onVoteSubmit(selectedVotes);
+    // API payload 구성: { item1: boolean, item2: boolean, ... } (명세 반영)
+    const payload: Record<string, boolean> = {};
+    const options = current.items?.items ?? [];
+    options.forEach((_, i) => {
+      payload[`item${i + 1}`] = selectedIndexes.includes(i);
+    });
+
+    // 투표 제출 API 호출
+    try {
+      const updated = await submitVoteNotice(Number(bookclubId), current.id, payload);
+      setCurrent(updated);
+    } catch (err) {
+      // TODO: 에러 처리 토스트 등
+      console.error(err);
+      return;
     }
     
     setHasVoted(true); // 투표 완료 상태로 변경 → UI 전환
@@ -133,7 +170,7 @@ export default function VoteNoticeContent({ data }: VoteNoticeContentProps): Rea
   // 다시 투표 처리
   const handleRevote = () => {
     setHasVoted(false); // 투표 완료 상태 해제 → 다시 투표 가능한 UI로 전환
-    setSelectedVotes([]); // 선택한 투표 초기화
+    setSelectedIndexes([]); // 선택한 투표 초기화
     setHistoryAdded(false); // 히스토리 상태 초기화
     setOpenVoterDropdowns({}); // 모든 투표자 드롭다운 닫기
     // 투표 결과는 유지 (서버에서 관리되는 데이터이므로)
@@ -156,7 +193,7 @@ export default function VoteNoticeContent({ data }: VoteNoticeContentProps): Rea
   // 페이지 나가기 확인 - 확인 버튼 클릭
   const handleConfirmLeave = () => {
     setShowModal(false);
-    setSelectedVotes([]);
+    setSelectedIndexes([]);
     setHasVoted(true);
     setHistoryAdded(false);
     
@@ -195,15 +232,16 @@ export default function VoteNoticeContent({ data }: VoteNoticeContentProps): Rea
         </div>
         
         {/* 투표 마감일 표시 */}
-        {data.voteDeadline && (
+        {/* 마감일 정보가 DTO에 없으면 숨김 */}
+        {false && (
           <p className="px-[20px] py-[10px] font-pretendard font-medium text-[18px] leading-[180%] tracking-[-0.1%] text-[#2c2c2c] mb-[20px]">
-            {data.voteDeadline.year}년 {data.voteDeadline.month}월 {data.voteDeadline.date}일 ({data.voteDeadline.day}) {data.voteDeadline.hour}:{data.voteDeadline.minute} 까지
+            
           </p>
         )}
         
         {/* 투표 설명 */}
         <p className="px-[20px] py-[10px] font-pretendard font-medium text-[18px] leading-[180%] tracking-[-0.1%] text-[#2c2c2c] whitespace-pre mb-[20px]">
-          {data.description}
+            {current.content}
         </p>
 
         {/* 투표 섹션 */}
@@ -211,19 +249,19 @@ export default function VoteNoticeContent({ data }: VoteNoticeContentProps): Rea
           <form onSubmit={handleVoteSubmit}>
             
             {/* 투표 옵션들 */}
-            {data.voteOptions?.map((option: VoteOption) => (
-              <div key={option.value} className="relative voter-dropdown-container pb-[17px]">
+            {current.items?.items?.map((option: voteItemDto, index: number) => (
+              <div key={`${option.item}-${index}`} className="relative voter-dropdown-container pb-[17px]">
                 <label className="flex items-center w-full cursor-pointer">
                   {/* 라디오 버튼 */}
                   <input
-                    type="radio"
-                    value={option.value}
-                    checked={selectedVotes.includes(option.value)}
+                    type="checkbox"
+                    value={index}
+                    checked={selectedIndexes.includes(index)}
                     onChange={() => {}}
-                    onClick={(e) => handleVoteChange(option.value, e)}
+                    onClick={(e) => handleVoteChange(index, e)}
                     disabled={hasVoted} // 투표 완료 후 비활성화
                     className={`appearance-none w-[24px] h-[24px] rounded-full cursor-pointer mr-[12px] flex-shrink-0 aspect-square relative transition-all duration-200 border-[2px] ${
-                      selectedVotes.includes(option.value) 
+                      selectedIndexes.includes(index) 
                         ? 'border-[#FF8045] bg-[#FF8045]' 
                         : 'border-[#BBBBBB] bg-[#EEEEEE]'
                     } ${hasVoted ? 'cursor-not-allowed opacity-50' : ''}`}
@@ -235,17 +273,17 @@ export default function VoteNoticeContent({ data }: VoteNoticeContentProps): Rea
                   }`}>
                     {/* 옵션 라벨 (왼쪽) */}
                     <span className="font-pretendard font-medium text-[18px] leading-[145%] tracking-[-0.1%] text-[#2C2C2C]">
-                      {option.label}
+                      {option.item}
                     </span>
                     
                     {/* 투표자 드롭다운 컴포넌트 */}
-                    {hasVoted && voteResults[option.value] && (
+                    {hasVoted && current.items?.items?.[index] && (
                       <VoterDropdown
-                        voters={voteResults[option.value].voters}
-                        optionLabel={option.label}
-                        voterCount={voteResults[option.value].count}
-                        isOpen={openVoterDropdowns[option.value] || false}
-                        onToggle={() => handleVoterDropdownToggle(option.value)}
+                        voters={current.items.items[index].votedMembers}
+                        optionLabel={option.item}
+                        voterCount={current.items.items[index].voteCount}
+                        isOpen={openVoterDropdowns[String(index)] || false}
+                        onToggle={() => handleVoterDropdownToggle(String(index))}
                       />
                     )}
                   </div>
@@ -259,7 +297,7 @@ export default function VoteNoticeContent({ data }: VoteNoticeContentProps): Rea
                 // 투표하기 버튼 (투표 전)
                 <button
                   type="submit"
-                  disabled={selectedVotes.length === 0}
+                  disabled={selectedIndexes.length === 0}
                   className="w-[105px] h-[35px] bg-[#FF8045] text-white rounded-[16px] font-pretendard font-semibold text-[12px] leading-[145%] tracking-[-0.1%] whitespace-nowrap cursor-pointer disabled:bg-gray-400 disabled:cursor-not-allowed"
                 >
                   투표하기
