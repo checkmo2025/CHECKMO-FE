@@ -25,9 +25,6 @@ const BookRecommendCreateCard = ({
 
   const [modalOpen, setModalOpen] = useState(false);
   const [modalTitle, setModalTitle] = useState("");
-  const [modalContent, setModalContent] = useState<string | undefined>(
-    undefined
-  );
   const [modalButtons, setModalButtons] = useState<
     {
       label: string;
@@ -59,11 +56,12 @@ const BookRecommendCreateCard = ({
       .join(",");
     // 유효성 검사
     if (!rating || !content.trim() || !title.trim() || !processedTag) {
-      setModalTitle("입력 오류");
-      setModalContent("별점, 추천 제목, 추천 이유, 태그를 모두 입력해 주세요.");
+      setModalTitle("별점, 추천 제목, 추천 이유, 태그를 모두 입력해 주세요.");
       setModalButtons([{ label: "확인", onClick: () => setModalOpen(false) }]);
       return;
     }
+    // 모달을 먼저 닫고, 부모에게 submit 이벤트를 전달합니다.
+    setModalOpen(false);
     doSubmit(processedTag);
   };
 
@@ -129,7 +127,6 @@ const BookRecommendCreateCard = ({
       <Modal
         isOpen={modalOpen}
         title={modalTitle}
-        content={modalContent}
         buttons={modalButtons}
         onBackdrop={() => setModalOpen(false)}
       />

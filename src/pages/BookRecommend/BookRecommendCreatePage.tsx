@@ -1,21 +1,29 @@
+import { useState } from "react";
+import { useParams, useNavigate } from "react-router-dom";
 import BookRecommendCreateCard from "../../components/BookRecommend/BookRecommendCreateCard";
 import { NonProfileHeader } from "../../components/NonProfileHeader";
-import { useParams } from "react-router-dom";
-import {
-  useGetBookInfo,
-  useCreateRecommend,
-} from "../../hooks/useRecommend";
+import { useGetBookInfo, useCreateRecommend } from "../../hooks/useRecommend";
 import type { PostRecommendDto } from "../../types/bookRecommend";
+import Modal from "../../components/Modal";
 
 const BookRecommendCreatePage = () => {
   const { bookclubId, bookId } = useParams<{
     bookclubId: string;
     bookId: string;
   }>();
+  const navigate = useNavigate();
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
   const { mutate: createRecommend } = useCreateRecommend(parseInt(bookclubId!));
+
   const { data: bookInfo, isLoading, isError, error } = useGetBookInfo(bookId!);
 
-  const handleSubmit = (data: { title: string; content: string; rating: number; tag: string; }) => {
+  const handleSubmit = (data: {
+    title: string;
+    content: string;
+    rating: number;
+    tag: string;
+  }) => {
     if (!bookInfo) return;
 
     const postData: PostRecommendDto = {
@@ -26,7 +34,16 @@ const BookRecommendCreatePage = () => {
       tag: data.tag,
     };
 
-    createRecommend(postData);
+    createRecommend(postData, {
+      onSuccess: () => {
+        setIsModalOpen(true);
+      },
+    });
+  };
+
+  const handleModalConfirm = () => {
+    setIsModalOpen(false);
+    navigate(`/bookclub/${bookclubId}/recommend`);
   };
 
   if (isLoading) {
@@ -43,6 +60,18 @@ const BookRecommendCreatePage = () => {
       {bookInfo && (
         <BookRecommendCreateCard bookInfo={bookInfo} onSubmit={handleSubmit} />
       )}
+      <Modal
+        isOpen={isModalOpen}
+        onBackdrop={handleModalConfirm}
+        title="등록이 완료되었습니다!"
+        buttons={[
+          {
+            label: "돌아가기",
+            onClick: handleModalConfirm,
+            variant: "primary",
+          },
+        ]}
+      />
     </div>
   );
 };
