@@ -38,7 +38,20 @@ export const useClubNotices = ({
   return {
     notices: data?.noticeList ?? [],
     loading: isLoading,
-    error: isError ? (error as Error).message : null,
+    error: isError
+      ? (() => {
+          const err = error as unknown;
+          if (typeof err === 'object' && err && 'isAxiosError' in (err as any)) {
+            const axiosErr = err as any;
+            return (
+              axiosErr.response?.data?.message ??
+              axiosErr.message ??
+              '알 수 없는 오류가 발생했습니다.'
+            );
+          }
+          return (err as Error)?.message ?? '알 수 없는 오류가 발생했습니다.';
+        })()
+      : null,
     refetch: async () => { await refetch(); },
     hasNext: data?.hasNext ?? false,
     staff: data?.staff ?? false,
