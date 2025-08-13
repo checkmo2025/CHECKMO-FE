@@ -54,7 +54,36 @@ export type ClubDto = {
   participantTypes: string[];
   insta?: string;
   kakao?: string;
+  staff?: boolean;
 };
+
+export type ClubListDto = {
+  club: ClubDto;
+  member: boolean;
+}
+
+export type ClubListResult = {
+  clubList: ClubListDto[];
+  hasNext: boolean;
+  nextCursor: number | null;
+  pageSize: number;
+}
 
 // 클럽 생성 응답 타입
 export type CreateClubResponse = ApiResponse<ClubDto>;
+
+// 클럽 목록 조회 응답 타입
+export type ClubSearchResponse = ApiResponse<ClubListResult>;
+
+// 가입 신청 요청/응답 타입
+export type JoinClubRequest = {
+  joinMessage: string;
+};
+
+export type JoinClubResult = {
+  clubId: number;
+  clubName: string;
+  open: boolean; // 공개 모임 여부 (true면 즉시 가입)
+};
+
+export type JoinClubResponse = ApiResponse<JoinClubResult>;

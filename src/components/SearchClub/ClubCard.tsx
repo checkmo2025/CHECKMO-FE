@@ -14,6 +14,12 @@ export interface ClubCardProps {
   region: string;
   /** 동아리 썸네일 URL */
   logoUrl?: string;
+  /** 문의 링크 - 카카오톡 */
+  kakao?: string;
+  /** 문의 링크 - 인스타그램 */
+  insta?: string;
+  /** 현재 사용자 기준 이미 가입된 모임인지 여부 */
+  isMember?: boolean;
   /** 가입 신청 처리 함수 */
   onJoinRequest?: (clubId: number, message: string) => void;
 }
@@ -73,40 +79,17 @@ export default function ClubCard({
   participantTypes,
   region,
   logoUrl,
+  kakao,
+  insta,
+  isMember = false,
   onJoinRequest,
 }: ClubCardProps): React.ReactElement {
   const [mode, setMode] = useState<'default' | 'join' | 'inquiry'>('default');
   const [joinMessage, setJoinMessage] = useState('');
 
-  // 현재 사용자 닉네임 (실제로는 로그인된 사용자 정보에서 가져와야 함)
-  const currentUserNickname = 'dayoun'; // 임시로 하드코딩
-
-  // 더미 데이터: 이미 가입된 모임 목록 (API 명세서 참고)
-  const dummyClubMembers = [
-    {
-      clubMemberId: 1001,
-      nickname: 'dayoun', // 현재 사용자가 이미 가입된 모임
-      profileImgUrl: 'https://example.com/profile.jpg',
-      joinMessage: '책 너무 좋아요! 가입하고 싶어요.',
-      clubMemberStatus: 'PENDING'
-    },
-    {
-      clubMemberId: 1002,
-      nickname: 'reader123',
-      profileImgUrl: 'https://example.com/profile2.jpg',
-      joinMessage: '모임에 꼭 참여하고 싶습니다.',
-      clubMemberStatus: 'PENDING'
-    }
-  ];
-
-  // 현재 모임에 이미 가입되어 있는지 확인
-  const isAlreadyMember = dummyClubMembers.some(
-    member => member.nickname === currentUserNickname
-  );
-
   // 가입 신청 처리
   const handleJoinRequest = () => {
-    if (isAlreadyMember) {
+    if (isMember) {
       onJoinRequest?.(id, 'already_member');
       return;
     }
@@ -123,6 +106,15 @@ export default function ClubCard({
   };
 
   const handleJoinClick = () => setMode('join');
+  
+  // 기본 버튼 클릭 시: 이미 가입이면 상위에 알리고 종료, 아니면 가입 작성 모드로 전환
+  const onJoinButtonClick = () => {
+    if (isMember) {
+      onJoinRequest?.(id, 'already_member');
+      return;
+    }
+    handleJoinClick();
+  };
   const handleInquiryClick = () => setMode('inquiry');
 
   // 카테고리 ID를 이름으로 변환
@@ -204,7 +196,7 @@ export default function ClubCard({
           {/* 기본 모드 */}
           {mode === 'default' && (
             <ActionButtons
-              onJoinClick={handleJoinClick}
+              onJoinClick={onJoinButtonClick}
               onInquiryClick={handleInquiryClick}
             />
           )}
@@ -263,12 +255,20 @@ export default function ClubCard({
                 underline underline-offset-2
                 flex flex-col gap-[10px]
               ">
-                <a href="#">
-                  카카오톡 링크 카카오톡 링크
-                </a>
-                <a href="#">
-                  인스타 링크 인스타 링크
-                </a>
+                {kakao ? (
+                  <a href={kakao} target="_blank" rel="noopener noreferrer">
+                    카카오톡 링크 바로가기
+                  </a>
+                ) : (
+                  <span className="no-underline text-[#8D8D8D]">등록된 카카오톡 링크가 없습니다.</span>
+                )}
+                {insta ? (
+                  <a href={insta} target="_blank" rel="noopener noreferrer">
+                    인스타그램 링크 바로가기
+                  </a>
+                ) : (
+                  <span className="no-underline text-[#8D8D8D]">등록된 인스타그램 링크가 없습니다.</span>
+                )}
               </div>
             </>
           )}

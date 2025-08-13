@@ -4,9 +4,7 @@ import { ChevronDown, ChevronUp, Camera } from "lucide-react";
 import AuthLeftPanel from "../../components/AuthLeftPanel";
 import { useSubmitAdditionalInfo, useCheckNickname } from "../../hooks/useAuth";
 import { BOOK_CATEGORIES } from "../../types/dto";
-
-// 닉네임 규칙: 영어 소문자 + 특수문자만, 2~15자 (숫자/한글/대문자 불가)
-const NICK_RULE = /^(?=.{2,15}$)(?!.*[!._-]{2})[a-z!._-]+$/;
+import { isValidNickname, getNicknameError } from "../../utils/validators";
 
 const ProfilePage = () => {
   const navigate = useNavigate();
@@ -70,14 +68,15 @@ const ProfilePage = () => {
 
     if (!trimmed) {
       setIsNicknameAvailable(null);
-      setNicknameMessage("닉네임을 입력해주세요.");
+      setNicknameMessage("닉네임을 입력해주세요. (영어 소문자/ 숫자/ 특수문자 포함 6자, 공백 불가");
       return;
     }
 
-    // 클라 선검증 (영소문자 + 특수문자만, 2~15자)
-    if (!NICK_RULE.test(trimmed)) {
+    // 클라 선검증: 백엔드 규칙 동일 적용 (소문자/숫자/특수문자, 최대 6자, 공백 불가)
+    const err = getNicknameError(trimmed);
+    if (err) {
       setIsNicknameAvailable(null);
-      setNicknameMessage("ⓘ 영어 소문자/특수문자만 사용, 2~15자여야 합니다.");
+      setNicknameMessage(`ⓘ ${err}`);
       return;
     }
 
@@ -98,7 +97,7 @@ const ProfilePage = () => {
   // - 닉네임 규칙 통과 + 중복확인 통과
   // - 카테고리 최소 1개
   const imageChosen = useDefaultImage || !!profileFile;
-  const nickValid = NICK_RULE.test(nickname.trim());
+  const nickValid = isValidNickname(nickname.trim());
   const canProceed =
     imageChosen &&
     nickValid &&
@@ -238,7 +237,7 @@ const ProfilePage = () => {
                   <div className="relative">
                     <input
                       type="text"
-                      placeholder="영어 소문자/특수문자만 (2~15자)"
+                      placeholder="영어 소문자/숫자/특수문자 (최대 6자)"
                       value={nickname}
                       onChange={(e) => {
                         setNickname(e.target.value);
@@ -339,7 +338,7 @@ const ProfilePage = () => {
             {step === 2 && (
               <div className="flex flex-col items-center">
                 <div className="w-32 h-32 rounded-full border-2 border-[#49863c] flex items-center justify-center overflow-hidden bg-[#F0FBE3] mb-4">
-                  {profileImagePreview ? <img src={profileImagePreview} alt="Profile" className="w-full h-full object-cover" /> : <div>PROFILE</div>}
+                  {profileImagePreview ? <img src={profileImagePreview} alt="Profile" className="w-full h-full object-cover" /> : <div></div>}
                 </div>
                 <h2 className="text-lg font-bold text-[#2C2C2C] mb-2">{nickname}</h2>
                 <p className="text-gray-500 text-center text-sm mb-6">{bio ? bio : "소개글이 없습니다."}</p>
