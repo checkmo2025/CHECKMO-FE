@@ -27,12 +27,12 @@ export type RecommendationsResponse = ApiResponse<RecommendListResult>;
 export type RecommendDetailResponse = ApiResponse<RecommendationDto>;
 
 export type BookDetail = {
-  isbn: "string";
-  title: "string";
-  author: "string";
-  imgUrl: "string";
-  publisher: "string";
-  description: "string";
+  isbn: string;
+  title: string;
+  author: string;
+  imgUrl: string;
+  publisher: string;
+  description: string;
 };
 
 // 책 상세 조회 응답

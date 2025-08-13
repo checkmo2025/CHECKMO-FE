@@ -68,7 +68,13 @@ const BookRecommendEditCard = ({
       .filter(Boolean)
       .join(",");
 
-    if (!title.trim() || !content.trim() || !processedTag || !rate) {
+    if (
+      !title.trim() ||
+      !content.trim() ||
+      !processedTag ||
+      rate === undefined ||
+      rate === null
+    ) {
       setModalTitle("제목, 별점, 내용, 태그를 모두 입력해 주세요.");
       setModalButtons([{ label: "확인", onClick: () => setModalOpen(false) }]);
       return;
