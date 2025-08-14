@@ -35,7 +35,7 @@ const Header = ({
   const { data: me, isPending: profilePending } = useQuery({
     queryKey: ["header", "me"],
     queryFn: getMyProfile,
-    staleTime: 5 * 60 * 1000,
+    staleTime: 0, // 항상 최신 데이터 요청
     refetchOnWindowFocus: true,
     retry: 0,
   });
@@ -91,7 +91,6 @@ const Header = ({
           {pageTitle}
         </h1>
 
-        {/* 운영진이면서 이 페이지에서만 노출 */}
         {isAdmin && showManageButton && (
           <button
             type="button"
@@ -159,7 +158,13 @@ const Header = ({
           onClick={() => navigate("/mypage/myprofile")}
           className="flex gap-2 md:gap-3 items-center min-w-0 cursor-pointer"
         >
-          <div className="w-10 h-10 bg-gray-300 rounded-full shrink-0" />
+          <div className="w-10 h-10 rounded-full shrink-0 overflow-hidden bg-gray-300">
+            <img
+              src={me?.profileImageUrl}
+              alt={me?.nickname ? `${me.nickname}의 프로필` : "기본 프로필"}
+              className="w-full h-full object-cover"
+            />
+          </div>
           <div className="flex flex-col justify-center min-w-0">
             <div className="flex items-center gap-3">
               <span className="text-sm md:text-base font-semibold text-[#2C2C2C] truncate">
