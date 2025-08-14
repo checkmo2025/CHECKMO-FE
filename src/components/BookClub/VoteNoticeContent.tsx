@@ -9,6 +9,8 @@ import type { voteNoticeItemDto, voteItemDto } from '../../types/clubNotice';
 import { submitVoteNotice, getVoteNoticeDetail } from '../../apis/clubAnnouncements/clubNoticeApi';
 import VoteNoticeModal from './VoteNoticeModal';
 import VoterDropdown from './VoterDropdown';
+import { parseISO, format } from 'date-fns';
+import { ko } from 'date-fns/locale';
 
 interface VoteNoticeContentProps {
   data: voteNoticeItemDto;
@@ -230,20 +232,26 @@ export default function VoteNoticeContent({ data, registerBackBlocker }: VoteNot
   return (
     <div>
       {/* 메인 콘텐츠 영역 */}
-      <div className="w-[1080px] min-h-[622px] p-[20px] border-[2px] border-[#EAE5E2] rounded-[16px] mb-[36px]">
+      <div className="w-[1080px] min-h-[622px] p-[20px] border-[2px] border-[#EAE5E2] rounded-[16px] mb-[36px] mx-auto">
         
         {/* 제목 영역 */}
         <div className="w-full h-[57px] border-b-[2px] border-[#EEEEEE] mb-[20px]">
           <h3 className="pt-[10px] pb-[20px] pl-[23.5px] font-pretendard font-semibold text-[20px] leading-[145%] tracking-[-0.1%] text-[#000000] ">
-            {data.title}
+            {current.title}
           </h3>
         </div>
         
-        {/* ToDo 투표 시작일, 마감일 표시 */}
-        
-        {/* 투표 설명 */}
-        <p className="px-[20px] py-[10px] font-pretendard font-medium text-[18px] leading-[180%] tracking-[-0.1%] text-[#2c2c2c] whitespace-pre mb-[20px]">
-            {current.content}
+        {/* 투표 마감일 표시 */}
+        <p className="px-[20px] py-[10px] font-medium text-[18px] text-[#2c2c2c] whitespace-pre">
+          {(() => {
+            if (!current.deadline) return '';
+            try {
+              const d = parseISO(current.deadline);
+              return format(d, "yyyy. M. d. (eee) HH:mm '까지'", { locale: ko });
+            } catch {
+              return `${current.deadline} 까지`;
+            }
+          })()}
         </p>
 
         {/* 익명 여부, 중복 투표 가능 여부 표시 */}
@@ -253,11 +261,16 @@ export default function VoteNoticeContent({ data, registerBackBlocker }: VoteNot
           if (current.duplication) labels.push('중복 투표');
           const text = labels.join(' | ');
           return text ? (
-            <p className="px-[20px] py-[4px] font-pretendard text-[14px] leading-[145%] tracking-[-0.1%] text-[#8D8D8D]">
+            <p className="px-[20px] py-[4px] text-[14px] text-[#8D8D8D] mb-[20px] ">
               {text}
             </p>
           ) : null;
         })()}
+
+        {/* 투표 설명 */}
+        <p className="px-[20px] py-[10px] font-pretendard font-medium text-[18px] leading-[180%] tracking-[-0.1%] text-[#2c2c2c] whitespace-pre mb-[20px]">
+            {current.content}
+        </p>
 
         {/* 투표 섹션 */}
         <div className="w-[969px] px-[40px] mt-[40px]">

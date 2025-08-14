@@ -39,6 +39,8 @@ export type voteNoticeItemDto = {
   content: string;
   anonymity: boolean;
   duplication: boolean;
+  startTime: string;
+  deadline: string;
   tag: '투표';
   items: voteItemListDto;
 }

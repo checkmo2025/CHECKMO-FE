@@ -84,6 +84,8 @@ export const getVoteNoticeDetail = async (
         : ni.items,
       anonymity: ni.anonymity,
       duplication: ni.duplication,
+      startTime: ni.startTime,
+      deadline: ni.deadline,
       tag: '투표'
     };
     return normalized;
@@ -116,6 +118,8 @@ export const submitVoteNotice = async (
         : ni.items,
       anonymity: ni.anonymity,
       duplication: ni.duplication,
+      startTime: ni.startTime,
+      deadline: ni.deadline,
       tag: '투표'
     };
     return normalized;
