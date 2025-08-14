@@ -7,7 +7,8 @@ import {
   getMyClubs,
   getMyNotifications,
   leaveClub,
-  unfollowMember
+  unfollowMember,
+  removeFollower
 } from "../../apis/My/memberApi";
 import type {
   MyProfile,
@@ -101,6 +102,18 @@ export const useUnfollowMember = () => {
     onSuccess: () => {
       // 팔로잉 목록 새로고침
       qc.invalidateQueries({ queryKey: [QK_MY_HOME.following] });
+    },
+  });
+};
+
+/** 팔로워 삭제 훅 */
+export const useRemoveFollower = () => {
+  const qc = useQueryClient();
+  return useMutation<void, Error, string>({
+    mutationFn: (nickname) => removeFollower(nickname),
+    onSuccess: () => {
+      // 팔로워 목록 새로고침
+      qc.invalidateQueries({ queryKey: [QK_MY_HOME.follower] });
     },
   });
 };
