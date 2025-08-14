@@ -37,6 +37,11 @@ export type voteNoticeItemDto = {
   id: number;
   title: string;
   content: string;
+  anonymity: boolean;
+  duplication: boolean;
+  startTime: string;
+  deadline: string;
+  tag: '투표';
   items: voteItemListDto;
 }
 
