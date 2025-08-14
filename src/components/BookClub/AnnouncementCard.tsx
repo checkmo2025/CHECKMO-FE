@@ -3,6 +3,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import type { noticeListItemDto, voteItemDto } from '../../types/clubNotice';
 import vector from '../../assets/images/vector.png';
 import arrow from '../../assets/images/shortcutArrow.png';
+import { mapTagToRouteType } from '../../types/noticeType';
 
 type Params = {
   bookclubId: string;
@@ -36,7 +37,7 @@ function AnnouncementCardItem({
   const handleCardClick = () => {
     if (!bookclubId) return;
     const noticeId = item.id;
-    const type = item.tag === '모임' ? 'meeting' : item.tag === '투표' ? 'vote' : 'general';
+    const type = mapTagToRouteType(item.tag);
     navigate(`/bookclub/${bookclubId}/notices/${noticeId}?type=${type}`);
   };
 

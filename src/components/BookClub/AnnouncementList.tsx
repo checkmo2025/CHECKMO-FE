@@ -4,6 +4,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import checkerImage from '../../assets/images/checker.png';
 import vector from '../../assets/images/vector.png';
 import type { noticeListItemDto, voteItemDto } from '../../types/clubNotice';
+import { mapTagToRouteType } from '../../types/noticeType';
 
 export default function AnnouncementList({
   items,
@@ -15,7 +16,7 @@ export default function AnnouncementList({
   const handleItemClick = (item: noticeListItemDto) => {
     if (!bookclubId) return;
     const noticeId = item.id;
-    const type = item.tag === '모임' ? 'meeting' : item.tag === '투표' ? 'vote' : 'general';
+    const type = mapTagToRouteType(item.tag);
     navigate(`/bookclub/${bookclubId}/notices/${noticeId}?type=${type}`);
   };
 

@@ -8,20 +8,20 @@ import VoteNoticeContent from '../../components/BookClub/VoteNoticeContent';
 import { useMeetingNoticeDetail } from '../../hooks/BookClub/useMeetingNoticeDetail';
 import { useGeneralNoticeDetail } from '../../hooks/BookClub/useGeneralNoticeDetail';
 import { useVoteNoticeDetail } from '../../hooks/BookClub/useVoteNoticeDetail';
+import { parseNoticeRouteType } from '../../types/noticeType';
 
 export default function NoticeDetailPage(): React.ReactElement {
   const navigate = useNavigate();
   const { bookclubId, noticeId } = useParams<{ bookclubId: string; noticeId: string }>();
   const [searchParams] = useSearchParams();
-  const typeParam = searchParams.get('type');
-  const type = (typeParam === 'meeting' || typeParam === 'vote' || typeParam === 'general') ? typeParam : 'general';
+  const type = parseNoticeRouteType(searchParams.get('type'));
   const numericClubId = useMemo(() => Number(bookclubId), [bookclubId]);
   const numericNoticeId = useMemo(() => Number(noticeId), [noticeId]);
   const hasValidIds = Number.isFinite(numericClubId) && Number.isFinite(numericNoticeId) && numericClubId > 0 && numericNoticeId > 0;
 
-  const { data: meetingInfo, isLoading: meetingLoading, isError: meetingError, error: meetingErr } = useMeetingNoticeDetail(numericClubId, numericNoticeId);
-  const { data: generalInfo, isLoading: generalLoading, isError: generalError, error: generalErr } = useGeneralNoticeDetail(numericClubId, numericNoticeId);
-  const { data: voteInfo, isLoading: voteLoading, isError: voteError, error: voteErr } = useVoteNoticeDetail(numericClubId, numericNoticeId);
+  const { data: meetingInfo, isLoading: meetingLoading, isError: meetingError, error: meetingErr } = useMeetingNoticeDetail(numericClubId, numericNoticeId, type === 'meeting');
+  const { data: generalInfo, isLoading: generalLoading, isError: generalError, error: generalErr } = useGeneralNoticeDetail(numericClubId, numericNoticeId, type === 'general');
+  const { data: voteInfo, isLoading: voteLoading, isError: voteError, error: voteErr } = useVoteNoticeDetail(numericClubId, numericNoticeId, type === 'vote');
 
   return (
     <div className="mt-[30px] ml-[51px]">

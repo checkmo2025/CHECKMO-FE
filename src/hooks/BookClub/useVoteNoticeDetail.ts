@@ -2,11 +2,11 @@ import { useQuery } from '@tanstack/react-query';
 import { getVoteNoticeDetail } from '../../apis/clubAnnouncements/clubNoticeApi';
 import type { voteNoticeItemDto } from '../../types/clubNotice';
 
-export function useVoteNoticeDetail(clubId: number, noticeId: number) {
+export function useVoteNoticeDetail(clubId: number, noticeId: number, enabled: boolean = true) {
   return useQuery<voteNoticeItemDto, Error>({
     queryKey: ['voteNoticeDetail', clubId, noticeId],
     queryFn: () => getVoteNoticeDetail(clubId, noticeId),
-    enabled: clubId > 0 && noticeId > 0,
+    enabled: enabled && clubId > 0 && noticeId > 0,
     staleTime: 1000 * 60 * 5,
     refetchOnMount: 'always',
     refetchOnWindowFocus: false,
