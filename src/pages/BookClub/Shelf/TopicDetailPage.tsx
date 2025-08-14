@@ -7,6 +7,7 @@ import { useTopicCreate } from '../../../hooks/Shelf/useTopicCreate';
 import LongtermChatInput from '../../../components/LongtermChatInput';
 import { useTopicUpdate } from '../../../hooks/Shelf/useTopicUpdate';
 import { useTopicDelete } from '../../../hooks/Shelf/useTopicDelete';
+import Modal, { type ModalButton } from '../../../components/Modal';
 
 export default function ThemeDetailPage() {
   const navigate = useNavigate();
@@ -19,14 +20,28 @@ export default function ThemeDetailPage() {
   const [TopicList, setTopicList] = useState<TopicItem[]>([]);
   const [editingTopicId, setEditingTopicId] = useState<number | null>(null);
   const [editingInitialText, setEditingInitialText] = useState<string>('');
+  const [infoOpen, setInfoOpen] = useState(false);
+  const [infoTitle, setInfoTitle] = useState('');
+  const infoButtons: ModalButton[] = [
+    {
+      label: '확인',
+      onClick: () => setInfoOpen(false),
+    },
+  ];
 
   const Req: TopicListRequest = { meetingId : Number(ShelfmeetingId), size: 5}
   const {  data: TopicResult,  fetchNextPage,  hasNextPage,  isFetchingNextPage,} = useTopicInfinite(Req);
 
   useEffect(() => {
-      setMynickname('oz')
-      setUrl('/assets/ix_user-profile-filled.svg')
-    }, []) 
+    const nickname = localStorage.getItem('nickname');
+    const profileImageUrl = localStorage.getItem('profileImageUrl');
+    if(!nickname || !profileImageUrl) {
+      console.log("error처리")
+      return;
+    }
+    setMynickname(nickname);
+    setUrl(profileImageUrl);
+  }, []) 
   
   useEffect(() => {
     if (TopicResult) {
@@ -53,15 +68,25 @@ export default function ThemeDetailPage() {
   }, [hasNextPage, isFetchingNextPage, fetchNextPage]);  
 
 
+  function Checkdescription(description: string) {
+    if (description == '') {
+      setInfoTitle('발제를 입력해주세요.');
+      setInfoOpen(true);
+      return false;
+    } else if (description.length > 255) {
+      setInfoTitle('발제는 255자 이내로 입력해주세요.');
+      setInfoOpen(true);
+      return false;
+    }
+    return true;
+  }
   //create
   const createTopicMut = useTopicCreate({ meetingId: Number(ShelfmeetingId), size: 5, currentUser: { nickname: Mynickname, profileImageUrl: MyUrl } });
-  const handleSend = (description: string) => {
-    if (!description.trim()) {
-      alert('발제를 입력해주세요.');
-      return;
-    }
+  function handleSend(description: string) {
+    if(Checkdescription(description) === false) return false;
     const payload: TopicCreateRequest = { description };
     createTopicMut.mutate(payload);
+    return true
   };
 
   //update
@@ -70,18 +95,15 @@ export default function ThemeDetailPage() {
       setEditingTopicId(topic.topicId);
       setEditingInitialText(topic.content);
     };
-  
-    const handleUpdate = (newDescription: string) => {
-      if (!newDescription.trim()) {
-        alert('발제 내용을 입력해 주세요.');
-        return;
-    }
-      
+
+    function handleUpdate(newDescription: string) {
+      if(Checkdescription(newDescription) === false) return false;
       const payload: TopicUpdateRequest = { topicId: editingTopicId!, description: newDescription };
       updateMut.mutate(payload);
 
       setEditingTopicId(null);
       setEditingInitialText('');
+      return true
     };
 
   //delete
@@ -129,7 +151,7 @@ export default function ThemeDetailPage() {
               {TopicList.map((Topic: TopicItem) => (
                 <div key={Topic.topicId} className="flex py-2 flex shadow rounded-2xl border-2 border-[var(--sub-color-2-brown,#EAE5E2)]">
                     <div className= "flex-shrink-0 items-center w-[222px] h-[48px] ml-[12px] flex gap-[19px] mr-[15px] " >
-                      <img src= "/assets/ix_user-profile-filled.svg" className="w-[48px] h-[48px] rounded-full object-cover" />
+                      <img src= {Topic.authorInfo.profileImageUrl || '/assets/ix_user-profile-filled.svg'} className="w-[48px] h-[48px] rounded-full object-cover" />
                       <div className="font-semibold text-[15px] text-gray-800 mb-1">{Topic.authorInfo.nickname}</div>
                     </div>
                     
@@ -171,6 +193,12 @@ export default function ThemeDetailPage() {
           </div>
           
       </div>
+      <Modal
+        isOpen={infoOpen}
+        title={infoTitle}
+        buttons={infoButtons}
+        onBackdrop={() => setInfoOpen(false)}
+      />
     </div>
   )
 }
