@@ -239,18 +239,25 @@ export default function VoteNoticeContent({ data, registerBackBlocker }: VoteNot
           </h3>
         </div>
         
-        {/* 투표 마감일 표시 */}
-        {/* 마감일 정보가 DTO에 없으면 숨김 */}
-        {false && (
-          <p className="px-[20px] py-[10px] font-pretendard font-medium text-[18px] leading-[180%] tracking-[-0.1%] text-[#2c2c2c] mb-[20px]">
-            
-          </p>
-        )}
+        {/* ToDo 투표 시작일, 마감일 표시 */}
         
         {/* 투표 설명 */}
         <p className="px-[20px] py-[10px] font-pretendard font-medium text-[18px] leading-[180%] tracking-[-0.1%] text-[#2c2c2c] whitespace-pre mb-[20px]">
             {current.content}
         </p>
+
+        {/* 익명 여부, 중복 투표 가능 여부 표시 */}
+        {(() => {
+          const labels: string[] = [];
+          if (current.anonymity) labels.push('익명 투표');
+          if (current.duplication) labels.push('중복 투표');
+          const text = labels.join(' | ');
+          return text ? (
+            <p className="px-[20px] py-[4px] font-pretendard text-[14px] leading-[145%] tracking-[-0.1%] text-[#8D8D8D]">
+              {text}
+            </p>
+          ) : null;
+        })()}
 
         {/* 투표 섹션 */}
         <div className="w-[969px] px-[40px] mt-[40px]">
