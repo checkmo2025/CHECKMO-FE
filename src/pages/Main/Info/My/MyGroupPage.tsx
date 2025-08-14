@@ -22,7 +22,7 @@ const MyGroupPage = () => {
   const leaveClubMutation = useLeaveClub();
 
   const handleGroupClick = (id: number) => {
-    navigate(`/shelf/${id}`);
+    navigate(`/bookclub/${id}/home`);
   };
 
   // 탈퇴 실행
