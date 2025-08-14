@@ -1,64 +1,75 @@
 import { useCallback } from "react";
-import { useNavigate } from "react-router-dom";
-import { DummyMeetingDetail } from "./DummyMeetingDetail";
-import type {
-  MeetingDetailResultDto,
-  TeamTopicDto,
-} from "../../types/clubMeeting";
+import { useNavigate, useParams } from "react-router-dom";
+import type { TeamTopic } from "../../types/clubMeeting";
 import { MeetingCard } from "../../components/Meeting/MeetingCard";
 import { TopicPreviewSection } from "../../components/Meeting/TopicPreviewSection";
 import { TeamTopicSection } from "../../components/Meeting/TeamTopicSection";
 import { NonProfileHeader } from "../../components/NonProfileHeader";
+import { useMeetingDetail } from "../../hooks/useClubMeeting";
 
 const MeetingDetailPage = () => {
   const navigate = useNavigate();
-  const detail = DummyMeetingDetail.result as MeetingDetailResultDto;
+  const { meetingId } = useParams<{ meetingId: string }>();
+  const { data, isLoading, isError } = useMeetingDetail(Number(meetingId));
 
-  // useCallback으로 이벤트 핸들러의 참조 안정성 보장
   const handleMoreTopics = useCallback(() => {
+    if (!data) return;
     navigate("topics", {
       state: {
-        date: detail.meetingDate,
-        bookTitle: detail.book.title,
-        topics: detail.topicPreview,
+        date: data.meetingInfo.meetingTime,
+        bookTitle: data.meetingInfo.bookInfo.title,
+        topics: data.topics,
       },
     });
-  }, [navigate, detail.meetingDate, detail.book.title, detail.topicPreview]);
+  }, [navigate, data]);
 
   const handleViewAllTeamTopics = useCallback(
-    (team: TeamTopicDto) => {
-      // TODO: 해당 팀 별 발제 전체보기 페이지로 이동하는 로직 구현
+    (team: TeamTopic) => {
+      if (!data) return;
       navigate(`teamTopic/${team.teamNumber}`, {
         state: {
-          date: detail.meetingDate,
-          bookTitle: detail.book.title,
+          date: data.meetingInfo.meetingTime,
+          bookTitle: data.meetingInfo.bookInfo.title,
           topics: team.topics,
         },
       });
     },
-    [navigate, detail.meetingDate, detail.book.title]
+    [navigate, data]
   );
+
+  if (isLoading) {
+    return <div>Loading...</div>;
+  }
+
+  if (isError || !data) {
+    return <div>모임 정보를 불러오는데 실패했습니다.</div>;
+  }
+
+  const { meetingInfo, teams, topics } = data;
+  console.log(meetingInfo);
+  console.log(teams);
+  console.log(topics);
 
   return (
     <div className="mx-auto px-10 space-y-10">
-      <NonProfileHeader title={detail.title} />
+      <NonProfileHeader title={meetingInfo.content} />
 
       <MeetingCard
-        title={""}
-        book={detail.book}
-        meetingDate={detail.meetingDate}
-        meetingPlace={detail.meetingPlace}
-        tags={detail.tags}
-        generation={detail.generation}
-        className="flex min-w-[500px] px-4 pt-2 pb-4 bg-white mx-5 border-[#EAE5E2] border-b-2"
+        title={meetingInfo.title}
+        book={meetingInfo.bookInfo}
+        meetingDate={meetingInfo.meetingTime}
+        meetingPlace={meetingInfo.location}
+        tags={meetingInfo.tag}
+        generation={meetingInfo.generation}
+        className="flex min-w-[700px] px-4 pt-2 pb-4 bg-white mx-5 border-[#EAE5E2] border-b-2"
       />
 
       <TopicPreviewSection
-        previews={detail.topicPreview.slice(0, 4)}
+        previews={topics.slice(0, 4)}
         onMoreClick={handleMoreTopics}
       />
 
-      {detail.teams.map((team) => (
+      {teams.map((team) => (
         <TeamTopicSection
           key={team.teamNumber}
           teamNumber={team.teamNumber}
