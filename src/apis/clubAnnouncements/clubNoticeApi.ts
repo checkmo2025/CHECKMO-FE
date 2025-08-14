@@ -37,8 +37,6 @@ export const getMeetingNoticeDetail = async (
     const response = await axiosInstance.get(
       `/clubs/${clubId}/notices/meeting/${noticeId}`
     );
-    // 인터셉터가 data.result를 반환한다고 가정
-    // 명세 예시: result.noticeItem.meetingInfoDTO
     const result = response as any;
     const meetingInfo: meetingInfoDto = result?.noticeItem?.meetingInfoDTO ?? result?.meetingInfo ?? result;
     return meetingInfo as meetingInfoDto;
@@ -84,6 +82,9 @@ export const getVoteNoticeDetail = async (
       items: Array.isArray(ni.items)
         ? { items: ni.items }
         : ni.items,
+      anonymity: ni.anonymity,
+      duplication: ni.duplication,
+      tag: '투표'
     };
     return normalized;
   } catch (error) {
@@ -113,6 +114,9 @@ export const submitVoteNotice = async (
       items: Array.isArray(ni.items)
         ? { items: ni.items }
         : ni.items,
+      anonymity: ni.anonymity,
+      duplication: ni.duplication,
+      tag: '투표'
     };
     return normalized;
   } catch (error) {

@@ -8,6 +8,8 @@ export function useVoteNoticeDetail(clubId: number, noticeId: number) {
     queryFn: () => getVoteNoticeDetail(clubId, noticeId),
     enabled: clubId > 0 && noticeId > 0,
     staleTime: 1000 * 60 * 5,
+    refetchOnMount: 'always',
+    refetchOnWindowFocus: false,
   });
 }
 

@@ -6,7 +6,7 @@
 import React from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import type { voteNoticeItemDto, voteItemDto } from '../../types/clubNotice';
-import { submitVoteNotice } from '../../apis/clubAnnouncements/clubNoticeApi';
+import { submitVoteNotice, getVoteNoticeDetail } from '../../apis/clubAnnouncements/clubNoticeApi';
 import VoteNoticeModal from './VoteNoticeModal';
 import VoterDropdown from './VoterDropdown';
 
@@ -40,9 +40,15 @@ export default function VoteNoticeContent({ data, registerBackBlocker }: VoteNot
   // EFFECTS - 부수 효과 처리
   // =============================================================================
   
-  // 데이터 변경 시 현재 상태 최신화
+  // 데이터 변경 시 현재 상태 최신화 및 서버 상태로 hasVoted/selectedIndexes 동기화
   React.useEffect(() => {
     setCurrent(data);
+    const serverItems = data.items?.items ?? [];
+    const initiallySelectedIndexes = serverItems
+      .map((item, idx) => (item.selected ? idx : -1))
+      .filter((idx) => idx !== -1);
+    setSelectedIndexes(initiallySelectedIndexes);
+    setHasVoted(initiallySelectedIndexes.length > 0);
   }, [data]);
 
   // 상단 뒤로가기 버튼 커스텀 이벤트 처리
@@ -117,11 +123,10 @@ export default function VoteNoticeContent({ data, registerBackBlocker }: VoteNot
     if (hasVoted) return; // 투표 완료 후에는 변경 불가
     
     setSelectedIndexes(prev => {
-      const newVotes = prev.includes(index) 
-        ? prev.filter(v => v !== index) // 이미 선택된 경우 제거
-        : [...prev, index]; // 새로 선택
-      
-      // 투표 선택 상태에 따라 브라우저 히스토리 조작 (뒤로가기 방지용)
+      // 다중투표 가능 여부에 따라 선택 로직 분기 후 결과를 newVotes로 저장
+      const newVotes = current.duplication
+        ? (prev.includes(index) ? prev.filter(v => v !== index) : [...prev, index])
+        : (prev.includes(index) ? [] : [index]);
       if (newVotes.length > 0 && !historyAdded) {
         // 처음 투표 선택 시 히스토리 엔트리 추가
         window.history.pushState(null, '', window.location.href);
@@ -155,8 +160,17 @@ export default function VoteNoticeContent({ data, registerBackBlocker }: VoteNot
 
     // 투표 제출 API 호출
     try {
-      const updated = await submitVoteNotice(Number(bookclubId), current.id, payload);
-      setCurrent(updated);
+      await submitVoteNotice(Number(bookclubId), current.id, payload);
+      // 서버 저장 후 최신 상세 재조회하여 반영 (selected, voteCount, votedMembers 포함)
+      const refreshed = await getVoteNoticeDetail(Number(bookclubId), current.id);
+      setCurrent(refreshed);
+      // 서버 응답 기준으로 선택 및 투표 여부 동기화
+      const serverItems = refreshed.items?.items ?? [];
+      const newlySelected = serverItems
+        .map((item, idx) => (item.selected ? idx : -1))
+        .filter((idx) => idx !== -1);
+      setSelectedIndexes(newlySelected);
+      setHasVoted(newlySelected.length > 0);
     } catch (err) {
       // TODO: 에러 처리 토스트 등
       console.error(err);
