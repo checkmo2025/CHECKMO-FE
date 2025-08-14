@@ -85,7 +85,5 @@ export type StatisticsDto = {
 };
 
 
-export type StaffCheck = ApiResponse<{
-  isStaff: boolean;
-}>;
-export type StaffCheckResult = StaffCheck['result'];
+export type StaffCheckResponse = ApiResponse<boolean>;
+export type StaffCheckResult = StaffCheckResponse['result']; // boolean

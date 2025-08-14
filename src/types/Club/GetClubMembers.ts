@@ -4,7 +4,7 @@ export type ClubMemberStatus = 'MEMBER' | 'STAFF' | 'PENDING' | 'BLOCKED' | 'ALL
 export interface GetClubMembersRequest {
   clubId: number;              // path
   status?: ClubMemberStatus;   // query
-  cursorId?: number | null;    // query
+  cursorId?: number | null ;    // query
   size?: number;               // query
 }
 
