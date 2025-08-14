@@ -51,3 +51,8 @@ export type CreateBookStoryRequest = {
 export const createBookStory = async (payload: CreateBookStoryRequest) => {
   return await axiosInstance.post("/book-stories", payload);
 };
+
+/** 책 이야기 좋아요/취소 토글 */
+export async function toggleBookStoryLike(bookStoryId: number): Promise<void> {
+  await axiosInstance.post(`/book-stories/${bookStoryId}/like`);
+}
