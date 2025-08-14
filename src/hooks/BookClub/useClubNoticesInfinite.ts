@@ -14,7 +14,10 @@ export function useClubNoticesInfinite(clubId: number, pageSize: number = 10) {
       ),
     enabled: !!clubId && clubId > 0,
     initialPageParam: undefined,
-    getNextPageParam: (lastPage) => (lastPage.hasNext ? lastPage.nextCursor : undefined),
+    getNextPageParam: (lastPage) =>
+      lastPage.hasNext && typeof lastPage.nextCursor === 'number'
+        ? lastPage.nextCursor
+        : undefined,
     staleTime: 1000 * 60 * 5,
   });
 }
