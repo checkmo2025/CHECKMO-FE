@@ -43,14 +43,14 @@ export default function MeetingNoticeContent({ data }: MeetingNoticeContentProps
           {/* 책 제목 */}
           <div className="flex items-center justify-between mb-[6px]">
             <h2 className="font-pretendard font-semibold text-[20px] leading-[135%] tracking-[-0.1%] text-[#000000]">
-            {data.bookInfo?.author ? `${data.bookInfo.author} 지음` : ''}
+              {data.bookInfo?.title}
             </h2>
           </div>
 
           {/* 책 정보 */}
           <div className="mb-[20px]">
             <p className="font-pretendard font-normal text-[14px] leading-[145%] tracking-[-0.1%] text-[#8D8D8D]">
-              {data.bookInfo?.author} 지음
+            {data.bookInfo?.author ? `${data.bookInfo.author} 지음` : ''}
             </p>
           </div>
 
