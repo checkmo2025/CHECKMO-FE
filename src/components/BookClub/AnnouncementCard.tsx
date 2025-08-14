@@ -102,9 +102,9 @@ function AnnouncementCardItem({
               className="w-[269px] h-[207px] mt-[26px] border-[2px] border-[#EAE5E2] rounded-[16px]"
             >
               <form className="mt-[14.5px]">
-                {item.items?.slice(0, 3).map((option: voteItemDto) => (
+                {item.items?.slice(0, 3).map((option: voteItemDto, i: number) => (
                   <label
-                    key={option.item}
+                    key={`${option.item}-${i}`}
                     className="
                       ml-[22.5px]
                       flex items-center
