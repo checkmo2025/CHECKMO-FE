@@ -1,91 +1,85 @@
-import { useState, useEffect, useRef, useCallback } from "react";
+import { useRef, useCallback, useState } from "react";
 import MyPageHeader from "../../../../components/MyPageHeader";
 import { Pencil, Trash2, Save } from "lucide-react";
 import { useNavigate } from "react-router-dom";
-
-type Story = {
-  id: number;
-  author: string;
-  title: string;
-  content: string;
-};
+import { useMyBookStories } from "../../../../hooks/My/useMyBookStories";
+import type { BookStoryResponseDto } from "../../../../types/bookStories";
+import { deleteBookStory, updateBookStory } from "../../../../apis/BookStory/bookstories";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 const MyStoryPage = () => {
   const navigate = useNavigate();
-  const [stories, setStories] = useState<Story[]>([]);
-  const [page, setPage] = useState(1);
-  const [hasMore, setHasMore] = useState(true);
-  const [isFetching, setIsFetching] = useState(false);
+  const qc = useQueryClient();
 
+  const { data, fetchNextPage, hasNextPage, isFetchingNextPage } = useMyBookStories();
+
+  // 수정 상태
   const [editingId, setEditingId] = useState<number | null>(null);
   const [editTitle, setEditTitle] = useState("");
   const [editContent, setEditContent] = useState("");
 
   const observerRef = useRef<IntersectionObserver | null>(null);
 
-  const fetchStories = async () => {
-    if (isFetching || !hasMore) return;
-    setIsFetching(true);
+  // 삭제 Mutation
+  const deleteMutation = useMutation({
+    mutationFn: (id: number) => deleteBookStory(id),
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ["myBookStories"] });
+    },
+  });
 
-    await new Promise((resolve) => setTimeout(resolve, 500));
+  // 수정 Mutation
+  const updateMutation = useMutation({
+    mutationFn: ({ id, description }: { id: number; description: string }) =>
+      updateBookStory(id, { description }),
+    onSuccess: () => {
+     qc.invalidateQueries({ queryKey: ["myBookStories"] });
+    },
+  });
 
-    const newStories: Story[] = Array.from({ length: 5 }, (_, idx) => {
-      const id = (page - 1) * 5 + idx + 1;
-      return {
-        id,
-        author: "hy",
-        title: `나는 나이든 왕자다 ${id}`,
-        content:
-          "어린 왕자는 소행성의 주인공이며 어린 군주라는 뜻이다. 어린 왕자는 B-612에서 살았으며 세상에 대한 호기심으로 여행을 떠났다. 지구에 온 어린 왕자는 여우를 만나 우정과 책임감을 배우고, 자신의 별로 돌아가기 위해 독사에게 몸을 맡긴다.".repeat(
-            2
-          ),
-      };
-    });
-
-    setStories((prev) => [...prev, ...newStories]);
-    setPage((prev) => prev + 1);
-    if (page >= 5) setHasMore(false);
-    setIsFetching(false);
-  };
-
-  useEffect(() => {
-    fetchStories();
-  }, []);
-
+  // 무한스크롤
   const lastElementRef = useCallback(
     (node: HTMLDivElement | null) => {
-      if (isFetching) return;
+      if (isFetchingNextPage) return;
       if (observerRef.current) observerRef.current.disconnect();
 
       observerRef.current = new IntersectionObserver((entries) => {
-        if (entries[0].isIntersecting && hasMore) {
-          fetchStories();
+        if (entries[0].isIntersecting && hasNextPage) {
+          fetchNextPage();
         }
       });
 
       if (node) observerRef.current.observe(node);
     },
-    [isFetching, hasMore]
+    [isFetchingNextPage, hasNextPage, fetchNextPage]
   );
 
+  // 데이터 평탄화
+  const stories =
+    data?.pages
+      ?.flatMap((page) => page.bookStoryResponses)
+      ?.filter(
+        (story, index, self) =>
+          index === self.findIndex((s) => s.bookStoryId === story.bookStoryId)
+      ) ?? [];
+
+  // 삭제
   const handleDelete = (id: number) => {
-    setStories((prev) => prev.filter((story) => story.id !== id));
+    if (window.confirm("정말 삭제하시겠습니까?")) {
+      deleteMutation.mutate(id);
+    }
   };
 
-  const handleEdit = (story: Story) => {
-    setEditingId(story.id);
-    setEditTitle(story.title);
-    setEditContent(story.content);
+  // 수정 모드 진입
+  const handleEdit = (story: BookStoryResponseDto) => {
+    setEditingId(story.bookStoryId);
+    setEditTitle(story.bookStoryTitle);
+    setEditContent(story.description);
   };
 
+  // 저장
   const handleSave = (id: number) => {
-    setStories((prev) =>
-      prev.map((story) =>
-        story.id === id
-          ? { ...story, title: editTitle, content: editContent }
-          : story
-      )
-    );
+    updateMutation.mutate({ id, description: editContent });
     setEditingId(null);
   };
 
@@ -98,27 +92,34 @@ const MyStoryPage = () => {
             <div className="space-y-6">
               {stories.map((story, idx) => (
                 <div
-                  key={story.id}
+                  key={`${story.bookStoryId}-${idx}`}
                   ref={idx === stories.length - 1 ? lastElementRef : null}
                   onClick={() =>
-                    editingId === story.id
+                    editingId === story.bookStoryId
                       ? null
-                      : navigate(`/bookstory/${story.id}/detail`)
+                      : navigate(`/bookstory/${story.bookStoryId}/detail`)
                   }
                   className="flex gap-5 bg-white rounded-xl border border-[#EAE5E2] px-5 py-5 shadow-sm cursor-pointer"
                 >
+                  {/* 책 이미지 */}
                   <div className="w-[176px] h-[248px] rounded-md bg-gray-200 flex-shrink-0" />
 
                   <div className="flex flex-col justify-between flex-1">
                     <div>
+                      {/* 작성자 */}
                       <div className="flex items-center gap-2 mb-3">
-                        <div className="w-[32px] h-[32px] rounded-full bg-gray-300"></div>
+                        <img
+                          src={story.authorInfo.profileImageUrl || ""}
+                          alt="프로필"
+                          className="w-[32px] h-[32px] rounded-full bg-gray-300"
+                        />
                         <p className="text-[#2C2C2C] text-[20px] font-medium">
-                          {story.author}
+                          {story.authorInfo.nickname}
                         </p>
                       </div>
 
-                      {editingId === story.id ? (
+                      {/* 제목 */}
+                      {editingId === story.bookStoryId ? (
                         <input
                           value={editTitle}
                           onChange={(e) => setEditTitle(e.target.value)}
@@ -126,11 +127,12 @@ const MyStoryPage = () => {
                         />
                       ) : (
                         <p className="text-[#2C2C2C] text-[20px] font-semibold mb-2">
-                          {story.title}
+                          {story.bookStoryTitle}
                         </p>
                       )}
 
-                      {editingId === story.id ? (
+                      {/* 내용 */}
+                      {editingId === story.bookStoryId ? (
                         <textarea
                           value={editContent}
                           onChange={(e) => setEditContent(e.target.value)}
@@ -139,26 +141,27 @@ const MyStoryPage = () => {
                         />
                       ) : (
                         <p className="text-[#2C2C2C] text-[14px] overflow-hidden text-ellipsis line-clamp-4">
-                          {story.content}
+                          {story.description}
                         </p>
                       )}
                     </div>
 
+                    {/* 수정 / 삭제 */}
                     <div className="flex gap-5 mt-6">
                       <button
                         onClick={(e) => {
                           e.stopPropagation();
-                          handleDelete(story.id);
+                          handleDelete(story.bookStoryId);
                         }}
                         className="text-[#A6917D] hover:text-[#90D26D]"
                       >
                         <Trash2 size={24} />
                       </button>
-                      {editingId === story.id ? (
+                      {editingId === story.bookStoryId ? (
                         <button
                           onClick={(e) => {
                             e.stopPropagation();
-                            handleSave(story.id);
+                            handleSave(story.bookStoryId);
                           }}
                           className="text-[#A6917D] hover:text-[#90D26D]"
                         >
@@ -180,10 +183,10 @@ const MyStoryPage = () => {
                 </div>
               ))}
 
-              {isFetching && (
+              {isFetchingNextPage && (
                 <p className="text-center text-gray-400">불러오는 중...</p>
               )}
-              {!hasMore && !isFetching && (
+              {!hasNextPage && !isFetchingNextPage && (
                 <p className="text-center text-gray-400 mt-4">
                   더 이상 책 이야기가 없습니다.
                 </p>
