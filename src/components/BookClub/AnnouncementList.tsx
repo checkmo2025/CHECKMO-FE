@@ -1,7 +1,7 @@
 // src/components/BookClub/AnnouncementList.tsx
 import React from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import checkerImage from '../../assets/images/checker.png';
+import logoImage from '../../assets/logos/clearmainLogo.png';
 import vector from '../../assets/images/vector.png';
 import type { noticeListItemDto, voteItemDto } from '../../types/clubNotice';
 import { mapTagToRouteType } from '../../types/noticeType';
@@ -35,12 +35,22 @@ export default function AnnouncementList({
             transition-colors
           "
         >
-          {/* 왼쪽: 이미지 (모임이면 책 이미지, 아니면 플레이스홀더) */}
-          <img
-            src={item.tag === '모임' && item.meetingInfoDTO?.bookInfo?.imgUrl ? item.meetingInfoDTO.bookInfo.imgUrl : checkerImage}
-            alt="notice thumbnail"
-            className="w-[128px] h-[164px] ml-[21.5px] mt-[20px] rounded-lg object-cover"
-          />
+          {/* 왼쪽: 이미지 (모임이면 책 이미지, 아니면 로고를 128x64로 표시) */}
+          {item.tag === '모임' && item.meetingInfoDTO?.bookInfo?.imgUrl ? (
+            <img
+              src={item.meetingInfoDTO.bookInfo.imgUrl}
+              alt="notice thumbnail"
+              className="w-[128px] h-[164px] ml-[21.5px] mt-[20px] rounded-lg object-cover"
+            />
+          ) : (
+            <div className="w-[128px] h-[164px] ml-[21.5px] mt-[20px] rounded-lg flex items-center justify-center overflow-hidden bg-white">
+              <img
+                src={logoImage}
+                alt="logo"
+                className="w-[128px] h-[164px] object-contain"
+              />
+            </div>
+          )}
 
           {/* 오른쪽: 내용 */}
           <div className="ml-[29px] mt-[23px] w-[883px] h-[158px]">
