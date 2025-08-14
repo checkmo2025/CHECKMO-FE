@@ -13,7 +13,7 @@ const MyPageHeader = ({ title }: MyPageHeaderProps) => {
   const qc = useQueryClient();
   const [showLogoutModal, setShowLogoutModal] = useState(false);
 
-  // 프론트 전용 로그아웃 훅 (서버 요청 안 함)
+  // 서버 로그아웃 API와 연동되는 훅
   const { mutate: logout, isPending } = useLogout();
 
   const handleLogout = () => {
@@ -23,9 +23,8 @@ const MyPageHeader = ({ title }: MyPageHeaderProps) => {
   const handleConfirmLogout = () => {
     logout(undefined, {
       onSuccess: () => {
-        // 1. 토큰 삭제
-        localStorage.removeItem("accessToken");
-        localStorage.removeItem("refreshToken");
+        // 1. 로컬 토큰 삭제
+        localStorage.clear();
 
         // 2. React Query 캐시 초기화
         qc.clear();
@@ -33,7 +32,7 @@ const MyPageHeader = ({ title }: MyPageHeaderProps) => {
         // 3. 모달 닫기
         setShowLogoutModal(false);
 
-        // 4. 강제 페이지 이동 (로그인 페이지나 홈으로)
+        // 4. 로그인 페이지로 이동
         window.location.replace("/");
       },
       onError: (e) => {
