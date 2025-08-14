@@ -1,6 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
-import { getOtherProfile } from "../apis/otherApi";
+import { getOtherProfile, followMember } from "../apis/otherApi";
 import type { OtherProfile } from "../types/other";
+import { useMutation } from "@tanstack/react-query";
 
 export const QK_OTHER = {
   profile: (nickname: string) => ["otherProfile", nickname] as const,
@@ -14,3 +15,10 @@ export function useOtherProfileQuery(nickname: string) {
     enabled: !!nickname, // 닉네임이 있을 때만 호출
   });
 }
+
+
+export const useFollowMember = () => {
+  return useMutation<void, Error, string>({
+    mutationFn: (nickname) => followMember(nickname),
+  });
+};
