@@ -12,7 +12,7 @@ import VoterDropdown from './VoterDropdown';
 
 interface VoteNoticeContentProps {
   data: voteNoticeItemDto;
-  registerBackBlocker?: (fn: () => boolean) => void;
+  registerBackBlocker?: (fn: () => boolean) => void | (() => void);
 }
 
 export default function VoteNoticeContent({ data, registerBackBlocker }: VoteNoticeContentProps): React.ReactElement {
@@ -51,20 +51,8 @@ export default function VoteNoticeContent({ data, registerBackBlocker }: VoteNot
     setHasVoted(initiallySelectedIndexes.length > 0);
   }, [data]);
 
-  // 상단 뒤로가기 버튼 커스텀 이벤트 처리
-  React.useEffect(() => {
-    const onTryGoBack = () => {
-      if (!hasVoted && selectedIndexes.length > 0) {
-        setShowModal(true);
-      } else {
-        window.history.back();
-      }
-    };
-    window.addEventListener('try-go-back', onTryGoBack);
-    return () => window.removeEventListener('try-go-back', onTryGoBack);
-  }, [selectedIndexes, hasVoted]);
-
-  // 부모의 뒤로가기 클릭 차단기 등록 (선택적)
+  // 상단 뒤로가기 버튼 차단 로직은 부모의 registerBackBlocker로만 처리
+  // 부모는 클린업 함수를 반환할 수 있으며, 언마운트/의존성 변경 시 호출하여 누수를 방지
   React.useEffect(() => {
     if (!registerBackBlocker) return;
     const blocker = () => {
@@ -74,7 +62,10 @@ export default function VoteNoticeContent({ data, registerBackBlocker }: VoteNot
       }
       return false; // 차단 안 함
     };
-    registerBackBlocker(blocker);
+    const cleanup = registerBackBlocker(blocker);
+    return () => {
+      if (typeof cleanup === 'function') cleanup();
+    };
   }, [registerBackBlocker, selectedIndexes, hasVoted]);
 
   // 브라우저 뒤로가기 감지 및 처리
