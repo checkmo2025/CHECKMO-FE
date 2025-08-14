@@ -1,13 +1,36 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { ChevronDown, ChevronUp, Camera } from "lucide-react";
 import AuthLeftPanel from "../../components/AuthLeftPanel";
 import { useSubmitAdditionalInfo, useCheckNickname } from "../../hooks/useAuth";
 import { BOOK_CATEGORIES } from "../../types/dto";
 import { isValidNickname, getNicknameError } from "../../utils/validators";
+import { useQueryClient } from "@tanstack/react-query";
+import { getMyProfile } from "../../apis/My/memberApi";
+import { QK } from "../../hooks/useHeader";
+import { uploadImage } from "../../apis/imageApi"; // presigned 업로드 함수
 
 const ProfilePage = () => {
   const navigate = useNavigate();
+  const qc = useQueryClient();
+
+  // 로그인 상태면 접근 차단 & 프로필 캐시 채운 후 /home 이동
+  useEffect(() => {
+    const isLoggedIn = Boolean(localStorage.getItem("nickname"));
+    const blockedPaths = ["/", "/signup", "/profile"];
+
+    if (isLoggedIn && blockedPaths.includes(location.pathname)) {
+      (async () => {
+        try {
+          const profile = await getMyProfile();
+          qc.setQueryData(QK.me, profile);
+        } catch (err) {
+          console.error("프로필 불러오기 실패:", err);
+        }
+        navigate("/home", { replace: true });
+      })();
+    }
+  }, [location.pathname, navigate, qc]);
 
   const [step, setStep] = useState(1);
 
@@ -21,13 +44,12 @@ const ProfilePage = () => {
   const [profileImagePreview, setProfileImagePreview] = useState<string | null>(null);
   const [profileFile, setProfileFile] = useState<File | null>(null);
   const [useDefaultImage, setUseDefaultImage] = useState(false);
-  const [isUploading, setIsUploading] = useState(false); // (stub)
+  const [isUploading, setIsUploading] = useState(false);
 
   // 닉네임 체크
   const [nicknameMessage, setNicknameMessage] = useState("");
   const [isNicknameAvailable, setIsNicknameAvailable] = useState<boolean | null>(null);
   const { mutate: requestCheckNickname, isPending: isChecking } = useCheckNickname();
-
   const { mutate: submitInfo, isPending } = useSubmitAdditionalInfo();
 
   // 카테고리 리스트
@@ -47,16 +69,13 @@ const ProfilePage = () => {
     });
   };
 
-  // presigned 업로드 STUB (파일 없어도 에러 안 나게)
+  // presigned 업로드
   const uploadProfileImage = async (): Promise<string> => {
     if (!profileFile) return ""; // 기본 이미지 사용
     setIsUploading(true);
     try {
-      // TODO: presigned 붙이면 여기 교체
-      // const { uploadUrl, fileUrl } = await getPresignedUrl(profileFile.name, profileFile.type);
-      // await uploadToPresignedUrl(uploadUrl, profileFile, profileFile.type);
-      // return fileUrl;
-      return "";
+      const imgUrl = await uploadImage(profileFile);
+      return imgUrl;
     } finally {
       setIsUploading(false);
     }
@@ -72,7 +91,6 @@ const ProfilePage = () => {
       return;
     }
 
-    // 클라 선검증: 백엔드 규칙 동일 적용 (소문자/숫자/특수문자, 최대 6자, 공백 불가)
     const err = getNicknameError(trimmed);
     if (err) {
       setIsNicknameAvailable(null);
@@ -81,7 +99,8 @@ const ProfilePage = () => {
     }
 
     requestCheckNickname(trimmed, {
-      onSuccess: (available) => {
+      onSuccess: (exists) => {
+        const available = !exists;
         setIsNicknameAvailable(available);
         setNicknameMessage(available ? "사용 가능한 아이디입니다." : "ⓘ 이미 존재하는 닉네임입니다.");
       },
@@ -92,10 +111,6 @@ const ProfilePage = () => {
     });
   };
 
-  // 다음 버튼 활성 조건:
-  // - (이미지 업로드 선택 or 기본 이미지 선택)
-  // - 닉네임 규칙 통과 + 중복확인 통과
-  // - 카테고리 최소 1개
   const imageChosen = useDefaultImage || !!profileFile;
   const nickValid = isValidNickname(nickname.trim());
   const canProceed =
@@ -124,7 +139,7 @@ const ProfilePage = () => {
 
     let imgUrl = "";
     try {
-      imgUrl = await uploadProfileImage(); // 기본 이미지면 "" 전송
+      imgUrl = await uploadProfileImage();
     } catch (e: any) {
       alert(e?.message || "이미지 업로드에 실패했습니다.");
       return;
@@ -133,13 +148,12 @@ const ProfilePage = () => {
     submitInfo(
       {
         nickname: nickname.trim(),
-        description: bio.trim(), // 소개는 공란 가능, 서버에서 50자 이내 권장
+        description: bio.trim(),
         imgUrl,
         categoryIds: selectedCategoryIds,
       },
       {
         onSuccess: () => setStep(2),
-        // 이미 프로필이 완성된 회원(MEMBER_406)은 성공으로 간주하고 홈으로 이동
         onError: (err: any) => {
           const code = err?.response?.data?.code;
           if (code === "MEMBER_406") {
@@ -155,29 +169,25 @@ const ProfilePage = () => {
   const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
-    setUseDefaultImage(false); // 직접 업로드면 기본 이미지 해제
+    setUseDefaultImage(false);
     setProfileFile(file);
     const reader = new FileReader();
     reader.onloadend = () => setProfileImagePreview(reader.result as string);
     reader.readAsDataURL(file);
   };
 
-  // 라우트들
   const goToClubSearch = () => navigate("/searchClub");
   const goToCreateClub = () => navigate("/createClub");
   const goToHomePage = () => navigate("/home");
 
   return (
     <div className="flex h-screen font-sans">
-      {/* Left Panel */}
       <div className="hidden xl:flex">
         <AuthLeftPanel />
       </div>
 
-      {/* Right Panel */}
       <div className="flex-1 overflow-y-auto">
         <div className="flex flex-col items-center w-full min-h-screen px-6 py-20">
-          {/* 타이틀 */}
           <div className="text-center mb-10">
             <h1 className="text-5xl sm:text-6xl md:text-7xl font-extrabold text-[#90D26D] break-keep">책모</h1>
             {step === 1 ? (
@@ -191,20 +201,20 @@ const ProfilePage = () => {
           </div>
 
           <div className="w-full max-w-md space-y-10">
-            {/* Step 1 */}
             {step === 1 && (
               <>
-                {/* 프로필 이미지 */}
+                {/* 프로필 이미지 영역 */}
                 <div className="relative w-32 h-32 mx-auto mb-3">
                   <div className="w-32 h-32 rounded-full border-2 border-[#49863c] flex items-center justify-center overflow-hidden bg-[#F0FBE3]">
                     {profileImagePreview ? (
                       <img src={profileImagePreview} alt="Profile" className="w-full h-full object-cover" />
                     ) : (
-                      <div className="text-[#49863c] text-sm"></div>
+                      // 기본 이미지
+                      <div className="w-full h-full flex items-center justify-center bg-[#F8FFEF] text-sm">
+                      </div>
                     )}
                   </div>
 
-                  {/* 업로드 버튼 */}
                   <label
                     htmlFor="profileImageInput"
                     className="absolute bottom-[-10px] right-[-10px] w-9 h-9 rounded-full bg-[#90D26D] flex items-center justify-center text-white cursor-pointer shadow-md"
@@ -214,7 +224,6 @@ const ProfilePage = () => {
                   <input id="profileImageInput" type="file" accept="image/*" onChange={handleImageUpload} className="hidden" />
                 </div>
 
-                {/* 기본 이미지 선택 */}
                 <div className="flex justify-center">
                   <button
                     type="button"
@@ -272,7 +281,7 @@ const ProfilePage = () => {
                   )}
                 </div>
 
-                {/* 소개 (최대 50자) */}
+                {/* 소개 */}
                 <div className="mb-5">
                   <label className="block mb-1 text-[#2C2C2C] text-m font-semibold">소개</label>
                   <input
@@ -285,7 +294,7 @@ const ProfilePage = () => {
                   />
                 </div>
 
-                {/* 관심 독서 카테고리 */}
+                {/* 카테고리 */}
                 <div className="mb-6">
                   <div
                     className="flex justify-between items-center cursor-pointer"
@@ -338,7 +347,13 @@ const ProfilePage = () => {
             {step === 2 && (
               <div className="flex flex-col items-center">
                 <div className="w-32 h-32 rounded-full border-2 border-[#49863c] flex items-center justify-center overflow-hidden bg-[#F0FBE3] mb-4">
-                  {profileImagePreview ? <img src={profileImagePreview} alt="Profile" className="w-full h-full object-cover" /> : <div></div>}
+                  {profileImagePreview ? (
+                    <img src={profileImagePreview} alt="Profile" className="w-full h-full object-cover" />
+                  ) : (
+                    <div className="w-full h-full flex items-center justify-center bg-gray-300 text-gray-500 text-sm">
+                      기본
+                    </div>
+                  )}
                 </div>
                 <h2 className="text-lg font-bold text-[#2C2C2C] mb-2">{nickname}</h2>
                 <p className="text-gray-500 text-center text-sm mb-6">{bio ? bio : "소개글이 없습니다."}</p>

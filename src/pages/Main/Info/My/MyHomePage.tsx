@@ -1,19 +1,28 @@
 import MyPageHeader from "../../../../components/MyPageHeader";
 import { useNavigate } from "react-router-dom";
+import {
+  useMyProfileQuery,
+  useMyClubsQuery,
+  useMyFollowingQuery,
+  useMyFollowerQuery,
+  useMyNotificationsQuery,
+} from "../../../../hooks/My/useMember";
 
 const MyPage = () => {
   const navigate = useNavigate();
 
-  const groupList = [
-    "북적북적", "짱구야 책읽자", "독서를 하자", "책모", "독서좋아", "북북"
-  ];
-  const followingList = Array.from({ length: 10 }, (_, i) => `팔로잉-${10 - i}`);
-  const followerList = Array.from({ length: 10 }, (_, i) => `팔로워-${10 - i}`);
-  const notificationList = Array.from({ length: 10 }, (_, i) => ({
-    id: i,
-    message: `사용자${10 - i}님이 팔로우했습니다.`,
-    date: `2025-07-${29 - i} 12:${(i + 1).toString().padStart(2, "0")}`
-  }));
+  // API 호출 (모두 cursor 기반)
+  const { data: profileData } = useMyProfileQuery();
+  const { data: clubData } = useMyClubsQuery(null); 
+  const { data: followingData } = useMyFollowingQuery(null);
+  const { data: followerData } = useMyFollowerQuery(null);
+  const { data: notificationData } = useMyNotificationsQuery(null);
+
+  // 안전한 기본값 처리
+  const clubs = clubData?.clubList ?? [];
+  const followingList = followingData?.followList ?? [];
+  const followerList = followerData?.followList ?? [];
+  const notifications = notificationData?.notifications ?? [];
 
   return (
     <div className="relative w-full h-screen bg-[#FAFAFA] overflow-hidden">
@@ -25,24 +34,39 @@ const MyPage = () => {
           <div className="w-full bg-white rounded-[12px] px-4 md:px-6 py-4 mb-5 flex flex-col gap-3">
             <div className="flex flex-col sm:flex-row justify-between sm:items-center gap-3">
               <div className="flex items-center gap-3">
-                <div className="w-10 h-10 sm:w-12 sm:h-12 bg-[#DADADA] rounded-full"></div>
-                <p className="text-[16px] sm:text-[18px] font-semibold text-[#2C2C2C]">hy_0716</p>
+                {/* 프로필 이미지 */}
+                {profileData?.profileImageUrl ? (
+                  <img
+                    src={profileData.profileImageUrl}
+                    alt="프로필"
+                    className="w-10 h-10 sm:w-12 sm:h-12 rounded-full object-cover"
+                  />
+                ) : (
+                  <div className="w-10 h-10 sm:w-12 sm:h-12 bg-[#DADADA] rounded-full"></div>
+                )}
+
+                {/* 닉네임 */}
+                <p className="text-[16px] sm:text-[18px] font-semibold text-[#2C2C2C]">
+                  {profileData?.nickname ?? ""}
+                </p>
               </div>
 
+              {/* 관심 카테고리 */}
               <div className="flex flex-wrap gap-2">
-                {["사회", "경제", "인문", "과학"].map((tag, idx) => (
+                {profileData?.categories?.map((cat) => (
                   <span
-                    key={idx}
+                    key={cat.id}
                     className="px-3 py-1 rounded-full bg-[#90D26D] text-white text-[12px] sm:text-[13px]"
                   >
-                    {tag}
+                    {cat.name}
                   </span>
                 ))}
               </div>
             </div>
 
+            {/* 한 줄 소개 */}
             <div className="w-full bg-[#EFF5ED] mt-2 rounded-[8px] px-4 sm:px-5 py-3 text-[#5C5C5C] text-[15px] sm:text-[16px] font-medium">
-              책을 아는가? 나는 모른다!
+              {profileData?.description ?? ""}
             </div>
           </div>
 
@@ -61,10 +85,9 @@ const MyPage = () => {
               </div>
               <div className="bg-white rounded-xl border border-[#EAE5E2] p-5 shadow-sm min-h-[424px]">
                 <ul className="divide-y divide-[#EAE5E2]">
-                  {groupList.slice(0, 5).map((name, idx) => (
-                    <li key={idx} className="py-3">
-                      <p className="text-[#2C2C2C] text-[15px]">{name}</p>
-                      <p className="text-[13px] text-[#8D8D8D] mt-1">새 공지 1건</p>
+                  {clubs.slice(0, 5).map((club) => (
+                    <li key={club.clubId} className="py-3">
+                      <p className="text-[#2C2C2C] font-medium text-[15px]">{club.name}</p>
                     </li>
                   ))}
                 </ul>
@@ -84,22 +107,31 @@ const MyPage = () => {
               </div>
               <div className="bg-white rounded-xl border border-[#EAE5E2] p-5 shadow-sm min-h-[424px]">
                 <div className="grid grid-cols-2 gap-3">
-                  {[{ label: "팔로잉", list: followingList }, { label: "팔로워", list: followerList }].map(
-                    ({ label, list }) => (
+                  {[{ label: "팔로잉", list: followingList },
+                    { label: "팔로워", list: followerList }].map(({ label, list }) => (
                       <div key={label}>
                         <p className="text-[#90D26D] text-[13px] mb-3">{label}</p>
-                        {list.slice(0, 5).map((nickname, idx) => (
+                        {list.slice(0, 5).map((member) => (
                           <div
-                            key={`${label}-${idx}`}
+                            key={`${label}-${member.nickname}`}
                             className="bg-[#F4F2F1] rounded-lg px-3 py-3 mb-3 flex items-center gap-2"
                           >
-                            <div className="w-6 h-6 rounded-full bg-[#DADADA]"></div>
-                            <p className="text-[#2C2C2C] text-[14px] flex-1 text-center">{nickname}</p>
+                            {member.profileImageUrl ? (
+                              <img
+                                src={member.profileImageUrl}
+                                alt={`${member.nickname} 프로필`}
+                                className="w-6 h-6 rounded-full object-cover"
+                              />
+                            ) : (
+                              <div className="w-6 h-6 rounded-full bg-[#DADADA]"></div>
+                            )}
+                            <p className="text-[#2C2C2C] text-[14px] flex-1 text-center">
+                              {member.nickname}
+                            </p>
                           </div>
                         ))}
                       </div>
-                    )
-                  )}
+                    ))}
                 </div>
               </div>
             </div>
@@ -117,11 +149,16 @@ const MyPage = () => {
               </div>
               <div className="bg-white rounded-xl border border-[#EAE5E2] p-5 shadow-sm min-h-[424px]">
                 <ul className="divide-y divide-[#EAE5E2]">
-                  {notificationList.slice(0, 5).map((item) => (
-                    <li key={item.id} className="flex justify-between items-center py-3">
+                  {notifications.slice(0, 5).map((item) => (
+                    <li key={item.notificationId} className="flex justify-between items-center py-3">
                       <div>
-                        <p className="text-[#2C2C2C] text-[14px]">{item.message}</p>
-                        <p className="text-[12px] text-[#8D8D8D] mt-1">{item.date}</p>
+                        <p className="text-[#2C2C2C] text-[14px]">
+                          {item.senderNickname}님이{" "}
+                          {item.notificationType === "LIKE" && "좋아요를 눌렀습니다."}
+                          {item.notificationType === "COMMENT" && "댓글을 남겼습니다."}
+                          {item.notificationType === "FOLLOW" && "팔로우했습니다."}
+                       </p>
+                        <p className="text-[12px] text-[#8D8D8D] mt-1">{item.createdAt}</p>
                       </div>
                       <div className="w-3 h-3 rounded-full bg-[#90D26D]"></div>
                     </li>

@@ -1,30 +1,41 @@
 import React from 'react';
-import { BOOK_CATEGORIES } from '../../types/dto';
-import type { AnnouncementProps } from '../../types/announcement';
+import { format, parseISO } from 'date-fns';
+import { ko } from 'date-fns/locale';
+// import { BOOK_CATEGORIES } from '../../types/dto';
+import type { meetingInfoDto } from '../../types/clubNotice';
 import calenderIcon from "../../assets/icons/calenderIcon.png";
 import mapIcon from "../../assets/icons/mapIcon.png";
 
-// 카테고리 ID를 이름으로 변환하는 함수
-const getCategoryName = (categoryId: number): string => {
-  return BOOK_CATEGORIES[categoryId as keyof typeof BOOK_CATEGORIES] || '기타';
-};
-
 interface MeetingNoticeContentProps {
-  data: AnnouncementProps;
+  data: meetingInfoDto;
 }
 
 export default function MeetingNoticeContent({ data }: MeetingNoticeContentProps): React.ReactElement {
+  const formatMeetingTime = (value: string): string => {
+    try {
+      const date = parseISO(value);
+      if (isNaN(date.getTime())) return value;
+      const dateStr = format(date, 'yyyy. M. d.', { locale: ko });
+      const dayStr = format(date, 'eee', { locale: ko });
+      const timeStr = format(date, 'HH:mm', { locale: ko });
+      return `${dateStr} (${dayStr}) ${timeStr}`;
+    } catch {
+      return value;
+    }
+  };
   return (
     <div>
       {/* 상단 영역 */}
       <div className="w-[552px] flex gap-[32px] mb-[12px]">
         {/* 왼쪽: 책 이미지 */}
         <div className="flex-shrink-0">
-          <img
-            src={data.imageUrl}
-            alt="book cover"
-            className="w-[200px] h-[292px] object-cover"
-          />
+          {data.bookInfo?.imgUrl && (
+            <img
+              src={data.bookInfo.imgUrl}
+              alt="book cover"
+              className="w-[200px] h-[292px] object-cover"
+            />
+          )}
         </div>
 
         {/* 오른쪽: 정보 */}
@@ -32,21 +43,21 @@ export default function MeetingNoticeContent({ data }: MeetingNoticeContentProps
           {/* 책 제목 */}
           <div className="flex items-center justify-between mb-[6px]">
             <h2 className="font-pretendard font-semibold text-[20px] leading-[135%] tracking-[-0.1%] text-[#000000]">
-              {data.book}
+              {data.bookInfo?.title}
             </h2>
           </div>
 
           {/* 책 정보 */}
           <div className="mb-[20px]">
             <p className="font-pretendard font-normal text-[14px] leading-[145%] tracking-[-0.1%] text-[#8D8D8D]">
-              {data.bookAuthor} 지음
+            {data.bookInfo?.author ? `${data.bookInfo.author} 지음` : ''}
             </p>
           </div>
 
           {/* 책 설명 */}
           <div className="flex items-center justify-between">
             <p className="font-pretendard font-normal text-[14px] leading-[135%] tracking-[-0.1%] text-[#000000]">
-              {data.bookDescription}
+              {data.content}
             </p>
           </div>
 
@@ -58,16 +69,19 @@ export default function MeetingNoticeContent({ data }: MeetingNoticeContentProps
                 {data.generation}기
               </span>
             )}
-            
-            {/* 독서 카테고리 태그 */}
-            {data.categories?.map((categoryId: number) => (
-              <span 
-                key={categoryId}
-                className="inline-flex items-center justify-center min-w-[54px] px-[16.5px] h-[24px] bg-[#90D26D] text-white rounded-[15px] font-pretendard font-medium text-[12px] leading-[145%] tracking-[-0.1%]"
-              >
-                {getCategoryName(categoryId)}
-              </span>
-            ))}
+            {/* 카테고리 태그 */}
+            {data.tag && String(data.tag)
+              .split(',')
+              .map(tag => tag.trim())
+              .filter(Boolean)
+              .map((tagLabel, index) => (
+                <span
+                  key={`${tagLabel}-${index}`}
+                  className="inline-flex items-center justify-center min-w-[54px] px-[18px] h-[24px] bg-[#90D26D] text-white rounded-[15px] font-pretendard font-medium text-[12px] leading-[145%] tracking-[-0.1%]"
+                >
+                  {tagLabel}
+                </span>
+              ))}
           </div>
         </div>
       </div>
@@ -80,7 +94,7 @@ export default function MeetingNoticeContent({ data }: MeetingNoticeContentProps
         <div className="bg-[#F4F2F1] w-[1080px] h-[53px] mt-[19px] rounded-[16px] flex items-center gap-[12px]">
           <img src={calenderIcon} alt="calendar" className="w-[24px] h-[24px] ml-[20px]" />
           <p className="font-pretendard font-medium text-[18px] leading-[145%] tracking-[-0.1%] text-[#000000]">
-            {data.meetingDate}
+            {formatMeetingTime(data.meetingTime)}
           </p>
         </div>
       </div>
@@ -93,7 +107,7 @@ export default function MeetingNoticeContent({ data }: MeetingNoticeContentProps
         <div className="bg-[#F4F2F1] w-[1080px] h-[53px] mt-[19px] rounded-[16px] flex items-center gap-[12px]">
           <img src={mapIcon} alt="map" className="w-[24px] h-[24px] ml-[20px]" />
           <p className="font-pretendard font-medium text-[18px] leading-[145%] tracking-[-0.1%] text-[#000000]">
-            {data.meetingPlace}
+            {data.location}
           </p>
         </div>
       </div>
@@ -101,7 +115,7 @@ export default function MeetingNoticeContent({ data }: MeetingNoticeContentProps
       {/* 하단: 상세 설명 */}
       <div className="w-[1080px] h-[622px] p-[20px] border-[2px] border-[#EAE5E2] rounded-[16px] mb-[36px]">
         <p className="font-pretendard font-medium text-[14px] leading-[180%] tracking-[-0.1%] text-[#2c2c2c] whitespace-pre-line">
-          {data.description}
+          {data.content}
         </p>
       </div>
     </div>

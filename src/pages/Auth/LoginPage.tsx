@@ -1,14 +1,20 @@
-import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useState, useEffect } from "react";
+import { useNavigate, useLocation } from "react-router-dom";
 import AuthLeftPanel from "../../components/AuthLeftPanel";
 import { isValidEmail } from "../../utils/validators";
 import ReactivateAccountModal from "../../components/ReactivateAccountModal";
 import AlertModal from "../../components/AlertModal";
 import { useLogin } from "../../hooks/useAuth";
 import { GOOGLE_OAUTH_URL, KAKAO_OAUTH_URL } from "../../config";
+import { useQueryClient } from "@tanstack/react-query";
+import { QK } from "../../hooks/useHeader"; // QK.me 키
+import { getMyProfile } from "../../apis/My/memberApi"; // 프로필 API
 
 const LoginPage = () => {
   const navigate = useNavigate();
+  const location = useLocation();
+  const qc = useQueryClient();
+
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
@@ -21,6 +27,24 @@ const LoginPage = () => {
 
   // (임시) 탈퇴 이메일 – 실제에선 서버 응답으로 처리 권장
   const withdrawnEmails = ["22jw@gmail.com"];
+
+  // 로그인 상태면 접근 차단 & 프로필 캐시 채운 후 /home 이동
+  useEffect(() => {
+    const isLoggedIn = Boolean(localStorage.getItem("nickname"));
+    const blockedPaths = ["/", "/signup", "/profile"];
+
+    if (isLoggedIn && blockedPaths.includes(location.pathname)) {
+      (async () => {
+        try {
+          const profile = await getMyProfile();
+          qc.setQueryData(QK.me, profile);
+        } catch (err) {
+          console.error("프로필 불러오기 실패:", err);
+        }
+        navigate("/home", { replace: true });
+      })();
+    }
+  }, [location.pathname, navigate, qc]);
 
   const handleLogin = () => {
     if (!isValidEmail(email)) {
@@ -43,8 +67,19 @@ const LoginPage = () => {
     login(
       { email, password },
       {
-        onSuccess: (result) => {
-          if (result?.nickname) localStorage.setItem("nickname", result.nickname);
+        onSuccess: async (result) => {
+          if (result?.nickname) {
+            localStorage.setItem("nickname", result.nickname);
+          }
+
+          // 로그인 직후 프로필 데이터 캐시에 저장
+          try {
+            const profile = await getMyProfile();
+            qc.setQueryData(QK.me, profile);
+          } catch (err) {
+            console.error("프로필 불러오기 실패:", err);
+          }
+
           navigate("/home");
         },
         onError: (err) => {
@@ -89,6 +124,9 @@ const LoginPage = () => {
                 placeholder="이메일을 입력해주세요."
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter") handleLogin();
+                }}
                 className="w-full border-b border-[#DADFE3] px-3 py-3 focus:outline-none"
               />
               {!isValidEmail(email) && email.length > 0 && (
@@ -108,6 +146,9 @@ const LoginPage = () => {
                 placeholder="비밀번호를 입력해주세요."
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter") handleLogin();
+                }}
                 className="w-full border-b border-[#DADFE3] px-2 py-2 focus:outline-none"
               />
               {passwordError && (

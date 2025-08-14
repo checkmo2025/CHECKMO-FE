@@ -1,8 +1,8 @@
 import React from 'react';
-import type { AnnouncementProps } from '../../types/announcement';
+import type { generalNoticeItemDto } from '../../types/clubNotice';
 
 interface GeneralNoticeContentProps {
-  data: AnnouncementProps;
+  data: generalNoticeItemDto;
 }
 
 export default function GeneralNoticeContent({ data }: GeneralNoticeContentProps): React.ReactElement {
@@ -16,7 +16,7 @@ export default function GeneralNoticeContent({ data }: GeneralNoticeContentProps
       </div>
       {/* 내용 영역 */}
       <p className="font-pretendard font-medium text-[14px] leading-[180%] tracking-[-0.1%] text-[#2c2c2c] whitespace-pre-line">
-        {data.description}
+        {data.content}
       </p>
     </div>
   );
