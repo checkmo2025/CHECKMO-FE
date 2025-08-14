@@ -46,13 +46,14 @@ import MemberAdminPage from "./pages/Admin/MemberAdminPage";
 import RegisterAdminPage from "./pages/Admin/RegisterAdminPage";
 import MeetingTeamTopicListPage from "./pages/Meeting/MeetingTeamTopicListPage";
 import BookRecommendEditPage from "./pages/BookRecommend/BookRecommendEditPage";
+import MyBookStoryPage from "./pages/Main/BookStory/MyBookStoryPage";
 
 const App = () => {
   const qc = useQueryClient();
 
   // 앱 시작 시 로그인 상태면 프로필 불러오기
   useEffect(() => {
-    const isLoggedIn = Boolean(localStorage.getItem("nickname")); 
+    const isLoggedIn = Boolean(localStorage.getItem("nickname"));
     if (isLoggedIn) {
       (async () => {
         try {
@@ -102,6 +103,7 @@ const App = () => {
             <Route path="search" element={<BookStorySearchPage />} />
             <Route path=":storyId/detail" element={<BookStoryDetailPage />} />
             <Route path=":bookId/write" element={<BookStoryWritePage />} />
+            <Route path="my" element={<MyBookStoryPage />} />
           </Route>
         </Route>
 
@@ -118,16 +120,31 @@ const App = () => {
             <Route path="shelf">
               <Route index element={<ShelfHomePage />} />
               <Route path=":ShelfmeetingId" element={<ShelfDetailPage />} />
-              <Route path=":ShelfmeetingId/topic" element={<TopicDetailPage />} />
-              <Route path=":ShelfmeetingId/score" element={<ScoreDetailPage />} />
+              <Route
+                path=":ShelfmeetingId/topic"
+                element={<TopicDetailPage />}
+              />
+              <Route
+                path=":ShelfmeetingId/score"
+                element={<ScoreDetailPage />}
+              />
             </Route>
 
             {/* 책 추천 */}
             <Route path="recommend">
               <Route index element={<BookRecommendPage />} />
-              <Route path=":recommendId" element={<BookRecommendDetailPage />} />
-              <Route path=":recommendId/edit" element={<BookRecommendEditPage />} />
-              <Route path=":bookId/create" element={<BookRecommendCreatePage />} />
+              <Route
+                path=":recommendId"
+                element={<BookRecommendDetailPage />}
+              />
+              <Route
+                path=":recommendId/edit"
+                element={<BookRecommendEditPage />}
+              />
+              <Route
+                path=":bookId/create"
+                element={<BookRecommendCreatePage />}
+              />
               <Route path="search" element={<BookRecommendSearchPage />} />
             </Route>
 
@@ -136,7 +153,10 @@ const App = () => {
               <Route index element={<MeetingListPage />} />
               <Route path=":meetingId" element={<MeetingDetailPage />} />
               <Route path="create" element={<CreateMeetingPage />} />
-              <Route path=":meetingId/topics" element={<MeetingTopicListPage />} />
+              <Route
+                path=":meetingId/topics"
+                element={<MeetingTopicListPage />}
+              />
               <Route
                 path=":meetingId/teamTopic/:teamId"
                 element={<MeetingTeamTopicListPage />}
