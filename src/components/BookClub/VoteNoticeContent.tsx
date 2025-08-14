@@ -117,9 +117,7 @@ export default function VoteNoticeContent({ data, registerBackBlocker }: VoteNot
   // ---------------------------------------------------------------------------
   
   // 투표 옵션 선택/해제 처리
-  const handleVoteChange = (index: number, event: React.MouseEvent<HTMLInputElement>) => {
-    event.preventDefault();
-    
+  const handleVoteChange = (index: number) => {
     if (hasVoted) return; // 투표 완료 후에는 변경 불가
     
     setSelectedIndexes(prev => {
@@ -271,8 +269,7 @@ export default function VoteNoticeContent({ data, registerBackBlocker }: VoteNot
                     type="checkbox"
                     value={index}
                     checked={selectedIndexes.includes(index)}
-                    onChange={() => {}}
-                    onClick={(e) => handleVoteChange(index, e)}
+                    onChange={() => handleVoteChange(index)}
                     disabled={hasVoted} // 투표 완료 후 비활성화
                     className={`appearance-none w-[24px] h-[24px] rounded-full cursor-pointer mr-[12px] flex-shrink-0 aspect-square relative transition-all duration-200 border-[2px] ${
                       selectedIndexes.includes(index) 
