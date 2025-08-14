@@ -1,8 +1,8 @@
-import { useState, useEffect, useRef, useCallback } from "react";
+import { useState, useEffect } from "react";
 import { Heart, Siren } from "lucide-react";
 import AlertModal from "../../../components/AlertModal";
 import { useParams } from "react-router-dom";
-import { getOtherProfile } from "../../../apis/otherApi";
+import { getOtherProfile, followMember } from "../../../apis/otherApi";
 import type { OtherProfile } from "../../../types/other";
 
 type Book = {
@@ -15,12 +15,6 @@ type Book = {
 
 const OthersProfilePage = () => {
   const [books, setBooks] = useState<Book[]>([]);
-  const [page, setPage] = useState(1);
-  const [hasMore, setHasMore] = useState(true);
-  const [isFetching, setIsFetching] = useState(false);
-  const observerRef = useRef<IntersectionObserver | null>(null);
-
-  // 🔹 다른 사람 프로필 상태
   const [profile, setProfile] = useState<OtherProfile | null>(null);
   const [isSubscribed, setIsSubscribed] = useState(false);
   const [showReportModal, setShowReportModal] = useState(false);
@@ -41,8 +35,19 @@ const OthersProfilePage = () => {
     })();
   }, [userId]);
 
-  const toggleSubscribe = () => setIsSubscribed((prev) => !prev);
+  /** 구독 버튼 클릭 → API 호출 */
+  const handleSubscribe = async () => {
+    if (!profile) return;
+    try {
+      await followMember(profile.nickname);
+      setIsSubscribed(true);
+    } catch (err) {
+      console.error("구독 요청 실패:", err);
+      alert("구독에 실패했습니다. 다시 시도해주세요.");
+    }
+  };
 
+  /** 좋아요 토글 */
   const toggleLike = (id: number) => {
     setBooks((prevBooks) =>
       prevBooks.map((book) =>
@@ -57,60 +62,28 @@ const OthersProfilePage = () => {
     );
   };
 
-  const openReportModal = () => {
-    setShowReportModal(true);
-  };
+  /** 신고 모달 */
+  const openReportModal = () => setShowReportModal(true);
 
   const handleReportConfirm = () => {
     setShowReportModal(false);
     alert("신고 사유 작성 폼으로 이동 예정입니다.");
   };
 
-  /** 책이야기 불러오기 (임시) */
-  const fetchBooks = async (pageNum: number) => {
-    if (isFetching || !hasMore) return;
-    setIsFetching(true);
-
-    await new Promise((res) => setTimeout(res, 500));
-
-    const newBooks: Book[] = Array.from({ length: 2 }, (_, idx) => {
-      const id = (pageNum - 1) * 2 + idx + 1;
-      return {
-        id,
-        title: `나는 나이든 왕자다 ${id}`,
-        content:
-          "어린 왕자는 소행성의 주인공이며 어린 군주라는 뜻이다. 어린 왕자는 B-612에서 살았으며 세상에 대한 호기심으로 여행을 떠났다. 여우를 만나고, 장미를 떠올리며, 책임감을 배웠다.".repeat(5),
-        likes: Math.floor(Math.random() * 10),
-        liked: false,
-      };
-    });
-
-    setBooks((prev) => [...prev, ...newBooks]);
-    setPage((prev) => prev + 1);
-    if (pageNum >= 5) setHasMore(false);
-    setIsFetching(false);
-  };
-
+  /** 책이야기 더미 데이터 */
   useEffect(() => {
-    fetchBooks(1);
+    const dummyBooks: Book[] = Array.from({ length: 5 }, (_, idx) => ({
+      id: idx + 1,
+      title: `나는 나이든 왕자다 ${idx + 1}`,
+      content:
+        "어린 왕자는 소행성의 주인공이며 어린 군주라는 뜻이다. 어린 왕자는 B-612에서 살았으며 세상에 대한 호기심으로 여행을 떠났다. 여우를 만나고, 장미를 떠올리며, 책임감을 배웠다.".repeat(
+          3
+        ),
+      likes: Math.floor(Math.random() * 10),
+      liked: false,
+    }));
+    setBooks(dummyBooks);
   }, []);
-
-  /** 무한스크롤 IntersectionObserver */
-  const lastElementRef = useCallback(
-    (node: HTMLDivElement | null) => {
-      if (isFetching) return;
-      if (observerRef.current) observerRef.current.disconnect();
-
-      observerRef.current = new IntersectionObserver((entries) => {
-        if (entries[0].isIntersecting && hasMore) {
-          fetchBooks(page);
-        }
-      });
-
-      if (node) observerRef.current.observe(node);
-    },
-    [isFetching, hasMore, page]
-  );
 
   return (
     <div className="flex min-h-screen w-full bg-[#FAFAFA] overflow-x-hidden">
@@ -132,9 +105,10 @@ const OthersProfilePage = () => {
               </p>
               <button
                 className={`px-2 py-1 rounded-full text-[12px] font-medium text-white ${
-                  isSubscribed ? "bg-[#A6917D]" : "bg-[#90D26D]"
-                } hover:bg-[#7bb95b]`}
-                onClick={toggleSubscribe}
+                  isSubscribed ? "bg-[#A6917D]" : "bg-[#90D26D] hover:bg-[#7bb95b] cursor-pointer"
+                }`}
+                onClick={handleSubscribe}
+                disabled={isSubscribed}
               >
                 {isSubscribed ? "구독중" : "구독"}
               </button>
@@ -165,10 +139,9 @@ const OthersProfilePage = () => {
         </div>
 
         <div className="w-full space-y-4">
-          {books.map((book, idx) => (
+          {books.map((book) => (
             <div
               key={book.id}
-              ref={idx === books.length - 1 ? lastElementRef : null}
               className="flex bg-white rounded-[12px] border border-[#EAE5E2] p-6"
             >
               <div className="w-[176px] h-[248px] bg-[#E0E0E0] rounded-[16px] flex-shrink-0" />
@@ -226,15 +199,6 @@ const OthersProfilePage = () => {
               </div>
             </div>
           ))}
-
-          {isFetching && (
-            <p className="text-center text-gray-400">불러오는 중...</p>
-          )}
-          {!hasMore && !isFetching && (
-            <p className="text-center text-gray-400">
-              더 이상 책 이야기가 없습니다.
-            </p>
-          )}
         </div>
       </main>
 
