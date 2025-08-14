@@ -2,7 +2,7 @@ import React from 'react';
 import type { generalNoticeItemDto } from '../../types/clubNotice';
 
 interface GeneralNoticeContentProps {
-  data: generalNoticeItemDto | any;
+  data: generalNoticeItemDto;
 }
 
 export default function GeneralNoticeContent({ data }: GeneralNoticeContentProps): React.ReactElement {
