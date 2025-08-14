@@ -1,4 +1,8 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { useEffect } from "react";
+import { useQueryClient } from "@tanstack/react-query";
+import { getMyProfile } from "./apis/My/memberApi";
+import { QK } from "./hooks/useHeader";
 import LoginPage from "./pages/Auth/LoginPage";
 import SignupPage from "./pages/Auth/SignupPage";
 import ProfilePage from "./pages/Auth/ProfilePage";
@@ -13,11 +17,11 @@ import MyNotificationPage from "./pages/Main/Info/My/MyNotificationPage";
 import MyStoryPage from "./pages/Main/Info/My/MyStoryPage";
 import MyProfilePage from "./pages/Main/Info/My/MyProfilePage";
 import OthersProfilePage from "./pages/Main/Info/OthersProfilePage";
-import BookClubHomePage from "./pages/BookClub/BookClubHomePage"; // 북클럽 홈
-import NoticePage from "./pages/BookClub/NoticePage"; // 북클럽 공지사항
-import NoticeDetailPage from "./pages/BookClub/NoticeDetailPage"; // 공지사항 상세 (통합)
+import BookClubHomePage from "./pages/BookClub/BookClubHomePage";
+import NoticePage from "./pages/BookClub/NoticePage";
+import NoticeDetailPage from "./pages/BookClub/NoticeDetailPage";
 import NoticeCreatePage from "./pages/BookClub/NoticeCreatePage";
-import ClubSearchPage from "./pages/Main/ClubSearchPage"; // 북클럽 검색
+import ClubSearchPage from "./pages/Main/ClubSearchPage";
 import CreateClubPage from "./pages/Main/CreateClubPage";
 import BookStorySearchPage from "./pages/Main/BookStory/BookStorySearchPage";
 import SearchPage from "./pages/Main/SearchPage";
@@ -45,6 +49,23 @@ import BookRecommendEditPage from "./pages/BookRecommend/BookRecommendEditPage";
 import MyBookStoryPage from "./pages/Main/BookStory/MyBookStoryPage";
 
 const App = () => {
+  const qc = useQueryClient();
+
+  // 앱 시작 시 로그인 상태면 프로필 불러오기
+  useEffect(() => {
+    const isLoggedIn = Boolean(localStorage.getItem("nickname"));
+    if (isLoggedIn) {
+      (async () => {
+        try {
+          const profile = await getMyProfile();
+          qc.setQueryData(QK.me, profile);
+        } catch (err) {
+          console.error("프로필 로드 실패:", err);
+        }
+      })();
+    }
+  }, [qc]);
+
   return (
     <Router>
       <Routes>
@@ -58,15 +79,14 @@ const App = () => {
           <Route path="/booksearch" element={<SearchPage />} />
           <Route path="/searchClub" element={<ClubSearchPage />} />
           <Route path="/info/others/:userId" element={<OthersProfilePage />} />
-          <Route path="/info/others/:userId" element={<OthersProfilePage />} />
           <Route path="/createClub" element={<CreateClubPage />} />
 
           {/* 운영진 */}
           <Route path="manage">
             <Route path="group" element={<GroupManagementPage />} />
-            <Route path="notices" element={<NoticeManagementPage />} />{" "}
-            {/* 임시 */}
+            <Route path="notices" element={<NoticeManagementPage />} />
           </Route>
+
           {/* 마이페이지 */}
           <Route path="mypage">
             <Route index element={<MyHomePage />} />
@@ -87,7 +107,7 @@ const App = () => {
           </Route>
         </Route>
 
-        {/* /bookclub 이하에 북클럽 관련 페이지 묶기 */}
+        {/* 북클럽 */}
         <Route path="/bookclub">
           <Route path=":bookclubId" element={<Layout />}>
             <Route path="home" element={<BookClubHomePage />} />
@@ -109,6 +129,7 @@ const App = () => {
                 element={<ScoreDetailPage />}
               />
             </Route>
+
             {/* 책 추천 */}
             <Route path="recommend">
               <Route index element={<BookRecommendPage />} />
@@ -126,6 +147,7 @@ const App = () => {
               />
               <Route path="search" element={<BookRecommendSearchPage />} />
             </Route>
+
             {/* 책 모임 */}
             <Route path="meeting">
               <Route index element={<MeetingListPage />} />
@@ -141,7 +163,7 @@ const App = () => {
               />
             </Route>
 
-            {/* 관리자 페이지 */}
+            {/* 관리자 */}
             <Route path="admin">
               <Route index element={<BookClubAdminPage />} />
               <Route path="member" element={<MemberAdminPage />} />

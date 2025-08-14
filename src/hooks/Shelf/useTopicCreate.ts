@@ -1,6 +1,6 @@
 import { useMutation, useQueryClient, type InfiniteData} from '@tanstack/react-query';
 import { createShelfTopic } from '../../apis/Shelf/fetchShelfTopics';
-import type {TopicCreateRequest, TopicCreateResponseResult, TopicListRequest, TopicItem, TopicListResponseResult, CreateParams} from '../../types/Shelf/Shelftopics';
+import type {TopicCreateRequest, TopicCreateResponseResult, TopicItem, TopicListResponseResult, CreateParams} from '../../types/Shelf/Shelftopics';
 import { buildTopicKey } from '../../types/Shelf/Shelftopics';
 
 export function useTopicCreate({ meetingId, size, currentUser } : CreateParams){

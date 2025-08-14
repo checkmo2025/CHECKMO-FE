@@ -1,4 +1,3 @@
-import React from "react";
 
 interface Props {
   title: string;
@@ -8,7 +7,7 @@ interface Props {
   content: string;
 }
 
-const AnnouncementCard = ({ title, date, book, imageUrl, content }: Props) => (
+const AnnouncementCard = ({ title, date, book, content }: Props) => (
   <div className="rounded-[1rem] border-2 border-[#EAE5E2] bg-white w-[17.875rem] p-6 flex flex-col gap-7">
     <div className="flex justify-between items-start">
       <div>

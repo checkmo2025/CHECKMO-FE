@@ -1,5 +1,3 @@
-import React from "react";
-
 type ReactivateAccountModalProps = {
   email: string;
   onConfirm: () => void;
