@@ -18,14 +18,23 @@ export type MeetingListResult = {
   nextCursor: number | null;
 };
 
+export type MeetingDetailResult = {
+  meetingInfo: ClubMeeting;
+  topics: Topic[];
+  teams: TeamTopic[];
+};
+
 // 정기 독서모임 간편 조회
 export type MeetingListResponse = ApiResponse<MeetingListResult>;
+
+// 정기 독서모임 상세 조회
+export type MeetingDetailResponse = ApiResponse<MeetingDetailResult>;
 
 // 정기 독서 모임 생성
 export type CreateClubMeeting = Omit<ClubMeeting, "meetingId">;
 
 // 정기 독서 모임 수정
-export type EditClubMeeting = Omit<ClubMeeting, "meetingId" | "bookInfo">;
+export type UpdateClubMeeting = Omit<ClubMeeting, "meetingId" | "bookInfo">;
 
 // 발제
 export interface Topic {
