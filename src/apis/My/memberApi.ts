@@ -63,3 +63,8 @@ export async function leaveClub(clubId: number): Promise<void> {
 export async function unfollowMember(memberNickname: string): Promise<void> {
   return axiosInstance.delete(`/members/${memberNickname}/following`);
 }
+
+/** 팔로워 삭제: DELETE /api/members/{memberNickname}/follower */
+export async function removeFollower(memberNickname: string): Promise<void> {
+  return axiosInstance.delete(`/members/${memberNickname}/follower`);
+}
