@@ -6,6 +6,7 @@ import {
   getMyFollower,
   getMyClubs,
   getMyNotifications,
+  leaveClub
 } from "../../apis/My/memberApi";
 import type {
   MyProfile,
@@ -68,7 +69,7 @@ export const useMyClubsQuery = (cursorId: number | null) =>
     queryKey: [QK_MY_HOME.myClubs, cursorId],
     queryFn: () => getMyClubs(cursorId),
     refetchOnMount: "always",
-    staleTime: 0,
+    staleTime: 1000 * 60,
   });
 
 /** 알림 전체 조회 */
@@ -79,4 +80,15 @@ export const useMyNotificationsQuery = (cursorId: number | null) =>
     refetchOnMount: "always",
     staleTime: 0,
   });
+
+/** 내가 가입한 클럽 탈퇴 */
+export const useLeaveClub = () => {
+  const qc = useQueryClient();
+  return useMutation<void, Error, number>({
+    mutationFn: (clubId) => leaveClub(clubId),
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: [QK_MY_HOME.myClubs] });
+    },
+  });
+};
   
