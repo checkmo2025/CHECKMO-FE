@@ -9,6 +9,7 @@ import BookStoryCard from '../../components/BookClub/BookStoryCard';
 import { useNavigate } from 'react-router-dom';
 import { useBookStoriesInfinite } from '../../hooks/BookStory/useBookStoriesInfinite';
 import type { BookStoryResponseDto } from '../../types/bookStories';
+import { useClubDetail } from '../../hooks/BookClub/useClubDetail';
 interface Params {
   bookclubId: string;
   [key: string]: string | undefined;
@@ -21,6 +22,7 @@ export default function BookClubHomePage(): React.ReactElement {
   const { bookclubId } = useParams<Params>();
   const numericClubId = Number.isFinite(Number(bookclubId)) && Number(bookclubId) > 0 ? Number(bookclubId) : 0;
   
+  const { data: club, isLoading: isClubLoading } = useClubDetail(numericClubId);
 
   // API 훅 사용
   const { notices, loading, error } = useClubNotices({ 
@@ -58,7 +60,7 @@ export default function BookClubHomePage(): React.ReactElement {
 
   return (
     <div className="absolute left-[315px] right-[42px] opacity-100">
-      <Header pageTitle={`${bookclubId} 홈`} //추후 수정 필요
+      <Header pageTitle={isClubLoading ? '로딩중...' : `${club?.name ?? ''} 홈`}
         customClassName="mt-[30px]"
         />
       { /* ── 메인 컨텐츠 ── */}
