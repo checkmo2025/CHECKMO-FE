@@ -5,32 +5,32 @@ import AuthLeftPanel from "../../components/AuthLeftPanel";
 import { useSubmitAdditionalInfo, useCheckNickname } from "../../hooks/useAuth";
 import { BOOK_CATEGORIES } from "../../types/dto";
 import { isValidNickname, getNicknameError } from "../../utils/validators";
-import { useQueryClient } from "@tanstack/react-query"; //  qc
-import { getMyProfile } from "../../apis/My/memberApi"; //  getMyProfile
-import { QK } from "../../hooks/useHeader"; //  QK
+import { useQueryClient } from "@tanstack/react-query";
+import { getMyProfile } from "../../apis/My/memberApi";
+import { QK } from "../../hooks/useHeader";
+import { uploadImage } from "../../apis/imageApi"; // presigned 업로드 함수
 
 const ProfilePage = () => {
   const navigate = useNavigate();
   const qc = useQueryClient();
 
   // 로그인 상태면 접근 차단 & 프로필 캐시 채운 후 /home 이동
-    useEffect(() => {
-      const isLoggedIn = Boolean(localStorage.getItem("nickname"));
-      const blockedPaths = ["/", "/signup", "/profile"];
-  
-      if (isLoggedIn && blockedPaths.includes(location.pathname)) {
-        (async () => {
-          try {
-            const profile = await getMyProfile();
-            qc.setQueryData(QK.me, profile);
-          } catch (err) {
-            console.error("프로필 불러오기 실패:", err);
-          }
-          navigate("/home", { replace: true });
-        })();
-      }
-    }, [location.pathname, navigate, qc]);
-  
+  useEffect(() => {
+    const isLoggedIn = Boolean(localStorage.getItem("nickname"));
+    const blockedPaths = ["/", "/signup", "/profile"];
+
+    if (isLoggedIn && blockedPaths.includes(location.pathname)) {
+      (async () => {
+        try {
+          const profile = await getMyProfile();
+          qc.setQueryData(QK.me, profile);
+        } catch (err) {
+          console.error("프로필 불러오기 실패:", err);
+        }
+        navigate("/home", { replace: true });
+      })();
+    }
+  }, [location.pathname, navigate, qc]);
 
   const [step, setStep] = useState(1);
 
@@ -44,13 +44,12 @@ const ProfilePage = () => {
   const [profileImagePreview, setProfileImagePreview] = useState<string | null>(null);
   const [profileFile, setProfileFile] = useState<File | null>(null);
   const [useDefaultImage, setUseDefaultImage] = useState(false);
-  const [isUploading, setIsUploading] = useState(false); // (stub)
+  const [isUploading, setIsUploading] = useState(false);
 
   // 닉네임 체크
   const [nicknameMessage, setNicknameMessage] = useState("");
   const [isNicknameAvailable, setIsNicknameAvailable] = useState<boolean | null>(null);
   const { mutate: requestCheckNickname, isPending: isChecking } = useCheckNickname();
-
   const { mutate: submitInfo, isPending } = useSubmitAdditionalInfo();
 
   // 카테고리 리스트
@@ -70,13 +69,13 @@ const ProfilePage = () => {
     });
   };
 
-  // presigned 업로드 STUB (파일 없어도 에러 안 나게)
+  // presigned 업로드
   const uploadProfileImage = async (): Promise<string> => {
     if (!profileFile) return ""; // 기본 이미지 사용
     setIsUploading(true);
     try {
-      // TODO: presigned 붙이면 여기 교체
-      return "";
+      const imgUrl = await uploadImage(profileFile);
+      return imgUrl;
     } finally {
       setIsUploading(false);
     }
@@ -204,12 +203,15 @@ const ProfilePage = () => {
           <div className="w-full max-w-md space-y-10">
             {step === 1 && (
               <>
+                {/* 프로필 이미지 영역 */}
                 <div className="relative w-32 h-32 mx-auto mb-3">
                   <div className="w-32 h-32 rounded-full border-2 border-[#49863c] flex items-center justify-center overflow-hidden bg-[#F0FBE3]">
                     {profileImagePreview ? (
                       <img src={profileImagePreview} alt="Profile" className="w-full h-full object-cover" />
                     ) : (
-                      <div className="text-[#49863c] text-sm"></div>
+                      // 기본 이미지
+                      <div className="w-full h-full flex items-center justify-center bg-[#F8FFEF] text-sm">
+                      </div>
                     )}
                   </div>
 
@@ -238,6 +240,7 @@ const ProfilePage = () => {
                   </button>
                 </div>
 
+                {/* 닉네임 */}
                 <div className="mt-6 mb-4">
                   <label className="block mb-1 text-[#2C2C2C] text-m font-semibold">닉네임</label>
                   <div className="relative">
@@ -278,6 +281,7 @@ const ProfilePage = () => {
                   )}
                 </div>
 
+                {/* 소개 */}
                 <div className="mb-5">
                   <label className="block mb-1 text-[#2C2C2C] text-m font-semibold">소개</label>
                   <input
@@ -290,6 +294,7 @@ const ProfilePage = () => {
                   />
                 </div>
 
+                {/* 카테고리 */}
                 <div className="mb-6">
                   <div
                     className="flex justify-between items-center cursor-pointer"
@@ -327,6 +332,7 @@ const ProfilePage = () => {
                   </div>
                 </div>
 
+                {/* 다음 버튼 */}
                 <button
                   onClick={handleNext}
                   disabled={!canProceed}
@@ -337,10 +343,17 @@ const ProfilePage = () => {
               </>
             )}
 
+            {/* Step 2 */}
             {step === 2 && (
               <div className="flex flex-col items-center">
                 <div className="w-32 h-32 rounded-full border-2 border-[#49863c] flex items-center justify-center overflow-hidden bg-[#F0FBE3] mb-4">
-                  {profileImagePreview ? <img src={profileImagePreview} alt="Profile" className="w-full h-full object-cover" /> : <div></div>}
+                  {profileImagePreview ? (
+                    <img src={profileImagePreview} alt="Profile" className="w-full h-full object-cover" />
+                  ) : (
+                    <div className="w-full h-full flex items-center justify-center bg-gray-300 text-gray-500 text-sm">
+                      기본
+                    </div>
+                  )}
                 </div>
                 <h2 className="text-lg font-bold text-[#2C2C2C] mb-2">{nickname}</h2>
                 <p className="text-gray-500 text-center text-sm mb-6">{bio ? bio : "소개글이 없습니다."}</p>
