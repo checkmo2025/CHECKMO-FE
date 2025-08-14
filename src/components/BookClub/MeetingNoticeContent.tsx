@@ -43,7 +43,7 @@ export default function MeetingNoticeContent({ data }: MeetingNoticeContentProps
           {/* 책 제목 */}
           <div className="flex items-center justify-between mb-[6px]">
             <h2 className="font-pretendard font-semibold text-[20px] leading-[135%] tracking-[-0.1%] text-[#000000]">
-              {data.bookInfo?.title}
+            {data.bookInfo?.author ? `${data.bookInfo.author} 지음` : ''}
             </h2>
           </div>
 
