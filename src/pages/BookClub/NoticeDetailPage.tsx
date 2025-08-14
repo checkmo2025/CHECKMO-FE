@@ -52,8 +52,8 @@ export default function NoticeDetailPage(): React.ReactElement {
             {(type === 'meeting' ? meetingError : type === 'vote' ? voteError : generalError) && (
               <p className="text-red-500">Error: {(type === 'meeting' ? meetingErr : type === 'vote' ? voteErr : generalErr)?.message}</p>
             )}
-            {!meetingLoading && !voteLoading && !generalLoading && (
-              <>
+            {!(type === 'meeting' ? meetingLoading : type === 'vote' ? voteLoading : generalLoading) && !(type === 'meeting' ? meetingError : type === 'vote' ? voteError : generalError) && (
+              <>  
                 {type === 'meeting' && meetingInfo && (
                   <MeetingNoticeContent data={meetingInfo} />
                 )}
