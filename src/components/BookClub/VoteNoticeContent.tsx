@@ -149,6 +149,11 @@ export default function VoteNoticeContent({ data, registerBackBlocker }: VoteNot
 
     // 투표 제출 API 호출
     try {
+      const clubId = Number(bookclubId);
+      if (!Number.isFinite(clubId) || clubId <= 0) {
+        console.error('잘못된 clubId 입니다:', bookclubId);
+        return;
+      }
       await submitVoteNotice(Number(bookclubId), current.id, payload);
       // 서버 저장 후 최신 상세 재조회하여 반영 (selected, voteCount, votedMembers 포함)
       const refreshed = await getVoteNoticeDetail(Number(bookclubId), current.id);
