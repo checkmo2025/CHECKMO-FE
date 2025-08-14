@@ -2,6 +2,8 @@ import { useState, useEffect, useRef, useCallback } from "react";
 import { Heart, Siren } from "lucide-react";
 import AlertModal from "../../../components/AlertModal";
 import { useParams } from "react-router-dom";
+import { getOtherProfile } from "../../../apis/otherApi";
+import type { OtherProfile } from "../../../types/other";
 
 type Book = {
   id: number;
@@ -18,10 +20,26 @@ const OthersProfilePage = () => {
   const [isFetching, setIsFetching] = useState(false);
   const observerRef = useRef<IntersectionObserver | null>(null);
 
+  // 🔹 다른 사람 프로필 상태
+  const [profile, setProfile] = useState<OtherProfile | null>(null);
   const [isSubscribed, setIsSubscribed] = useState(false);
   const [showReportModal, setShowReportModal] = useState(false);
-  
+
   const { userId } = useParams<{ userId: string }>();
+
+  /** 다른 사람 프로필 불러오기 */
+  useEffect(() => {
+    if (!userId) return;
+    (async () => {
+      try {
+        const data = await getOtherProfile(userId);
+        setProfile(data);
+        setIsSubscribed(data.following);
+      } catch (err) {
+        console.error("다른 사람 프로필 불러오기 실패:", err);
+      }
+    })();
+  }, [userId]);
 
   const toggleSubscribe = () => setIsSubscribed((prev) => !prev);
 
@@ -48,6 +66,7 @@ const OthersProfilePage = () => {
     alert("신고 사유 작성 폼으로 이동 예정입니다.");
   };
 
+  /** 책이야기 불러오기 (임시) */
   const fetchBooks = async (pageNum: number) => {
     if (isFetching || !hasMore) return;
     setIsFetching(true);
@@ -76,6 +95,7 @@ const OthersProfilePage = () => {
     fetchBooks(1);
   }, []);
 
+  /** 무한스크롤 IntersectionObserver */
   const lastElementRef = useCallback(
     (node: HTMLDivElement | null) => {
       if (isFetching) return;
@@ -98,8 +118,18 @@ const OthersProfilePage = () => {
         <div className="w-full bg-white rounded-[12px] p-4 mb-5">
           <div className="flex justify-between items-center mb-2 flex-wrap">
             <div className="flex items-center gap-3">
-              <div className="w-[40px] h-[40px] bg-gray-300 rounded-full" />
-              <p className="text-[18px] font-semibold text-[#2C2C2C]">{userId}님</p>
+              {profile?.profileImageUrl ? (
+                <img
+                  src={profile.profileImageUrl}
+                  alt={`${profile.nickname} 프로필`}
+                  className="w-[40px] h-[40px] rounded-full object-cover"
+                />
+              ) : (
+                <div className="w-[40px] h-[40px] bg-gray-300 rounded-full" />
+              )}
+              <p className="text-[18px] font-semibold text-[#2C2C2C]">
+                {profile?.nickname ?? userId}님
+              </p>
               <button
                 className={`px-2 py-1 rounded-full text-[12px] font-medium text-white ${
                   isSubscribed ? "bg-[#A6917D]" : "bg-[#90D26D]"
@@ -110,24 +140,24 @@ const OthersProfilePage = () => {
               </button>
             </div>
             <div className="flex gap-2 mt-2 md:mt-0 flex-wrap">
-              {["사회", "사회", "사회", "사회"].map((label, index) => (
+              {profile?.categories.map((cat) => (
                 <button
-                  key={index}
+                  key={cat.id}
                   className="px-3 py-1 rounded-full bg-[#90D26D] text-white text-[12px] font-medium"
                 >
-                  {label}
+                  {cat.name}
                 </button>
               ))}
             </div>
           </div>
           <div className="w-full h-[56px] bg-[#EFF5ED] rounded-[8px] flex items-center px-4 text-[#5C5C5C] text-[18px] font-medium">
-            책을 아는가? 나는 모른다!
+            {profile?.description ?? "소개글이 없습니다."}
           </div>
         </div>
 
         <div className="w-full flex justify-between items-center mb-4">
           <h2 className="text-[18px] font-medium text-[#2C2C2C]">
-            {userId}님의 책 이야기
+            {profile?.nickname ?? userId}님의 책 이야기
           </h2>
           <button className="text-sm text-[#8D8D8D] hover:underline">
             전체보기
@@ -145,8 +175,18 @@ const OthersProfilePage = () => {
               <div className="flex flex-col justify-between ml-6 w-full">
                 <div>
                   <div className="flex items-center gap-2 mb-3">
-                    <div className="w-[24px] h-[24px] bg-gray-300 rounded-full" />
-                    <p className="text-[14px] text-[#8D8D8D]">{userId}</p>
+                    {profile?.profileImageUrl ? (
+                      <img
+                        src={profile.profileImageUrl}
+                        alt={`${profile.nickname} 프로필`}
+                        className="w-[24px] h-[24px] rounded-full object-cover"
+                      />
+                    ) : (
+                      <div className="w-[24px] h-[24px] bg-gray-300 rounded-full" />
+                    )}
+                    <p className="text-[14px] text-[#8D8D8D]">
+                      {profile?.nickname ?? userId}
+                    </p>
                   </div>
 
                   <h3 className="text-[20px] font-semibold text-[#2C2C2C] mb-3">
@@ -191,7 +231,9 @@ const OthersProfilePage = () => {
             <p className="text-center text-gray-400">불러오는 중...</p>
           )}
           {!hasMore && !isFetching && (
-            <p className="text-center text-gray-400">더 이상 책 이야기가 없습니다.</p>
+            <p className="text-center text-gray-400">
+              더 이상 책 이야기가 없습니다.
+            </p>
           )}
         </div>
       </main>
