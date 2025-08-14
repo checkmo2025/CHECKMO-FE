@@ -6,6 +6,9 @@ import {
   getMyFollower,
   getMyClubs,
   getMyNotifications,
+  leaveClub,
+  unfollowMember,
+  removeFollower
 } from "../../apis/My/memberApi";
 import type {
   MyProfile,
@@ -68,7 +71,7 @@ export const useMyClubsQuery = (cursorId: number | null) =>
     queryKey: [QK_MY_HOME.myClubs, cursorId],
     queryFn: () => getMyClubs(cursorId),
     refetchOnMount: "always",
-    staleTime: 0,
+    staleTime: 1000 * 60,
   });
 
 /** 알림 전체 조회 */
@@ -79,4 +82,39 @@ export const useMyNotificationsQuery = (cursorId: number | null) =>
     refetchOnMount: "always",
     staleTime: 0,
   });
+
+/** 내가 가입한 클럽 탈퇴 */
+export const useLeaveClub = () => {
+  const qc = useQueryClient();
+  return useMutation<void, Error, number>({
+    mutationFn: (clubId) => leaveClub(clubId),
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: [QK_MY_HOME.myClubs] });
+    },
+  });
+};
+
+/** 팔로잉 취소 훅 */
+export const useUnfollowMember = () => {
+  const qc = useQueryClient();
+  return useMutation<void, Error, string>({
+    mutationFn: (nickname) => unfollowMember(nickname),
+    onSuccess: () => {
+      // 팔로잉 목록 새로고침
+      qc.invalidateQueries({ queryKey: [QK_MY_HOME.following] });
+    },
+  });
+};
+
+/** 팔로워 삭제 훅 */
+export const useRemoveFollower = () => {
+  const qc = useQueryClient();
+  return useMutation<void, Error, string>({
+    mutationFn: (nickname) => removeFollower(nickname),
+    onSuccess: () => {
+      // 팔로워 목록 새로고침
+      qc.invalidateQueries({ queryKey: [QK_MY_HOME.follower] });
+    },
+  });
+};
   
