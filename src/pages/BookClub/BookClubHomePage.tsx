@@ -1,13 +1,14 @@
 import { Link } from 'react-router-dom';
 import { useParams } from 'react-router-dom';
+import { useEffect, useMemo, useRef } from 'react';
 import AnnouncementCard from '../../components/BookClub/AnnouncementCard';
-import BookStoryCard, { type BookStoryCardProps } from '../../components/BookClub/BookStoryCard';
-import type { ClubDto } from '../../types/dto';
-import { PARTICIPANT_TYPES } from '../../types/dto';
-import checkerImage from '../../assets/images/checker.png';
-import userImage from '../../assets/images/userImage.png';
+import type { noticeListItemDto } from '../../types/clubNotice';
+import { useClubNotices } from '../../hooks/BookClub/useClubNotices';
 import Header from '../../components/Header';
-import type { AnnouncementProps } from '../../types/announcement';
+import BookStoryCard from '../../components/BookClub/BookStoryCard';
+import { useNavigate } from 'react-router-dom';
+import { useBookStoriesInfinite } from '../../hooks/BookStory/useBookStoriesInfinite';
+import type { BookStoryResponseDto } from '../../types/bookStories';
 interface Params {
   bookclubId: string;
   [key: string]: string | undefined;
@@ -16,9 +17,11 @@ interface Params {
 // 변환 없이 API DTO 그대로 사용
 
 export default function BookClubHomePage(): React.ReactElement {
+  const navigate = useNavigate();
   const { bookclubId } = useParams<Params>();
   const numericClubId = Number.isFinite(Number(bookclubId)) && Number(bookclubId) > 0 ? Number(bookclubId) : 0;
   
+
   // API 훅 사용
   const { notices, loading, error } = useClubNotices({ 
     clubId: numericClubId,
@@ -26,68 +29,32 @@ export default function BookClubHomePage(): React.ReactElement {
     size: 5 
   });
 
-  // ── ClubDto 더미 데이터 ──
-  const dummyClubData: ClubDto = {
-    clubId: Number(clubId) || 1,
-    name: '북적북적',
-    description: '함께 읽고 토론하는 즐거운 독서 모임입니다. 매주 다양한 책을 읽고 의견을 나눕니다.',
-    profileImageUrl: checkerImage,
-    open: true,
-    category: [2, 3, 6], // 소설/시/희곡, 에세이, 인문학
-    participantTypes: [PARTICIPANT_TYPES.STUDENT, PARTICIPANT_TYPES.WORKER, PARTICIPANT_TYPES.OFFLINE],
-    region: '서울',
-    
-    insta: '@bookclub_official',
-    kakao: 'bookclub_chat'
-  };
+  // API 데이터에서 공지/투표만 필터링
+  const filteredNotices: noticeListItemDto[] = notices.filter((notice) =>
+    notice.tag === '공지' || notice.tag === '투표'
+  );
+  // 책이야기 무한스크롤 (클럽 스코프)
+  const { data: bookStoriesPages, fetchNextPage, hasNextPage, isFetchingNextPage, isLoading: isLoadingStories, isError: isErrorStories, error: errorStories } =
+    useBookStoriesInfinite({ scope: 'CLUB', clubId: numericClubId });
 
-  // ── 더미 데이터 (임시) ──
-  const dummyAnnouncements: AnnouncementProps[] = [
-    {
-      id: 1,
-      title: "북적북적",
-      story:
-        "줄거리 들어갈 부분입니다. 줄거리 들어갈 부분입니다. 줄거리 들어갈 부분입니다.줄거리 들어갈 부분입니다.줄거리 들어갈 부분입니다.",
-      state: "구독 중",
-      likes: 12,
-    },
-    {
-      title: '5/24 모임 투표',
-      tag: '투표',
-      meetingDate: '2025.06.12 · 18시',
-      meetingPlace: '카페 모임',
-      afterPartyPlace: '맛집',
-      voteOptions: [
-        { id: 'yes', label: '참여', value: 'yes' },
-        { id: 'talk', label: '토론만 참여', value: 'talk' },
-        { id: 'no', label: '불참', value: 'no' },
-      ],
-      onVoteSubmit: (selectedValue: string[]) => {
-        console.log(`Selected vote: ${selectedValue}`);
-      },
-    },
-  ];
+  const clubBookStories: BookStoryResponseDto[] = useMemo(() => {
+    if (!bookStoriesPages?.pages) return [];
+    return bookStoriesPages.pages.flatMap((p) => p.bookStoryResponses || []);
+  }, [bookStoriesPages]);
 
-  
-
-  const dummyStories: BookStoryCardProps[] = [
-    {
-      id: 3,
-      title: "홍학의 자리",
-      story:
-        "줄거리 들어갈 부분입니다. 줄거리 들어갈 부분입니다. 줄거리 들어갈 부분입니다.줄거리 들어갈 부분입니다.줄거리 들어갈 부분입니다.",
-      state: "구독 중",
-      likes: 2003,
-    },
-    {
-      id: 4,
-      title: "홍학의 자리",
-      story:
-        "줄거리 들어갈 부분입니다. 줄거리 들어갈 부분입니다. 줄거리 들어갈 부분입니다.줄거리 들어갈 부분입니다.줄거리 들어갈 부분입니다.",
-      state: "구독 중",
-      likes: 2003,
-    },
-  ];
+  const loadMoreRef = useRef<HTMLDivElement | null>(null);
+  useEffect(() => {
+    if (!hasNextPage) return;
+    const el = loadMoreRef.current;
+    if (!el) return;
+    const observer = new IntersectionObserver(([entry]) => {
+      if (entry.isIntersecting && hasNextPage && !isFetchingNextPage) {
+        fetchNextPage();
+      }
+    });
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, [hasNextPage, isFetchingNextPage, fetchNextPage]);
 
   return (
     <div className="absolute left-[315px] right-[42px] opacity-100">
@@ -141,13 +108,33 @@ export default function BookClubHomePage(): React.ReactElement {
                   + 더보기
               </Link>
             </div>
-            <div className="grid grid-cols-2 gap-[25px]">
-              {bookstories.map((story) => (
-                <div key={story.id} className="flex-shrink-0 w-[33rem]">
-                  <BookStoriesCard {...story} />
+            {isLoadingStories && (
+              <p className="text-[#969696]">책 이야기를 불러오는 중...</p>
+            )}
+            {isErrorStories && (
+              <p className="text-red-500">{String((errorStories as Error)?.message || '책 이야기 로딩 에러')}</p>
+            )}
+            <div className="grid grid-cols-2 gap-[25px] cursor-pointer">
+              {clubBookStories.map((story) => (
+                <div key={story.bookStoryId} className="flex-shrink-0 w-[33rem]">
+                  <BookStoryCard
+                    userImage={story.authorInfo.profileImageUrl}
+                    userName={story.authorInfo.nickname}
+                    isSubscribed={story.authorInfo.following}
+                    title={story.bookStoryTitle}
+                    summary={story.description}
+                    likes={story.likes}
+                    likedByMe={story.likedByMe}
+                    bookImageUrl={story.bookInfo.imgUrl}
+                    onClick={() => navigate(`/bookstory/${story.bookStoryId}/detail`)}
+                  />
                 </div>
               ))}
             </div>
+            <div ref={loadMoreRef} />
+            {isFetchingNextPage && (
+              <p className="text-[#969696] mt-2">불러오는 중...</p>
+            )}
           </section>
         </div>
       </div>
