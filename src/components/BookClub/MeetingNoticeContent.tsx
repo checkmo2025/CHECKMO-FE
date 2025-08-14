@@ -1,4 +1,6 @@
 import React from 'react';
+import { format, parseISO } from 'date-fns';
+import { ko } from 'date-fns/locale';
 // import { BOOK_CATEGORIES } from '../../types/dto';
 import type { meetingInfoDto } from '../../types/clubNotice';
 import calenderIcon from "../../assets/icons/calenderIcon.png";
@@ -9,6 +11,18 @@ interface MeetingNoticeContentProps {
 }
 
 export default function MeetingNoticeContent({ data }: MeetingNoticeContentProps): React.ReactElement {
+  const formatMeetingTime = (value: string): string => {
+    try {
+      const date = parseISO(value);
+      if (isNaN(date.getTime())) return value;
+      const dateStr = format(date, 'yyyy. M. d.', { locale: ko });
+      const dayStr = format(date, 'eee', { locale: ko });
+      const timeStr = format(date, 'HH:mm', { locale: ko });
+      return `${dateStr} (${dayStr}) ${timeStr}`;
+    } catch {
+      return value;
+    }
+  };
   return (
     <div>
       {/* 상단 영역 */}
@@ -56,11 +70,18 @@ export default function MeetingNoticeContent({ data }: MeetingNoticeContentProps
               </span>
             )}
             {/* 카테고리 태그 */}
-            {data.tag && (
-              <span className="inline-flex items-center justify-center min-w-[54px] px-[18px] h-[24px] bg-[#90D26D] text-white rounded-[15px] font-pretendard font-medium text-[12px] leading-[145%] tracking-[-0.1%]">
-                {data.tag}
-              </span>
-            )}
+            {data.tag && String(data.tag)
+              .split(',')
+              .map(tag => tag.trim())
+              .filter(Boolean)
+              .map((tagLabel, index) => (
+                <span
+                  key={`${tagLabel}-${index}`}
+                  className="inline-flex items-center justify-center min-w-[54px] px-[18px] h-[24px] bg-[#90D26D] text-white rounded-[15px] font-pretendard font-medium text-[12px] leading-[145%] tracking-[-0.1%]"
+                >
+                  {tagLabel}
+                </span>
+              ))}
           </div>
         </div>
       </div>
@@ -73,7 +94,7 @@ export default function MeetingNoticeContent({ data }: MeetingNoticeContentProps
         <div className="bg-[#F4F2F1] w-[1080px] h-[53px] mt-[19px] rounded-[16px] flex items-center gap-[12px]">
           <img src={calenderIcon} alt="calendar" className="w-[24px] h-[24px] ml-[20px]" />
           <p className="font-pretendard font-medium text-[18px] leading-[145%] tracking-[-0.1%] text-[#000000]">
-            {data.meetingTime}
+            {formatMeetingTime(data.meetingTime)}
           </p>
         </div>
       </div>
