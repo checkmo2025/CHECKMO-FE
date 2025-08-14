@@ -13,6 +13,7 @@ export default function AnnouncementList({
   const navigate = useNavigate();
   const { bookclubId } = useParams<{ bookclubId: string }>();
   const handleItemClick = (item: noticeListItemDto) => {
+    if (!bookclubId) return;
     const noticeId = item.id;
     const type = item.tag === '모임' ? 'meeting' : item.tag === '투표' ? 'vote' : 'general';
     navigate(`/bookclub/${bookclubId}/notices/${noticeId}?type=${type}`);
