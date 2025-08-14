@@ -3,33 +3,45 @@ import MyPageHeader from "../../../../components/MyPageHeader";
 import { useNavigate } from "react-router-dom";
 import {
   useMyFollowingQuery,
-  useUnfollowMember, 
+  useMyFollowerQuery,
+  useUnfollowMember,
+  useRemoveFollower,
 } from "../../../../hooks/My/useMember";
 
 const MySubscriptionPage = () => {
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState<"followers" | "following">("followers");
 
-  // 구독 목록 조회 
-  const { data, isFetching, isError } = useMyFollowingQuery(null);
+  // 구독 중(팔로잉) 목록
+  const { data: followingData, isFetching: followingLoading, isError: followingError } =
+    useMyFollowingQuery(null);
 
-  // 언팔로우 훅 사용
+  // 구독자(팔로워) 목록
+  const { data: followerData, isFetching: followerLoading, isError: followerError } =
+    useMyFollowerQuery(null);
+
+  // 언팔로우 & 팔로워 삭제 훅
   const unfollowMutation = useUnfollowMember();
+  const removeFollowerMutation = useRemoveFollower();
 
-  const handleProfileClick = (nickname: string) => {
-    navigate(`/info/others/${nickname}`);
+  const handleProfileClick = (userId: string) => {
+    navigate(`/info/others/${userId}`);
   };
 
   const handleUnfollow = (nickname: string) => {
     unfollowMutation.mutate(nickname);
   };
 
+  const handleRemoveFollower = (nickname: string) => {
+    removeFollowerMutation.mutate(nickname);
+  };
+
+  /** 구독 중(팔로잉) 리스트 렌더 */
   const renderFollowingList = () => {
-    if (isError) {
+    if (followingError) {
       return <p className="text-center text-red-500">구독 목록을 불러오는데 실패했습니다.</p>;
     }
-
-    if (!data) return null;
+    if (!followingData) return null;
 
     return (
       <section className="bg-white border border-[#EAE5E2] rounded-[16px] flex flex-col">
@@ -41,7 +53,7 @@ const MySubscriptionPage = () => {
             `}
           </style>
 
-          {data.followList.map((user) => (
+          {followingData.followList.map((user) => (
             <div
               key={user.nickname}
               className="flex justify-between items-center px-8 py-5 cursor-pointer hover:bg-[#FAFAFA]"
@@ -63,7 +75,7 @@ const MySubscriptionPage = () => {
                 onClick={(e) => {
                   e.stopPropagation();
                   if (user.following) {
-                    handleUnfollow(user.nickname); // ✅ 구독 해제 실행
+                    handleUnfollow(user.nickname);
                   }
                 }}
                 className={`px-3 py-1 rounded-full text-[13px] font-medium text-white ${
@@ -77,8 +89,64 @@ const MySubscriptionPage = () => {
             </div>
           ))}
 
-          {isFetching && <p className="text-center text-gray-400 py-4">불러오는 중...</p>}
-          {!data.hasNext && !isFetching && (
+          {followingLoading && <p className="text-center text-gray-400 py-4">불러오는 중...</p>}
+          {!followingData.hasNext && !followingLoading && (
+            <p className="text-center text-gray-400 py-4">더 이상 사용자 없음</p>
+          )}
+        </div>
+      </section>
+    );
+  };
+
+  /** 구독자(팔로워) 리스트 렌더 */
+  const renderFollowerList = () => {
+    if (followerError) {
+      return <p className="text-center text-red-500">구독자 목록을 불러오는데 실패했습니다.</p>;
+    }
+    if (!followerData) return null;
+
+    return (
+      <section className="bg-white border border-[#EAE5E2] rounded-[16px] flex flex-col">
+        <div className="flex-1 overflow-y-auto divide-y divide-[#EAE5E2] hide-scrollbar">
+          <style>
+            {`
+              .hide-scrollbar::-webkit-scrollbar { display: none; }
+              .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+            `}
+          </style>
+
+          {followerData.followList.map((user) => (
+            <div
+              key={user.nickname}
+              className="flex justify-between items-center px-8 py-5 cursor-pointer hover:bg-[#FAFAFA]"
+              onClick={() => handleProfileClick(user.nickname)}
+            >
+              <div className="flex items-center gap-3">
+                {user.profileImageUrl ? (
+                  <img
+                    src={user.profileImageUrl}
+                    alt={`${user.nickname} 프로필`}
+                    className="rounded-full w-9 h-9 object-cover"
+                  />
+                ) : (
+                  <div className="bg-gray-300 rounded-full w-9 h-9" />
+                )}
+                <p className="text-[#2C2C2C] text-[18px] font-medium">{user.nickname}</p>
+              </div>
+              <button
+                onClick={(e) => {
+                  e.stopPropagation();
+                  handleRemoveFollower(user.nickname);
+                }}
+                className="px-3 py-1 rounded-full text-[13px] font-medium text-white bg-[#90D26D] hover:bg-[#7bb95b]"
+              >
+                삭제
+              </button>
+            </div>
+          ))}
+
+          {followerLoading && <p className="text-center text-gray-400 py-4">불러오는 중...</p>}
+          {!followerData.hasNext && !followerLoading && (
             <p className="text-center text-gray-400 py-4">더 이상 사용자 없음</p>
           )}
         </div>
@@ -117,7 +185,7 @@ const MySubscriptionPage = () => {
 
           {/* 리스트 */}
           <div className="px-10 pt-6 pb-12">
-            {activeTab === "following" && renderFollowingList()}
+            {activeTab === "following" ? renderFollowingList() : renderFollowerList()}
           </div>
         </main>
       </div>
