@@ -1,4 +1,3 @@
-import React from "react";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import BookSearch from "../../components/Search/BookSearch";
@@ -38,12 +37,7 @@ export default function SearchPage() {
         <div className="absolute left-[315px] right-[42px] opacity-100 ">
           <Header
             pageTitle={"통합검색"}
-            userProfile={{
-              username: "Luke",
-              bio: "아 피곤하다.",
-            }}
             customClassName="mt-15"
-            isAdmin={true}
           />
 
           {/* 메인 컨텐츠 자리 */}

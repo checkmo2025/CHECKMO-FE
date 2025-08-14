@@ -1,6 +1,7 @@
 import type { ClubDto, CreateClubRequestDto, ClubListResult, JoinClubRequest, JoinClubResult } from "../types/bookClub";
 import { axiosInstance } from "./axiosInstance";
 
+
 // 클럽 생성
 export const createClub = async (clubData: CreateClubRequestDto): Promise<ClubDto> => {
   const response: ClubDto = await axiosInstance.post('/clubs', clubData);

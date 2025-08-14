@@ -1,12 +1,13 @@
 import { Link } from 'react-router-dom';
 import { useParams } from 'react-router-dom';
 import AnnouncementCard from '../../components/BookClub/AnnouncementCard';
-import  { type BookStoryCardProps } from '../../components/BookClub/BookStoryCard';
-import type { noticeListItemDto } from '../../types/clubNotice';
-import { useClubNotices } from '../../hooks/BookClub/useClubNotices';
+import BookStoryCard, { type BookStoryCardProps } from '../../components/BookClub/BookStoryCard';
+import type { ClubDto } from '../../types/dto';
+import { PARTICIPANT_TYPES } from '../../types/dto';
+import checkerImage from '../../assets/images/checker.png';
 import userImage from '../../assets/images/userImage.png';
 import Header from '../../components/Header';
-import BookStoriesCard from '../../components/Main/BookStoriesCard';
+import type { AnnouncementProps } from '../../types/announcement';
 interface Params {
   bookclubId: string;
   [key: string]: string | undefined;
@@ -25,12 +26,23 @@ export default function BookClubHomePage(): React.ReactElement {
     size: 5 
   });
 
-  // API 데이터에서 공지/투표만 필터링
-  const filteredNotices: noticeListItemDto[] = notices.filter((notice) =>
-    notice.tag === '공지' || notice.tag === '투표'
-  );
+  // ── ClubDto 더미 데이터 ──
+  const dummyClubData: ClubDto = {
+    clubId: Number(clubId) || 1,
+    name: '북적북적',
+    description: '함께 읽고 토론하는 즐거운 독서 모임입니다. 매주 다양한 책을 읽고 의견을 나눕니다.',
+    profileImageUrl: checkerImage,
+    open: true,
+    category: [2, 3, 6], // 소설/시/희곡, 에세이, 인문학
+    participantTypes: [PARTICIPANT_TYPES.STUDENT, PARTICIPANT_TYPES.WORKER, PARTICIPANT_TYPES.OFFLINE],
+    region: '서울',
+    
+    insta: '@bookclub_official',
+    kakao: 'bookclub_chat'
+  };
 
-  const bookstories = [
+  // ── 더미 데이터 (임시) ──
+  const dummyAnnouncements: AnnouncementProps[] = [
     {
       id: 1,
       title: "북적북적",
@@ -40,13 +52,25 @@ export default function BookClubHomePage(): React.ReactElement {
       likes: 12,
     },
     {
-      id: 2,
-      title: "인간실격",
-      story:
-        "줄거리 들어갈 부분입니다. 줄거리 들어갈 부분입니다. 줄거리 들어갈 부분입니다.줄거리 들어갈 부분입니다.줄거리 들어갈 부분입니다.",
-      state: "구독 중",
-      likes: 193,
+      title: '5/24 모임 투표',
+      tag: '투표',
+      meetingDate: '2025.06.12 · 18시',
+      meetingPlace: '카페 모임',
+      afterPartyPlace: '맛집',
+      voteOptions: [
+        { id: 'yes', label: '참여', value: 'yes' },
+        { id: 'talk', label: '토론만 참여', value: 'talk' },
+        { id: 'no', label: '불참', value: 'no' },
+      ],
+      onVoteSubmit: (selectedValue: string[]) => {
+        console.log(`Selected vote: ${selectedValue}`);
+      },
     },
+  ];
+
+  
+
+  const dummyStories: BookStoryCardProps[] = [
     {
       id: 3,
       title: "홍학의 자리",

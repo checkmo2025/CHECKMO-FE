@@ -1,5 +1,5 @@
 // src/components/common/ChipToggleGroup.tsx
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 
 export interface ChipToggleGroupProps {
   options: string[];
@@ -19,7 +19,7 @@ export function ChipToggleGroup({
     const newSelected = selected.includes(item)
       ? selected.filter(s => s !== item)  // 제거
       : [...selected, item];              // 추가
-    
+
     setSelected(newSelected);
     onChange(newSelected); // 부모에게 변경사항 알림
   };

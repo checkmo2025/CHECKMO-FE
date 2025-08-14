@@ -20,7 +20,7 @@ const OthersProfilePage = () => {
 
   const [isSubscribed, setIsSubscribed] = useState(false);
   const [showReportModal, setShowReportModal] = useState(false);
-  const [selectedBookId, setSelectedBookId] = useState<number | null>(null);
+  
   const { userId } = useParams<{ userId: string }>();
 
   const toggleSubscribe = () => setIsSubscribed((prev) => !prev);
@@ -39,8 +39,7 @@ const OthersProfilePage = () => {
     );
   };
 
-  const openReportModal = (id: number) => {
-    setSelectedBookId(id);
+  const openReportModal = () => {
     setShowReportModal(true);
   };
 
@@ -179,7 +178,7 @@ const OthersProfilePage = () => {
                   </div>
                   <div
                     className="flex items-center gap-1 text-[#2C2C2C] hover:text-[#90D26D] text-sm cursor-pointer"
-                    onClick={() => openReportModal(book.id)}
+                    onClick={openReportModal}
                   >
                     <Siren size={26} />
                   </div>

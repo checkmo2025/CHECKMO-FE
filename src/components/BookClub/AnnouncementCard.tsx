@@ -1,9 +1,13 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import type { noticeListItemDto, voteItemDto } from '../../types/clubNotice';
 import vector from '../../assets/images/vector.png';
 import arrow from '../../assets/images/shortcutArrow.png';
- 
+
+type Params = {
+  bookclubId: string;
+}
+
 export default function AnnouncementCard({
   items,
 }: {
@@ -26,15 +30,22 @@ function AnnouncementCardItem({
   item: noticeListItemDto;
 }): React.ReactElement {
   const navigate = useNavigate();
-  type RouteParams = { bookclubId?: string };
-  const { bookclubId } = useParams<RouteParams>();
+  const { bookclubId } = useParams<Params>();
+  const [selectedVote, setSelectedVote] = useState<string>('');
 
-	const handleCardClick = () => {
-		if (!bookclubId) return;
-		const noticeId = item.id;
-		const type = item.tag === '모임' ? 'meeting' : item.tag === '투표' ? 'vote' : 'general';
-		navigate(`/bookclub/${bookclubId}/notices/${noticeId}?type=${type}`);
-	};
+  const handleVoteSubmit = () => {
+    if (selectedVote) {
+      // 투표 제출 로직 구현
+      console.log('투표 제출:', selectedVote);
+    }
+  };
+
+  const handleCardClick = () => {
+    if (!bookclubId) return;
+    const noticeId = item.id;
+    const type = item.tag === '모임' ? 'meeting' : item.tag === '투표' ? 'vote' : 'general';
+    navigate(`/bookclub/${bookclubId}/notices/${noticeId}?type=${type}`);
+  };
 
   return (
     <div
@@ -44,9 +55,18 @@ function AnnouncementCardItem({
       <div className="flex justify-between items-center">
         <div className="flex items-center">
           <img src={vector} alt="icon" className="w-[24px] h-[21px]" />
-          <h3 className="ml-[13px] font-pretendard font-medium text-[18px] leading-[135%] tracking-[-0.1%]">
-           {item.title}
-         </h3>
+          <h3
+            className="
+              ml-[13px]
+              font-pretendard
+              font-medium
+              text-[18px]
+              leading-[135%]
+              tracking-[-0.1%]
+            "
+          >
+            {item.title}
+          </h3>
         </div>
         <span
           className={`inline-flex items-center justify-center w-[52px] h-[22px] opacity-100 rounded-[15px] text-[12px] text-[#FFFFFF] font-pretendard font-semibold leading-[145%] tracking-[-0.1%] whitespace-nowrap ${
@@ -65,7 +85,7 @@ function AnnouncementCardItem({
             <p>다음 모임 날짜: {item.meetingInfoDTO.meetingTime}</p>
             <p>다음 모임 책: {item.meetingInfoDTO.bookInfo?.title}</p>
             <div className="absolute top-[80px] right-[24px]">
-             <img src={arrow} alt="icon" className="w-[24px] h-[24px] -mt-2" />
+              <img src={arrow} alt="icon" className="w-[24px] h-[24px] -mt-2" />
             </div>
             <div className="absolute bottom-[24.5px]">
               <div className="relative w-[262px] h-[232px] bg-gray-100 rounded-lg overflow-hidden flex items-center justify-center">
@@ -85,35 +105,87 @@ function AnnouncementCardItem({
             <div className="absolute top-[80px] right-[24px]">
               <img src={arrow} alt="icon" className="w-[24px] h-[24px] -mt-2" />
             </div>
-            <div className="relative w-[269px] h-[250px] mt-[26px] border-[2px] border-[#EAE5E2] rounded-[16px]">
-              <div className="mt-[14.5px] pointer-events-none" aria-hidden="true">
-                {item.items?.slice(0, 3).map((option: voteItemDto, index: number) => (
+            <div
+              onClick={(e) => e.stopPropagation()}
+              className="w-[269px] h-[207px] mt-[26px] border-[2px] border-[#EAE5E2] rounded-[16px]"
+            >
+              <form className="mt-[14.5px]">
+                {item.items?.map((option: voteItemDto) => (
                   <label
-                    key={`${option.item}-${index}`}
-                    className="ml-[22.5px] flex items-center w-[224px] h-[46px] cursor-pointer border-b-2 border-[#EAE5E2] font-medium text-[14px] text-[#434343]"
+                    key={option.item}
+                    className="
+                      ml-[22.5px]
+                      flex items-center
+                      w-[224px] h-[46px]
+                      cursor-pointer
+                      border-b-2 border-[#EAE5E2]
+                      font-pretendard
+                      font-medium
+                      text-[14px]
+                      leading-[145%]
+                      tracking-[-0.1%]
+                      text-[#434343]
+                    "
                   >
-                    <span
-                      aria-hidden="true"
-                      className="w-[24px] h-[24px] border-2 border-[#BBBBBB] rounded-full mr-2 bg-white"
+                    <input
+                      type="radio"
+                      name="vote"
+                      value={option.item}
+                      checked={selectedVote === option.item}
+                      onChange={(e) => setSelectedVote(e.target.value)}
+                      className="
+                      w-[24px] h-[24px]
+                      border-2 border-[#BBBBBB]
+                      rounded-full
+                      appearance-none
+                      cursor-pointer
+                      mr-2
+                      checked:bg-[#FF8045]
+                      bg-white
+                      transition-all duration-200
+                    "
                     />
                     <span className="ml-[12px]">{option.item}</span>
                   </label>
                 ))}
-                <div className="absolute right-[22.5px] bottom-[16px] w-[69px] h-[24px] bg-[#FF8045] text-white rounded-[15px] font-semibold text-[12px] whitespace-nowrap flex items-center justify-center">
+                <button
+                  type="button"
+                  onClick={handleVoteSubmit}
+                  disabled={!selectedVote}
+                  className="
+                  ml-[177.5px] mt-[16px]
+                  w-[69px] h-[24px]
+                  bg-[#FF8045] 
+                  text-white 
+                  rounded-[15px]
+                  font-pretendard
+                  font-semibold
+                  text-[12px]
+                  leading-[145%]
+                  tracking-[-0.1%]                 
+                  whitespace-nowrap
+                  cursor-pointer
+                "
+                >
                   투표하기
-                </div>
-              </div>
+                </button>
+              </form>
             </div>
           </div>
         )}
 
-        {item.tag === '공지' && (
-          <div className="mt-[9px]">
-            <div className="font-normal text-[12px] text-[#000000] space-y-[4px]">
+        <div className="mt-[9px]">
+          {item.tag === '공지' && (
+            <div className="   
+            font-normal           
+            text-[12px]           
+            text-[#000000]
+            space-y-[4px]    
+             ">
               <p className="mt-[24px] font-normal text-[12px] whitespace-pre-line">{item.content}</p>
             </div>
-          </div>
-        )}
+          )}
+        </div>
       </div>
     </div>
   );

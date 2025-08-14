@@ -5,7 +5,7 @@ interface Props {
   book: string;
 }
 
-const VoteCard = ({ title, date, book, imageUrl }: Props) => (
+const VoteCard = ({ title, date }: Props) => (
   <div className="rounded-[1rem] border-2 border-[#EAE5E2] bg-white w-[17.875rem] p-6 flex flex-col gap-7">
     <div className="flex justify-between items-start">
       <div>

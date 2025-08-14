@@ -1,4 +1,4 @@
-import React from "react";
+
 import { useParams, useNavigate } from "react-router-dom";
 import { Trash2, Edit2, Heart, AlertCircle } from "lucide-react";
 import backIcon from "../../../assets/icons/backIcon.png";

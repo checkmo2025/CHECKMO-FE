@@ -1,7 +1,4 @@
-import type {
-  BookStoryResponseDto,
-  BookStoriesResult,
-} from "../../types/bookStories";
+import type { BookStoriesResult } from "../../types/bookStories";
 import { axiosInstance } from "../axiosInstance";
 
 export type BookStoriesParams = {
@@ -15,7 +12,7 @@ export type BookStoriesParams = {
 export const fetchBookStories = async (
   params: BookStoriesParams
 ): Promise<BookStoriesResult> => {
-  const result = await axiosInstance.get("/book-stories", {
+  const result: BookStoriesResult = await axiosInstance.get("/book-stories", {
     params: {
       ...params,
       cursorId: params.cursorId ?? undefined,

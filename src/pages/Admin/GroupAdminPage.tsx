@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 const GroupAdminPage = () => {
   const navigate = useNavigate();
   const [groups, setGroups] = useState<string[]>([]);
-  const [participants, setParticipants] = useState<string[]>(
+  const [participants] = useState<string[]>(
     Array.from({ length: 7 }, (_, i) => `닉네임${i + 1}`)
   );
   const [groupSelections, setGroupSelections] = useState<{

@@ -16,6 +16,7 @@ import OthersProfilePage from "./pages/Main/Info/OthersProfilePage";
 import BookClubHomePage from "./pages/BookClub/BookClubHomePage"; // 북클럽 홈
 import NoticePage from "./pages/BookClub/NoticePage"; // 북클럽 공지사항
 import NoticeDetailPage from "./pages/BookClub/NoticeDetailPage"; // 공지사항 상세 (통합)
+import NoticeCreatePage from "./pages/BookClub/NoticeCreatePage";
 import ClubSearchPage from "./pages/Main/ClubSearchPage"; // 북클럽 검색
 import CreateClubPage from "./pages/Main/CreateClubPage";
 import BookStorySearchPage from "./pages/Main/BookStory/BookStorySearchPage";
@@ -97,7 +98,8 @@ const App = () => {
               <Route path="notices" element={<NoticePage />} />
               <Route path="edit" element={<EditClubPage />} />
               <Route path="notices/:noticeId" element={<NoticeDetailPage />} />
-
+              <Route path="notices/create" element={<NoticeCreatePage />} />
+              
               {/* 책장 */}
               <Route path="shelf">
                 <Route index element={<ShelfHomePage />} />
