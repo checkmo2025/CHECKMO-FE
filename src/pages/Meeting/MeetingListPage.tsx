@@ -49,15 +49,7 @@ const MeetingListPage = () => {
 
   return (
     <div className="px-10 space-y-10 min-h-screen">
-      <Header
-        pageTitle={"모임"}
-        userProfile={{
-          username: "오즈",
-          bio: "re_turnto_oz",
-        }}
-        notifications={[]}
-        customClassName="mt-[30px]"
-      />
+      <Header pageTitle={"모임"} customClassName="mt-[30px]" />
 
       {isAdmin && (
         <Link
