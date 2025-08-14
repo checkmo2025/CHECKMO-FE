@@ -121,7 +121,7 @@ function AnnouncementCardItem({
                   >
                     <input
                       type="radio"
-                      name="vote"
+                      name={`vote-${item.id}`}
                       value={option.item}
                       checked={option.selected}
                       disabled
