@@ -58,3 +58,8 @@ export async function getMyNotifications(
 export async function leaveClub(clubId: number): Promise<void> {
   return axiosInstance.delete(`/clubs/${clubId}/leave`);
 }
+
+/** 팔로잉 취소: DELETE /api/members/{memberNickname}/following */
+export async function unfollowMember(memberNickname: string): Promise<void> {
+  return axiosInstance.delete(`/members/${memberNickname}/following`);
+}
