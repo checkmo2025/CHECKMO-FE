@@ -4,6 +4,7 @@ import type { noticeListItemDto, voteItemDto } from '../../types/clubNotice';
 import vector from '../../assets/images/vector.png';
 import arrow from '../../assets/images/shortcutArrow.png';
 import { mapTagToRouteType } from '../../types/noticeType';
+import { parseISO, format } from 'date-fns';
 
 type Params = {
   bookclubId: string;
@@ -76,7 +77,18 @@ function AnnouncementCardItem({
       <div className="mt-[9px]">
         {item.tag === '모임' && item.meetingInfoDTO && (
           <div className="font-pretendard font-normal text-[12px] leading-[145%] tracking-[-0.1%] text-[#000000] space-y-[4px]">
-            <p>다음 모임 날짜: {item.meetingInfoDTO.meetingTime}</p>
+            <p>
+              다음 모임 날짜: {
+                (() => {
+                  try {
+                    const d = parseISO(item.meetingInfoDTO.meetingTime);
+                    return format(d, 'yyyy. MM. dd');
+                  } catch {
+                    return item.meetingInfoDTO.meetingTime;
+                  }
+                })()
+              }
+            </p>
             <p>다음 모임 책: {item.meetingInfoDTO.bookInfo?.title}</p>
             <div className="absolute top-[80px] right-[24px]">
               <img src={arrow} alt="icon" className="w-[24px] h-[24px] -mt-2" />

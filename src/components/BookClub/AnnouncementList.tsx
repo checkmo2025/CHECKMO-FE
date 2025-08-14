@@ -5,6 +5,7 @@ import logoImage from '../../assets/logos/clearmainLogo.png';
 import vector from '../../assets/images/vector.png';
 import type { noticeListItemDto, voteItemDto } from '../../types/clubNotice';
 import { mapTagToRouteType } from '../../types/noticeType';
+import { parseISO, format } from 'date-fns';
 
 export default function AnnouncementList({
   items,
@@ -67,7 +68,16 @@ export default function AnnouncementList({
               {item.tag === '모임' && item.meetingInfoDTO && (
                 <>
                   <p>
-                    다음 모임 날짜: {item.meetingInfoDTO.meetingTime}
+                    다음 모임 날짜: {
+                      (() => {
+                        try {
+                          const d = parseISO(item.meetingInfoDTO!.meetingTime);
+                          return format(d, 'yyyy. MM. dd');
+                        } catch {
+                          return item.meetingInfoDTO!.meetingTime;
+                        }
+                      })()
+                    }
                   </p>
                   <p>
                     다음 모임 책: {item.meetingInfoDTO.bookInfo?.title} | {item.meetingInfoDTO.bookInfo?.author}
