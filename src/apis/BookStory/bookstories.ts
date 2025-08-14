@@ -32,6 +32,7 @@ export const updateBookStory = async (
   payload: { description: string }
 ) => {
   return axiosInstance.patch(`/book-stories/${bookStoryId}`, payload);
+};
 
 // 책 이야기 등록 API
 export type CreateBookStoryRequest = {
