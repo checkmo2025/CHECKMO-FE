@@ -13,9 +13,11 @@ export default function NoticeDetailPage(): React.ReactElement {
   const navigate = useNavigate();
   const { bookclubId, noticeId } = useParams<{ bookclubId: string; noticeId: string }>();
   const [searchParams] = useSearchParams();
-  const type = searchParams.get('type') ?? 'general';
-  const numericClubId = useMemo(() => Number(bookclubId) || 0, [bookclubId]);
-  const numericNoticeId = useMemo(() => Number(noticeId) || 0, [noticeId]);
+  const typeParam = searchParams.get('type');
+  const type = (typeParam === 'meeting' || typeParam === 'vote' || typeParam === 'general') ? typeParam : 'general';
+  const numericClubId = useMemo(() => Number(bookclubId), [bookclubId]);
+  const numericNoticeId = useMemo(() => Number(noticeId), [noticeId]);
+  const hasValidIds = Number.isFinite(numericClubId) && Number.isFinite(numericNoticeId) && numericClubId > 0 && numericNoticeId > 0;
 
   const { data: meetingInfo, isLoading: meetingLoading, isError: meetingError, error: meetingErr } = useMeetingNoticeDetail(numericClubId, numericNoticeId);
   const { data: generalInfo, isLoading: generalLoading, isError: generalError, error: generalErr } = useGeneralNoticeDetail(numericClubId, numericNoticeId);
@@ -36,35 +38,43 @@ export default function NoticeDetailPage(): React.ReactElement {
       </div>
 
       <div className=" overflow-y-auto h-[calc(100vh-100px)] w-full">
-        {(type === 'meeting' ? meetingLoading : type === 'vote' ? voteLoading : generalLoading) && (
+        {!hasValidIds ? (
           <div className="w-full h-[120px] flex items-center justify-center">
-            <p className="text-[#969696]">로딩 중…</p>
+            <p className="text-red-500">유효하지 않은 공지입니다.</p>
           </div>
-        )}
-        {(type === 'meeting' ? meetingError : type === 'vote' ? voteError : generalError) && (
-          <p className="text-red-500">Error: {(type === 'meeting' ? meetingErr : type === 'vote' ? voteErr : generalErr)?.message}</p>
-        )}
-        {!meetingLoading && !voteLoading && !generalLoading && (
+        ) : (
           <>
-            {type === 'meeting' && meetingInfo && (
-              <MeetingNoticeContent data={meetingInfo} />
+            {(type === 'meeting' ? meetingLoading : type === 'vote' ? voteLoading : generalLoading) && (
+              <div className="w-full h-[120px] flex items-center justify-center">
+                <p className="text-[#969696]">로딩 중…</p>
+              </div>
             )}
-            {type === 'general' && generalInfo && (
-              <GeneralNoticeContent data={generalInfo} />
+            {(type === 'meeting' ? meetingError : type === 'vote' ? voteError : generalError) && (
+              <p className="text-red-500">Error: {(type === 'meeting' ? meetingErr : type === 'vote' ? voteErr : generalErr)?.message}</p>
             )}
-            {type === 'vote' && voteInfo && (
-              <VoteNoticeContent
-                data={voteInfo}
-                registerBackBlocker={(register) => {
-                  // 버튼 클릭 시 차단 처리
-                  const onTryBack = () => {
-                    const blocked = register();
-                    if (!blocked) navigate(-1);
-                  };
-                  window.addEventListener('try-go-back', onTryBack);
-                  return () => window.removeEventListener('try-go-back', onTryBack);
-                }}
-              />
+            {!meetingLoading && !voteLoading && !generalLoading && (
+              <>
+                {type === 'meeting' && meetingInfo && (
+                  <MeetingNoticeContent data={meetingInfo} />
+                )}
+                {type === 'general' && generalInfo && (
+                  <GeneralNoticeContent data={generalInfo} />
+                )}
+                {type === 'vote' && voteInfo && (
+                  <VoteNoticeContent
+                    data={voteInfo}
+                    registerBackBlocker={(register) => {
+                      // 버튼 클릭 시 차단 처리
+                      const onTryBack = () => {
+                        const blocked = register();
+                        if (!blocked) navigate(-1);
+                      };
+                      window.addEventListener('try-go-back', onTryBack);
+                      return () => window.removeEventListener('try-go-back', onTryBack);
+                    }}
+                  />
+                )}
+              </>
             )}
           </>
         )}
