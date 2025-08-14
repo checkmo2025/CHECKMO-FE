@@ -1,7 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 import { FaBell } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
-import { FaCircleCheck } from "react-icons/fa6";
 import { useQuery } from "@tanstack/react-query";
 import { getMyProfile, getNotificationPreview } from "../apis/headerApi";
 
@@ -9,13 +8,9 @@ interface HeaderProps {
   pageTitle: string;
   customClassName?: string;
   isAdmin?: boolean;
-  // 운영진에게만 노출할 ‘조 관리하기’ 버튼을 이 페이지에서 보여줄지 여부
   showManageButton?: boolean;
-  // 버튼 라벨 커스텀 (조 관리하기)
   manageLabel?: string;
-  // 클릭 시 이동할 경로 (기본: '/club/manage'), onClickManage가 있으면 무시
   manageTo?: string;
-  // 클릭 핸들러를 직접 넘기고 싶을 때 
   onClickManage?: () => void;
 }
 
@@ -56,7 +51,9 @@ const Header = ({
 
   const notificationsToShow =
     (preview?.notifications ?? []).slice(0, 5).map((n) => ({
-      message: `${n.senderNickname}님이 ${TYPE_TEXT[n.notificationType] ?? n.notificationType}`,
+      message: `${n.senderNickname}님이 ${
+        TYPE_TEXT[n.notificationType] ?? n.notificationType
+      }`,
       time: new Date(n.createdAt).toLocaleString(),
       redirectPath: n.redirectPath,
     }));
@@ -84,7 +81,8 @@ const Header = ({
   return (
     <header
       className={`${
-        customClassName ?? "fixed left-[264px] right-0 top-3 h-[56px] lg:px-13 px-4 md:px-8 "
+        customClassName ??
+        "fixed left-[264px] right-0 top-3 h-[56px] lg:px-13 px-4 md:px-8 "
       } bg-white flex justify-between items-center z-50`}
     >
       {/* 타이틀 + (운영진 전용) 조 관리하기 */}
@@ -130,7 +128,9 @@ const Header = ({
             {notiPending ? (
               <div className="text-sm text-[#8D8D8D]">알림 불러오는 중...</div>
             ) : notificationsToShow.length === 0 ? (
-              <div className="text-sm text-[#8D8D8D]">알림이 존재하지 않습니다.</div>
+              <div className="text-sm text-[#8D8D8D]">
+                알림이 존재하지 않습니다.
+              </div>
             ) : (
               <ul className="space-y-2">
                 {notificationsToShow.map((n, i) => (
@@ -165,7 +165,6 @@ const Header = ({
               <span className="text-sm md:text-base font-semibold text-[#2C2C2C] truncate">
                 {me?.nickname || (profilePending ? "불러오는 중..." : "")}
               </span>
-              {isAdmin && <FaCircleCheck size={16} color="#90D26D" />}
             </div>
             <span className="text-xs md:text-sm text-[#8D8D8D] truncate">
               {me?.description ?? ""}
