@@ -68,3 +68,8 @@ export async function unfollowMember(memberNickname: string): Promise<void> {
 export async function removeFollower(memberNickname: string): Promise<void> {
   return axiosInstance.delete(`/members/${memberNickname}/follower`);
 }
+
+/** 알림 읽음 처리: PATCH /api/notifications/{notificationId}/read */
+export async function readNotification(notificationId: number): Promise<void> {
+  return axiosInstance.patch(`/notifications/${notificationId}/read`);
+}
