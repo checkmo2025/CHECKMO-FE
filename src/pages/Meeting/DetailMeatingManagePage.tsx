@@ -1,13 +1,15 @@
-import { useState,useEffect, useRef } from "react";
+import { useState,useEffect, useMemo } from "react";
 import { useNavigate,useLocation, useParams } from "react-router-dom";
 import { useStaffCheck } from "../../hooks/BookClub/useStaffCheck";
 import { useClubgetMembers } from "../../hooks/BookClub/useClubgetMembers";
 import type { ClubMember } from '../../types/Club/GetClubMembers';
+import { useMeetingTeamMutate } from "../../hooks/Meeting/useSetMeetingTeam.ts";
+import { buildMeetingTeamMutateRequest } from "../../components/Meeting/teamMapper.ts";
 export default function DetailMeetingManagePage() {
   const params = useParams<{ bookclubId: string, meetingId: string }>();
   const { state } = useLocation();
   const { meetingTitle } = state || { meetingTitle: "제목 없음" };
-  
+  const meetingId = params.meetingId!;
   const navigate = useNavigate();
 
   const { data: isStaff, isLoading, isError } = useStaffCheck(params.bookclubId!);
@@ -19,7 +21,7 @@ export default function DetailMeetingManagePage() {
   const {  data: Result,  fetchNextPage,  hasNextPage,  isFetchingNextPage,} =  useClubgetMembers({
     clubId: Number(params.bookclubId),
     status: 'ALL',
-    size: 20
+    size: 10
   });
 
   useEffect(() => {
@@ -74,31 +76,25 @@ export default function DetailMeetingManagePage() {
   const getMembersInGroup = (groupName: string): ClubMember[] => {
     return groupSelections[groupName] ?? [];
   };
+  
+  
+  useEffect(() => {
+      if (!hasNextPage || isLoading || isFetchingNextPage) return;
+      fetchNextPage();
+  }, [hasNextPage, isLoading, isFetchingNextPage, fetchNextPage]);
 
-  useEffect(()  => {
-    console.log("Group selections changed:", groupSelections);
-    Object.entries(groupSelections).map(([groupName, groupMembers]) => {
-      console.log(groupName, groupMembers);
-    });
+
+  const { mutate: saveTeams } = useMeetingTeamMutate(Number(meetingId));
+  const payload = useMemo(
+    () => buildMeetingTeamMutateRequest(groupSelections, groups),
+    [groupSelections, groups]
+  );
+  useEffect(() => {
+    if (payload.teamMemberDTOList.length === 0) return;
+    saveTeams(payload);
   }, [groupSelections]);
 
-  const loadMoreRef = useRef<HTMLDivElement>(null);
-  
-    useEffect(() => {
-      if (!hasNextPage || isLoading || isFetchingNextPage) return;
-      const observer = new IntersectionObserver(
-        ([entry]) => {
-          if (entry.isIntersecting) {
-            fetchNextPage();
-          }
-        }
-      );
-      const el = loadMoreRef.current;
-      if (el) observer.observe(el);
-      return () => observer.disconnect();
-    }, [hasNextPage, isLoading, isFetchingNextPage, fetchNextPage]);
-
-  if(!isStaff){ navigate(`/home`); }
+  if(!isStaff)return <div>권한이 없습니다!</div>;
   if(isLoading) return <div>Loading...</div>;
   if(isError) return <div>Error occurred</div>;
 
@@ -197,8 +193,6 @@ export default function DetailMeetingManagePage() {
             </div>
           </div>
         </div>
-        <div ref={loadMoreRef} style={{ height: 1 }} />
-        <div className="h-20" />
       </main>
     </div>
   );
