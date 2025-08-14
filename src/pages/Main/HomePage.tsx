@@ -101,7 +101,7 @@ export default function HomePage() {
                   likes={story.likes}
                   authorNickname={story.authorInfo.nickname}
                   authorProfileImageUrl={story.authorInfo.profileImageUrl}
-                  bookCoverImageUrl={story.bookInfo.profileImageUrl}
+                  bookCoverImageUrl={story.bookInfo.imgUrl}
                 />
               </div>
             );

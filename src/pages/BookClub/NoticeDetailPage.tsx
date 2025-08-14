@@ -1,126 +1,30 @@
 import React from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
-import type { AnnouncementProps } from '../../types/announcement';
-import checkerImage from "../../assets/images/checker.png";
+import { useMemo } from 'react';
+import { useNavigate, useParams, useSearchParams } from 'react-router-dom';
 import backIcon from "../../assets/icons/backIcon.png";
-
-// 분리된 컨텐츠 컴포넌트들 import
 import MeetingNoticeContent from '../../components/BookClub/MeetingNoticeContent';
 import GeneralNoticeContent from '../../components/BookClub/GeneralNoticeContent';
 import VoteNoticeContent from '../../components/BookClub/VoteNoticeContent';
+import { useMeetingNoticeDetail } from '../../hooks/BookClub/useMeetingNoticeDetail';
+import { useGeneralNoticeDetail } from '../../hooks/BookClub/useGeneralNoticeDetail';
+import { useVoteNoticeDetail } from '../../hooks/BookClub/useVoteNoticeDetail';
+import { parseNoticeRouteType } from '../../types/noticeType';
 
 export default function NoticeDetailPage(): React.ReactElement {
   const navigate = useNavigate();
-  const { noticeId } = useParams<{ noticeId: string }>();
-  
-  // 모든 타입의 공지사항 더미 데이터 (나중에 API로 받아올 예정)
-  const dummyNoticeData: { [key: string]: AnnouncementProps } = {
-    // 모임 공지사항
-    '1': {
-      id: 1,
-      title: '1월 신년 첫 모임 🎉',
-      clubName: '북적북적',
-      tag: '모임',
-      meetingDate: '2025. 1. 18. (토) 15:00',
-      meetingPlace: '강남역 CGV 앞 투썸플레이스 3층',
-      book: '넥서스',
-      bookAuthor: '유발 노아 하라리',
-      bookPublisher: '김영사',
-      imageUrl: checkerImage,
-      description: '🎊 새해 첫 모임을 함께해요!\n\n안녕하세요 북적북적 가족 여러분!\n2025년 첫 모임으로 여러분을 초대합니다.\n\n📚 이번 모임에서는 하라리의 신작 "넥서스"를 다뤄볼 예정입니다.\n\n📝 준비사항:\n• 1부 1~5장까지 읽어주세요\n• 본인이 인상 깊었던 구절 하나씩 준비해주세요\n• 궁금한 점이나 토론하고 싶은 주제가 있다면 메모해오세요\n\n🎯 이번 모임의 주요 토론 주제:\n- AI와 인간의 공존은 가능할까?\n- 정보 네트워크 시대의 진실과 거짓\n- 미래 사회의 권력 구조는 어떻게 변할까?\n\n⏰ 3시간 정도 예상되며, 모임 후 근처에서 신년회도 가질 예정입니다!\n새해 첫 모임인 만큼 많은 분들이 참석해주시면 좋겠어요 😊',
-      bookDescription: '인류 문명의 발전 과정을 정보 네트워크의 관점에서 분석한 유발 하라리의 최신작. 정보의 흐름이 어떻게 인류의 역사를 바꾸어 왔는지, 그리고 미래에는 어떤 변화가 일어날지를 예측하는 통찰력 있는 책입니다.',
-      generation: 7,
-      categories: [6, 9] // 인문학, 사회과학
-    },
-    // 투표 공지사항
-    '2': {
-      id: 2,
-      title: '2월 정기 모임 참석 여부 투표 📋',
-      clubName: '북적북적',
-      tag: '투표',
-      meetingDate: '2025.02.22 · 15시',
-      meetingPlace: '강남역 CGV 앞 투썸플레이스 3층',
-      afterPartyPlace: '근처 맛집에서 뒷풀이',
-      book: '사피엔스',
-      bookAuthor: '유발 노아 하라리',
-      bookPublisher: '김영사',
-      imageUrl: checkerImage,
-      description: '안녕하세요! 2월 정기 모임 참석 여부를 확인하기 위한 투표입니다.\n\n📅 모임 일정: 2025년 2월 22일 (토) 오후 3시\n📍 장소: 강남역 CGV 앞 투썸플레이스 3층\n📚 도서: 사피엔스 (7~12장)\n\n🗳️ 투표 마감: 1월 25일 (토) 밤 12시\n\n정확한 인원 파악을 위해 꼭 투표에 참여해주세요!\n모임 후 뒷풀이도 준비할 예정이니 많은 참여 부탁드려요 🍻\n\n※ 부득이하게 참석이 어려우신 분들도 투표해주시면 감사하겠습니다.',
-      bookDescription: '호모 사피엔스는 어떻게 지구의 지배자가 되었을까? 인지혁명, 농업혁명, 과학혁명이라는 세 가지 혁명을 통해 인류 역사의 빅픽처를 제시하는 세계적 베스트셀러.',
-      generation: 7,
-      categories: [6, 8, 9], // 인문학, 역사/문화, 사회과학
-      voteDeadline: {
-        datetime: '2025-01-25T23:59:00',
-        year: 2025,
-        month: 1,
-        date: 25,
-        day: '토',
-        hour: 23,
-        minute: 59
-      },
-      voteOptions: [
-        { id: 'attend', label: '참석 (모임 + 뒷풀이 모두 참여)', value: 'attend' },
-        { id: 'meeting_only', label: '모임만 참석 (뒷풀이는 불참)', value: 'meeting_only' },
-        { id: 'party_only', label: '뒷풀이만 참석 (모임은 불참)', value: 'party_only' },
-        { id: 'absent', label: '불참 (개인 사정으로 참석 어려움)', value: 'absent' },
-      ],
-    },
-    // 일반 공지사항
-    '3': {
-      id: 3,
-      title: '북적북적 MT 공지',
-      clubName: '북적북적',
-      tag: '공지',
-      book: '연금술사',
-      bookAuthor: '파울로 코엘료',
-      bookPublisher: '문학동네',
-      imageUrl: checkerImage,
-      announcementTitle: '북적 북적 엠티가돌아왔다~',
-      announcement: '🌲 북적북적 엠티 공지\n 📚 올해도 어김없이 북적이들의 소풍이 돌아왔습니다!\n 책 덮고 자연 속으로, 잠시 감성을 충전하러 떠나요✨\n ✔️ 날짜 / 장소 / 투표: [바로가기]',
-      description: '🌲 북적북적 엠티 공지\n\n📚 올해도 어김없이 북적이들의 소풍이 돌아왔습니다!\n책 덮고 자연 속으로, 잠시 감성을 충전하러 떠나요✨\n\n📅 일정: 2025년 2월 15일(토) ~ 16일(일) 1박 2일\n📍 장소: 강원도 평창 펜션\n💰 참가비: 15만원 (숙박, 식사, 액티비티 포함)\n\n🎯 엠티 프로그램:\n• 15일 저녁: 도착 후 환영회 & 게임\n• 16일 오전: 독서 토론 시간\n• 16일 오후: 자연 속 산책 & 마무리\n\n참가 신청은 1월 31일까지 해주세요!\n더 자세한 정보는 단톡방을 확인해주세요 📱',
-      bookDescription: '꿈을 이루기 위한 여행을 그린 현대의 고전. 한 소년이 자신의 운명을 찾아 떠나는 모험을 통해 인생의 의미를 깨닫게 해주는 감동적인 이야기입니다.',
-      generation: 5,
-      categories: [1, 7], // 소설, 에세이
-    },
-    '4': {
-      id: 4,
-      title: '2월 정기 모임 안내',
-      clubName: '북적북적',
-      tag: '모임',
-      meetingDate: '2025. 2. 8. (토) 14:00',
-      meetingPlace: '홍대입구역 9번 출구 앞 스타벅스 2층',
-      book: '사피엔스',
-      bookAuthor: '유발 노아 하라리',
-      bookPublisher: '김영사',
-      imageUrl: checkerImage,
-      description: '안녕하세요 북적북적 회원 여러분! 🌟\n\n이번 달 정기모임을 안내드립니다.\n\n📖 이번 달 도서: 사피엔스\n• 1~6장까지 읽고 와주세요\n• 특히 3장 "인류의 통합" 부분에 집중해서 토론할 예정입니다\n\n🗣️ 토론 주제:\n1. 인지혁명이 인류에게 미친 영향은?\n2. 현대 사회에서 "상상의 질서"는 무엇인가?\n3. 종교와 이데올로기의 역할에 대한 생각\n\n☕ 모임 후 근처 카페에서 뒷풀이도 있을 예정이니 많은 참여 부탁드려요!\n\n궁금한 점이 있으시면 언제든 연락주세요 📞',
-      bookDescription: '호모 사피엔스는 어떻게 지구의 지배자가 되었을까? 인지혁명, 농업혁명, 과학혁명이라는 세 가지 혁명을 통해 인류 역사의 빅픽처를 제시하는 세계적 베스트셀러.',
-      generation: 3,
-      categories: [6, 8, 9] // 인문학, 역사/문화, 사회과학
-    }
-  };
-  
-  const noticeData = noticeId ? dummyNoticeData[noticeId] : dummyNoticeData['1'];
-  
-  //공지사항 정보 못 받았을 때의 코드 구현 필요?
+  const { bookclubId, noticeId } = useParams<{ bookclubId: string; noticeId: string }>();
+  const [searchParams] = useSearchParams();
+  const type = parseNoticeRouteType(searchParams.get('type'));
+  const numericClubId = useMemo(() => Number(bookclubId), [bookclubId]);
+  const numericNoticeId = useMemo(() => Number(noticeId), [noticeId]);
+  const hasValidIds = Number.isFinite(numericClubId) && Number.isFinite(numericNoticeId) && numericClubId > 0 && numericNoticeId > 0;
 
-  // 공지사항 타입별 컨텐츠 렌더링
-  const renderNoticeContent = () => {
-    switch (noticeData.tag) {
-      case '모임':
-        return <MeetingNoticeContent data={noticeData} />;
-      case '공지':
-        return <GeneralNoticeContent data={noticeData} />;
-      case '투표':
-        return <VoteNoticeContent data={noticeData} />;
-      default:
-        return <div>알 수 없는 공지사항 타입입니다.</div>;
-    }
-  };
+  const { data: meetingInfo, isLoading: meetingLoading, isError: meetingError, error: meetingErr } = useMeetingNoticeDetail(numericClubId, numericNoticeId, type === 'meeting');
+  const { data: generalInfo, isLoading: generalLoading, isError: generalError, error: generalErr } = useGeneralNoticeDetail(numericClubId, numericNoticeId, type === 'general');
+  const { data: voteInfo, isLoading: voteLoading, isError: voteError, error: voteErr } = useVoteNoticeDetail(numericClubId, numericNoticeId, type === 'vote');
 
   return (
     <div className="mt-[30px] ml-[51px]">
-      {/* 공통 헤더 */}
       <div className="flex items-center mb-[25px]">
         <button 
           onClick={() => navigate(-1)}
@@ -134,9 +38,47 @@ export default function NoticeDetailPage(): React.ReactElement {
       </div>
 
       <div className=" overflow-y-auto h-[calc(100vh-100px)] w-full">
-        {/* 타입별 컨텐츠 */}
-        {renderNoticeContent()}
+        {!hasValidIds ? (
+          <div className="w-full h-[120px] flex items-center justify-center">
+            <p className="text-red-500">유효하지 않은 공지입니다.</p>
+          </div>
+        ) : (
+          <>
+            {(type === 'meeting' ? meetingLoading : type === 'vote' ? voteLoading : generalLoading) && (
+              <div className="w-full h-[120px] flex items-center justify-center">
+                <p className="text-[#969696]">로딩 중…</p>
+              </div>
+            )}
+            {(type === 'meeting' ? meetingError : type === 'vote' ? voteError : generalError) && (
+              <p className="text-red-500">Error: {(type === 'meeting' ? meetingErr : type === 'vote' ? voteErr : generalErr)?.message}</p>
+            )}
+            {!(type === 'meeting' ? meetingLoading : type === 'vote' ? voteLoading : generalLoading) && !(type === 'meeting' ? meetingError : type === 'vote' ? voteError : generalError) && (
+              <>  
+                {type === 'meeting' && meetingInfo && (
+                  <MeetingNoticeContent data={meetingInfo} />
+                )}
+                {type === 'general' && generalInfo && (
+                  <GeneralNoticeContent data={generalInfo} />
+                )}
+                {type === 'vote' && voteInfo && (
+                  <VoteNoticeContent
+                    data={voteInfo}
+                    registerBackBlocker={(register) => {
+                      // 버튼 클릭 시 차단 처리
+                      const onTryBack = () => {
+                        const blocked = register();
+                        if (!blocked) navigate(-1);
+                      };
+                      window.addEventListener('try-go-back', onTryBack);
+                      return () => window.removeEventListener('try-go-back', onTryBack);
+                    }}
+                  />
+                )}
+              </>
+            )}
+          </>
+        )}
       </div>
     </div>
   );
-} 
+}

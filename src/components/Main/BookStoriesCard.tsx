@@ -75,7 +75,7 @@ const BookStoriesCard = ({
               <h4 className="font-pretendard font-semibold text-[20px] leading-[135%] text-[#000000]">
                 {title}
               </h4>
-              <p className="min-w-[10rem] font-pretendard font-normal text-[14px] leading-[145%] text-[#000000] break-words">
+              <p className="min-w-[10rem] font-pretendard font-normal text-[14px] leading-[145%] text-[#000000] break-words line-clamp-4">
                 {story}
               </p>
             </div>
