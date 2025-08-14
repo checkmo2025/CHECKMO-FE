@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import type { noticeListItemDto, voteItemDto } from '../../types/clubNotice';
 import vector from '../../assets/images/vector.png';
@@ -31,14 +31,7 @@ function AnnouncementCardItem({
 }): React.ReactElement {
   const navigate = useNavigate();
   const { bookclubId } = useParams<Params>();
-  const [selectedVote, setSelectedVote] = useState<string>('');
-
-  const handleVoteSubmit = () => {
-    if (selectedVote) {
-      // 투표 제출 로직 구현
-      console.log('투표 제출:', selectedVote);
-    }
-  };
+  
 
   const handleCardClick = () => {
     if (!bookclubId) return;
@@ -106,11 +99,10 @@ function AnnouncementCardItem({
               <img src={arrow} alt="icon" className="w-[24px] h-[24px] -mt-2" />
             </div>
             <div
-              onClick={(e) => e.stopPropagation()}
               className="w-[269px] h-[207px] mt-[26px] border-[2px] border-[#EAE5E2] rounded-[16px]"
             >
               <form className="mt-[14.5px]">
-                {item.items?.map((option: voteItemDto) => (
+                {item.items?.slice(0, 3).map((option: voteItemDto) => (
                   <label
                     key={option.item}
                     className="
@@ -131,8 +123,9 @@ function AnnouncementCardItem({
                       type="radio"
                       name="vote"
                       value={option.item}
-                      checked={selectedVote === option.item}
-                      onChange={(e) => setSelectedVote(e.target.value)}
+                      checked={option.selected}
+                      disabled
+                      readOnly
                       className="
                       w-[24px] h-[24px]
                       border-2 border-[#BBBBBB]
@@ -150,8 +143,7 @@ function AnnouncementCardItem({
                 ))}
                 <button
                   type="button"
-                  onClick={handleVoteSubmit}
-                  disabled={!selectedVote}
+                  onClick={handleCardClick}
                   className="
                   ml-[177.5px] mt-[16px]
                   w-[69px] h-[24px]
