@@ -7,7 +7,7 @@ import { useClubNotices } from '../../hooks/BookClub/useClubNotices';
 import { useClubNoticesInfinite } from '../../hooks/BookClub/useClubNoticesInfinite';
 import type { noticeListItemDto } from '../../types/clubNotice';
 
-export default function HomePage(): React.ReactElement {
+export default function NoticePage(): React.ReactElement {
   const { bookclubId } = useParams<{ bookclubId: string }>();
   const numericClubId = useMemo(() => Number(bookclubId) || 0, [bookclubId]);
 
