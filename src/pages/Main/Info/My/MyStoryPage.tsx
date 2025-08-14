@@ -3,9 +3,10 @@ import MyPageHeader from "../../../../components/MyPageHeader";
 import { Pencil, Trash2, Save } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useMyBookStories } from "../../../../hooks/My/useMyBookStories";
-import type { BookStoryResponseDto } from "../../../../types/bookStories";
+import type { BookStoryResponseDto, BookStoriesResult } from "../../../../types/bookStories";
 import { deleteBookStory, updateBookStory } from "../../../../apis/BookStory/bookstories";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
+import type { InfiniteData } from "@tanstack/react-query";
 
 const MyStoryPage = () => {
   const navigate = useNavigate();
@@ -20,20 +21,82 @@ const MyStoryPage = () => {
 
   const observerRef = useRef<IntersectionObserver | null>(null);
 
-  // 삭제 Mutation
+  // 삭제 Mutation (낙관적 업데이트)
   const deleteMutation = useMutation({
     mutationFn: (id: number) => deleteBookStory(id),
-    onSuccess: () => {
-      qc.invalidateQueries({ queryKey: ["myBookStories"] });
+    onMutate: async (id: number) => {
+      await qc.cancelQueries({ queryKey: ["bookStories", "MY"] });
+
+      const prevData = qc.getQueryData<InfiniteData<BookStoriesResult>>([
+        "bookStories",
+        "MY",
+      ]);
+
+      qc.setQueryData<InfiniteData<BookStoriesResult>>(
+        ["bookStories", "MY"],
+        (oldData) => {
+          if (!oldData) return oldData;
+          return {
+            ...oldData,
+            pages: oldData.pages.map((page) => ({
+              ...page,
+              bookStoryResponses: page.bookStoryResponses.filter(
+                (story) => story.bookStoryId !== id
+              ),
+            })),
+          };
+        }
+      );
+
+      return { prevData };
+    },
+    onError: (_err, _vars, ctx) => {
+      if (ctx?.prevData) {
+        qc.setQueryData(["bookStories", "MY"], ctx.prevData);
+      }
+    },
+    onSettled: () => {
+      qc.invalidateQueries({ queryKey: ["bookStories", "MY"] });
     },
   });
 
-  // 수정 Mutation
+  // 수정 Mutation (낙관적 업데이트)
   const updateMutation = useMutation({
     mutationFn: ({ id, description }: { id: number; description: string }) =>
       updateBookStory(id, { description }),
-    onSuccess: () => {
-     qc.invalidateQueries({ queryKey: ["myBookStories"] });
+    onMutate: async ({ id, description }) => {
+      await qc.cancelQueries({ queryKey: ["bookStories", "MY"] });
+
+      const prevData = qc.getQueryData<InfiniteData<BookStoriesResult>>([
+        "bookStories",
+        "MY",
+      ]);
+
+      qc.setQueryData<InfiniteData<BookStoriesResult>>(
+        ["bookStories", "MY"],
+        (oldData) => {
+          if (!oldData) return oldData;
+          return {
+            ...oldData,
+            pages: oldData.pages.map((page) => ({
+              ...page,
+              bookStoryResponses: page.bookStoryResponses.map((story) =>
+                story.bookStoryId === id ? { ...story, description } : story
+              ),
+            })),
+          };
+        }
+      );
+
+      return { prevData };
+    },
+    onError: (_err, _vars, ctx) => {
+      if (ctx?.prevData) {
+        qc.setQueryData(["bookStories", "MY"], ctx.prevData);
+      }
+    },
+    onSettled: () => {
+      qc.invalidateQueries({ queryKey: ["bookStories", "MY"] });
     },
   });
 
