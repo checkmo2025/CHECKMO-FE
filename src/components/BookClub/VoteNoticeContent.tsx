@@ -11,6 +11,7 @@ import VoteNoticeModal from './VoteNoticeModal';
 import VoterDropdown from './VoterDropdown';
 import { parseISO, format } from 'date-fns';
 import { ko } from 'date-fns/locale';
+import Modal from '../Modal';
 
 interface VoteNoticeContentProps {
   data: voteNoticeItemDto;
@@ -31,12 +32,40 @@ export default function VoteNoticeContent({ data, registerBackBlocker }: VoteNot
   
   // 모달 관련 상태
   const [showModal, setShowModal] = React.useState<boolean>(false); // 페이지 나가기 확인 모달
+  const [showTimeModal, setShowTimeModal] = React.useState<boolean>(false); // 투표 시간 아님 안내 모달
   
   // 각 옵션별 투표자 목록 드롭다운 상태
   const [openVoterDropdowns, setOpenVoterDropdowns] = React.useState<{[key: string]: boolean}>({});
   
   // 브라우저 히스토리 조작 관련
   const [historyAdded, setHistoryAdded] = React.useState<boolean>(false); // 히스토리 엔트리 추가 여부
+
+  // 투표 가능 시간 파생 상태
+  const isBeforeStart = React.useMemo(() => {
+    if (!current.startTime) return false;
+    try {
+      return new Date() < parseISO(current.startTime);
+    } catch {
+      return false;
+    }
+  }, [current.startTime]);
+
+  const isAfterEnd = React.useMemo(() => {
+    if (!current.deadline) return false;
+    try {
+      return new Date() > parseISO(current.deadline);
+    } catch {
+      return false;
+    }
+  }, [current.deadline]);
+
+  // 마감 이후에는 진입 즉시 결과 UI로 전환 (투표 완료 UI와 동일 동작)
+  React.useEffect(() => {
+    if (isAfterEnd) {
+      setHasVoted(true);
+      setHistoryAdded(false);
+    }
+  }, [isAfterEnd]);
 
   // =============================================================================
   // EFFECTS - 부수 효과 처리
@@ -108,7 +137,7 @@ export default function VoteNoticeContent({ data, registerBackBlocker }: VoteNot
   
   // 투표 관련 핸들러들
   // ---------------------------------------------------------------------------
-  
+
   // 투표 옵션 선택/해제 처리
   const handleVoteChange = (index: number) => {
     if (hasVoted) return; // 투표 완료 후에는 변경 불가
@@ -136,6 +165,15 @@ export default function VoteNoticeContent({ data, registerBackBlocker }: VoteNot
   const handleVoteSubmit = async (e?: React.FormEvent) => {
     if (e) {
       e.preventDefault(); // form submit으로 인한 페이지 리로드 방지
+    }
+    if (isBeforeStart) {
+      setShowTimeModal(true);
+      return;
+    }
+    if (isAfterEnd) {
+      // 이미 종료된 경우: 결과 화면만 보이도록 처리
+      setHasVoted(true);
+      return;
     }
     
     if (selectedIndexes.length === 0) {
@@ -279,19 +317,19 @@ export default function VoteNoticeContent({ data, registerBackBlocker }: VoteNot
             {/* 투표 옵션들 */}
             {current.items?.items?.map((option: voteItemDto, index: number) => (
               <div key={`${option.item}-${index}`} className="relative voter-dropdown-container pb-[17px]">
-                <label className="flex items-center w-full cursor-pointer">
+                <label className={`flex items-center w-full ${isAfterEnd ? 'cursor-default' : 'cursor-pointer'}`}>
                   {/* 라디오 버튼 */}
                   <input
                     type="checkbox"
                     value={index}
                     checked={selectedIndexes.includes(index)}
                     onChange={() => handleVoteChange(index)}
-                    disabled={hasVoted} // 투표 완료 후 비활성화
+                    disabled={hasVoted || isAfterEnd} // 투표 완료 또는 종료 후 비활성화
                     className={`appearance-none w-[24px] h-[24px] rounded-full cursor-pointer mr-[12px] flex-shrink-0 aspect-square relative transition-all duration-200 border-[2px] ${
                       selectedIndexes.includes(index) 
                         ? 'border-[#FF8045] bg-[#FF8045]' 
                         : 'border-[#BBBBBB] bg-[#EEEEEE]'
-                    } ${hasVoted ? 'cursor-not-allowed opacity-50' : ''}`}
+                    } ${(hasVoted || isAfterEnd) ? 'cursor-not-allowed opacity-50' : ''}`}
                   />
                   
                   {/* 투표 옵션 박스 */}
@@ -304,7 +342,7 @@ export default function VoteNoticeContent({ data, registerBackBlocker }: VoteNot
                     </span>
                     
                     {/* 투표자 드롭다운 컴포넌트 */}
-                    {hasVoted && current.items?.items?.[index] && (
+                    {(hasVoted || isAfterEnd) && current.items?.items?.[index] && (
                       <VoterDropdown
                         voters={current.items.items[index].votedMembers}
                         optionLabel={option.item}
@@ -320,8 +358,7 @@ export default function VoteNoticeContent({ data, registerBackBlocker }: VoteNot
             
             {/* 투표/다시투표 버튼 영역 */}
             <div className="flex items-center justify-end mt-[4px] mr-[0px] mb-[20px]">
-              {!hasVoted ? (
-                // 투표하기 버튼 (투표 전)
+              {isAfterEnd ? null : !hasVoted ? (
                 <button
                   type="submit"
                   disabled={selectedIndexes.length === 0}
@@ -353,6 +390,18 @@ export default function VoteNoticeContent({ data, registerBackBlocker }: VoteNot
           onCancel={handleCancelLeave}
         />
       )}
+
+      <Modal
+        isOpen={showTimeModal}
+        title={'투표 가능 시간이 아닙니다.'}
+        buttons={[
+          {
+            label: '확인',
+            onClick: () => setShowTimeModal(false),
+          },
+        ]}
+        onBackdrop={() => setShowTimeModal(false)}
+      />
     </div>
   );
 } 
