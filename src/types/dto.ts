@@ -1,3 +1,4 @@
+import type { ApiResponse } from "./apiResponse";
 // 공용 Dto 파일
 export type BookDto = {
   bookId?: number;
@@ -82,3 +83,9 @@ export type StatisticsDto = {
   totalReviews: number;
   averageRating: number;
 };
+
+
+export type StaffCheck = ApiResponse<{
+  isStaff: boolean;
+}>;
+export type StaffCheckResult = StaffCheck['result'];

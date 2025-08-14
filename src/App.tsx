@@ -149,8 +149,9 @@ const App = () => {
               <Route path="meeting">
                 <Route index element={<MeetingListPage />} />
                 <Route path=":meetingId" element={<MeetingDetailPage />} />
+                
                 <Route path="create" element={<CreateMeetingPage />} />
-                <Route
+                <Route path=":meetingId/manage" element={<DetailMeatingManagePage />} />
                   path=":meetingId/topics"
                   element={<MeetingTopicListPage />}
                 />
