@@ -53,3 +53,8 @@ export async function getMyNotifications(
     { params: { cursorId } }
   );
 }
+
+/** 내가 가입한 모임 탈퇴: DELETE /api/clubs/{clubId}/leave */
+export async function leaveClub(clubId: number): Promise<void> {
+  return axiosInstance.delete(`/clubs/${clubId}/leave`);
+}
