@@ -40,3 +40,9 @@ export const requestJoinClub = async (
   const result: JoinClubResult = await axiosInstance.post(`/clubs/${clubId}/join`, payload);
   return result;
 };
+
+// 클럽 상세 조회
+export const getClubDetail = async (clubId: number): Promise<ClubDto> => {
+  const result: ClubDto = await axiosInstance.get(`/clubs/${clubId}`);
+  return result;
+};

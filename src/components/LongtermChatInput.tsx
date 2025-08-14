@@ -1,7 +1,7 @@
 import React, { useEffect, useRef } from 'react';
 
 interface ChatInputProps {
-  onSend: (text: string) => void;
+  onSend: (text: string) => boolean;
   placeholder?: string;
   buttonIconSrc?: string;
   className?: string;
@@ -44,9 +44,10 @@ const LongtermChatInput = ({
     const ta = textareaRef.current;
     if (!ta) return;
     const text = ta.value.trim();
-    onSend(text);
-    ta.value = '';
-    adjustHeight();
+    if(onSend(text)) {
+      ta.value = '';
+      adjustHeight();
+    }
   };
 
   useEffect(() => {

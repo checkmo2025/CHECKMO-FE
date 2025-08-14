@@ -1,6 +1,9 @@
 import React from "react";
+import { useNavigate } from "react-router-dom";
 import checker from "../../assets/images/checker.png";
-import heartIcon from "../../assets/images/heart.png";
+import emptyHeartIcon from "../../assets/icons/heart_empty.png";
+import filledHeartIcon from "../../assets/icons/heart_filled.png";
+// heartIcon 제거 (SVG로 대체)
 import sirenIcon from "../../assets/images/siren.png";
 
 export interface BookStoryCardProps {
@@ -10,6 +13,9 @@ export interface BookStoryCardProps {
   title: string;
   summary: string;
   likes: number;
+  bookImageUrl?: string;
+  likedByMe?: boolean;
+  onClick?: () => void;
 }
 
 export default function BookStoryCard({
@@ -19,6 +25,9 @@ export default function BookStoryCard({
   title,
   summary,
   likes,
+  bookImageUrl,
+  likedByMe = false,
+  onClick,
 }: BookStoryCardProps): React.ReactElement {
   // API에서 받을 이미지 URL 사용 (더미 데이터와 동일한 구조)
   const avatar = userImage || "/default-avatar.png";
@@ -29,13 +38,16 @@ export default function BookStoryCard({
         rounded-[16px]
         border-[2px] border-[#EAE5E2]
         overflow-hidden
+        cursor-pointer
       "
+      onClick={onClick}
+      role="button"
     >
       <div className="flex flex-col gap-[10px] p-[28px] h-full">
         <div className="flex gap-[12px] flex-1">
           <div className="w-[200px] h-[290px] bg-gray-100 rounded-lg overflow-hidden">
             <img
-              src={checker}
+              src={bookImageUrl || checker}
               alt="book cover"
               className="w-full h-full object-cover"
             />
@@ -87,15 +99,24 @@ export default function BookStoryCard({
                   mt-[4px]
                   font-pretendard font-normal text-[14px]
                   leading-[145%] tracking-[-0.1%] text-[#000000]
+                  overflow-hidden
                 "
+              title={summary}
+              style={{
+                display: "-webkit-box",
+                WebkitLineClamp: 4 as unknown as number,
+                WebkitBoxOrient: 'vertical' as unknown as any,
+              }}
             >
               {summary}
             </p>
             <div className="mt-auto flex items-center justify-end gap-[8px]">
               <img
-                src={heartIcon}
-                alt="like"
-                className="w-[24px] h-[24px] cursor-pointer"
+                src={likedByMe ? filledHeartIcon : emptyHeartIcon}
+                alt={likedByMe ? "liked" : "not liked"}
+                className="cursor-pointer"
+                width={19}
+                height={19}
               />
               <span
                 className="

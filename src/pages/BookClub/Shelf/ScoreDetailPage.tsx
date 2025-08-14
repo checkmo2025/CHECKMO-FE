@@ -13,9 +13,15 @@ export default function ScoreDetailPage() {
   const { bookTitle } = location.state as { bookTitle: string };
 
   useEffect(() => {
-    setMynickname('oz');
-    setUrl('/assets/ix_user-profile-filled.svg');
-  }, []);
+    const nickname = localStorage.getItem('nickname');
+    const profileImageUrl = localStorage.getItem('profileImageUrl');
+    if(!nickname || !profileImageUrl) {
+      console.log("error처리")
+      return;
+    }
+    setMynickname(nickname);
+    setUrl(profileImageUrl);
+  }, []) 
 
   return (
     <div className="flex h-screen">
