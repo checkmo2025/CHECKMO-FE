@@ -1,6 +1,4 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import { GoogleOAuthProvider } from "@react-oauth/google";
-import { KEYS } from "./config/key";
 import LoginPage from "./pages/Auth/LoginPage";
 import SignupPage from "./pages/Auth/SignupPage";
 import ProfilePage from "./pages/Auth/ProfilePage";
@@ -18,6 +16,7 @@ import OthersProfilePage from "./pages/Main/Info/OthersProfilePage";
 import BookClubHomePage from "./pages/BookClub/BookClubHomePage"; // 북클럽 홈
 import NoticePage from "./pages/BookClub/NoticePage"; // 북클럽 공지사항
 import NoticeDetailPage from "./pages/BookClub/NoticeDetailPage"; // 공지사항 상세 (통합)
+import NoticeCreatePage from "./pages/BookClub/NoticeCreatePage";
 import ClubSearchPage from "./pages/Main/ClubSearchPage"; // 북클럽 검색
 import CreateClubPage from "./pages/Main/CreateClubPage";
 import BookStorySearchPage from "./pages/Main/BookStory/BookStorySearchPage";
@@ -46,7 +45,6 @@ import BookRecommendEditPage from "./pages/BookRecommend/BookRecommendEditPage";
 
 const App = () => {
   return (
-    <GoogleOAuthProvider clientId={KEYS.GOOGLE_CLIENT_ID}>
       <Router>
         <Routes>
           {/* 로그인 / 회원가입 */}
@@ -100,7 +98,8 @@ const App = () => {
               <Route path="notices" element={<NoticePage />} />
               <Route path="edit" element={<EditClubPage />} />
               <Route path="notices/:noticeId" element={<NoticeDetailPage />} />
-
+              <Route path="notices/create" element={<NoticeCreatePage />} />
+              
               {/* 책장 */}
               <Route path="shelf">
                 <Route index element={<ShelfHomePage />} />
@@ -159,7 +158,6 @@ const App = () => {
           </Route>
         </Routes>
       </Router>
-    </GoogleOAuthProvider>
   );
 };
 

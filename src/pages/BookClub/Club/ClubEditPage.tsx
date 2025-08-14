@@ -337,14 +337,8 @@ export default function EditClubPage(): React.ReactElement {
           <div className="mt-[16px] max-w-[400px]">
             <ChipToggleGroup
               options={BOOK_CATEGORY_OPTIONS}
-              selected={selectedCategories}
-              onToggle={(cat) => {
-                if (selectedCategories.includes(cat)) {
-                  setSelectedCategories(selectedCategories.filter(c => c !== cat));
-                } else {
-                  setSelectedCategories([...selectedCategories, cat]);
-                }
-              }}
+              defaultSelected={selectedCategories}
+              onChange={setSelectedCategories}
             />
           </div>
         </div>
@@ -357,14 +351,8 @@ export default function EditClubPage(): React.ReactElement {
           <div className="mt-[16px] max-w-[400px]">
             <ChipToggleGroup
               options={PARTICIPANT_TYPE_OPTIONS}
-              selected={selectedParticipants}
-              onToggle={(pt) => {
-                if (selectedParticipants.includes(pt)) {
-                  setSelectedParticipants(selectedParticipants.filter(pp => pp !== pt));
-                } else {
-                  setSelectedParticipants([...selectedParticipants, pt]);
-                }
-              }}
+              defaultSelected={selectedParticipants}
+              onChange={setSelectedParticipants}
             />
           </div>
         </div>

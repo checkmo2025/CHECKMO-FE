@@ -2,24 +2,25 @@ import { useNavigate } from "react-router-dom";
 import type { RecommendationDto } from "../../types/bookRecommend";
 import ActionButton from "./ActionButton";
 import StarRating from "./StarRating";
-import { useDeleteRecommend } from "../../hooks/useRecommend";
 
 interface BookRecommendDetailCardProps {
   clubId: number;
   recommendDetail: RecommendationDto;
+  onDelete: () => void; // 삭제 버튼 클릭 시 호출될 함수
 }
 
 const BookRecommendDetailCard = ({
   clubId,
   recommendDetail,
+  onDelete,
 }: BookRecommendDetailCardProps) => {
   const navigate = useNavigate();
   const { id, title, content, rate, tag, bookInfo, authorInfo, staff, author } =
     recommendDetail;
 
-  const tags = tag.split(",");
+  console.log(title + staff); // 배포용 error 방지 코드
 
-  const { mutate: deleteRecommend } = useDeleteRecommend(clubId, id);
+  const tags = tag.split(",");
 
   const handleEdit = () => {
     navigate(`/bookclub/${clubId}/recommend/${id}/edit`, {
@@ -27,22 +28,10 @@ const BookRecommendDetailCard = ({
     });
   };
 
-  const handleDelete = () => {
-    if (window.confirm("정말로 이 추천 도서를 삭제하시겠습니까?")) {
-      deleteRecommend();
-    }
-  };
-
   return (
     <div className="mt-2 p-4">
       <h1 className=" text-3xl font-bold">{bookInfo.title}</h1>
-      <p className="mt-6 mb-4 text-sm text-gray-500">
-        {bookInfo.author}
-        {" | "}
-        {bookInfo.publisher}
-        {" | "}
-        {/* {format(new Date(detailInfo.createdAt), "yyyy.MM.dd")} */}
-      </p>
+      <p className="mt-6 mb-4 text-sm text-gray-500">{bookInfo.author}</p>
 
       <section className="flex flex-col md:flex-row md:space-x-8 mt-4 max-h-[75vh]">
         <div className="flex-shrink-0 md:w-1/3 mx-auto md:mx-0 h-full max-h-[75vh]">
@@ -54,7 +43,6 @@ const BookRecommendDetailCard = ({
         </div>
 
         <div className="flex flex-col flex-1 ml-12 mt-6 md:mt-0 md:ml-10 min-h-0">
-          {/* Scrollable content area */}
           <div className="flex-grow overflow-y-auto pr-4">
             <div className="flex flex-wrap gap-2">
               {tags.map((tag) => (
@@ -79,13 +67,11 @@ const BookRecommendDetailCard = ({
               </div>
             </div>
 
-            {/* 추천 내용 */}
             <p className="text-sm text-gray-800 leading-relaxed whitespace-pre-line">
               {content}
             </p>
           </div>
 
-          {/* Sticky bottom part with stars and buttons */}
           <div className="flex-shrink-0 pt-4">
             <div className="mb-4 flex items-center">
               <StarRating rate={rate} />
@@ -98,7 +84,7 @@ const BookRecommendDetailCard = ({
                   className="w-full sm:w-auto px-7.5 py-2 bg-[#A6917D] text-white text-xs border-2 border-[#A6917D] rounded-2xl hover:bg-[#907E66] transition"
                 />
                 <ActionButton
-                  onClick={handleDelete}
+                  onClick={onDelete} // 부모로부터 받은 함수 호출
                   label="삭제하기"
                   className="w-full sm:w-auto px-7.5 py-2 bg-white text-black text-xs border-2 border-[#A6917D] rounded-2xl hover:bg-gray-200 transition"
                 />

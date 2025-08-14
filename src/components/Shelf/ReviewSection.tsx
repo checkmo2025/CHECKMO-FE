@@ -14,8 +14,18 @@ import type {
 
 import LongtermChatInput from '../LongtermChatInput';
 import { getStarIcon } from './getStarIcon';
+import StarSelector from '../BookRecommend/StarSelector';
 
-
+function Checkdescription(description: string, Rating : number) {
+  if (Rating < 1) {
+      alert('별점은 1점보다 크거나 같아야 합니다.');
+      return;
+  } else if (description == '') {
+      alert('한줄평을 입력해주세요.');
+      return;
+  }
+  return;
+}
 
 export default function ReviewSection({ meetingId,  currentUser,  size,}: 
   { meetingId: number;  currentUser: { nickname: string; profileImageUrl: string };  size: number;}) {
@@ -55,16 +65,8 @@ export default function ReviewSection({ meetingId,  currentUser,  size,}:
   // Create
   const createReviewMut = useReviewCreate({ meetingId, size, currentUser });
   const handleSend = (description: string) => {
-    if (newRating < 1) {
-      alert('별점은 1점보다 크거나 같아야 합니다.');
-      return;
-    }
-    if (!description.trim()) {
-      alert('한줄평을 입력해주세요.');
-      return;
-    }
+    Checkdescription(description, newRating);
 
-    // Create flow
     const payload: ReviewCreateRequest = { description, rate: newRating };
     createReviewMut.mutate(payload, {
       onSuccess: () => setNewRating(0),
@@ -79,16 +81,10 @@ export default function ReviewSection({ meetingId,  currentUser,  size,}:
     setEditRating(review.rate);
   };
 
-  const handleUpdate = (newDescription: string) => {
-    if (editRating < 1) {
-      alert('별점은 1점보다 크거나 같아야 합니다.');
-      return;
-    }
-    if (!newDescription.trim()) {
-      alert('한줄평을 입력해 주세요.');
-      return;
-    }
-    const payload: ReviewUpdateRequest = { reviewId: editingReviewId!, description: newDescription, rate: editRating };
+  const handleUpdate = (description: string) => {
+    Checkdescription(description, editRating);
+
+    const payload: ReviewUpdateRequest = { reviewId: editingReviewId!, description: description, rate: editRating };
     updateMut.mutate(payload, {
       onSuccess: () => {
         setEditingReviewId(null);
@@ -121,18 +117,7 @@ export default function ReviewSection({ meetingId,  currentUser,  size,}:
             {currentUser.nickname}
           </div>
           <div className="flex justify-end items-center">
-            {[0, 1, 2, 3, 4].map((i) => (
-              <img
-                key={i}
-                className="w-[20px] h-[20px] cursor-pointer"
-                src={getStarIcon(newRating, i)}
-                alt={`${i + 1} star`}
-                onClick={() => {
-                  const updatedRating = newRating === i + 1 ? i + 0.5 : i + 1;
-                  setNewRating(updatedRating);
-                }}
-              />
-            ))}
+            <StarSelector value={newRating} onChange={setNewRating} size={10} />
           </div>
         </div>
         <LongtermChatInput
@@ -157,13 +142,8 @@ export default function ReviewSection({ meetingId,  currentUser,  size,}:
                 {/* editingReviewId가 있을 때 없을 때 2가지 경우 */}
                 {editingReviewId === review.bookReviewId ? (
                   <div className="flex justify-end items-center">
-                    {[0, 1, 2, 3, 4].map((i) => (
-                      <img key={i} className="w-[20px] h-[20px] cursor-pointer" src={getStarIcon(editRating, i)} alt={`${i + 1} star`}
-                        onClick={() => {
-                          const updatedRating = editRating === i + 1 ? i + 0.5 : i + 1;
-                          setEditRating(updatedRating);
-                        }}/>))}
-                    </div>) : (
+                    <StarSelector value={editRating} onChange={setEditRating} size={10} />
+                  </div>) : (
                     <div className="flex justify-end items-center">
                       {[0, 1, 2, 3, 4].map((i) => (
                         <img key={i} src={getStarIcon(review.rate, i)}  className="w-[20px] h-[20px]"  alt={`${i + 1} star`}/>))}

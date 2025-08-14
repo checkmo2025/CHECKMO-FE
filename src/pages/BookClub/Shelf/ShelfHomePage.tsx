@@ -65,12 +65,8 @@ export default function ShelfHomePage() {
       {/* 메인 컨텐츠 자리 */}
       <div className="absolute left-[302px] right-[34px]">
         {/* 헤더 자리 */}
-        <Header pageTitle={'책장'} userProfile={{
-          username: 'Luke',
-          bio: '아 피곤하다.'
-        }} 
-        notifications={[]}
-        customClassName="mt-[30px]"
+        <Header pageTitle={'책장'} 
+          customClassName="mt-[30px]"
         />
   
         <div className="mt-[54px] flex flex-col gap-[18px]">

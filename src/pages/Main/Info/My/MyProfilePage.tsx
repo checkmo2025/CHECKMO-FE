@@ -1,56 +1,134 @@
-import React, { useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { Camera } from "lucide-react";
 
-const keywords = [
-  "국내 도서", "소설/시/희곡", "에세이", "정치/경제", "자기계발",
-  "인문학", "여행", "역사/문화", "사회과학", "정치/외교/군사",
-  "컴퓨터/IT", "과학", "의학", "예술/대중문화", "어린이도서", "기타"
-];
+// API/훅/타입
+import { useMyProfileQuery, useUpdateMyProfile } from "../../../../hooks/My/useMember";
+import { BOOK_CATEGORIES } from "../../../../types/dto";
+import { uploadImage } from "../../../../apis/imageApi"; 
+
+type CategoryEntry = { id: number; name: string };
 
 const MyProfilePage = () => {
-  const [nickname] = useState("hy_0716");
-  const [bio, setBio] = useState("책을 아는가? 나는 모른다!");
-  const [isEditingBio, setIsEditingBio] = useState(false);
-  const [selectedKeywords, setSelectedKeywords] = useState<string[]>(["예술/대중문화", "국내 도서", "여행"]);
-  const [tempBio, setTempBio] = useState(bio);
-  const [tempKeywords, setTempKeywords] = useState<string[]>(selectedKeywords);
-  const [profileImage, setProfileImage] = useState<string | null>(null);
-  const [tempProfileImage, setTempProfileImage] = useState<string | null>(null);
+  // ===== 서버 데이터 =====
+  const { data: me, isLoading } = useMyProfileQuery();
+  const { mutate: updateProfile, isPending } = useUpdateMyProfile();
 
-  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files && e.target.files[0]) {
-      const reader = new FileReader();
-      reader.onload = () => {
-        if (typeof reader.result === "string") {
-          setTempProfileImage(reader.result);
-        }
-      };
-      reader.readAsDataURL(e.target.files[0]);
+  // ===== 로컬 상태 =====
+  const [nickname, setNickname] = useState("");
+  const [bio, setBio] = useState("");
+  const [isEditingBio, setIsEditingBio] = useState(false);
+  const [tempBio, setTempBio] = useState("");
+  const [tempKeywords, setTempKeywords] = useState<string[]>([]);
+  const [profileImage, setProfileImage] = useState<string | null>(null);        
+  const [tempProfileImage, setTempProfileImage] = useState<string | null>(null); 
+  const [pendingFile, setPendingFile] = useState<File | null>(null);            
+  const [isSaving, setIsSaving] = useState(false);
+
+  // 카테고리 정규화: 객체/배열 어떤 형태여도 [{id,name}]로 변환 
+  const CATEGORY_ENTRIES: CategoryEntry[] = useMemo(() => {
+    if (Array.isArray(BOOK_CATEGORIES)) {
+      return (BOOK_CATEGORIES as any[]).map((c: any) => ({
+        id: Number(c.id),
+        name: String(c.name),
+      }));
     }
+
+    return Object.entries(BOOK_CATEGORIES as Record<string, string>).map(([id, name]) => ({
+      id: Number(id),
+      name: String(name),
+    }));
+  }, []);
+
+  const NAME_TO_ID = useMemo(
+    () => new Map(CATEGORY_ENTRIES.map((e) => [e.name, e.id] as const)),
+    [CATEGORY_ENTRIES]
+  );
+
+  const keywords: string[] = useMemo(
+    () => CATEGORY_ENTRIES.map((e) => e.name),
+    [CATEGORY_ENTRIES]
+  );
+
+  // 최초 로드 시 서버 값으로 초기화
+  useEffect(() => {
+    if (!me) return;
+    setNickname(me.nickname ?? "");
+    const desc = me.description ?? "";
+    setBio(desc);
+    setTempBio(desc);
+    setProfileImage(me.profileImageUrl ?? null);
+    setTempProfileImage(me.profileImageUrl ?? null);
+    const names = (me.categories ?? []).map((c: { id: number; name: string }) => c.name);
+    setTempKeywords(names);
+  }, [me]);
+
+  // ===== 이벤트 핸들러 =====
+  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (!e.target.files || !e.target.files[0]) return;
+    const file = e.target.files[0];
+    setPendingFile(file); // 저장할 때 업로드
+
+    // 미리보기
+    const reader = new FileReader();
+    reader.onload = () => {
+      if (typeof reader.result === "string") setTempProfileImage(reader.result);
+    };
+    reader.readAsDataURL(file);
   };
 
   const handleKeywordToggle = (keyword: string) => {
-    if (tempKeywords.includes(keyword)) {
-      setTempKeywords(tempKeywords.filter((k) => k !== keyword));
-    } else {
-      setTempKeywords([...tempKeywords, keyword]);
+    setTempKeywords((prev) =>
+      prev.includes(keyword) ? prev.filter((k) => k !== keyword) : [...prev, keyword]
+    );
+  };
+
+  const handleSave = async () => {
+    try {
+      setIsSaving(true);
+
+      // 1) 이미지 업로드(선택)
+      let imgUrl: string | undefined = undefined;
+      if (pendingFile) {
+        // presigned URL로 업로드하고 공개 URL 반환
+        imgUrl = await uploadImage(pendingFile);
+      }
+
+      // 2) 이름 → ID 변환
+      const categoryIds = tempKeywords
+        .map((name) => NAME_TO_ID.get(name))
+        .filter((v): v is number => typeof v === "number");
+
+      // 3) PATCH /api/members/me
+      updateProfile(
+        { description: tempBio.trim(), imgUrl, categoryIds },
+        {
+          onSuccess: (updated) => {
+            setBio(updated.description ?? "");
+            setProfileImage(updated.profileImageUrl ?? null);
+            setIsEditingBio(false);
+            setPendingFile(null);
+          },
+          onError: (e) => {
+            alert(e?.message || "프로필 저장에 실패했습니다.");
+          },
+          onSettled: () => setIsSaving(false),
+        }
+      );
+    } catch (err: any) {
+      setIsSaving(false);
+      alert(err?.message || "이미지 업로드에 실패했습니다.");
     }
   };
 
-  const handleSave = () => {
-    setBio(tempBio);
-    setSelectedKeywords(tempKeywords);
-    setProfileImage(tempProfileImage);
-    setIsEditingBio(false);
-  };
+  if (isLoading) {
+    return <div className="p-10 text-[#2C2C2C]">불러오는 중...</div>;
+  }
 
   return (
     <div className="flex w-full min-h-screen bg-[#FAFAFA]">
       <main className="w-full py-10">
         <div className="w-full px-4 sm:px-6 md:px-10">
-          <h1 className="text-2xl font-bold mb-8 text-[#2C2C2C]">
-            프로필 편집
-          </h1>
+          <h1 className="text-2xl font-bold mb-8 text-[#2C2C2C]">프로필 편집</h1>
 
           <div className="flex flex-wrap gap-10 mb-10 w-full">
             {/* 프로필 이미지 */}
@@ -73,20 +151,16 @@ const MyProfilePage = () => {
                   style={{ backgroundColor: "#F4F2F1", borderColor: "#EAE5E2" }}
                 >
                   <Camera size={20} className="text-gray-600" />
-                  <input
-                    type="file"
-                    accept="image/*"
-                    onChange={handleImageChange}
-                    className="hidden"
-                  />
+                  <input type="file" accept="image/*" onChange={handleImageChange} className="hidden" />
                 </label>
               </div>
               <p className="text-lg font-semibold text-[#2C2C2C] text-center">{nickname}</p>
               <button
                 onClick={handleSave}
-                className="px-5 py-1 bg-[#90D26D] text-white rounded-full hover:bg-[#7bb95b]"
+                disabled={isPending || isSaving}
+                className="px-5 py-1 bg-[#90D26D] text-white rounded-full hover:bg-[#7bb95b] disabled:opacity-60"
               >
-                편집 완료
+                {isPending || isSaving ? "저장 중..." : "편집 완료"}
               </button>
             </div>
 
@@ -98,9 +172,7 @@ const MyProfilePage = () => {
                 {isEditingBio ? (
                   <textarea
                     value={tempBio}
-                    onChange={(e) => {
-                      if (e.target.value.length <= 30) setTempBio(e.target.value);
-                    }}
+                    onChange={(e) => e.target.value.length <= 30 && setTempBio(e.target.value)}
                     className="rounded-lg p-3 text-[#5C5C5C] w-full resize-none"
                     style={{
                       minHeight: "200px",
@@ -137,9 +209,9 @@ const MyProfilePage = () => {
                   className="border rounded-lg p-5 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3 w-full"
                   style={{ borderColor: "#EAE5E2" }}
                 >
-                  {keywords.map((keyword, idx) => (
+                  {keywords.map((keyword: string) => (
                     <button
-                      key={idx}
+                      key={keyword}
                       onClick={() => handleKeywordToggle(keyword)}
                       className={`px-3 py-1 rounded-full border 
                         ${
