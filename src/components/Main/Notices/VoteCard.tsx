@@ -20,7 +20,7 @@ const VoteCard = ({ notice }: VoteCardProps) => {
         <div>
           <div className="flex items-center gap-3 mb-1">
             <img src={mainNoticeIcon} alt="아이콘" className="w-6 h-6" />
-            <span className="text-lg font-semibold text-gray-800">
+            <span className="text-lg font-semibold text-gray-800 w-[8rem] block truncate">
               {notice.title.length > 10
                 ? notice.title.slice(0, 10) + "…"
                 : notice.title}
