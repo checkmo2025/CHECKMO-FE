@@ -126,8 +126,7 @@ export default function CreateClubPage(): React.ReactElement {
   return (
     <div className="absolute left-[315px] right-[42px] opacity-100">
       <Header 
-        pageTitle="모임 생성하기" 
-        notifications={[]}
+        pageTitle="모임 생성하기"
         customClassName="mt-[30px]"
       />
 
@@ -302,6 +301,7 @@ export default function CreateClubPage(): React.ReactElement {
           <div className="mt-[16px] max-w-[400px]">
             <ChipToggleGroup
               options={BOOK_CATEGORY_OPTIONS}
+              defaultSelected={selectedCategories}
               onChange={setSelectedCategories}
             />
           </div>
@@ -315,6 +315,7 @@ export default function CreateClubPage(): React.ReactElement {
           <div className="mt-[16px] max-w-[400px]">
             <ChipToggleGroup
               options={PARTICIPANT_TYPE_OPTIONS}
+              defaultSelected={selectedParticipants}
               onChange={setSelectedParticipants}
             />
           </div>
