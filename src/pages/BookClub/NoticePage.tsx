@@ -59,7 +59,7 @@ export default function NoticePage(): React.ReactElement {
                 <p className="text-red-500">{topError}</p>
               </div>
             )}
-            {!topLoading && !topError && topNotices.length > 0 && (
+            {!topLoading && !topError && (topNotices.length ?? 0) > 0 && (
               <AnnouncementCard items={topNotices} />
             )}
             {!topLoading && !topError && topNotices.length === 0 && (
