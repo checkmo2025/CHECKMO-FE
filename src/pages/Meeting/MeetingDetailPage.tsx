@@ -11,6 +11,7 @@ import { TeamTopicSection } from "../../components/Meeting/TeamTopicSection";
 import { NonProfileHeader } from "../../components/NonProfileHeader";
 
 const MeetingDetailPage = () => {
+
   const navigate = useNavigate();
   const detail = DummyMeetingDetail.result as MeetingDetailResultDto;
 
@@ -52,6 +53,17 @@ const MeetingDetailPage = () => {
         generation={detail.generation}
         className="flex min-w-[500px] px-4 pt-2 pb-4 bg-white mx-5 border-[#EAE5E2] border-b-2"
       />
+      <button
+        onClick={() =>
+          navigate("manage", {
+            state: {
+              meetingTitle: detail.title,
+            },
+          })
+        }
+        className="text-[#2C2C2C] text-lg font-medium">
+        토론 조 관리
+      </button>
 
       <TopicPreviewSection
         previews={detail.topicPreview.slice(0, 4)}
