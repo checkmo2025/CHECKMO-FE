@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom"; // <- 추가
+import { useNavigate } from "react-router-dom";
 import Header from "../../components/Header";
 import NoticeCard from "../../components/Main/Notices/NoticeCard";
 import BookStoriesCard from "../../components/Main/BookStoriesCard";
@@ -12,7 +12,7 @@ import { fetchMyClubs } from "../../apis/Main/clubs";
 import { fetchNoticesByClub } from "../../apis/Main/notices";
 
 export default function HomePage() {
-  const navigate = useNavigate(); // <- 추가
+  const navigate = useNavigate();
   const [bookStories, setBookStories] = useState<BookStoryResponseDto[]>([]);
   const [notices, setNotices] = useState<NoticeDto[]>([]);
   const [loadingBooks, setLoadingBooks] = useState(false);
@@ -20,16 +20,17 @@ export default function HomePage() {
   const [errorBooks, setErrorBooks] = useState<string | null>(null);
 
   useEffect(() => {
+    // 책 이야기 API
     setLoadingBooks(true);
     fetchBookStories({ scope: "ALL" })
       .then((data) => setBookStories(data?.bookStoryResponses ?? []))
       .catch((e) => setErrorBooks(e.message ?? "책 이야기 불러오기 실패"))
       .finally(() => setLoadingBooks(false));
 
+    // 공지사항 API
     setLoadingNotices(true);
     fetchMyClubs()
       .then((clubs) => {
-        // 각 클럽별 공지 가져오기
         return Promise.all(
           clubs.map(async (club) => {
             const notices = await fetchNoticesByClub(club.clubId);
@@ -42,7 +43,6 @@ export default function HomePage() {
         );
       })
       .then((noticesArrays) => {
-        // 2차원 배열을 1차원으로
         const allNotices = noticesArrays.flat();
         setNotices(allNotices);
       })
@@ -55,6 +55,7 @@ export default function HomePage() {
       <Header pageTitle="책모 홈" customClassName="mt-[30px]" />
 
       <div className="overflow-y-auto h-[calc(100vh-80px)] w-full flex-1 pt-[30px] pl-[2px] pr-[30px] bg-[#FFFFFF]">
+        {/* 공지사항 */}
         <div className="text-xl font-semibold text-gray-800 mb-4">공지사항</div>
         {loadingNotices && <p>공지사항 로딩중...</p>}
         <div className="flex gap-4 overflow-x-auto flex-nowrap scroll-smooth mb-12">
@@ -62,15 +63,24 @@ export default function HomePage() {
             <div
               key={notice.id}
               className="flex-shrink-0 cursor-pointer"
-              onClick={() =>
-                navigate(`/bookclub/${notice.clubId}/notices/${notice.id}`)
-              }
+              onClick={() => {
+                const typeMap: Record<string, string> = {
+                  공지: "general",
+                  투표: "vote",
+                  모임: "meeting",
+                };
+                const type = typeMap[notice.tag] ?? "general";
+                navigate(
+                  `/bookclub/${notice.clubId}/notices/${notice.id}?type=${type}`
+                );
+              }}
             >
               <NoticeCard notice={notice} />
             </div>
           ))}
         </div>
 
+        {/* 책 이야기 */}
         <div className="text-xl font-semibold text-gray-800 mb-4">
           책 이야기
         </div>
