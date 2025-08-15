@@ -1,7 +1,7 @@
 import { useLocation } from "react-router-dom";
 import { TopicPreviewSection } from "../../components/Meeting/TopicPreviewSection";
 import { NonProfileHeader } from "../../components/NonProfileHeader";
-import type { TopicPreviewDto } from "../../types/clubMeeting";
+import type { Topic } from "../../types/clubMeeting";
 import { format, parseISO } from "date-fns";
 
 const MeetingTopicListPage = () => {
@@ -9,7 +9,7 @@ const MeetingTopicListPage = () => {
   const { date, bookTitle, topics } = location.state as {
     date: string;
     bookTitle: string;
-    topics: TopicPreviewDto[];
+    topics: Topic[];
   };
   const dateStr = format(parseISO(date), "yyyy.MM.dd");
 

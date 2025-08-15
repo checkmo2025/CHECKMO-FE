@@ -68,7 +68,7 @@ const MeetingDetailPage = () => {
         onClick={() =>
           navigate("manage", {
             state: {
-              meetingTitle: detail.title,
+              meetingTitle: meetingInfo.title,
             },
           })
         }

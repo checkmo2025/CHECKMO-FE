@@ -1,7 +1,6 @@
 
 import backIcon from "../../assets/icons/backIcon.png";
 import { useNavigate, useParams } from "react-router-dom";
-import { FaUserCircle } from "react-icons/fa";
 import { useEffect, useState } from "react";
 import { useClubgetMembers } from "../../hooks/BookClub/useClubgetMembers";
 import type { ClubMember } from "../../types/Club/GetClubMembers";
@@ -11,22 +10,22 @@ const RegisterAdminPage = () => {
   const { bookclubId } = useParams<{ bookclubId: string }>();
   const [Member, setMember] = useState<ClubMember[]>([]);
 
-  const {  data: Result,  fetchNextPage,  hasNextPage,  isFetchingNextPage,} =  useClubgetMembers({
-      clubId: Number(bookclubId),
-      status: 'PENDING',
-      size: 20
+  const { data: Result, fetchNextPage, hasNextPage, isFetchingNextPage, } = useClubgetMembers({
+    clubId: Number(bookclubId),
+    status: 'PENDING',
+    size: 20
   });
 
   useEffect(() => {
-      console.log(Result);
-      if (!Result){return;}
-      const List = Result.pages.flatMap(page => page.clubMembers);
-      setMember(List);
+    console.log(Result);
+    if (!Result) { return; }
+    const List = Result.pages.flatMap(page => page.clubMembers);
+    setMember(List);
   }, [Result]);
 
   useEffect(() => {
-      if (!hasNextPage || isFetchingNextPage) return;
-      fetchNextPage();
+    if (!hasNextPage || isFetchingNextPage) return;
+    fetchNextPage();
   }, [hasNextPage, isFetchingNextPage, fetchNextPage]);
 
   return (

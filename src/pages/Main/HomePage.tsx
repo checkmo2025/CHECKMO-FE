@@ -40,10 +40,6 @@ export default function HomePage() {
       {/* 헤더 */}
       <Header
         pageTitle="책모 홈"
-        userProfile={{
-          username: "yujin",
-          bio: "가나다",
-        }}
         customClassName="mt-[30px]"
       />
 
@@ -64,8 +60,8 @@ export default function HomePage() {
               book="책 정보 없음"
               type={
                 notice.tag === "모임" ||
-                notice.tag === "투표" ||
-                notice.tag === "공지"
+                  notice.tag === "투표" ||
+                  notice.tag === "공지"
                   ? notice.tag
                   : "공지"
               }
@@ -89,8 +85,8 @@ export default function HomePage() {
               story.writtenByMe
                 ? "내 이야기"
                 : story.authorInfo.following
-                ? "구독 중"
-                : "구독하기";
+                  ? "구독 중"
+                  : "구독하기";
 
             return (
               <div key={story.bookStoryId} className="flex-shrink-0 w-[33rem]">
