@@ -1,20 +1,56 @@
-export interface NoticeDto {
+export type NoticeTag = "모임" | "투표" | "공지";
+
+export interface BaseNotice {
   id: number;
-  tag: "모임" | "투표" | "공지" | string;
   title: string;
-  important: boolean;
-  content?: string;
-  date?: string;
-  book?: string;
-  clubId?: number; // 클럽 구분용
-  meetingInfoDTO?: any; // 모임 관련 상세
-  voteInfoDTO?: any; // 투표 관련 상세
+  tag: NoticeTag;
+  content: string;
+  important?: boolean;
+  imgUrl?: string;
+  afterPartyPlace?: string;
+  clubId: number;
 }
 
-export interface NoticeResultDto {
-  noticeList: NoticeDto[];
-  hasNext: boolean;
-  nextCursor: number;
-  pageSize: number;
-  staff: boolean;
+export interface BookInfo {
+  bookId: string;
+  title: string;
+  author?: string;
+  imgUrl?: string;
 }
+
+export interface MeetingInfoDTO {
+  meetingId: number;
+  title: string;
+  meetingTime: string;
+  location: string;
+  bookInfo?: BookInfo;
+}
+
+export interface VoteItem {
+  item: string;
+  voteCount: number;
+  votedMembers: any[];
+  selected: boolean;
+}
+
+export interface VoteNotice extends BaseNotice {
+  tag: "투표";
+  startTime: string;
+  deadline: string;
+  items: VoteItem[];
+  anonymity: boolean;
+  duplication: boolean;
+  meetingInfoDTO?: MeetingInfoDTO;
+}
+
+export interface MeetingNotice extends BaseNotice {
+  tag: "모임";
+  meetingInfoDTO: MeetingInfoDTO;
+}
+
+export interface GeneralNotice extends BaseNotice {
+  tag: "공지";
+  meetingInfoDTO?: MeetingInfoDTO;
+}
+
+export type NoticeDto = VoteNotice | MeetingNotice | GeneralNotice;
