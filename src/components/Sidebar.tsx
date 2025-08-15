@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { NavLink, useParams, useNavigate, useLocation } from "react-router-dom";
-
+import exitIcon from "../assets/icons/exit.png";
 import homeIcon from "../assets/icons/home.png";
 import bookclubIcon from "../assets/icons/bookclub.png";
 import searchIcon from "../assets/icons/search.png";
@@ -22,6 +22,7 @@ type Submenu = {
   name: string;
   path: string;
   isModal?: boolean;
+  submenus?: Submenu[];
 };
 
 type Menu = {
@@ -44,11 +45,8 @@ const Sidebar = () => {
   const [myClubs, setMyClubs] = useState<ClubDto[]>([]);
   const [isClubListModalOpen, setIsClubListModalOpen] = useState(false);
 
-  function openPlannedModal() {
-    setIsModalOpen(true);
-  }
+  const openPlannedModal = () => setIsModalOpen(true);
 
-  // 내 클럽 목록 API 호출
   useEffect(() => {
     const loadClubs = async () => {
       const clubs = await fetchMyClubs();
@@ -57,7 +55,6 @@ const Sidebar = () => {
     loadClubs();
   }, []);
 
-  // bookclubId 변경 시 이름 세팅
   useEffect(() => {
     if (bookclubId) {
       const matchedClub = myClubs.find((c) => c.clubId === Number(bookclubId));
@@ -74,8 +71,31 @@ const Sidebar = () => {
           submenus: [
             { name: "공지사항", path: `/bookclub/${bookclubId}/notices` },
             { name: "책장", path: `/bookclub/${bookclubId}/shelf` },
-            { name: "모임", path: `/bookclub/${bookclubId}/meeting` },
-            { name: "책 추천", path: `/bookclub/${bookclubId}/recommend` },
+            {
+              name: "모임",
+              path: `/bookclub/${bookclubId}/meeting`,
+              submenus: [
+                {
+                  name: "모임 전체보기",
+                  path: `/bookclub/${bookclubId}/meeting`,
+                },
+                { name: "이번 모임 바로가기", path: "" },
+              ],
+            },
+            {
+              name: "책 추천",
+              path: `/bookclub/${bookclubId}/recommend`,
+              submenus: [
+                {
+                  name: "책 추천 전체보기",
+                  path: `/bookclub/${bookclubId}/recommend`,
+                },
+                {
+                  name: "책 추천 하기",
+                  path: `/bookclub/${bookclubId}/recommend/:bookId/create`,
+                },
+              ],
+            },
           ],
         },
         {
@@ -154,51 +174,154 @@ const Sidebar = () => {
         },
       ];
 
-  useEffect(() => {
-    const currentPath = location.pathname;
-
-    const menuToOpen = menus.find(({ name, path, submenus }) => {
-      if (path === currentPath) return true;
-      if (submenus.some((s) => s.path === currentPath)) return true;
-      return false;
-    });
-
-    if (menuToOpen && !openMenus.has(menuToOpen.name)) {
-      setOpenMenus((prev) => new Set(prev).add(menuToOpen.name));
-    }
-  }, [location.pathname, menus, openMenus]);
-
   const toggleMenu = (menuName: string) => {
     setOpenMenus((prev) => {
       const updated = new Set(prev);
-      if (updated.has(menuName)) updated.delete(menuName);
-      else updated.add(menuName);
+      updated.has(menuName) ? updated.delete(menuName) : updated.add(menuName);
       return updated;
     });
   };
 
-  const header = bookclubId ? (
-    <div className="flex items-center gap-[0.5rem]">
-      <img src={logoImage} alt="logo" className="w-10 h-auto" />
-      <div className="flex flex-col">
-        <span className="text-[2rem] font-bold font-blackHanSans text-[#3D4C35]">
-          {bookclubName}
-        </span>
-        <button
-          onClick={() => navigate(`/home`)}
-          className="flex items-center gap-2 mt-1 px-[0.875rem] py-[0.25rem] rounded border border-[#93C27C] bg-[#F1F8EF] text-[#3D4C35]"
-        >
-          <img src={homeIcon} alt="home" className="w-4 h-4" />
-          메인 홈
-        </button>
+  const isTopMenuActive = (menu: Menu) => {
+    const paths = [
+      ...(menu.path ? [menu.path] : []),
+      ...menu.submenus.flatMap((s) => [
+        s.path,
+        ...(s.submenus?.map((n) => n.path) || []),
+      ]),
+    ].filter(Boolean) as string[];
+    return paths.some((p) => location.pathname.startsWith(p));
+  };
+
+  const getMenuTextColor = (menu: Menu, subPath?: string) => {
+    const currentPath = location.pathname;
+    const activeColor = "#3D4C35";
+    const inactiveColor = "#AAAAAA";
+
+    if (subPath) {
+      if (subPath === "/bookstory" || subPath === "/booksearch") {
+        return currentPath === subPath ? activeColor : inactiveColor;
+      }
+      return currentPath.startsWith(subPath) ? activeColor : inactiveColor;
+    }
+    return isTopMenuActive(menu) ? activeColor : inactiveColor;
+  };
+
+  const renderSubmenus = (
+    submenus: Submenu[],
+    level = 1,
+    parentMenu?: Menu
+  ) => {
+    return (
+      <div className={`ml-${level * 4} mt-1 space-y-1 pl-3`}>
+        {submenus.map(({ name, path, isModal, submenus: nested }) => {
+          let icon = null;
+          if (name === "공지사항") icon = noticeIcon;
+          else if (name === "책장") icon = bookShelf;
+          else if (name === "모임") icon = bookclubIcon;
+          else if (name === "책 추천") icon = bookIcon;
+
+          if (isModal) {
+            return (
+              <button
+                key={name}
+                onClick={() => setIsClubListModalOpen(true)}
+                style={{ color: getMenuTextColor(parentMenu!, path) }}
+                className="flex items-center gap-2 text-sm py-1 pl-2 pr-3 rounded hover:bg-[#DDEED6]"
+              >
+                {icon && <img src={icon} alt="" className="w-5 h-5" />}
+                {name}
+              </button>
+            );
+          }
+
+          if (!path || MODAL_ONLY.has(path)) {
+            return (
+              <button
+                key={name}
+                onClick={(e) => {
+                  e.preventDefault();
+                  openPlannedModal();
+                }}
+                style={{ color: getMenuTextColor(parentMenu!, path) }}
+                className="flex items-center gap-2 text-sm py-1 pl-2 pr-3 rounded hover:bg-[#DDEED6]"
+              >
+                {icon && <img src={icon} alt="" className="w-5 h-5" />}
+                {name}
+              </button>
+            );
+          }
+
+          return (
+            <div key={name}>
+              <NavLink
+                to={path}
+                end
+                style={{ color: getMenuTextColor(parentMenu!, path) }}
+                className="flex items-center gap-2 text-sm py-1 pl-2 pr-3 rounded hover:bg-[#DDEED6]"
+              >
+                {icon && <img src={icon} alt="" className="w-5 h-5" />}
+                {name}
+              </NavLink>
+              {nested &&
+                nested.length > 0 &&
+                renderSubmenus(nested, level + 1, parentMenu)}
+            </div>
+          );
+        })}
       </div>
-    </div>
-  ) : (
-    <div className="flex items-center gap-4">
-      <img src={logoImage} alt="logo" className="w-10 h-auto" />
-      <span className="text-4xl font-bold text-[#3D4C35] font-blackHanSans">
-        책모
-      </span>
+    );
+  };
+
+  const header = (
+    <div className="flex items-center gap-4 cursor-pointer">
+      {/* 로고 */}
+      <img
+        src={logoImage}
+        alt="logo"
+        style={{ width: "3.00188rem", height: "4.63044rem" }}
+        onClick={() =>
+          navigate(bookclubId ? `/bookclub/${bookclubId}/home` : "/home")
+        }
+      />
+
+      {/* 오른쪽 영역 */}
+      <div className="flex flex-col justify-center">
+        {/* 독서 모임 이름 또는 "책모" */}
+        <span
+          className={`text-4xl font-bold font-blackHanSans break-words truncate text-[#3D4C35]`}
+          style={{
+            textAlign: !bookclubId ? "left" : "left",
+          }}
+          title={bookclubName}
+          onClick={() =>
+            navigate(bookclubId ? `/bookclub/${bookclubId}/home` : "/home")
+          }
+        >
+          {bookclubId ? bookclubName : "책모"}
+        </span>
+
+        {/* 독서 모임 사이드바에서만 메인 홈 버튼 */}
+        {bookclubId && (
+          <button
+            onClick={() => navigate(`/home`)}
+            className="relative flex items-center mt-1 h-[2.125rem] rounded border border-[#93C27C] bg-[#F1F8EF]"
+            style={{ width: "100%" }}
+          >
+            {/* 아이콘 왼쪽 */}
+            <img
+              src={exitIcon}
+              alt="home"
+              className="w-4 h-4 ml-[0.875rem] absolute left-0"
+            />
+
+            {/* 글씨 중앙 정렬 */}
+            <span className="absolute left-0 right-0 text-center text-[0.85rem] text-[#3D4C35] font-medium">
+              메인 홈
+            </span>
+          </button>
+        )}
+      </div>
     </div>
   );
 
@@ -206,74 +329,31 @@ const Sidebar = () => {
     <div className="flex w-[16.5rem] h-screen flex-col px-6 py-8 bg-[#E9F2E3]">
       {header}
 
-      <nav className="flex flex-col w-full space-y-2 mt-6">
-        {menus.map(({ name, path, icon, submenus }) => {
+      <nav className="flex flex-col w-full overflow-y-auto space-y-2 mt-6">
+        {menus.map((menu) => {
+          const { name, path, icon, submenus } = menu;
           const isMenuOpen = openMenus.has(name);
-          const locationPath = location.pathname;
-          const isCurrentSubmenuActive = submenus.some(
-            (sub) => sub.path === locationPath
-          );
-
-          const isBookclubMenu = name === "독서 모임";
-
-          const showBorder = isBookclubMenu
-            ? isCurrentSubmenuActive
-            : path === locationPath ||
-              (path && locationPath.startsWith(path + "/"));
 
           return (
             <div key={name} className="w-full">
               <div className="flex items-center justify-between">
-                {isBookclubMenu ? (
-                  <button
-                    onClick={() => toggleMenu(name)}
-                    className={`flex items-center gap-3 py-2 pl-3 pr-4 w-full rounded-r-lg cursor-pointer hover:bg-[#DDEED6] ${
-                      showBorder
-                        ? "text-[#3D4C35] font-semibold border-l-4 border-[#90D26D]"
-                        : "text-[#AAA]"
-                    }`}
-                  >
-                    <img
-                      src={icon}
-                      alt={`${name} 아이콘`}
-                      className="w-5 h-5"
-                    />
-                    <span className="text-[18px] font-medium font-pretendard">
-                      {name}
-                    </span>
-                  </button>
-                ) : (
-                  <NavLink
-                    to={path ?? submenus[0]?.path ?? "#"}
-                    end
-                    className={() =>
-                      `flex items-center gap-3 py-2 pl-3 pr-4 w-full rounded-r-lg cursor-pointer hover:bg-[#DDEED6] ${
-                        showBorder
-                          ? "text-[#3D4C35] font-semibold border-l-4 border-[#90D26D]"
-                          : "text-[#AAA]"
-                      }`
-                    }
-                    onClick={() => {
-                      if (!isMenuOpen) toggleMenu(name);
-                    }}
-                  >
-                    <img
-                      src={icon}
-                      alt={`${name} 아이콘`}
-                      className="w-5 h-5"
-                    />
-                    <span className="text-[18px] font-medium font-pretendard">
-                      {name}
-                    </span>
-                  </NavLink>
-                )}
+                <NavLink
+                  to={path ?? submenus[0]?.path ?? "#"}
+                  end
+                  style={{ color: getMenuTextColor(menu) }}
+                  className={`flex items-center gap-3 py-2 pl-3 pr-4 w-full rounded-r-lg cursor-pointer hover:bg-[#DDEED6] ${
+                    isTopMenuActive(menu) ? "border-l-4 border-[#93C27C]" : ""
+                  }`}
+                  onClick={() => toggleMenu(name)}
+                >
+                  <img src={icon} alt={`${name} 아이콘`} className="w-5 h-5" />
+                  <span className="text-[18px] font-medium font-pretendard">
+                    {name}
+                  </span>
+                </NavLink>
 
                 {submenus.length > 0 && (
-                  <button
-                    onClick={() => toggleMenu(name)}
-                    className="p-1"
-                    aria-label={`${isMenuOpen ? "접기" : "펼치기"}`}
-                  >
+                  <button onClick={() => toggleMenu(name)} className="p-1">
                     <img
                       src={isMenuOpen ? toggleClose : toggleOpen}
                       alt="토글"
@@ -283,69 +363,9 @@ const Sidebar = () => {
                 )}
               </div>
 
-              {isMenuOpen && submenus.length > 0 && (
-                <div className="ml-8 mt-1 space-y-1">
-                  {submenus.map(({ name: subName, path: subPath, isModal }) => {
-                    let icon = null;
-
-                    if (subName === "공지사항") icon = noticeIcon;
-                    else if (subName === "책장") icon = bookShelf;
-                    else if (subName === "모임") icon = bookclubIcon;
-                    else if (subName === "책 추천") icon = bookIcon;
-
-                    if (isModal) {
-                      return (
-                        <button
-                          key={subName}
-                          onClick={() => setIsClubListModalOpen(true)}
-                          className="flex items-center gap-2 text-sm py-1 pl-2 pr-3 rounded hover:text-[#3D4C35]"
-                        >
-                          {icon && (
-                            <img src={icon} alt="" className="w-5 h-5" />
-                          )}
-                          {subName}
-                        </button>
-                      );
-                    }
-
-                    if (!subPath || MODAL_ONLY.has(subPath)) {
-                      return (
-                        <button
-                          key={subName}
-                          onClick={(e) => {
-                            e.preventDefault();
-                            openPlannedModal();
-                          }}
-                          className="flex items-center gap-2 text-sm py-1 pl-2 pr-3 rounded hover:text-[#3D4C35]"
-                        >
-                          {icon && (
-                            <img src={icon} alt="" className="w-5 h-5" />
-                          )}
-                          {subName}
-                        </button>
-                      );
-                    }
-
-                    return (
-                      <NavLink
-                        key={subName}
-                        to={subPath}
-                        end
-                        className={({ isActive }) =>
-                          `flex items-center gap-2 text-sm py-1 pl-2 pr-3 rounded hover:text-[#3D4C35] ${
-                            isActive
-                              ? "text-[#3D4C35] font-semibold"
-                              : "text-[#AAA]"
-                          }`
-                        }
-                      >
-                        {icon && <img src={icon} alt="" className="w-5 h-5" />}
-                        {subName}
-                      </NavLink>
-                    );
-                  })}
-                </div>
-              )}
+              {isMenuOpen &&
+                submenus.length > 0 &&
+                renderSubmenus(submenus, 1, menu)}
             </div>
           );
         })}
