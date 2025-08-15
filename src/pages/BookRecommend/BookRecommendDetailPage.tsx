@@ -85,13 +85,8 @@ const BookRecommendDetailPage = () => {
       <div className="flex flex-col h-screen ml-5 mr-10">
         <div className="sticky top-0 bg-white z-10">
           <Header
-            pageTitle={"추천 도서 상세"}
-            userProfile={{
-              username: "오즈",
-              bio: "re_turnto_oz",
-            }}
-            notifications={[]}
             customClassName="mx-3 mb-5 mt-[30px]"
+            pageTitle={"추천 도서 목록"}
           />
         </div>
         <div className="flex-grow overflow-y-auto">

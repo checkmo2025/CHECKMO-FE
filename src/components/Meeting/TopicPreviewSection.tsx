@@ -1,9 +1,9 @@
-import { memo } from 'react';
-import type { TopicPreviewDto } from '../../types/clubMeeting';
-import { TopicPreviewCard } from './TopicPreviewCard';
+import { memo } from "react";
+import type { Topic } from "../../types/clubMeeting";
+import { TopicPreviewCard } from "./TopicPreviewCard";
 
 interface TopicPreviewSectionProps {
-  previews: TopicPreviewDto[];
+  previews: Topic[];
   onMoreClick?: () => void;
 }
 
@@ -34,5 +34,3 @@ const TopicPreviewSectionComponent = ({
 };
 
 export const TopicPreviewSection = memo(TopicPreviewSectionComponent);
-
-

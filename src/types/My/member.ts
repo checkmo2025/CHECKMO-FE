@@ -53,7 +53,7 @@ export type ClubResponse = {
 
 export type NotificationItem = {
   notificationId: number;
-  notificationType: "LIKE" | "COMMENT" | "FOLLOW";
+  notificationType: "LIKE" | "COMMENT" | "FOLLOW" | "JOIN_CLUB";
   senderNickname: string;
   targetName: string | null;
   read: boolean;

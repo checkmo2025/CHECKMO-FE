@@ -25,15 +25,16 @@ export const MeetingCard = ({
   const dateStr = format(date, "yyyy.MM.dd");
   const timeStr = format(date, "a h시", { locale: ko });
 
+  const tag = tags?.split(",");
+
   return (
     <div
       className={
         className
           ? `${className}`
-          : `flex border-2 border-[#EAE5E2] min-w-[500px] rounded-xl p-4 bg-white`
+          : `flex border-2 border-[#EAE5E2] min-w-[700px] rounded-xl p-4 bg-white`
       }
     >
-      {/* 왼쪽 이미지 */}
       <div className="w-32 h-40 flex-shrink-0 rounded-2xl overflow-hidden bg-gray-100">
         <img
           src={book.imgUrl}
@@ -42,9 +43,7 @@ export const MeetingCard = ({
         />
       </div>
 
-      {/* 오른쪽 정보 */}
       <div className="flex-1 ml-6 flex flex-col justify-between">
-        {/* 상단: 제목 + 태그 */}
         <div className="flex justify-between items-start">
           {title && (
             <div className="flex flex-row items-center">
@@ -53,11 +52,15 @@ export const MeetingCard = ({
             </div>
           )}
           <div className="flex space-x-2">
-            {tags && (
-              <span className="px-3.5 py-1 bg-[#90D26D] text-white text-xs rounded-full">
-                {tags}
-              </span>
-            )}
+            {tag &&
+              tag.map((t) => (
+                <span
+                  key={t}
+                  className="px-3.5 py-1 bg-[#90D26D] text-white text-xs rounded-full"
+                >
+                  {t}
+                </span>
+              ))}
             {generation && (
               <span className="px-3.5 py-1 bg-[#90D26D] text-white text-xs rounded-full">
                 {generation}기
@@ -66,7 +69,6 @@ export const MeetingCard = ({
           </div>
         </div>
 
-        {/* 중단: 메타 정보 */}
         <div className="text-sm font-medium space-y-1 mb-1">
           <p className="text-gray-900">도서: {book.title}</p>
           <p className="text-gray-900">작가: {book.author}</p>

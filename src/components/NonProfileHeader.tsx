@@ -9,7 +9,7 @@ const NonProfileHeaderComponent = ({ title }: NonProfileHeaderProps) => {
   const navigate = useNavigate();
 
   return (
-    <div className="flex items-center my-10">
+    <div className="flex items-center my-[30px]">
       <button onClick={() => navigate(-1)} className="mr-3">
         <img src="/src/assets/icons/backIcon.png" alt="뒤로가기" />
       </button>
