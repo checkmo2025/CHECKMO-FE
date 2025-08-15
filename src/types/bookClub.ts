@@ -90,3 +90,18 @@ export type JoinClubResponse = ApiResponse<JoinClubResult>;
 
 // 운영진 여부 확인 결과 타입
 export type IsStaffResult = boolean;
+
+// 클럽 수정 요청 타입
+export type UpdateClubRequestDto = {
+  name: string;
+  description: string;
+  profileImageUrl?: string;
+  open: boolean; // 서버에서 무시됨 (생성 시에만 반영)
+  category?: number[]; // 명세 샘플 포함. 서버에서 허용 시 반영
+  participantTypes: string[];
+  region: string;
+  insta?: string;
+  kakao?: string;
+};
+
+// 클럽 수정 응답 타입 (인터셉터로 result만 내려오므로 ClubDto 재사용)
