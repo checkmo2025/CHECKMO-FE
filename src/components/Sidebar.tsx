@@ -42,7 +42,7 @@ type Menu = {
   submenus: Submenu[];
 };
 
-const MODAL_ONLY = new Set(["/booksearch1", "/booksearch2"]);
+const MODAL_ONLY = new Set(["/booksearch1", "/booksearch2", "/bookclub/this"]);
 
 const Sidebar = () => {
   const { bookclubId } = useParams<{ bookclubId?: string }>();
@@ -89,7 +89,7 @@ const Sidebar = () => {
                   name: "모임 전체보기",
                   path: `/bookclub/${bookclubId}/meeting`,
                 },
-                { name: "이번 모임 바로가기", path: "" },
+                { name: "이번 모임 바로가기", path: `/bookclub/this` },
               ],
             },
             {
@@ -100,10 +100,10 @@ const Sidebar = () => {
                   name: "책 추천 전체보기",
                   path: `/bookclub/${bookclubId}/recommend`,
                 },
-                {
-                  name: "책 추천 하기",
-                  path: `/bookclub/${bookclubId}/recommend/:bookId/create`,
-                },
+                // {
+                //   name: "책 추천 하기",
+                //   path: `/bookclub/${bookclubId}/recommend/create`,
+                // },
               ],
             },
           ],
