@@ -1,10 +1,10 @@
 import { memo } from "react";
-import type { TopicDto } from "../../types/clubMeeting";
+import type { Topic } from "../../types/clubMeeting";
 import { TopicCard } from "./TopicCard";
 
 interface TeamTopicSectionProps {
   teamNumber: number;
-  topics: TopicDto[];
+  topics: Topic[];
   onViewAllClick?: () => void;
 }
 

@@ -25,7 +25,6 @@ export default function BookStoryHomePage() {
   const [loading, setLoading] = useState(false);
   const tabContainerRef = useRef<HTMLDivElement>(null);
 
-  // 책 이야기 + 내 모임 불러오기
   useEffect(() => {
     const loadStoriesAndClubs = async () => {
       if (!tabs[activeTab]) return;
@@ -33,9 +32,7 @@ export default function BookStoryHomePage() {
       try {
         const { scope, clubId } = tabs[activeTab];
         const data = await fetchBookStories({ scope, clubId });
-        console.log(data);
 
-        //TODO: 안불러와져서 수정 필요
         const filteredStories =
           scope === "FOLLOWING"
             ? (data.bookStoryResponses || []).filter(
@@ -72,9 +69,35 @@ export default function BookStoryHomePage() {
     loadStoriesAndClubs();
   }, [activeTab]);
 
+  const handleToggleLike = (storyId: number, liked: boolean) => {
+    setStories((prev) =>
+      prev.map((story) =>
+        story.bookStoryId === storyId
+          ? {
+              ...story,
+              likedByMe: liked,
+              likes: liked ? story.likes + 1 : story.likes - 1,
+            }
+          : story
+      )
+    );
+  };
+
+  const handleToggleSubscribe = (nickname: string, subscribed: boolean) => {
+    setStories((prev) =>
+      prev.map((story) =>
+        story.authorInfo.nickname === nickname
+          ? {
+              ...story,
+              authorInfo: { ...story.authorInfo, following: subscribed },
+            }
+          : story
+      )
+    );
+  };
+
   return (
     <div className="absolute left-[315px] right-[42px] opacity-100">
-      {/* 헤더 */}
       <Header
         pageTitle="책 이야기"
         userProfile={{ username: "yujin", bio: "가나다" }}
@@ -82,8 +105,8 @@ export default function BookStoryHomePage() {
       />
 
       {/* 탭 */}
-      <div className="overflow-y-auto h-[calc(100vh-80px)] w-full flex-1 pt-[30px] pl-[2px] pr-[30px] bg-[#FFFFFF] ">
-        <div className="flex items-center gap-2 border-b border-gray-200 mb-6 ">
+      <div className="overflow-y-auto h-[calc(100vh-80px)] w-full flex-1 pt-[30px] pl-[2px] pr-[30px] bg-[#FFFFFF]">
+        <div className="flex items-center gap-2 mb-6">
           <div
             className="flex gap-6 overflow-x-auto scrollbar-hide whitespace-nowrap"
             ref={tabContainerRef}
@@ -92,7 +115,7 @@ export default function BookStoryHomePage() {
               <button
                 key={`${tab.scope}-${tab.clubId ?? "default"}`}
                 onClick={() => setActiveTab(index)}
-                className={`pb-2 text-sm font-medium relative transition-colors duration-150 inline-block ${
+                className={`pb-2 text-sm font-medium relative transition-colors duration-150 inline-block cursor-pointer ${
                   index === activeTab
                     ? "text-black border-b-2 border-green-500"
                     : "text-gray-400 hover:text-black"
@@ -107,7 +130,7 @@ export default function BookStoryHomePage() {
         {/* 상단 버튼 & 보기 모드 */}
         <div className="flex justify-between items-center mb-6">
           <Link to="/bookstory/search">
-            <button className="flex items-center gap-2 px-4 py-2 rounded-full bg-[#A6917D] text-white text-sm font-medium">
+            <button className="flex items-center gap-2 px-4 py-2 rounded-full bg-[#A6917D] text-white text-sm font-medium cursor-pointer">
               <Pencil size={16} /> 책 이야기
             </button>
           </Link>
@@ -147,16 +170,20 @@ export default function BookStoryHomePage() {
                 }
               >
                 <BookStoryCard
+                  bookStoryId={story.bookStoryId}
                   imageUrl={story.bookInfo.imgUrl}
                   profileUrl={story.authorInfo.profileImageUrl}
                   userName={story.authorInfo.nickname}
                   isSubscribed={story.authorInfo.following}
                   title={story.bookStoryTitle}
                   summary={story.description}
-                  bookTitle={story.bookStoryTitle}
+                  bookTitle={story.bookInfo.title}
                   author={story.bookInfo.author}
                   likes={story.likes}
+                  likedByMe={story.likedByMe}
                   viewMode={viewMode}
+                  onToggleLike={handleToggleLike}
+                  onToggleSubscribe={handleToggleSubscribe}
                 />
               </div>
             ))

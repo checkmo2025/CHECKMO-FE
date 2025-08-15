@@ -95,10 +95,12 @@ export default function HomePage() {
             return (
               <div key={story.bookStoryId} className="flex-shrink-0 w-[33rem]">
                 <BookStoriesCard
+                  bookStoryId={story.bookStoryId}
                   title={story.bookStoryTitle}
                   story={story.description}
                   state={state}
                   likes={story.likes}
+                  likedByMe={story.likedByMe}
                   authorNickname={story.authorInfo.nickname}
                   authorProfileImageUrl={story.authorInfo.profileImageUrl}
                   bookCoverImageUrl={story.bookInfo.imgUrl}

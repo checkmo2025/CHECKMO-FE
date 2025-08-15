@@ -14,24 +14,20 @@ const MyStoryPage = () => {
 
   const { data, fetchNextPage, hasNextPage, isFetchingNextPage } = useMyBookStories();
 
-  // 수정 상태
   const [editingId, setEditingId] = useState<number | null>(null);
-  const [editTitle, setEditTitle] = useState("");
   const [editContent, setEditContent] = useState("");
 
   const observerRef = useRef<IntersectionObserver | null>(null);
 
-  // 삭제 Mutation (낙관적 업데이트)
+  // 삭제
   const deleteMutation = useMutation({
     mutationFn: (id: number) => deleteBookStory(id),
     onMutate: async (id: number) => {
       await qc.cancelQueries({ queryKey: ["bookStories", "MY"] });
-
       const prevData = qc.getQueryData<InfiniteData<BookStoriesResult>>([
         "bookStories",
         "MY",
       ]);
-
       qc.setQueryData<InfiniteData<BookStoriesResult>>(
         ["bookStories", "MY"],
         (oldData) => {
@@ -47,7 +43,6 @@ const MyStoryPage = () => {
           };
         }
       );
-
       return { prevData };
     },
     onError: (_err, _vars, ctx) => {
@@ -60,18 +55,16 @@ const MyStoryPage = () => {
     },
   });
 
-  // 수정 Mutation (낙관적 업데이트)
+  // 수정
   const updateMutation = useMutation({
     mutationFn: ({ id, description }: { id: number; description: string }) =>
       updateBookStory(id, { description }),
     onMutate: async ({ id, description }) => {
       await qc.cancelQueries({ queryKey: ["bookStories", "MY"] });
-
       const prevData = qc.getQueryData<InfiniteData<BookStoriesResult>>([
         "bookStories",
         "MY",
       ]);
-
       qc.setQueryData<InfiniteData<BookStoriesResult>>(
         ["bookStories", "MY"],
         (oldData) => {
@@ -87,7 +80,6 @@ const MyStoryPage = () => {
           };
         }
       );
-
       return { prevData };
     },
     onError: (_err, _vars, ctx) => {
@@ -100,24 +92,21 @@ const MyStoryPage = () => {
     },
   });
 
-  // 무한스크롤
+  // 무한 스크롤
   const lastElementRef = useCallback(
     (node: HTMLDivElement | null) => {
       if (isFetchingNextPage) return;
       if (observerRef.current) observerRef.current.disconnect();
-
       observerRef.current = new IntersectionObserver((entries) => {
         if (entries[0].isIntersecting && hasNextPage) {
           fetchNextPage();
         }
       });
-
       if (node) observerRef.current.observe(node);
     },
     [isFetchingNextPage, hasNextPage, fetchNextPage]
   );
 
-  // 데이터 평탄화
   const stories =
     data?.pages
       ?.flatMap((page) => page.bookStoryResponses)
@@ -126,21 +115,20 @@ const MyStoryPage = () => {
           index === self.findIndex((s) => s.bookStoryId === story.bookStoryId)
       ) ?? [];
 
-  // 삭제
+  // 삭제 버튼 클릭
   const handleDelete = (id: number) => {
     if (window.confirm("정말 삭제하시겠습니까?")) {
       deleteMutation.mutate(id);
     }
   };
 
-  // 수정 모드 진입
+  // 수정 모드 진입 (제목은 수정 불가)
   const handleEdit = (story: BookStoryResponseDto) => {
     setEditingId(story.bookStoryId);
-    setEditTitle(story.bookStoryTitle);
     setEditContent(story.description);
   };
 
-  // 저장
+  // 수정 저장
   const handleSave = (id: number) => {
     updateMutation.mutate({ id, description: editContent });
     setEditingId(null);
@@ -165,11 +153,22 @@ const MyStoryPage = () => {
                   className="flex gap-5 bg-white rounded-xl border border-[#EAE5E2] px-5 py-5 shadow-sm cursor-pointer"
                 >
                   {/* 책 이미지 */}
-                  <div className="w-[176px] h-[248px] rounded-md bg-gray-200 flex-shrink-0" />
+                  {story.bookInfo?.imgUrl ? (
+                    <img
+                      src={story.bookInfo.imgUrl}
+                      alt={story.bookInfo.title || "책 이미지"}
+                      className="w-[176px] h-[248px] rounded-md object-cover flex-shrink-0"
+                      onError={(e) => {
+                        e.currentTarget.src = "";
+                        e.currentTarget.style.display = "none";
+                      }}
+                    />
+                  ) : (
+                    <div className="w-[176px] h-[248px] bg-gray-200 rounded-md flex-shrink-0" />
+                  )}
 
                   <div className="flex flex-col justify-between flex-1">
                     <div>
-                      {/* 작성자 */}
                       <div className="flex items-center gap-2 mb-3">
                         <img
                           src={story.authorInfo.profileImageUrl || ""}
@@ -181,20 +180,11 @@ const MyStoryPage = () => {
                         </p>
                       </div>
 
-                      {/* 제목 */}
-                      {editingId === story.bookStoryId ? (
-                        <input
-                          value={editTitle}
-                          onChange={(e) => setEditTitle(e.target.value)}
-                          className="w-full rounded px-3 py-2 text-[16px] mb-2 bg-[#FAFAFA] border border-gray-300 font-semibold"
-                        />
-                      ) : (
-                        <p className="text-[#2C2C2C] text-[20px] font-semibold mb-2">
-                          {story.bookStoryTitle}
-                        </p>
-                      )}
+                      {/* 제목은 수정 불가 */}
+                      <p className="text-[#2C2C2C] text-[20px] font-semibold mb-2">
+                        {story.bookStoryTitle}
+                      </p>
 
-                      {/* 내용 */}
                       {editingId === story.bookStoryId ? (
                         <textarea
                           value={editContent}
@@ -209,7 +199,6 @@ const MyStoryPage = () => {
                       )}
                     </div>
 
-                    {/* 수정 / 삭제 */}
                     <div className="flex gap-5 mt-6">
                       <button
                         onClick={(e) => {

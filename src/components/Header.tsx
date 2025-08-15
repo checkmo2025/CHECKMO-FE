@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 import { FaBell } from "react-icons/fa";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { getMyProfile, getNotificationPreview } from "../apis/headerApi";
 
@@ -12,6 +12,7 @@ interface HeaderProps {
   manageLabel?: string;
   manageTo?: string;
   onClickManage?: () => void;
+  manageButtonClassName?: string; // 버튼 위치·크기·스타일 커스텀
 }
 
 const TYPE_TEXT: Record<string, string> = {
@@ -25,17 +26,23 @@ const Header = ({
   customClassName,
   isAdmin = false,
   showManageButton = false,
-  manageLabel = "조 관리하기",
-  manageTo = "/club/manage",
+  manageLabel = "모임 관리하기",
+  manageTo: propManageTo,
   onClickManage,
+  manageButtonClassName = "text-sm md:text-base text-[#8D8D8D] hover:text-[#2C2C2C] underline underline-offset-2 decoration-[#C4E8B2]",
 }: HeaderProps) => {
   const navigate = useNavigate();
+  const { bookclubId } = useParams();
+
+  // bookclubId가 있으면 북클럽 홈 경로로, 아니면 기본값
+  const manageTo =
+    propManageTo ?? (bookclubId ? `/bookclub/${bookclubId}/home` : "/club/manage");
 
   // 프로필
   const { data: me, isPending: profilePending } = useQuery({
     queryKey: ["header", "me"],
     queryFn: getMyProfile,
-    staleTime: 0, // 항상 최신 데이터 요청
+    staleTime: 0,
     refetchOnWindowFocus: true,
     retry: 0,
   });
@@ -85,18 +92,14 @@ const Header = ({
         "fixed left-[264px] right-0 top-3 h-[56px] lg:px-13 px-4 md:px-8 "
       } bg-white flex justify-between items-center z-50`}
     >
-      {/* 타이틀 + (운영진 전용) 조 관리하기 */}
+      {/* 타이틀 + (운영진 전용) 관리 버튼 */}
       <div className="flex items-center gap-3">
         <h1 className="font-bold text-lg md:text-xl lg:text-2xl text-[#2C2C2C]">
           {pageTitle}
         </h1>
 
         {isAdmin && showManageButton && (
-          <button
-            type="button"
-            onClick={goManage}
-            className="text-sm md:text-base text-[#8D8D8D] hover:text-[#2C2C2C] underline underline-offset-2 decoration-[#C4E8B2]"
-          >
+          <button type="button" onClick={goManage} className={manageButtonClassName}>
             {manageLabel}
           </button>
         )}
@@ -158,13 +161,21 @@ const Header = ({
           onClick={() => navigate("/mypage/myprofile")}
           className="flex gap-2 md:gap-3 items-center min-w-0 cursor-pointer"
         >
-          <div className="w-10 h-10 rounded-full shrink-0 overflow-hidden bg-gray-300">
-            <img
-              src={me?.profileImageUrl}
-              alt={me?.nickname ? `${me.nickname}의 프로필` : "기본 프로필"}
-              className="w-full h-full object-cover"
-            />
+          <div className="w-10 h-10 rounded-full shrink-0 overflow-hidden bg-gray-300 flex items-center justify-center">
+            {me?.profileImageUrl ? (
+              <img
+                src={me.profileImageUrl}
+                alt={me?.nickname ? `${me.nickname}의 프로필` : "기본 프로필"}
+                className="w-full h-full object-cover"
+                onError={(e) => {
+                  (e.target as HTMLImageElement).style.display = "none";
+                }}
+              />
+            ) : (
+              <span className="text-gray-400 text-lg">+</span>
+            )}
           </div>
+
           <div className="flex flex-col justify-center min-w-0">
             <div className="flex items-center gap-3">
               <span className="text-sm md:text-base font-semibold text-[#2C2C2C] truncate">
