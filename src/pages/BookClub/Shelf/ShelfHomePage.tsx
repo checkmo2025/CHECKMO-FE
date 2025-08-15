@@ -105,7 +105,7 @@ export default function ShelfHomePage() {
            </div>
           </div>
               {/* 책장 리스트 */}
-              <div className="grid grid-cols-3 content-start gap-x-[12px] gap-y-[24px] overflow-y-auto h-[calc(100vh-171px)] overscroll-none "  style={{ msOverflowStyle: 'none', scrollbarWidth: 'none' }}>
+              <div className="grid grid-cols-3 content-start gap-x-[12px] gap-y-[24px] overflow-y-auto h-[calc(100vh-171px)] overscroll-none"  style={{ msOverflowStyle: 'none', scrollbarWidth: 'none' }}>
                 {ShelfList.map((Shelf) => (
               <Link key={Shelf.meetingInfo.meetingId} to={`${location.pathname}/${Shelf.meetingInfo.meetingId}`} className="flex min-w-90 h-[260px] p-[20px] items-center gap-[20px] rounded-2xl border-2 border-[var(--sub-color-2-brown,#EAE5E2)] bg-[var(--White,#FFF)] hover:shadow-lg transition-shadow block">
                   {/* 왼쪽 */}
@@ -179,9 +179,13 @@ export default function ShelfHomePage() {
 
             </Link>
             ))}
+            
             {isLoading && <div className = "font-[Pretendard] font-semibold text-[16px] text-[#8D8D8D]">추가 불러오는 중…</div>}
             <div ref={loadMoreRef} style={{ height: 1 }} />
             <div className ="h-20"></div>
+            {Array.from({ length: 2 }).map((_, i) => (
+              <div key={`spacer-${i}`} className="invisible h-0"></div>
+            ))}
           </div>
           <Modal isOpen={isModalOpen} title={"독서 후 활동은 개발 예정입니다!"} buttons={[
             {
@@ -191,6 +195,7 @@ export default function ShelfHomePage() {
           ]} onBackdrop={() => setIsModalOpen(false)} />
         </div>
       </div>
+          
     </div>
   )
 }
