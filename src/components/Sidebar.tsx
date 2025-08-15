@@ -1,17 +1,27 @@
 import { useState, useEffect } from "react";
 import { NavLink, useParams, useNavigate, useLocation } from "react-router-dom";
 import exitIcon from "../assets/icons/exit.png";
-import homeIcon from "../assets/icons/home.png";
-import bookclubIcon from "../assets/icons/bookclub.png";
-import searchIcon from "../assets/icons/search.png";
-import bookstoryIcon from "../assets/icons/bookstory.png";
-import mypageIcon from "../assets/icons/mypage.png";
 import logoImage from "../assets/logos/mainlogo.png";
 import toggleClose from "../assets/icons/toggleClose.png";
 import toggleOpen from "../assets/icons/toggleOpen.png";
-import bookIcon from "../assets/icons/book.png";
-import bookShelf from "../assets/icons/bookshelf.png";
-import noticeIcon from "../assets/icons/notice.png";
+
+import homeGreen from "../assets/icons/home-green.png";
+import homeGray from "../assets/icons/home-gray.png";
+import bookclubGreen from "../assets/icons/bookclub-green.png";
+import bookclubGray from "../assets/icons/bookclub-gray.png";
+import searchGreen from "../assets/icons/search-green.png";
+import searchGray from "../assets/icons/search-gray.png";
+import bookstoryGreen from "../assets/icons/bookstory-green.png";
+import bookstoryGray from "../assets/icons/bookstory-gray.png";
+import mypageGreen from "../assets/icons/mypage-green.png";
+import mypageGray from "../assets/icons/mypage-gray.png";
+import bookGreen from "../assets/icons/book-green.png";
+import bookGray from "../assets/icons/book-gray.png";
+import bookshelfGreen from "../assets/icons/bookshelf-green.png";
+import bookshelfGray from "../assets/icons/bookshelf-gray.png";
+import noticeGreen from "../assets/icons/notice-green.png";
+import noticeGray from "../assets/icons/notice-gray.png";
+
 import Modal from "./Modal";
 import BookClubListModal from "./BookClubListModal";
 
@@ -27,7 +37,7 @@ type Submenu = {
 
 type Menu = {
   name: string;
-  icon: string;
+  icon: { green: string; gray: string };
   path?: string;
   submenus: Submenu[];
 };
@@ -67,7 +77,7 @@ const Sidebar = () => {
         {
           name: bookclubName,
           path: `/bookclub/${bookclubId}/home`,
-          icon: homeIcon,
+          icon: { green: homeGreen, gray: homeGray },
           submenus: [
             { name: "공지사항", path: `/bookclub/${bookclubId}/notices` },
             { name: "책장", path: `/bookclub/${bookclubId}/shelf` },
@@ -100,7 +110,7 @@ const Sidebar = () => {
         },
         {
           name: "책 검색하기",
-          icon: searchIcon,
+          icon: { green: searchGreen, gray: searchGray },
           submenus: [
             { name: "통합검색", path: "/booksearch" },
             { name: "국내도서", path: "/booksearch1" },
@@ -109,7 +119,7 @@ const Sidebar = () => {
         },
         {
           name: "책 이야기",
-          icon: bookstoryIcon,
+          icon: { green: bookstoryGreen, gray: bookstoryGray },
           submenus: [
             { name: "전체보기", path: "/bookstory" },
             { name: "내 책 이야기", path: "/bookstory/my" },
@@ -117,7 +127,7 @@ const Sidebar = () => {
         },
         {
           name: "마이페이지",
-          icon: mypageIcon,
+          icon: { green: mypageGreen, gray: mypageGray },
           submenus: [
             { name: "내 모임", path: "/mypage/group" },
             { name: "내 책 이야기", path: "/mypage/story" },
@@ -130,12 +140,12 @@ const Sidebar = () => {
         {
           name: "홈",
           path: "/home",
-          icon: homeIcon,
+          icon: { green: homeGreen, gray: homeGray },
           submenus: [],
         },
         {
           name: "독서 모임",
-          icon: bookclubIcon,
+          icon: { green: bookclubGreen, gray: bookclubGray },
           submenus: [
             { name: "내 모임 바로가기", path: "#", isModal: true },
             { name: "모임 검색하기", path: "/searchClub" },
@@ -145,7 +155,7 @@ const Sidebar = () => {
         {
           name: "책 검색하기",
           path: "/booksearch",
-          icon: searchIcon,
+          icon: { green: searchGreen, gray: searchGray },
           submenus: [
             { name: "통합검색", path: "/booksearch" },
             { name: "국내도서", path: "/booksearch1" },
@@ -155,7 +165,7 @@ const Sidebar = () => {
         {
           name: "책 이야기",
           path: "/bookstory",
-          icon: bookstoryIcon,
+          icon: { green: bookstoryGreen, gray: bookstoryGray },
           submenus: [
             { name: "전체보기", path: "/bookstory" },
             { name: "내 책 이야기", path: "/bookstory/my" },
@@ -164,7 +174,7 @@ const Sidebar = () => {
         {
           name: "마이페이지",
           path: "/mypage",
-          icon: mypageIcon,
+          icon: { green: mypageGreen, gray: mypageGray },
           submenus: [
             { name: "내 모임", path: "/mypage/group" },
             { name: "내 책 이야기", path: "/mypage/story" },
@@ -197,7 +207,6 @@ const Sidebar = () => {
     const currentPath = location.pathname;
     const activeColor = "#3D4C35";
     const inactiveColor = "#AAAAAA";
-
     if (subPath) {
       if (subPath === "/bookstory" || subPath === "/booksearch") {
         return currentPath === subPath ? activeColor : inactiveColor;
@@ -205,6 +214,11 @@ const Sidebar = () => {
       return currentPath.startsWith(subPath) ? activeColor : inactiveColor;
     }
     return isTopMenuActive(menu) ? activeColor : inactiveColor;
+  };
+
+  const getIconSrc = (menu: Menu, subPath?: string) => {
+    const active = getMenuTextColor(menu, subPath) === "#3D4C35";
+    return active ? menu.icon.green : menu.icon.gray;
   };
 
   const renderSubmenus = (
@@ -215,11 +229,15 @@ const Sidebar = () => {
     return (
       <div className={`ml-${level * 4} mt-1 space-y-1 pl-3`}>
         {submenus.map(({ name, path, isModal, submenus: nested }) => {
-          let icon = null;
-          if (name === "공지사항") icon = noticeIcon;
-          else if (name === "책장") icon = bookShelf;
-          else if (name === "모임") icon = bookclubIcon;
-          else if (name === "책 추천") icon = bookIcon;
+          let iconPair = null;
+          if (name === "공지사항")
+            iconPair = { green: noticeGreen, gray: noticeGray };
+          else if (name === "책장")
+            iconPair = { green: bookshelfGreen, gray: bookshelfGray };
+          else if (name === "모임")
+            iconPair = { green: bookclubGreen, gray: bookclubGray };
+          else if (name === "책 추천")
+            iconPair = { green: bookGreen, gray: bookGray };
 
           if (isModal) {
             return (
@@ -229,7 +247,16 @@ const Sidebar = () => {
                 style={{ color: getMenuTextColor(parentMenu!, path) }}
                 className="flex items-center gap-2 text-sm py-1 pl-2 pr-3 rounded hover:bg-[#DDEED6]"
               >
-                {icon && <img src={icon} alt="" className="w-5 h-5" />}
+                {iconPair && (
+                  <img
+                    src={
+                      getMenuTextColor(parentMenu!, path) === "#3D4C35"
+                        ? iconPair.green
+                        : iconPair.gray
+                    }
+                    className="w-5 h-5"
+                  />
+                )}
                 {name}
               </button>
             );
@@ -246,7 +273,16 @@ const Sidebar = () => {
                 style={{ color: getMenuTextColor(parentMenu!, path) }}
                 className="flex items-center gap-2 text-sm py-1 pl-2 pr-3 rounded hover:bg-[#DDEED6]"
               >
-                {icon && <img src={icon} alt="" className="w-5 h-5" />}
+                {iconPair && (
+                  <img
+                    src={
+                      getMenuTextColor(parentMenu!, path) === "#3D4C35"
+                        ? iconPair.green
+                        : iconPair.gray
+                    }
+                    className="w-5 h-5"
+                  />
+                )}
                 {name}
               </button>
             );
@@ -260,7 +296,16 @@ const Sidebar = () => {
                 style={{ color: getMenuTextColor(parentMenu!, path) }}
                 className="flex items-center gap-2 text-sm py-1 pl-2 pr-3 rounded hover:bg-[#DDEED6]"
               >
-                {icon && <img src={icon} alt="" className="w-5 h-5" />}
+                {iconPair && (
+                  <img
+                    src={
+                      getMenuTextColor(parentMenu!, path) === "#3D4C35"
+                        ? iconPair.green
+                        : iconPair.gray
+                    }
+                    className="w-5 h-5"
+                  />
+                )}
                 {name}
               </NavLink>
               {nested &&
@@ -275,7 +320,6 @@ const Sidebar = () => {
 
   const header = (
     <div className="flex items-center gap-4 cursor-pointer">
-      {/* 로고 */}
       <img
         src={logoImage}
         alt="logo"
@@ -284,15 +328,9 @@ const Sidebar = () => {
           navigate(bookclubId ? `/bookclub/${bookclubId}/home` : "/home")
         }
       />
-
-      {/* 오른쪽 영역 */}
       <div className="flex flex-col justify-center">
-        {/* 독서 모임 이름 또는 "책모" */}
         <span
           className={`text-4xl font-bold font-blackHanSans break-words truncate text-[#3D4C35]`}
-          style={{
-            textAlign: !bookclubId ? "left" : "left",
-          }}
           title={bookclubName}
           onClick={() =>
             navigate(bookclubId ? `/bookclub/${bookclubId}/home` : "/home")
@@ -300,22 +338,17 @@ const Sidebar = () => {
         >
           {bookclubId ? bookclubName : "책모"}
         </span>
-
-        {/* 독서 모임 사이드바에서만 메인 홈 버튼 */}
         {bookclubId && (
           <button
             onClick={() => navigate(`/home`)}
             className="relative flex items-center mt-1 h-[2.125rem] rounded border border-[#93C27C] bg-[#F1F8EF]"
             style={{ width: "100%" }}
           >
-            {/* 아이콘 왼쪽 */}
             <img
               src={exitIcon}
               alt="home"
               className="w-4 h-4 ml-[0.875rem] absolute left-0"
             />
-
-            {/* 글씨 중앙 정렬 */}
             <span className="absolute left-0 right-0 text-center text-[0.85rem] text-[#3D4C35] font-medium">
               메인 홈
             </span>
@@ -346,7 +379,7 @@ const Sidebar = () => {
                   }`}
                   onClick={() => toggleMenu(name)}
                 >
-                  <img src={icon} alt={`${name} 아이콘`} className="w-5 h-5" />
+                  <img src={getIconSrc(menu)} className="w-5 h-5" />
                   <span className="text-[18px] font-medium font-pretendard">
                     {name}
                   </span>
@@ -362,7 +395,6 @@ const Sidebar = () => {
                   </button>
                 )}
               </div>
-
               {isMenuOpen &&
                 submenus.length > 0 &&
                 renderSubmenus(submenus, 1, menu)}
