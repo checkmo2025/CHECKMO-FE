@@ -87,3 +87,6 @@ export type JoinClubResult = {
 };
 
 export type JoinClubResponse = ApiResponse<JoinClubResult>;
+
+// 운영진 여부 확인 결과 타입
+export type IsStaffResult = boolean;

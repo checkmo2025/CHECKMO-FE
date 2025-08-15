@@ -93,7 +93,7 @@ function AnnouncementCardItem({
             </p>
             <p>다음 모임 책: {item.meetingInfoDTO.bookInfo?.title}</p>
             <div className="absolute top-[80px] right-[24px]">
-              <img src={arrow} alt="icon" className="w-[24px] h-[24px] -mt-2" />
+              <img src={arrow} alt="icon" className="w-[24px] h-[24px] -mt-3" />
             </div>
             <div className="absolute bottom-[24.5px]">
               <div className="relative w-[262px] h-[232px] bg-gray-100 rounded-lg overflow-hidden flex items-center justify-center">
@@ -117,9 +117,9 @@ function AnnouncementCardItem({
               {item.content}
             </p>
             <div className="absolute top-[80px] right-[24px]">
-              <img src={arrow} alt="icon" className="w-[24px] h-[24px] -mt-2" />
+              <img src={arrow} alt="icon" className="w-[24px] h-[24px] -mt-3" />
             </div>
-            <div className="w-[269px] h-[207px] mt-[26px] border-[2px] border-[#EAE5E2] rounded-[16px]">
+            <div className="w-[269px] h-[207px] mt-[46px] border-[2px] border-[#EAE5E2] rounded-[16px]">
               <form className="mt-[14.5px]">
                 {item.items
                   ?.slice(0, 3)
@@ -197,7 +197,10 @@ function AnnouncementCardItem({
             space-y-[4px]    
              "
             >
-              <p className="mt-[24px] font-normal text-[12px] whitespace-pre-line">
+              <div className="absolute top-[80px] right-[24px]">
+                <img src={arrow} alt="icon" className="w-[24px] h-[24px] -mt-3" />
+              </div>
+              <p className="mt-[46px] font-normal text-[12px] whitespace-pre-line">
                 {item.content}
               </p>
             </div>
