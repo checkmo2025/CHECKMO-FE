@@ -1,5 +1,5 @@
 // src/components/common/ChipToggleGroup.tsx
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 
 export interface ChipToggleGroupProps {
   options: string[];
@@ -9,10 +9,18 @@ export interface ChipToggleGroupProps {
 
 export function ChipToggleGroup({
   options,
-  defaultSelected = [],
+  defaultSelected,
   onChange,
 }: ChipToggleGroupProps): React.ReactElement {
-  const [selected, setSelected] = useState<string[]>(defaultSelected);
+  const [selected, setSelected] = useState<string[]>(defaultSelected ?? []);
+
+  // 외부에서 기본 선택값이 변경되면 내부 상태를 동기화
+  useEffect(() => {
+    if (defaultSelected !== undefined) {
+      setSelected(defaultSelected);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [defaultSelected && defaultSelected.join('|')]);
 
   // 내부에서 토글 로직 처리
   const handleToggle = (item: string) => {

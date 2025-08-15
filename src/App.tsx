@@ -46,7 +46,7 @@ import RegisterAdminPage from "./pages/Admin/RegisterAdminPage";
 import MeetingTeamTopicListPage from "./pages/Meeting/MeetingTeamTopicListPage";
 import BookRecommendEditPage from "./pages/BookRecommend/BookRecommendEditPage";
 import MyBookStoryPage from "./pages/Main/BookStory/MyBookStoryPage";
-
+import MemberBlockPage from "./pages/Admin/MemberBlockPage";
 const App = () => {
   const qc = useQueryClient();
 
@@ -80,15 +80,15 @@ const App = () => {
           <Route path="/info/others/:userId" element={<OthersProfilePage />} />
           <Route path="/createClub" element={<CreateClubPage />} />
 
-            {/* 마이페이지 */}
-            <Route path="mypage">
-              <Route index element={<MyHomePage />} />
-              <Route path="group" element={<MyGroupPage />} />
-              <Route path="subscription" element={<MySubscriptionPage />} />
-              <Route path="notification" element={<MyNotificationPage />} />
-              <Route path="story" element={<MyStoryPage />} />
-              <Route path="myprofile" element={<MyProfilePage />} />
-            </Route>
+          {/* 마이페이지 */}
+          <Route path="mypage">
+            <Route index element={<MyHomePage />} />
+            <Route path="group" element={<MyGroupPage />} />
+            <Route path="subscription" element={<MySubscriptionPage />} />
+            <Route path="notification" element={<MyNotificationPage />} />
+            <Route path="story" element={<MyStoryPage />} />
+            <Route path="myprofile" element={<MyProfilePage />} />
+          </Route>
 
           {/* 책이야기 */}
           <Route path="bookstory">
@@ -107,7 +107,7 @@ const App = () => {
               <Route path="notices" element={<NoticePage />} />
               <Route path="edit" element={<EditClubPage />} />
               <Route path="notices/:noticeId" element={<NoticeDetailPage />} />
-              <Route path="notices/create" element={<NoticeCreatePage />} />
+               <Route path="notices/create" element={<NoticeCreatePage />} />
               
               {/* 책장 */}
               <Route path="shelf">
@@ -161,6 +161,7 @@ const App = () => {
               <Route index element={<BookClubAdminPage />} />
               <Route path="member" element={<MemberAdminPage />} />
               <Route path="register" element={<RegisterAdminPage />} />
+              <Route path="block" element={<MemberBlockPage />} />
             </Route>
           </Route>
         </Route>

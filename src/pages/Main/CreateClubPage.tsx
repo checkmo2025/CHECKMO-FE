@@ -297,6 +297,7 @@ export default function CreateClubPage(): React.ReactElement {
           <div className="mt-[16px] max-w-[400px]">
             <ChipToggleGroup
               options={BOOK_CATEGORY_OPTIONS}
+              defaultSelected={selectedCategories}
               onChange={setSelectedCategories}
             />
           </div>
@@ -310,6 +311,7 @@ export default function CreateClubPage(): React.ReactElement {
           <div className="mt-[16px] max-w-[400px]">
             <ChipToggleGroup
               options={PARTICIPANT_TYPE_OPTIONS}
+              defaultSelected={selectedParticipants}
               onChange={setSelectedParticipants}
             />
           </div>
