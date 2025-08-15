@@ -1,5 +1,5 @@
-import { useNavigate, useParams } from 'react-router-dom';
-import { useState, useRef, useEffect } from 'react';
+import { useLocation, useNavigate, useParams } from 'react-router-dom';
+import { useState, useRef, useEffect} from 'react';
 
 import NoticeCreateVoteComponent from '../../components/BookClub/NoticeCreateVoteComponent';
 import NoticeCreateNoticeComponent from '../../components/BookClub/NoticeCreateNoticeComponent';
@@ -7,11 +7,14 @@ import type {  CreateNoticeRequest,  CreateVoteRequest,} from '../../types/Notic
 import { useCreateNotice } from '../../hooks/ClubNotice/useCreateNotice';
 import { useCreateVote } from '../../hooks/ClubNotice/useCreateVote';
 import Modal, { type ModalButton } from '../../components/Modal';
-import { set } from 'date-fns';
+
 export default function NoticeCreatePage() {
   const { bookclubId } = useParams<{ bookclubId: string }>();
   const navigate = useNavigate();
-  const [type, setType] = useState<'poll' | 'notice'>('poll');
+
+
+  const [type, setType] = useState<'poll' | 'notice'>(useLocation().state?.type || 'poll'); 
+
   const [startTime, setStartTime] = useState(''); // Add startTime state
   const [infoOpen, setInfoOpen] = useState(false);
   const [infoTitle, setInfoTitle] = useState("");
@@ -74,7 +77,7 @@ export default function NoticeCreatePage() {
     voteRef.current.startTime = new Date().toISOString();
     createVote(voteRef.current, {
       onSuccess: (data) => {
-          navigate(`/bookclub/${bookclubId}/notices/${data.noticeItem.id}`, {state: { fromDraft: true },});
+          navigate(`/bookclub/${bookclubId}/notices/${data.noticeItem.id}?type=vote`);
           localStorage.removeItem('draftData');
       },
       onError: (err) => {
@@ -90,7 +93,7 @@ export default function NoticeCreatePage() {
     }
     createNotice(noticeRef.current, {
       onSuccess: (data) => {
-          navigate(`/bookclub/${bookclubId}/notices/${data.noticeItem.id}`, {state: { fromDraft: true },});
+          navigate(`/bookclub/${bookclubId}/notices/${data.noticeItem.id}`);
           localStorage.removeItem('draftData');
       },
       onError: (err) => {
@@ -126,13 +129,13 @@ export default function NoticeCreatePage() {
         onClick={() => navigate(-1)}
         className="flex items-center h-[38px] gap-[3px] cursor-pointer mb-[44px]"
       >
-        <div className="w-[30px] h-full flex items-center justify-center">
+        <div className="w-6 h-6 flex items-center justify-center">
           <img
             src="/assets/material-symbols_arrow-back-ios.svg"
             className="w-[30px] h-[30px]"
           />
         </div>
-        <span className="font-[Pretendard] font-bold text-[28px] leading-[135%]">
+        <span className="font-[Pretendard] font-bold text-[24px] leading-[135%]">
           공지작성
         </span>
       </div>
