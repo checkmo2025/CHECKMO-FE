@@ -1,5 +1,5 @@
 import { useLocation, useParams } from "react-router-dom";
-import type { TopicPreviewDto } from "../../types/clubMeeting";
+import type { Topic } from "../../types/clubMeeting";
 import { format, parseISO } from "date-fns";
 import { NonProfileHeader } from "../../components/NonProfileHeader";
 import { TeamTopicSection } from "../../components/Meeting/TeamTopicSection";
@@ -12,7 +12,7 @@ const MeetingTeamTopicListPage = () => {
     date: string;
     bookTitle: string;
     teamNumber: number;
-    topics: TopicPreviewDto[];
+    topics: Topic[];
   };
   const dateStr = format(parseISO(date), "yyyy.MM.dd");
   const title = `${dateStr} | ${bookTitle}`;

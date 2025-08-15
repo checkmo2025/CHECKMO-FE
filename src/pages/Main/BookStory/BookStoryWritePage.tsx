@@ -17,12 +17,12 @@ export default function BookStoryWritePage() {
 
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
-  const [loading, setLoading] = useState(false);
+  // const [loading, setLoading] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   const handleAddStory = async () => {
     try {
-      setLoading(true);
+      // setLoading(true);
 
       const payload = {
         bookInfo: {
@@ -44,7 +44,7 @@ export default function BookStoryWritePage() {
       console.error("책 이야기 등록 실패", error);
       alert("등록에 실패했습니다. 다시 시도해주세요.");
     } finally {
-      setLoading(false);
+      // setLoading(false);
     }
   };
 

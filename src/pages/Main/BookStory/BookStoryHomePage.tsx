@@ -36,8 +36,8 @@ export default function BookStoryHomePage() {
         const filteredStories =
           scope === "FOLLOWING"
             ? (data.bookStoryResponses || []).filter(
-                (story) => story.authorInfo?.following
-              )
+              (story) => story.authorInfo?.following
+            )
             : data.bookStoryResponses || [];
 
         setStories(filteredStories);
@@ -74,10 +74,10 @@ export default function BookStoryHomePage() {
       prev.map((story) =>
         story.bookStoryId === storyId
           ? {
-              ...story,
-              likedByMe: liked,
-              likes: liked ? story.likes + 1 : story.likes - 1,
-            }
+            ...story,
+            likedByMe: liked,
+            likes: liked ? story.likes + 1 : story.likes - 1,
+          }
           : story
       )
     );
@@ -88,9 +88,9 @@ export default function BookStoryHomePage() {
       prev.map((story) =>
         story.authorInfo.nickname === nickname
           ? {
-              ...story,
-              authorInfo: { ...story.authorInfo, following: subscribed },
-            }
+            ...story,
+            authorInfo: { ...story.authorInfo, following: subscribed },
+          }
           : story
       )
     );
@@ -100,7 +100,6 @@ export default function BookStoryHomePage() {
     <div className="absolute left-[315px] right-[42px] opacity-100">
       <Header
         pageTitle="책 이야기"
-        userProfile={{ username: "yujin", bio: "가나다" }}
         customClassName="mt-[30px]"
       />
 
@@ -115,11 +114,10 @@ export default function BookStoryHomePage() {
               <button
                 key={`${tab.scope}-${tab.clubId ?? "default"}`}
                 onClick={() => setActiveTab(index)}
-                className={`pb-2 text-sm font-medium relative transition-colors duration-150 inline-block cursor-pointer ${
-                  index === activeTab
+                className={`pb-2 text-sm font-medium relative transition-colors duration-150 inline-block cursor-pointer ${index === activeTab
                     ? "text-black border-b-2 border-green-500"
                     : "text-gray-400 hover:text-black"
-                }`}
+                  }`}
               >
                 {tab.label}
               </button>
@@ -152,11 +150,10 @@ export default function BookStoryHomePage() {
 
         {/* 책 이야기 목록 */}
         <div
-          className={`${
-            viewMode === "grid"
+          className={`${viewMode === "grid"
               ? "grid grid-cols-2 gap-6"
               : "flex flex-col gap-4 w-full"
-          }`}
+            }`}
         >
           {loading ? (
             <div>로딩 중...</div>

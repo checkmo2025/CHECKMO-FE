@@ -1,5 +1,4 @@
 import React from "react";
-import { useNavigate } from "react-router-dom";
 import checker from "../../assets/images/checker.png";
 import emptyHeartIcon from "../../assets/icons/heart_empty.png";
 import filledHeartIcon from "../../assets/icons/heart_filled.png";
