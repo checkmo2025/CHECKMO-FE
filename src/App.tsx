@@ -20,7 +20,7 @@ import OthersProfilePage from "./pages/Main/Info/OthersProfilePage";
 import BookClubHomePage from "./pages/BookClub/BookClubHomePage";
 import NoticePage from "./pages/BookClub/NoticePage";
 import NoticeDetailPage from "./pages/BookClub/NoticeDetailPage";
-//import NoticeCreatePage from "./pages/BookClub/NoticeCreatePage";
+import NoticeCreatePage from "./pages/BookClub/NoticeCreatePage";
 import ClubSearchPage from "./pages/Main/ClubSearchPage";
 import CreateClubPage from "./pages/Main/CreateClubPage";
 import BookStorySearchPage from "./pages/Main/BookStory/BookStorySearchPage";
@@ -46,7 +46,7 @@ import RegisterAdminPage from "./pages/Admin/RegisterAdminPage";
 import MeetingTeamTopicListPage from "./pages/Meeting/MeetingTeamTopicListPage";
 import BookRecommendEditPage from "./pages/BookRecommend/BookRecommendEditPage";
 import MyBookStoryPage from "./pages/Main/BookStory/MyBookStoryPage";
-
+import MemberBlockPage from "./pages/Admin/MemberBlockPage";
 const App = () => {
   const qc = useQueryClient();
 
@@ -107,7 +107,7 @@ const App = () => {
               <Route path="notices" element={<NoticePage />} />
               <Route path="edit" element={<EditClubPage />} />
               <Route path="notices/:noticeId" element={<NoticeDetailPage />} />
-              {/* <Route path="notices/create" element={<NoticeCreatePage />} /> */}
+               <Route path="notices/create" element={<NoticeCreatePage />} />
               
               {/* 책장 */}
               <Route path="shelf">
@@ -161,6 +161,7 @@ const App = () => {
               <Route index element={<BookClubAdminPage />} />
               <Route path="member" element={<MemberAdminPage />} />
               <Route path="register" element={<RegisterAdminPage />} />
+              <Route path="block" element={<MemberBlockPage />} />
             </Route>
           </Route>
         </Route>
