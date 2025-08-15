@@ -112,7 +112,7 @@ export default function BookClubHomePage(): React.ReactElement {
           <section className="w-full h-[376px] mb-[60px]">
             <div className="flex justify-between items-center mb-[20px]">
               <h2 className="text-[18px] font-semibold">책 이야기</h2>
-              <Link to={`/bookclub/${bookclubId}/notifications`} className="text-[14px] text-[#8D8D8D] mr-3 hover:underline">
+              <Link to={`/bookclub/${numericClubId}/admin`} className="text-[14px] text-[#8D8D8D] mr-11 hover:underline">
                   + 더보기
               </Link>
             </div>
