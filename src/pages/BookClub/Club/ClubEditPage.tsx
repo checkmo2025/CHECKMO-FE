@@ -69,7 +69,7 @@ export default function EditClubPage(): React.ReactElement {
 
   // 클럽 정보 로드
   useEffect(() => {
-    if (!numericClubId || Number.isNaN(numericClubId)) {
+    if (!numericClubId || Number.isNaN(numericClubId) || numericClubId <= 0) {
       alert('잘못된 접근입니다.');
       navigate('/');
       return;
