@@ -1,5 +1,5 @@
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
-import { useState, useRef, useEffect, use } from 'react';
+import { useState, useRef, useEffect} from 'react';
 
 import NoticeCreateVoteComponent from '../../components/BookClub/NoticeCreateVoteComponent';
 import NoticeCreateNoticeComponent from '../../components/BookClub/NoticeCreateNoticeComponent';
