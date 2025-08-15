@@ -123,6 +123,36 @@ export default function ClubCard({
   // 참여자 유형을 이름으로 변환
   const participantNames = participantTypes.map(type => PARTICIPANT_TYPES[type as keyof typeof PARTICIPANT_TYPES] || type);
 
+  const formatUrlForDisplay = (rawUrl: string, maxLength: number = 50): string => {
+    if (!rawUrl) return '';
+    if (rawUrl.length <= maxLength) return rawUrl;
+
+    let parsed: URL | null = null;
+    try {
+      parsed = new URL(rawUrl);
+    } catch {
+      try {
+        parsed = new URL(`https://${rawUrl}`);
+      } catch {
+        parsed = null;
+      }
+    }
+
+    if (parsed) {
+      const origin = `${parsed.protocol}//${parsed.host}`;
+      const pathSegments = parsed.pathname.split('/').filter(Boolean);
+      const lastSegment = pathSegments.length > 0 ? pathSegments[pathSegments.length - 1] : '';
+      const tail = `${lastSegment}${parsed.search || ''}${parsed.hash || ''}`;
+      const composed = `${origin}/…/${tail}`;
+      if (composed.length <= maxLength) return composed;
+    }
+
+    const keep = Math.max(5, Math.floor((maxLength - 3) / 2));
+    const head = rawUrl.slice(0, keep);
+    const tail = rawUrl.slice(-keep);
+    return `${head}…${tail}`;
+  };
+
   return (
     <div
       className={`
@@ -256,15 +286,15 @@ export default function ClubCard({
                 flex flex-col gap-[10px]
               ">
                 {kakao ? (
-                  <a href={kakao} target="_blank" rel="noopener noreferrer">
-                    카카오톡 링크 바로가기
+                  <a href={kakao} target="_blank" rel="noopener noreferrer" title={kakao}>
+                    {formatUrlForDisplay(kakao)}
                   </a>
                 ) : (
                   <span className="no-underline text-[#8D8D8D]">등록된 카카오톡 링크가 없습니다.</span>
                 )}
                 {insta ? (
-                  <a href={insta} target="_blank" rel="noopener noreferrer">
-                    인스타그램 링크 바로가기
+                  <a href={insta} target="_blank" rel="noopener noreferrer" title={insta}>
+                    {formatUrlForDisplay(insta)}
                   </a>
                 ) : (
                   <span className="no-underline text-[#8D8D8D]">등록된 인스타그램 링크가 없습니다.</span>

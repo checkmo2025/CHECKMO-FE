@@ -1,27 +1,20 @@
 import MeetingCard from "./MeetingCard";
 import VoteCard from "./VoteCard";
 import AnnouncementCard from "./AnnouncementCard";
+import type { NoticeDto } from "../../../types/mainNotices";
 
 interface NoticeCardProps {
-  id: number;
-  title: string;
-  date: string;
-  book: string;
-  tag: "모임" | "투표" | "공지";
-  imgUrl: string;
-  content: string;
-  meetingPlace?: string;
-  afterPartyPlace?: string;
+  notice: NoticeDto;
 }
 
-const NoticeCard = (props: NoticeCardProps) => {
-  switch (props.tag) {
+const NoticeCard = ({ notice }: NoticeCardProps) => {
+  switch (notice.tag) {
     case "모임":
-      return <MeetingCard {...props} />;
+      return <MeetingCard notice={notice} />;
     case "투표":
-      return <VoteCard {...props} />;
+      return <VoteCard notice={notice} />;
     case "공지":
-      return <AnnouncementCard {...props} />;
+      return <AnnouncementCard notice={notice} />;
     default:
       return null;
   }

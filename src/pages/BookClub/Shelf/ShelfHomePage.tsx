@@ -5,10 +5,12 @@ import Header from '../../../components/Header'
 import { useShelfHome } from '../../../hooks/Shelf/useShelfHome';
 import type { ShelfHomeRequest, BookShelfInfo, } from '../../../types/Shelf/Shelfhome'
 import { getStarIcon } from '../../../components/Shelf/getStarIcon';
+import Modal from '../../../components/Modal';
 
 export default function ShelfHomePage() {
   const { bookclubId } = useParams<{ bookclubId: string }>();
-  const [ShelfList, setShelfList] = useState<BookShelfInfo[]>([]);
+    const [ShelfList, setShelfList] = useState<BookShelfInfo[]>([]);
+    const [isModalOpen, setIsModalOpen] = useState(false);
 
   const [Cursor, setCursor]  = useState<number | null | undefined>(null);
   const [Generation, setGeneration] = useState<number | undefined>(undefined);
@@ -154,13 +156,17 @@ export default function ShelfHomePage() {
                     </div>
                     </Link>
                   </div>
-                  <Link to={`${location.pathname}/${Shelf.meetingInfo.meetingId}/afterread`} className="block">
-                    <div className=" w-[128px] h-[24px] border-b-[1px] border-[var(--sub-color-2-brown,#EAE5E2)] flex items-center justify-between">
-                      <span className="text-[12px] font-[Pretendard] font-medium leading-[145%] text-[#2C2C2C] items-center">
-                        독서 후 활동</span>
-                      <img src="/assets/바로가기.svg" className="w-[24px] h-[24px]"/>
-                    </div>
-                  </Link>
+                  <div className="w-[128px] h-[24px] border-b-[1px] border-[var(--sub-color-2-brown,#EAE5E2)] flex items-center justify-between"
+                  onClick={(e) => {
+                    setIsModalOpen(true);
+                    e.preventDefault();    
+                    e.stopPropagation();  
+                  }}>
+                  <span className="text-[12px] font-[Pretendard] font-medium leading-[145%] text-[#2C2C2C] items-center">
+                    독서 후 활동
+                  </span>
+                  <img src="/assets/바로가기.svg" className="w-[24px] h-[24px]" />
+                </div>
                 </div>
                   {/* 7) 평점별 별 아이콘 */}
                   <div className="mt-[20px] flex items-center">
@@ -177,6 +183,12 @@ export default function ShelfHomePage() {
             <div ref={loadMoreRef} style={{ height: 1 }} />
             <div className ="h-20"></div>
           </div>
+          <Modal isOpen={isModalOpen} title={"독서 후 활동은 개발 예정입니다!"} buttons={[
+            {
+              label: '돌아가기',
+              onClick: () => setIsModalOpen(false),
+            }
+          ]} onBackdrop={() => setIsModalOpen(false)} />
         </div>
       </div>
     </div>

@@ -1,17 +1,19 @@
-import { useNavigate, useParams } from 'react-router-dom';
-import { useState, useRef, useEffect } from 'react';
-
+import { useLocation, useNavigate, useParams } from 'react-router-dom';
+import { useState, useRef, useEffect} from 'react';
 import NoticeCreateVoteComponent from '../../components/BookClub/NoticeCreateVoteComponent';
 import NoticeCreateNoticeComponent from '../../components/BookClub/NoticeCreateNoticeComponent';
-import type {  CreateNoticeRequest,  CreateVoteRequest,} from '../../types/Notice/clubNoticeCreate';
+import type { CreateNoticeRequest, CreateVoteRequest, } from '../../types/Notice/clubNoticeCreate';
 import { useCreateNotice } from '../../hooks/ClubNotice/useCreateNotice';
 import { useCreateVote } from '../../hooks/ClubNotice/useCreateVote';
 import Modal, { type ModalButton } from '../../components/Modal';
-import { set } from 'date-fns';
+
 export default function NoticeCreatePage() {
   const { bookclubId } = useParams<{ bookclubId: string }>();
   const navigate = useNavigate();
-  const [type, setType] = useState<'poll' | 'notice'>('poll');
+
+
+  const [type, setType] = useState<'poll' | 'notice'>(useLocation().state?.type || 'poll'); 
+
   const [startTime, setStartTime] = useState(''); // Add startTime state
   const [infoOpen, setInfoOpen] = useState(false);
   const [infoTitle, setInfoTitle] = useState("");
@@ -40,7 +42,7 @@ export default function NoticeCreatePage() {
     duplication: false,
     deadline: '',
     startTime: '',
-    
+
   });
 
   const handleSaveDraft = () => {
@@ -54,9 +56,9 @@ export default function NoticeCreatePage() {
     localStorage.setItem('draftData', JSON.stringify(draftData));
     setInfoTitle('임시저장되었습니다.');
     setInfoOpen(true);
-    
+
   };
-  
+
   const { mutate: createVote } = useCreateVote(bookclubId!);
   const { mutate: createNotice } = useCreateNotice(bookclubId!);
 
@@ -64,20 +66,26 @@ export default function NoticeCreatePage() {
 
 
   const handleSubmit = () => {
-  if (type === 'poll') {
-    if(voteRef.current.item1 === '' || voteRef.current.item2 === '' || voteRef.current.title === '' || voteRef.current.deadline === ''){
-      setInfoOpen(true);
-      setInfoTitle('투표항목1,2와 제목, 마감일을 모두 입력해주세요.');
-      return;
-    }
+    if (type === 'poll') {
+      if (voteRef.current.item1 === '' || voteRef.current.item2 === '' || voteRef.current.title === '' || voteRef.current.deadline === '') {
+        setInfoOpen(true);
+        setInfoTitle('투표항목1,2와 제목, 마감일을 모두 입력해주세요.');
+        return;
+      }
 
     voteRef.current.startTime = new Date().toISOString();
     createVote(voteRef.current, {
       onSuccess: (data) => {
-          navigate(`/bookclub/${bookclubId}/notices/${data.noticeItem.id}`, {state: { fromDraft: true },});
+          navigate(`/bookclub/${bookclubId}/notices/${data.noticeItem.id}?type=vote`);
           localStorage.removeItem('draftData');
-      },
-      onError: (err) => {
+        },
+        onError: (err) => {
+          setInfoOpen(true);
+          setInfoTitle(err.message);
+        },
+      });
+    } else {
+      if (noticeRef.current.title === '' || noticeRef.current.content === '') {
         setInfoOpen(true);
         setInfoTitle(err.message);  
       },
@@ -90,16 +98,16 @@ export default function NoticeCreatePage() {
     }
     createNotice(noticeRef.current, {
       onSuccess: (data) => {
-          navigate(`/bookclub/${bookclubId}/notices/${data.noticeItem.id}`, {state: { fromDraft: true },});
+          navigate(`/bookclub/${bookclubId}/notices/${data.noticeItem.id}`);
           localStorage.removeItem('draftData');
-      },
-      onError: (err) => {
-        setInfoOpen(true);
-        setInfoTitle(err.message);
-      },
-    });
-  }
-};
+        },
+        onError: (err) => {
+          setInfoOpen(true);
+          setInfoTitle(err.message);
+        },
+      });
+    }
+  };
 
   useEffect(() => {
     const savedDraft = localStorage.getItem('draftData');
@@ -126,13 +134,13 @@ export default function NoticeCreatePage() {
         onClick={() => navigate(-1)}
         className="flex items-center h-[38px] gap-[3px] cursor-pointer mb-[44px]"
       >
-        <div className="w-[30px] h-full flex items-center justify-center">
+        <div className="w-6 h-6 flex items-center justify-center">
           <img
             src="/assets/material-symbols_arrow-back-ios.svg"
             className="w-[30px] h-[30px]"
           />
         </div>
-        <span className="font-[Pretendard] font-bold text-[28px] leading-[135%]">
+        <span className="font-[Pretendard] font-bold text-[24px] leading-[135%]">
           공지작성
         </span>
       </div>
@@ -160,11 +168,10 @@ export default function NoticeCreatePage() {
                 type="button"
                 onClick={() => setType('poll')}
                 aria-pressed={type === 'poll'}
-                className={`h-[24px] w-[54px] rounded-full text-[12px] font-semibold transition ${
-                  type === 'poll'
+                className={`h-[24px] w-[54px] rounded-full text-[12px] font-semibold transition ${type === 'poll'
                     ? 'bg-[#FF8A3D] text-white shadow-sm hover:opacity-90'
                     : 'bg-neutral-200 text-neutral-700 hover:bg-neutral-300'
-                }`}
+                  }`}
               >
                 투표
               </button>
@@ -172,11 +179,10 @@ export default function NoticeCreatePage() {
                 type="button"
                 onClick={() => setType('notice')}
                 aria-pressed={type === 'notice'}
-                className={`h-[24px] w-[54px]  rounded-full text-[12px] font-semibold transition ${
-                  type === 'notice'
+                className={`h-[24px] w-[54px]  rounded-full text-[12px] font-semibold transition ${type === 'notice'
                     ? 'bg-[#FFC648] text-white shadow-sm hover:opacity-90'
                     : 'bg-neutral-200 text-neutral-700 hover:bg-neutral-300'
-                }`}
+                  }`}
               >
                 공지
               </button>

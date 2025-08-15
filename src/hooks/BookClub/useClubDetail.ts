@@ -9,9 +9,12 @@ export const QK_CLUB = {
 export function useClubDetail(clubId: number) {
   return useQuery<ClubDto, Error>({
     queryKey: QK_CLUB.detail(clubId),
-    queryFn: () => getClubDetail(clubId),
+    queryFn: () => getClubDetail(clubId, { noCache: true }),
     enabled: Number.isFinite(clubId) && clubId > 0,
-    staleTime: 1000 * 60 * 5,
+    staleTime: 0,
+    refetchOnMount: 'always',
+    gcTime: 0,
+    refetchOnWindowFocus: 'always',
   });
 }
 

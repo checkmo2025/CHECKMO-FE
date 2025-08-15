@@ -4,7 +4,7 @@ import { Camera } from "lucide-react";
 // API/훅/타입
 import { useMyProfileQuery, useUpdateMyProfile } from "../../../../hooks/My/useMember";
 import { BOOK_CATEGORIES } from "../../../../types/dto";
-import { uploadImage } from "../../../../apis/imageApi"; 
+import { uploadImage } from "../../../../apis/imageApi";
 
 type CategoryEntry = { id: number; name: string };
 
@@ -19,12 +19,13 @@ const MyProfilePage = () => {
   const [isEditingBio, setIsEditingBio] = useState(false);
   const [tempBio, setTempBio] = useState("");
   const [tempKeywords, setTempKeywords] = useState<string[]>([]);
-  const [profileImage, setProfileImage] = useState<string | null>(null);        
-  const [tempProfileImage, setTempProfileImage] = useState<string | null>(null); 
-  const [pendingFile, setPendingFile] = useState<File | null>(null);            
+  const [profileImage, setProfileImage] = useState<string | null>(null);
+  const [tempProfileImage, setTempProfileImage] = useState<string | null>(null);
+  const [pendingFile, setPendingFile] = useState<File | null>(null);
   const [isSaving, setIsSaving] = useState(false);
+  const [useDefaultImage, setUseDefaultImage] = useState(false); // 기본 이미지 여부
 
-  // 카테고리 정규화: 객체/배열 어떤 형태여도 [{id,name}]로 변환 
+  // 카테고리 정규화
   const CATEGORY_ENTRIES: CategoryEntry[] = useMemo(() => {
     if (Array.isArray(BOOK_CATEGORIES)) {
       return (BOOK_CATEGORIES as any[]).map((c: any) => ({
@@ -32,7 +33,6 @@ const MyProfilePage = () => {
         name: String(c.name),
       }));
     }
-
     return Object.entries(BOOK_CATEGORIES as Record<string, string>).map(([id, name]) => ({
       id: Number(id),
       name: String(name),
@@ -43,11 +43,7 @@ const MyProfilePage = () => {
     () => new Map(CATEGORY_ENTRIES.map((e) => [e.name, e.id] as const)),
     [CATEGORY_ENTRIES]
   );
-
-  const keywords: string[] = useMemo(
-    () => CATEGORY_ENTRIES.map((e) => e.name),
-    [CATEGORY_ENTRIES]
-  );
+  const keywords: string[] = useMemo(() => CATEGORY_ENTRIES.map((e) => e.name), [CATEGORY_ENTRIES]);
 
   // 최초 로드 시 서버 값으로 초기화
   useEffect(() => {
@@ -66,14 +62,20 @@ const MyProfilePage = () => {
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (!e.target.files || !e.target.files[0]) return;
     const file = e.target.files[0];
-    setPendingFile(file); // 저장할 때 업로드
+    setPendingFile(file);
+    setUseDefaultImage(false); // 새 이미지 선택 시 기본이미지 해제
 
-    // 미리보기
     const reader = new FileReader();
     reader.onload = () => {
       if (typeof reader.result === "string") setTempProfileImage(reader.result);
     };
     reader.readAsDataURL(file);
+  };
+
+  const handleSelectDefaultImage = () => {
+    setUseDefaultImage(true);
+    setPendingFile(null);
+    setTempProfileImage(null);
   };
 
   const handleKeywordToggle = (keyword: string) => {
@@ -86,19 +88,20 @@ const MyProfilePage = () => {
     try {
       setIsSaving(true);
 
-      // 1) 이미지 업로드(선택)
-      let imgUrl: string | undefined = undefined;
-      if (pendingFile) {
-        // presigned URL로 업로드하고 공개 URL 반환
+      let imgUrl: string | null | undefined = undefined;
+
+      if (useDefaultImage) {
+        imgUrl = null; // 기본 이미지
+      } else if (pendingFile) {
         imgUrl = await uploadImage(pendingFile);
+      } else {
+        imgUrl = profileImage ?? null; // 기존 이미지 유지
       }
 
-      // 2) 이름 → ID 변환
       const categoryIds = tempKeywords
         .map((name) => NAME_TO_ID.get(name))
         .filter((v): v is number => typeof v === "number");
 
-      // 3) PATCH /api/members/me
       updateProfile(
         { description: tempBio.trim(), imgUrl, categoryIds },
         {
@@ -107,6 +110,7 @@ const MyProfilePage = () => {
             setProfileImage(updated.profileImageUrl ?? null);
             setIsEditingBio(false);
             setPendingFile(null);
+            setUseDefaultImage(false);
           },
           onError: (e) => {
             alert(e?.message || "프로필 저장에 실패했습니다.");
@@ -135,10 +139,13 @@ const MyProfilePage = () => {
             <div className="flex flex-col items-center gap-3 min-w-[212px] mx-auto lg:mx-0">
               <div className="relative">
                 <div
-                  className="w-[212px] h-[212px] rounded-full overflow-hidden flex items-center justify-center border"
+                  className="w-[212px] h-[212px] rounded-full overflow-hidden flex items-center justify-center border cursor-pointer"
                   style={{ borderColor: "#EAE5E2", backgroundColor: "#F4F2F1" }}
+                  onClick={handleSelectDefaultImage}
                 >
-                  {tempProfileImage ? (
+                  {useDefaultImage ? (
+                    <span className="text-gray-400 text-3xl">+</span> // 기본 이미지
+                  ) : tempProfileImage ? (
                     <img src={tempProfileImage} alt="프로필" className="w-full h-full object-cover" />
                   ) : profileImage ? (
                     <img src={profileImage} alt="프로필" className="w-full h-full object-cover" />
@@ -146,6 +153,7 @@ const MyProfilePage = () => {
                     <span className="text-gray-400 text-3xl">+</span>
                   )}
                 </div>
+                {/* 이미지 업로드 버튼 */}
                 <label
                   className="absolute bottom-2 right-2 w-8 h-8 rounded-full flex items-center justify-center border cursor-pointer"
                   style={{ backgroundColor: "#F4F2F1", borderColor: "#EAE5E2" }}
@@ -164,7 +172,7 @@ const MyProfilePage = () => {
               </button>
             </div>
 
-            {/* 소개글 + 키워드 선택 */}
+            {/* 소개글 + 키워드 */}
             <div className="flex-1 flex flex-col gap-6 w-full">
               {/* 소개글 */}
               <div className="w-full">
