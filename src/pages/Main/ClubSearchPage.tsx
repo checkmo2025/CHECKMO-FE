@@ -121,6 +121,8 @@ export default function ClubSearchPage(): React.ReactElement {
                     participantTypes={club.participantTypes}
                     region={club.region}
                     logoUrl={club.profileImageUrl}
+                    insta={club.insta}
+                    kakao={club.kakao}
                     isMember={member}
                     onJoinRequest={handleJoinRequest}
                   />
