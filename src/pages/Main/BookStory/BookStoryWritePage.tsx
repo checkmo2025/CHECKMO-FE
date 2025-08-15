@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import bookIcon from "../../../assets/icons/booktitle.png";
 import Header from "../../../components/Header";
+import Modal, { type ModalButton } from "../../../components/Modal";
 import { createBookStory } from "../../../apis/BookStory/bookstories";
 
 export default function BookStoryWritePage() {
@@ -17,6 +18,7 @@ export default function BookStoryWritePage() {
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
   const [loading, setLoading] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   const handleAddStory = async () => {
     try {
@@ -37,8 +39,7 @@ export default function BookStoryWritePage() {
 
       await createBookStory(payload);
 
-      alert("책 이야기가 등록되었습니다!"); //이거 모달로 바꾸고 지우기
-      navigate("/bookstory");
+      setIsModalOpen(true);
     } catch (error) {
       console.error("책 이야기 등록 실패", error);
       alert("등록에 실패했습니다. 다시 시도해주세요.");
@@ -47,19 +48,20 @@ export default function BookStoryWritePage() {
     }
   };
 
+  const modalButtons: ModalButton[] = [
+    {
+      label: "돌아가기",
+      variant: "primary",
+      onClick: () => navigate("/bookstory"),
+    },
+  ];
+
   return (
     <div
       className="absolute left-[315px] right-[42px] top-0 bottom-0 flex flex-col opacity-100"
       style={{ maxWidth: "1080px", margin: "0 auto" }}
     >
-      <Header
-        pageTitle="책 이야기"
-        userProfile={{
-          username: "yujin",
-          bio: "가나다",
-        }}
-        customClassName="mt-[30px]"
-      />
+      <Header pageTitle="책 이야기" customClassName="mt-[30px]" />
 
       <main className="overflow-y-auto flex-grow pt-[30px] px-0">
         <div className="max-w-full mx-auto p-0 space-y-8 text-gray-900">
@@ -83,11 +85,9 @@ export default function BookStoryWritePage() {
                 />
                 <span>{book.title}</span>
               </div>
-
               <div className="text-xs text-gray-500 mt-1 mb-2">
                 {book.author} | {book.publisher}
               </div>
-
               <p className="mt-2 text-xs leading-relaxed text-gray-800 whitespace-pre-line pr-28">
                 {book.description}
               </p>
@@ -98,7 +98,7 @@ export default function BookStoryWritePage() {
                 선택됨
               </button>
               <Link to="/bookstory/search">
-                <button className="rounded-[1rem] border border-[#A6917D] px-3 py-1.5 text-xs font-semibold text-beige-700 hover:bg-beige-100 w-[6rem]">
+                <button className="rounded-[1rem] border border-[#A6917D] px-3 py-1.5 text-xs font-semibold text-beige-700 hover:bg-beige-100 w-[6rem] cursor-pointer">
                   변경하기
                 </button>
               </Link>
@@ -136,6 +136,13 @@ export default function BookStoryWritePage() {
           </section>
         </div>
       </main>
+
+      <Modal
+        isOpen={isModalOpen}
+        title="등록이 완료되었습니다!"
+        buttons={modalButtons}
+        onBackdrop={() => setIsModalOpen(false)}
+      />
     </div>
   );
 }

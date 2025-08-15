@@ -39,7 +39,6 @@ import DetailMeatingManagePage from "./pages/Meeting/DetailMeatingManagePage";
 import MeetingDetailPage from "./pages/Meeting/MeetingDetailPage";
 import CreateMeetingPage from "./pages/Meeting/CreateMeetingPage";
 import MeetingTopicListPage from "./pages/Meeting/MeetingTopicListPage";
-import NoticeManagementPage from "./pages/Manage/NoticeManagementPage";
 import EditClubPage from "./pages/BookClub/Club/ClubEditPage";
 import BookClubAdminPage from "./pages/Admin/BookClubAdminPage";
 import MemberAdminPage from "./pages/Admin/MemberAdminPage";
