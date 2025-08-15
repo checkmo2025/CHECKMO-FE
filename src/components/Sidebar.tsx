@@ -13,6 +13,7 @@ import bookIcon from "../assets/icons/book.png";
 import bookShelf from "../assets/icons/bookshelf.png";
 import noticeIcon from "../assets/icons/notice.png";
 import Modal from "./Modal";
+import BookClubListModal from "./BookClubListModal";
 
 import { fetchMyClubs } from "../apis/Main/clubs";
 import type { ClubDto } from "../apis/Main/clubs";
@@ -20,6 +21,7 @@ import type { ClubDto } from "../apis/Main/clubs";
 type Submenu = {
   name: string;
   path: string;
+  isModal?: boolean;
 };
 
 type Menu = {
@@ -40,6 +42,7 @@ const Sidebar = () => {
   const [openMenus, setOpenMenus] = useState<Set<string>>(new Set());
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [myClubs, setMyClubs] = useState<ClubDto[]>([]);
+  const [isClubListModalOpen, setIsClubListModalOpen] = useState(false);
 
   function openPlannedModal() {
     setIsModalOpen(true);
@@ -114,10 +117,7 @@ const Sidebar = () => {
           name: "독서 모임",
           icon: bookclubIcon,
           submenus: [
-            ...myClubs.map((club) => ({
-              name: club.clubName,
-              path: `/bookclub/${club.clubId}/home`,
-            })),
+            { name: "내 모임 바로가기", path: "#", isModal: true },
             { name: "모임 검색하기", path: "/searchClub" },
             { name: "모임 생성하기", path: "/createClub" },
           ],
@@ -285,7 +285,7 @@ const Sidebar = () => {
 
               {isMenuOpen && submenus.length > 0 && (
                 <div className="ml-8 mt-1 space-y-1">
-                  {submenus.map(({ name: subName, path: subPath }) => {
+                  {submenus.map(({ name: subName, path: subPath, isModal }) => {
                     let icon = null;
 
                     if (subName === "공지사항") icon = noticeIcon;
@@ -293,17 +293,44 @@ const Sidebar = () => {
                     else if (subName === "모임") icon = bookclubIcon;
                     else if (subName === "책 추천") icon = bookIcon;
 
+                    if (isModal) {
+                      return (
+                        <button
+                          key={subName}
+                          onClick={() => setIsClubListModalOpen(true)}
+                          className="flex items-center gap-2 text-sm py-1 pl-2 pr-3 rounded hover:text-[#3D4C35]"
+                        >
+                          {icon && (
+                            <img src={icon} alt="" className="w-5 h-5" />
+                          )}
+                          {subName}
+                        </button>
+                      );
+                    }
+
+                    if (!subPath || MODAL_ONLY.has(subPath)) {
+                      return (
+                        <button
+                          key={subName}
+                          onClick={(e) => {
+                            e.preventDefault();
+                            openPlannedModal();
+                          }}
+                          className="flex items-center gap-2 text-sm py-1 pl-2 pr-3 rounded hover:text-[#3D4C35]"
+                        >
+                          {icon && (
+                            <img src={icon} alt="" className="w-5 h-5" />
+                          )}
+                          {subName}
+                        </button>
+                      );
+                    }
+
                     return (
                       <NavLink
                         key={subName}
                         to={subPath}
                         end
-                        onClick={(e) => {
-                          if (!subPath || MODAL_ONLY.has(subPath)) {
-                            e.preventDefault();
-                            openPlannedModal();
-                          }
-                        }}
                         className={({ isActive }) =>
                           `flex items-center gap-2 text-sm py-1 pl-2 pr-3 rounded hover:text-[#3D4C35] ${
                             isActive
@@ -323,16 +350,19 @@ const Sidebar = () => {
           );
         })}
       </nav>
+
       <Modal
         isOpen={isModalOpen}
         title={"추후 개발 예정입니다!"}
-        buttons={[
-          {
-            label: "돌아가기",
-            onClick: () => setIsModalOpen(false),
-          },
-        ]}
+        buttons={[{ label: "돌아가기", onClick: () => setIsModalOpen(false) }]}
         onBackdrop={() => setIsModalOpen(false)}
+      />
+
+      <BookClubListModal
+        isOpen={isClubListModalOpen}
+        clubs={myClubs}
+        onClose={() => setIsClubListModalOpen(false)}
+        onSelect={(clubId: number) => navigate(`/bookclub/${clubId}/home`)}
       />
     </div>
   );
