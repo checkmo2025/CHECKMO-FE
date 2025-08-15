@@ -30,7 +30,7 @@ export default function CreateClubPage(): React.ReactElement {
   // React Query hooks
   const createClubMutation = useCreateClub();
   const uploadImageMutation = useUploadImage();
-  
+
   // State
   const [clubName, setClubName] = useState('');
   const [clubDescription, setClubDescription] = useState('');
@@ -42,7 +42,7 @@ export default function CreateClubPage(): React.ReactElement {
   const [kakao, setKakao] = useState('');
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
   const [imageFile, setImageFile] = useState<File | null>(null);
-  
+
   // 중복검사 훅
   const { isValidating, isAvailable, isDuplicate, error, checkClubName, hasManualCheck, resetValidation } = useClubNameValidation();
 
@@ -57,7 +57,7 @@ export default function CreateClubPage(): React.ReactElement {
       setSelectedImage(reader.result as string);
     };
     reader.readAsDataURL(file);
-    
+
     setImageFile(file);
   };
 
@@ -97,7 +97,7 @@ export default function CreateClubPage(): React.ReactElement {
     }
 
     let profileImageUrl: string | undefined;
-    
+
     // 이미지가 있는 경우 presigned URL 발급 및 비동기 업로드
     if (imageFile) {
       // uploadImage는 즉시 imageUrl을 반환하고 S3 업로드는 백그라운드에서 진행
@@ -125,7 +125,7 @@ export default function CreateClubPage(): React.ReactElement {
 
   return (
     <div className="absolute left-[315px] right-[42px] opacity-100">
-      <Header 
+      <Header
         pageTitle="모임 생성하기"
         customClassName="mt-[30px]"
       />
@@ -246,20 +246,18 @@ export default function CreateClubPage(): React.ReactElement {
                 mt-[16px] flex flex-col items-center justify-center
                 rounded-[36px] py-[10px]
                 cursor-pointer
-                ${visibility === '공개' 
-                  ? 'bg-[#90D26D] text-white' 
+                ${visibility === '공개'
+                  ? 'bg-[#90D26D] text-white'
                   : 'border-[1px] border-[#90D26D]'
                 }
               `}
             >
-              <span className={`font-pretendard font-semibold text-[12px] leading-[145%] tracking-[-0.1%] text-center ${
-                visibility === '공개' ? 'text-white' : 'text-[#2C2C2C]'
-              }`}>
+              <span className={`font-pretendard font-semibold text-[12px] leading-[145%] tracking-[-0.1%] text-center ${visibility === '공개' ? 'text-white' : 'text-[#2C2C2C]'
+                }`}>
                 공개
               </span>
-              <span className={`font-pretendard font-normal text-[12px] mt-[4px] ${
-                visibility === '공개' ? 'text-white' : 'text-[#8D8D8D]'
-              }`}>
+              <span className={`font-pretendard font-normal text-[12px] mt-[4px] ${visibility === '공개' ? 'text-white' : 'text-[#8D8D8D]'
+                }`}>
                 누구나 가입 가능
               </span>
             </button>
@@ -273,20 +271,18 @@ export default function CreateClubPage(): React.ReactElement {
                 mt-[16px] flex flex-col items-center justify-center
                 rounded-[36px] py-[10px]
                 cursor-pointer
-                ${visibility === '비공개' 
-                  ? 'bg-[#90D26D] text-white' 
+                ${visibility === '비공개'
+                  ? 'bg-[#90D26D] text-white'
                   : 'border-[1px] border-[#90D26D]'
                 }
               `}
             >
-              <span className={`font-pretendard font-semibold text-[12px] leading-[145%] tracking-[-0.1%] text-center ${
-                visibility === '비공개' ? 'text-white' : 'text-[#2C2C2C]'
-              }`}>
+              <span className={`font-pretendard font-semibold text-[12px] leading-[145%] tracking-[-0.1%] text-center ${visibility === '비공개' ? 'text-white' : 'text-[#2C2C2C]'
+                }`}>
                 비공개
               </span>
-              <span className={`font-pretendard font-normal text-[12px] mt-[4px] ${
-                visibility === '비공개' ? 'text-white' : 'text-[#8D8D8D]'
-              }`}>
+              <span className={`font-pretendard font-normal text-[12px] mt-[4px] ${visibility === '비공개' ? 'text-white' : 'text-[#8D8D8D]'
+                }`}>
                 운영자의 승인 필요
               </span>
             </button>
@@ -365,9 +361,9 @@ export default function CreateClubPage(): React.ReactElement {
             type="button"
             onClick={handleCreateClub}
             disabled={
-              createClubMutation.isPending || 
-              uploadImageMutation.isPending || 
-              isValidating || 
+              createClubMutation.isPending ||
+              uploadImageMutation.isPending ||
+              isValidating ||
               isDuplicate === true ||
               !clubName.trim()
             }
@@ -381,7 +377,7 @@ export default function CreateClubPage(): React.ReactElement {
             {createClubMutation.isPending || uploadImageMutation.isPending ? '등록 중...' : '등록하기'}
           </button>
         </div>
-        
+
         {/* 하단 여백 */}
         <div className="h-[20px]"></div>
       </div>

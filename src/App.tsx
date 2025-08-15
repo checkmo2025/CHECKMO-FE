@@ -20,7 +20,7 @@ import OthersProfilePage from "./pages/Main/Info/OthersProfilePage";
 import BookClubHomePage from "./pages/BookClub/BookClubHomePage";
 import NoticePage from "./pages/BookClub/NoticePage";
 import NoticeDetailPage from "./pages/BookClub/NoticeDetailPage";
-import NoticeCreatePage from "./pages/BookClub/NoticeCreatePage";
+//import NoticeCreatePage from "./pages/BookClub/NoticeCreatePage";
 import ClubSearchPage from "./pages/Main/ClubSearchPage";
 import CreateClubPage from "./pages/Main/CreateClubPage";
 import BookStorySearchPage from "./pages/Main/BookStory/BookStorySearchPage";
@@ -80,15 +80,15 @@ const App = () => {
           <Route path="/info/others/:userId" element={<OthersProfilePage />} />
           <Route path="/createClub" element={<CreateClubPage />} />
 
-            {/* 마이페이지 */}
-            <Route path="mypage">
-              <Route index element={<MyHomePage />} />
-              <Route path="group" element={<MyGroupPage />} />
-              <Route path="subscription" element={<MySubscriptionPage />} />
-              <Route path="notification" element={<MyNotificationPage />} />
-              <Route path="story" element={<MyStoryPage />} />
-              <Route path="myprofile" element={<MyProfilePage />} />
-            </Route>
+          {/* 마이페이지 */}
+          <Route path="mypage">
+            <Route index element={<MyHomePage />} />
+            <Route path="group" element={<MyGroupPage />} />
+            <Route path="subscription" element={<MySubscriptionPage />} />
+            <Route path="notification" element={<MyNotificationPage />} />
+            <Route path="story" element={<MyStoryPage />} />
+            <Route path="myprofile" element={<MyProfilePage />} />
+          </Route>
 
           {/* 책이야기 */}
           <Route path="bookstory">
@@ -107,7 +107,7 @@ const App = () => {
               <Route path="notices" element={<NoticePage />} />
               <Route path="edit" element={<EditClubPage />} />
               <Route path="notices/:noticeId" element={<NoticeDetailPage />} />
-              <Route path="notices/create" element={<NoticeCreatePage />} />
+              {/* <Route path="notices/create" element={<NoticeCreatePage />} /> */}
               
               {/* 책장 */}
               <Route path="shelf">

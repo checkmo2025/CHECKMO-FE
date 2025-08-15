@@ -48,29 +48,28 @@ export default function ClubSearchPage(): React.ReactElement {
     <>
       <div className="absolute left-[315px] right-[42px] opacity-100">
         <Header pageTitle={'모임 검색하기'}
-          notifications={[]}
           customClassName="mt-[30px]"
-          />
+        />
 
         <div className='flex flex-col flex-1'>
-                {/* ── 검색 바 ── */}
+          {/* ── 검색 바 ── */}
           <div>
-              <div className="mt-9 flex items-center h-[53px] py-[10px] px-[17px] rounded-2xl bg-[var(--Color-4,#F4F2F1)]">
-                <img src="/assets/material-symbols_search-rounded.svg"
+            <div className="mt-9 flex items-center h-[53px] py-[10px] px-[17px] rounded-2xl bg-[var(--Color-4,#F4F2F1)]">
+              <img src="/assets/material-symbols_search-rounded.svg"
                 alt="search" className="w-[33px] h-[33px]" />
-                <input
-                  type="text"
-                  value={query}
-                  onChange={e => setQuery(e.target.value)}
-                  placeholder="검색하기 (모임 명, 지역별 검색, 동아리 대상별 검색)"
-                  className="flex-1 bg-transparent outline-none 
+              <input
+                type="text"
+                value={query}
+                onChange={e => setQuery(e.target.value)}
+                placeholder="검색하기 (모임 명, 지역별 검색, 동아리 대상별 검색)"
+                className="flex-1 bg-transparent outline-none 
                     font-pretendard font-medium text-[18px] leading-[135%] mx-[14px] tracking-[-0.1%]"
-                />
+              />
             </div>
           </div>
 
           {/* 운영진 안내, 동아리 리스트 */}
-          <div className= "flex flex-col mt-[15px]">
+          <div className="flex flex-col mt-[15px]">
             {/* ── 운영진 안내 & 동아리 신청 버튼 ── */}
             <div className="flex justify-end items-center mr-[20px] mb-[10px] gap-[8px]">
               <span className="
@@ -96,7 +95,7 @@ export default function ClubSearchPage(): React.ReactElement {
             </div>
 
             {/* ── 동아리 리스트 ── */}
-            <div className= "flex-col flex items-center space-y-[15px] overflow-y-auto h-[calc(100vh-220px)] w-full"  style={{ msOverflowStyle: 'none', scrollbarWidth: 'none' }}
+            <div className="flex-col flex items-center space-y-[15px] overflow-y-auto h-[calc(100vh-220px)] w-full" style={{ msOverflowStyle: 'none', scrollbarWidth: 'none' }}
               onScroll={(e) => {
                 const el = e.currentTarget;
                 if (hasNextPage && !isFetchingNextPage && el.scrollTop + el.clientHeight >= el.scrollHeight - 40) {
@@ -122,6 +121,8 @@ export default function ClubSearchPage(): React.ReactElement {
                     participantTypes={club.participantTypes}
                     region={club.region}
                     logoUrl={club.profileImageUrl}
+                    insta={club.insta}
+                    kakao={club.kakao}
                     isMember={member}
                     onJoinRequest={handleJoinRequest}
                   />
