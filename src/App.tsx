@@ -46,7 +46,7 @@ import RegisterAdminPage from "./pages/Admin/RegisterAdminPage";
 import MeetingTeamTopicListPage from "./pages/Meeting/MeetingTeamTopicListPage";
 import BookRecommendEditPage from "./pages/BookRecommend/BookRecommendEditPage";
 import MyBookStoryPage from "./pages/Main/BookStory/MyBookStoryPage";
-
+import MemberBlockPage from "./pages/Admin/MemberBlockPage";
 const App = () => {
   const qc = useQueryClient();
 
@@ -161,6 +161,7 @@ const App = () => {
               <Route index element={<BookClubAdminPage />} />
               <Route path="member" element={<MemberAdminPage />} />
               <Route path="register" element={<RegisterAdminPage />} />
+              <Route path="block" element={<MemberBlockPage />} />
             </Route>
           </Route>
         </Route>

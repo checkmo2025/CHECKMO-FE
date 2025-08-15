@@ -4,10 +4,9 @@ import { useEffect, useState } from "react";
 import { useClubgetMembers } from "../../hooks/BookClub/useClubgetMembers";
 import type { ClubMember } from "../../types/Club/GetClubMembers";
 import { useUpdateMemberGrade } from "../../hooks/BookClub/useClubMembergrade";
-import type { ModalButton } from "../../components/Modal";
-import Modal from "../../components/Modal";
+import Modal, { type ModalButton } from "../../components/Modal";
 
-const RegisterAdminPage = () => {
+const MemberBlockPage = () => {
   const navigate = useNavigate();
   const { bookclubId } = useParams<{ bookclubId: string }>();
   const [Member, setMember] = useState<ClubMember[]>([]);
@@ -18,7 +17,7 @@ const RegisterAdminPage = () => {
 
   const {  data: Result,  fetchNextPage,  hasNextPage,  isFetchingNextPage,} =  useClubgetMembers({
       clubId: Number(bookclubId),
-      status: 'PENDING',
+      status: 'BLOCKED',
       size: 20
   });
 
@@ -57,13 +56,12 @@ const RegisterAdminPage = () => {
         { label: "확인", onClick: () => {mutate({ memberId, status: nextStatus }); setInfoOpen(false);}},
         { label: "취소", onClick: () => setInfoOpen(false) , variant: "outline" },
       ]);
+      setInfoOpen(true);
     }
-    
   };
   if(!Result) return <div>Loading...</div>;
   return (
     <div className="mt-[30px] px-8">
-      
       {/* 상단 바 */}
       <div className="flex justify-between items-center mb-9">
         <div
@@ -78,8 +76,13 @@ const RegisterAdminPage = () => {
           <span className="ml-2 text-[var(--Gray-1,#2C2C2C)] font-['Pretendard'] text-[24px] font-bold leading-[135%]">신청 관리</span>
         </div>
       </div>
-      
 
+      <Modal
+        isOpen={infoOpen}
+        title={infoTitle}
+        buttons={infoButtons}
+        onBackdrop={() => setInfoOpen(false)}
+      />
 
       {/* 프로필 카드 목록 */}
       {Member.map((member) => (
@@ -98,17 +101,12 @@ const RegisterAdminPage = () => {
               onClick={() =>{ navigate(`/info/others/${member.basicInfo.nickname}`) }}>
                 프로필 방문하기
               </button>
+              
               <button className="px-4 py-1.5 rounded-full text-sm bg-[#EFF5ED] border border-[#90D26D] text-[#367216] hover:bg-[#90D26D] hover:text-white"
               onClick={() => {
                 handleMemberStatus(member.clubMemberId, 'MEMBER');
               }}>
-                승인하기
-              </button>
-              <button className="px-4 py-1.5 rounded-full text-sm bg-[#EFF5ED] border border-[#90D26D] text-[#367216] hover:bg-[#90D26D] hover:text-white"
-              onClick={() => {
-                handleMemberStatus(member.clubMemberId, 'BLOCKED');
-              }}>
-                삭제하기
+                되돌리기
               </button>
             </div>
           </div>
@@ -116,7 +114,6 @@ const RegisterAdminPage = () => {
             {member.joinMessage || "가입 메시지가 없습니다."}
           </p>
         </div>
-        
       ))}
       <Modal
         isOpen={infoOpen}
@@ -126,5 +123,4 @@ const RegisterAdminPage = () => {
     </div>
   );
 };
-
-export default RegisterAdminPage;
+export default MemberBlockPage;
