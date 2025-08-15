@@ -73,7 +73,7 @@ export default function MyBookStoryPage() {
       <div className="overflow-y-auto h-[calc(100vh-80px)] w-full flex-1 pt-[30px] pl-[2px] pr-[30px] bg-[#FFFFFF]">
         <div className="flex justify-between items-center mb-6">
           <button
-            className="flex items-center gap-2 px-4 py-2 rounded-full bg-[#A6917D] text-white text-sm font-medium"
+            className="flex items-center gap-2 px-4 py-2 rounded-full bg-[#A6917D] text-white text-sm font-medium cursor-pointer"
             onClick={() => navigate("/bookstory/search")}
           >
             <Pencil size={16} /> 책 이야기

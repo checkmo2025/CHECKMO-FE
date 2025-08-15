@@ -18,8 +18,6 @@ export default function BookStoryWritePage() {
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
   const [loading, setLoading] = useState(false);
-
-  // 모달 상태
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   const handleAddStory = async () => {
@@ -63,14 +61,7 @@ export default function BookStoryWritePage() {
       className="absolute left-[315px] right-[42px] top-0 bottom-0 flex flex-col opacity-100"
       style={{ maxWidth: "1080px", margin: "0 auto" }}
     >
-      <Header
-        pageTitle="책 이야기"
-        userProfile={{
-          username: "yujin",
-          bio: "가나다",
-        }}
-        customClassName="mt-[30px]"
-      />
+      <Header pageTitle="책 이야기" customClassName="mt-[30px]" />
 
       <main className="overflow-y-auto flex-grow pt-[30px] px-0">
         <div className="max-w-full mx-auto p-0 space-y-8 text-gray-900">
@@ -107,7 +98,7 @@ export default function BookStoryWritePage() {
                 선택됨
               </button>
               <Link to="/bookstory/search">
-                <button className="rounded-[1rem] border border-[#A6917D] px-3 py-1.5 text-xs font-semibold text-beige-700 hover:bg-beige-100 w-[6rem]">
+                <button className="rounded-[1rem] border border-[#A6917D] px-3 py-1.5 text-xs font-semibold text-beige-700 hover:bg-beige-100 w-[6rem] cursor-pointer">
                   변경하기
                 </button>
               </Link>
