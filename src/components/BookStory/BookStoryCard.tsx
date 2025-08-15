@@ -137,7 +137,7 @@ const BookStoryCard = ({
           <img
             src={reportIcon}
             alt="report"
-            className="w-[19px] h-[]19px] cursor-pointer"
+            className="w-[19px] h-[19px] cursor-pointer"
           />
         </div>
       </div>

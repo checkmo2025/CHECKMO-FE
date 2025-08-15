@@ -29,7 +29,7 @@ export const deleteBookStory = async (bookStoryId: number) => {
 // 책 이야기 수정 API
 export const updateBookStory = async (
   bookStoryId: number,
-  payload: { description: string }
+  payload: { description?: string }
 ) => {
   return axiosInstance.patch(`/book-stories/${bookStoryId}`, payload);
 };

@@ -22,7 +22,6 @@ export default function BookStoryDetailPage() {
   const [error, setError] = useState<string | null>(null);
 
   const [isEditing, setIsEditing] = useState(false);
-  const [editTitle, setEditTitle] = useState("");
   const [editDescription, setEditDescription] = useState("");
   const [isModalOpen, setIsModalOpen] = useState(false);
 
@@ -41,7 +40,6 @@ export default function BookStoryDetailPage() {
         );
 
         setStory(data);
-        setEditTitle(data.bookStoryTitle);
         setEditDescription(data.description);
         setLiked(data.likedByMe);
         setLikeCount(data.likes);
@@ -82,7 +80,6 @@ export default function BookStoryDetailPage() {
       await updateBookStory(Number(storyId), { description: editDescription });
       setStory({
         ...story!,
-        bookStoryTitle: editTitle,
         description: editDescription,
       });
       setIsEditing(false);
@@ -94,12 +91,10 @@ export default function BookStoryDetailPage() {
   };
 
   const handleEditCancel = () => {
-    setEditTitle(bookStoryTitle);
     setEditDescription(description);
     setIsEditing(false);
   };
 
-  // 좋아요 / 취소
   const handleLike = async () => {
     if (!storyId) return;
     try {
@@ -166,11 +161,9 @@ export default function BookStoryDetailPage() {
           <div className="flex flex-col flex-1 h-80">
             {isEditing ? (
               <>
-                <input
-                  className="text-2xl font-semibold mb-4 border border-gray-300 p-1"
-                  value={editTitle}
-                  onChange={(e) => setEditTitle(e.target.value)}
-                />
+                <h1 className="text-2xl font-semibold mb-4">
+                  {bookStoryTitle}
+                </h1>
                 <textarea
                   className="flex-1 p-2 border border-gray-300 rounded"
                   value={editDescription}
@@ -251,8 +244,6 @@ export default function BookStoryDetailPage() {
           </div>
         </div>
       </div>
-
-      {/* 삭제 확인 모달 */}
       <Modal
         isOpen={isModalOpen}
         title={"삭제 하시겠습니까 ?\n한 번 삭제되면, 복구는 불가합니다."}
