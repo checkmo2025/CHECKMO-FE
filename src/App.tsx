@@ -80,8 +80,8 @@ const App = () => {
           <Route path="/info/others/:userId" element={<OthersProfilePage />} />
           <Route path="/createClub" element={<CreateClubPage />} />
 
-
             {/* 운영진 */}
+            <Route path="manage">
               <Route path="notices" element={<NoticeManagementPage />} />{" "}
               {/* 임시 */}
             </Route>
