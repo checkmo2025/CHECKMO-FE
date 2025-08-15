@@ -8,6 +8,7 @@ import type { noticeListItemDto, voteItemDto } from '../../types/clubNotice';
 import { mapTagToRouteType } from '../../types/noticeType';
 import { parseISO, format } from 'date-fns';
 import Modal from '../Modal';
+import { useDeleteGeneralNotice } from '../../hooks/ClubNotice/useDeleteGeneralNotice';
 
 export default function AnnouncementList({
   items,
@@ -19,9 +20,11 @@ export default function AnnouncementList({
   const navigate = useNavigate();
   const { bookclubId } = useParams<{ bookclubId: string }>();
   const clubIdNum = Number(bookclubId) || 0;
-  const { mutate: deleteVote, isPending } = useDeleteVote(clubIdNum);
+  const { mutate: deleteVote, isPending: deletingVote } = useDeleteVote(clubIdNum);
+  const { mutate: deleteGeneral, isPending: deletingGeneral } = useDeleteGeneralNotice(clubIdNum);
   const [confirmOpen, setConfirmOpen] = useState(false);
   const [targetVoteId, setTargetVoteId] = useState<number | null>(null);
+  const [targetGeneralId, setTargetGeneralId] = useState<number | null>(null);
   const handleItemClick = (item: noticeListItemDto) => {
     if (!bookclubId) return;
     const noticeId = item.id;
@@ -143,7 +146,8 @@ export default function AnnouncementList({
                   setTargetVoteId(item.id);
                   setConfirmOpen(true);
                 } else {
-                  console.log('일반 공지 삭제 예정:', item.id);
+                  setTargetGeneralId(item.id);
+                  setConfirmOpen(true);
                 }
               }}
               className="
@@ -161,7 +165,7 @@ export default function AnnouncementList({
                 z-10
                 disabled:opacity-50 disabled:cursor-not-allowed
               "
-              disabled={isPending}
+              disabled={deletingVote || deletingGeneral}
             >
               삭제하기
             </button>
@@ -195,7 +199,7 @@ export default function AnnouncementList({
       {/* 삭제 확인 모달 */}
       <Modal
         isOpen={confirmOpen}
-        title={"투표를 삭제하시겠습니까?"}
+        title={targetVoteId != null ? '투표를 삭제하시겠습니까?' : '공지사항을 삭제하시겠습니까?'}
         buttons={[
           {
             label: '삭제하기',
@@ -203,9 +207,12 @@ export default function AnnouncementList({
             onClick: () => {
               if (targetVoteId != null) {
                 deleteVote(targetVoteId);
+              } else if (targetGeneralId != null) {
+                deleteGeneral(targetGeneralId);
               }
               setConfirmOpen(false);
               setTargetVoteId(null);
+              setTargetGeneralId(null);
             },
           },
           {
@@ -214,12 +221,14 @@ export default function AnnouncementList({
             onClick: () => {
               setConfirmOpen(false);
               setTargetVoteId(null);
+              setTargetGeneralId(null);
             },
           },
         ]}
         onBackdrop={() => {
           setConfirmOpen(false);
           setTargetVoteId(null);
+          setTargetGeneralId(null);
         }}
       />
     </div>
