@@ -1,11 +1,13 @@
 export type NotificationPreviewItem = {
   notificationId: number;
   notificationType: string; 
-  senderNickname: string;
+  senderNickname: string | null; 
+  targetName?: string | null;    
   read: boolean;
   createdAt: string;   
   redirectPath: string;
 };
+
 export type NotificationPreviewResult = {
   notifications: NotificationPreviewItem[];
 };

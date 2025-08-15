@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { ChevronDown, ChevronUp, Camera } from "lucide-react";
 import AuthLeftPanel from "../../components/AuthLeftPanel";
 import { useSubmitAdditionalInfo, useCheckNickname } from "../../hooks/useAuth";
@@ -8,13 +8,13 @@ import { isValidNickname, getNicknameError } from "../../utils/validators";
 import { useQueryClient } from "@tanstack/react-query";
 import { getMyProfile } from "../../apis/My/memberApi";
 import { QK } from "../../hooks/useHeader";
-import { uploadImage } from "../../apis/imageApi"; // presigned 업로드 함수
+import { uploadImage } from "../../apis/imageApi";
 
 const ProfilePage = () => {
   const navigate = useNavigate();
+  const location = useLocation();
   const qc = useQueryClient();
 
-  // 로그인 상태면 접근 차단 & 프로필 캐시 채운 후 /home 이동
   useEffect(() => {
     const isLoggedIn = Boolean(localStorage.getItem("nickname"));
     const blockedPaths = ["/", "/signup", "/profile"];
@@ -34,25 +34,22 @@ const ProfilePage = () => {
 
   const [step, setStep] = useState(1);
 
-  // 입력값
   const [nickname, setNickname] = useState("");
   const [bio, setBio] = useState("");
   const [selectedCategoryIds, setSelectedCategoryIds] = useState<number[]>([]);
   const [isCategoryOpen, setIsCategoryOpen] = useState(false);
 
-  // 이미지
   const [profileImagePreview, setProfileImagePreview] = useState<string | null>(null);
   const [profileFile, setProfileFile] = useState<File | null>(null);
   const [useDefaultImage, setUseDefaultImage] = useState(false);
   const [isUploading, setIsUploading] = useState(false);
 
-  // 닉네임 체크
   const [nicknameMessage, setNicknameMessage] = useState("");
   const [isNicknameAvailable, setIsNicknameAvailable] = useState<boolean | null>(null);
+
   const { mutate: requestCheckNickname, isPending: isChecking } = useCheckNickname();
   const { mutate: submitInfo, isPending } = useSubmitAdditionalInfo();
 
-  // 카테고리 리스트
   const CATEGORY_LIST = Object.entries(BOOK_CATEGORIES).map(([id, name]) => ({
     id: Number(id),
     name,
@@ -69,9 +66,8 @@ const ProfilePage = () => {
     });
   };
 
-  // presigned 업로드
   const uploadProfileImage = async (): Promise<string> => {
-    if (!profileFile) return ""; // 기본 이미지 사용
+    if (!profileFile) return "";
     setIsUploading(true);
     try {
       const imgUrl = await uploadImage(profileFile);
@@ -81,13 +77,37 @@ const ProfilePage = () => {
     }
   };
 
-  // 닉네임 중복 확인
+  // 공통 에러 처리 함수
+  const handleApiError = (err: any, defaultMsg: string) => {
+    const status = err?.response?.status;
+    const serverMessage = err?.response?.data?.message;
+    if (!status) {
+      alert("서버와 연결할 수 없습니다. 인터넷 연결을 확인해주세요.");
+      return;
+    }
+    switch (status) {
+      case 400:
+        alert(serverMessage || "잘못된 요청입니다.");
+        break;
+      case 401:
+        alert(serverMessage || "인증되지 않은 회원입니다.");
+        break;
+      case 404:
+        alert(serverMessage || "해당 회원을 찾을 수 없습니다.");
+        break;
+      case 500:
+        alert(serverMessage || "서버 오류가 발생했습니다. 잠시 후 다시 시도해주세요.");
+        break;
+      default:
+        alert(serverMessage || err.message || defaultMsg);
+    }
+  };
+
   const handleCheckNickname = () => {
     const trimmed = nickname.trim();
-
     if (!trimmed) {
       setIsNicknameAvailable(null);
-      setNicknameMessage("닉네임을 입력해주세요. (영어 소문자/ 숫자/ 특수문자 포함 6자, 공백 불가");
+      setNicknameMessage("닉네임을 입력해주세요. (영어 소문자/ 숫자/ 특수문자 포함 6자, 공백 불가)");
       return;
     }
 
@@ -106,7 +126,7 @@ const ProfilePage = () => {
       },
       onError: (err) => {
         setIsNicknameAvailable(null);
-        setNicknameMessage(err.message || "닉네임 확인에 실패했습니다.");
+        handleApiError(err, "닉네임 확인에 실패했습니다.");
       },
     });
   };
@@ -160,7 +180,7 @@ const ProfilePage = () => {
             navigate("/home", { replace: true });
             return;
           }
-          alert(err?.response?.data?.message || err?.message || "프로필 저장에 실패했습니다.");
+          handleApiError(err, "프로필 저장에 실패했습니다.");
         },
       }
     );
@@ -209,9 +229,7 @@ const ProfilePage = () => {
                     {profileImagePreview ? (
                       <img src={profileImagePreview} alt="Profile" className="w-full h-full object-cover" />
                     ) : (
-                      // 기본 이미지
-                      <div className="w-full h-full flex items-center justify-center bg-[#F8FFEF] text-sm">
-                      </div>
+                      <div className="w-full h-full flex items-center justify-center bg-[#F8FFEF] text-sm" />
                     )}
                   </div>
 
@@ -343,7 +361,6 @@ const ProfilePage = () => {
               </>
             )}
 
-            {/* Step 2 */}
             {step === 2 && (
               <div className="flex flex-col items-center">
                 <div className="w-32 h-32 rounded-full border-2 border-[#49863c] flex items-center justify-center overflow-hidden bg-[#F0FBE3] mb-4">
