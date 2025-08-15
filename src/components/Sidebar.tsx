@@ -12,6 +12,7 @@ import toggleOpen from "../assets/icons/toggleOpen.png";
 import bookIcon from "../assets/icons/book.png";
 import bookShelf from "../assets/icons/bookshelf.png";
 import noticeIcon from "../assets/icons/notice.png";
+import Modal from "./Modal";
 
 type Submenu = {
   name: string;
@@ -30,6 +31,13 @@ const dummyBookclubs: Record<string, string> = {
   "2": "책을 모아",
   "3": "슬기로운 독서",
 };
+// 이동 막고 모달만 띄울 경로들
+const MODAL_ONLY = new Set([
+  "/booksearch1",
+  "/booksearch2",
+]);
+
+
 
 const Sidebar = () => {
   const { bookclubId } = useParams<{ bookclubId?: string }>();
@@ -38,6 +46,10 @@ const Sidebar = () => {
 
   const [bookclubName, setBookclubName] = useState("모임 이름");
   const [openMenus, setOpenMenus] = useState<Set<string>>(new Set());
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  function openPlannedModal() {
+    setIsModalOpen(true);
+  }
 
   useEffect(() => {
     if (bookclubId && dummyBookclubs[bookclubId]) {
@@ -283,6 +295,14 @@ const Sidebar = () => {
                         key={subName}
                         to={subPath}
                         end
+                        onClick={(e) => { 
+
+                          // MODAL_ONLY에 포함되면 라우팅 차단
+                          if (!subPath || MODAL_ONLY.has(subPath)) {
+                            e.preventDefault();
+                            openPlannedModal();
+                          }
+                        }}
                         className={({ isActive }) =>
                           `flex items-center gap-2 text-sm py-1 pl-2 pr-3 rounded hover:text-[#3D4C35] ${isActive
                             ? "text-[#3D4C35] font-semibold"
@@ -301,6 +321,14 @@ const Sidebar = () => {
           );
         })}
       </nav>
+      <Modal isOpen={isModalOpen} title={"추후 개발 예정입니다!"} 
+        buttons={[
+          {
+            label: '돌아가기',
+            onClick: () => setIsModalOpen(false),
+          }
+        ]} 
+        onBackdrop={() => setIsModalOpen(false)} />
     </div>
   );
 };
