@@ -157,6 +157,7 @@ const MyPage = () => {
                           {item.notificationType === "LIKE" && "좋아요를 눌렀습니다."}
                           {item.notificationType === "COMMENT" && "댓글을 남겼습니다."}
                           {item.notificationType === "FOLLOW" && "팔로우했습니다."}
+                          {item.notificationType === "JOIN_CLUB" && "클럽에 가입했습니다"}
                        </p>
                         <p className="text-[12px] text-[#8D8D8D] mt-1">{item.createdAt}</p>
                       </div>

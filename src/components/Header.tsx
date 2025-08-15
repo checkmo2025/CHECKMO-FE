@@ -1,8 +1,8 @@
 import { useState, useEffect, useRef } from "react";
 import { FaBell } from "react-icons/fa";
 import { useNavigate, useParams } from "react-router-dom";
-import { useQuery } from "@tanstack/react-query";
-import { getMyProfile, getNotificationPreview } from "../apis/headerApi";
+import { useMyProfileQuery } from "../hooks/My/useMember";
+import { useHeaderData } from "../hooks/useHeader";
 
 interface HeaderProps {
   pageTitle: string;
@@ -12,14 +12,8 @@ interface HeaderProps {
   manageLabel?: string;
   manageTo?: string;
   onClickManage?: () => void;
-  manageButtonClassName?: string; // 버튼 위치·크기·스타일 커스텀
+  manageButtonClassName?: string;
 }
-
-const TYPE_TEXT: Record<string, string> = {
-  LIKE: "좋아요를 눌렀습니다.",
-  COMMENT: "댓글을 남겼습니다.",
-  FOLLOW: "팔로우했습니다.",
-};
 
 const Header = ({
   pageTitle,
@@ -34,36 +28,14 @@ const Header = ({
   const navigate = useNavigate();
   const { bookclubId } = useParams();
 
-  // bookclubId가 있으면 북클럽 홈 경로로, 아니면 기본값
   const manageTo =
     propManageTo ?? (bookclubId ? `/bookclub/${bookclubId}/home` : "/club/manage");
 
   // 프로필
-  const { data: me, isPending: profilePending } = useQuery({
-    queryKey: ["header", "me"],
-    queryFn: getMyProfile,
-    staleTime: 0,
-    refetchOnWindowFocus: true,
-    retry: 0,
-  });
+  const { data: me, isPending: profilePending } = useMyProfileQuery();
 
-  // 알림 프리뷰
-  const { data: preview, isPending: notiPending } = useQuery({
-    queryKey: ["header", "preview", 5],
-    queryFn: () => getNotificationPreview(5),
-    staleTime: 30 * 1000,
-    refetchInterval: 60 * 1000,
-    retry: 0,
-  });
-
-  const notificationsToShow =
-    (preview?.notifications ?? []).slice(0, 5).map((n) => ({
-      message: `${n.senderNickname}님이 ${
-        TYPE_TEXT[n.notificationType] ?? n.notificationType
-      }`,
-      time: new Date(n.createdAt).toLocaleString(),
-      redirectPath: n.redirectPath,
-    }));
+  // ✅ 모든 페이지에서 알림 5개 불러오기
+  const { notifications, notiLoading } = useHeaderData(5);
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const modalRef = useRef<HTMLDivElement>(null);
@@ -78,7 +50,7 @@ const Header = ({
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
-  const unreadCount = notificationsToShow.length;
+  const unreadCount = notifications?.length ?? 0;
 
   const goManage = () => {
     if (onClickManage) onClickManage();
@@ -88,16 +60,14 @@ const Header = ({
   return (
     <header
       className={`${
-        customClassName ??
-        "fixed left-[264px] right-0 top-3 h-[56px] lg:px-13 px-4 md:px-8 "
+        customClassName ?? "fixed left-[264px] right-0 top-3 h-[56px] lg:px-13 px-4 md:px-8 "
       } bg-white flex justify-between items-center z-50`}
     >
-      {/* 타이틀 + (운영진 전용) 관리 버튼 */}
+      {/* 타이틀 + 관리 버튼 */}
       <div className="flex items-center gap-3">
         <h1 className="font-bold text-lg md:text-xl lg:text-2xl text-[#2C2C2C]">
           {pageTitle}
         </h1>
-
         {isAdmin && showManageButton && (
           <button type="button" onClick={goManage} className={manageButtonClassName}>
             {manageLabel}
@@ -111,10 +81,10 @@ const Header = ({
           onClick={() => setIsModalOpen((p) => !p)}
           aria-label="Notifications"
           className="relative w-8 h-8 flex justify-center items-center shrink-0"
-          disabled={notiPending}
+          disabled={notiLoading}
         >
           <FaBell size={32} color="#90D26D" />
-          {!notiPending && unreadCount > 0 && (
+          {!notiLoading && unreadCount > 0 && (
             <span className="absolute -top-1 -right-1 min-w-[18px] h-[18px] px-[4px] rounded-full text-[11px] bg-[#90D26D] text-white flex items-center justify-center">
               {unreadCount}
             </span>
@@ -127,15 +97,13 @@ const Header = ({
             ref={modalRef}
             className="absolute right-0 top-[60px] w-[300px] bg-white border-2 border-[#C4E8B2] rounded-[16px] shadow-lg p-[20px] z-50"
           >
-            {notiPending ? (
+            {notiLoading ? (
               <div className="text-sm text-[#8D8D8D]">알림 불러오는 중...</div>
-            ) : notificationsToShow.length === 0 ? (
-              <div className="text-sm text-[#8D8D8D]">
-                알림이 존재하지 않습니다.
-              </div>
+            ) : unreadCount === 0 ? (
+              <div className="text-sm text-[#8D8D8D]">알림이 존재하지 않습니다.</div>
             ) : (
               <ul className="space-y-2">
-                {notificationsToShow.map((n, i) => (
+                {notifications!.map((n, i) => (
                   <li
                     key={i}
                     className="flex justify-between items-center px-[10px] py-[8px] hover:bg-[#F1F8EF] rounded-[12px]"
@@ -175,7 +143,6 @@ const Header = ({
               <span className="text-gray-400 text-lg">+</span>
             )}
           </div>
-
           <div className="flex flex-col justify-center min-w-0">
             <div className="flex items-center gap-3">
               <span className="text-sm md:text-base font-semibold text-[#2C2C2C] truncate">

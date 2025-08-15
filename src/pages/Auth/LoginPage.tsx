@@ -83,8 +83,35 @@ const LoginPage = () => {
             console.error("프로필 불러오기 실패:", err);
           }
         },
-        onError: (err) => {
-          setAlertMessage(err.message || "아이디 또는 비밀번호가 올바르지 않습니다.");
+        onError: (err: any) => {
+          const status = err?.response?.status;
+          const serverMessage = err?.response?.data?.message;
+
+          if (!status) {
+            // 네트워크 오류 또는 서버 미응답
+            setAlertMessage("서버와 연결할 수 없습니다. 인터넷 연결을 확인해주세요.");
+            return;
+          }
+
+          switch (status) {
+            case 400:
+              setAlertMessage(serverMessage || "잘못된 요청입니다.");
+              break;
+            case 401:
+              setAlertMessage(serverMessage || "아이디 또는 비밀번호가 일치하지 않습니다.");
+              break;
+            case 403:
+              setAlertMessage(serverMessage || "접근 권한이 없습니다.");
+              break;
+            case 404:
+              setAlertMessage(serverMessage || "요청한 경로를 찾을 수 없습니다.");
+              break;
+            case 500:
+              setAlertMessage(serverMessage || "서버 오류가 발생했습니다. 잠시 후 다시 시도해주세요.");
+              break;
+            default:
+              setAlertMessage(serverMessage || err.message || "로그인 중 오류가 발생했습니다.");
+          }
         },
       }
     );
