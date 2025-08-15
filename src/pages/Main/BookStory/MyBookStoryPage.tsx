@@ -1,9 +1,13 @@
 import { useState, useEffect } from "react";
 import MyBookStoryCard from "../../../components/BookStory/MyBookStoryCard";
 import { LayoutGrid, List } from "lucide-react";
-import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import Header from "../../../components/Header";
-import { fetchBookStories } from "../../../apis/BookStory/bookstories";
+import Modal, { type ModalButton } from "../../../components/Modal";
+import {
+  fetchBookStories,
+  deleteBookStory,
+} from "../../../apis/BookStory/bookstories";
 import type { BookStoryResponseDto } from "../../../types/bookStories";
 import { Pencil } from "lucide-react";
 
@@ -11,6 +15,11 @@ export default function MyBookStoryPage() {
   const [stories, setStories] = useState<BookStoryResponseDto[]>([]);
   const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
   const [loading, setLoading] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedStoryId, setSelectedStoryId] = useState<number | null>(null);
+
+  const nickname = localStorage.getItem("nickname") || "사용자";
+  const navigate = useNavigate();
 
   useEffect(() => {
     const loadStories = async () => {
@@ -27,24 +36,48 @@ export default function MyBookStoryPage() {
     loadStories();
   }, []);
 
+  const handleDelete = async () => {
+    if (!selectedStoryId) return;
+    try {
+      await deleteBookStory(selectedStoryId);
+      setStories((prev) =>
+        prev.filter((s) => s.bookStoryId !== selectedStoryId)
+      );
+      setIsModalOpen(false);
+      setSelectedStoryId(null);
+    } catch (error) {
+      console.error("삭제 실패", error);
+      alert("삭제 실패했습니다.");
+    }
+  };
+
+  const modalButtons: ModalButton[] = [
+    {
+      label: "삭제하기",
+      variant: "outline",
+      onClick: handleDelete,
+    },
+    {
+      label: "취소하기",
+      variant: "primary",
+      onClick: () => setIsModalOpen(false),
+    },
+  ];
+
   return (
     <div className="absolute left-[315px] right-[42px] opacity-100">
-      {/* 헤더 */}
       <Header
-        pageTitle={`yj님의 책 이야기`} // 하드코딩
-        userProfile={{ username: "yj", bio: "" }}
+        pageTitle={`${nickname}님의 책 이야기`}
         customClassName="mt-[30px]"
       />
-
       <div className="overflow-y-auto h-[calc(100vh-80px)] w-full flex-1 pt-[30px] pl-[2px] pr-[30px] bg-[#FFFFFF]">
-        {/* 상단 버튼 & 보기 모드 */}
         <div className="flex justify-between items-center mb-6">
-          <Link to="/bookstory/search">
-            <button className="flex items-center gap-2 px-4 py-2 rounded-full bg-[#A6917D] text-white text-sm font-medium">
-              <Pencil size={16} /> 책 이야기
-            </button>
-          </Link>
-
+          <button
+            className="flex items-center gap-2 px-4 py-2 rounded-full bg-[#A6917D] text-white text-sm font-medium cursor-pointer"
+            onClick={() => navigate("/bookstory/search")}
+          >
+            <Pencil size={16} /> 책 이야기
+          </button>
           <div className="flex gap-2">
             <button onClick={() => setViewMode("grid")}>
               <LayoutGrid
@@ -61,7 +94,6 @@ export default function MyBookStoryPage() {
           </div>
         </div>
 
-        {/* 책 이야기 목록 */}
         <div
           className={`${
             viewMode === "grid"
@@ -76,13 +108,20 @@ export default function MyBookStoryPage() {
               <MyBookStoryCard
                 key={story.bookStoryId}
                 imageUrl={story.bookInfo.imgUrl}
-                userName={story.authorInfo.nickname}
                 title={story.bookStoryTitle}
                 summary={story.description}
                 bookTitle={story.bookStoryTitle}
                 author={story.bookInfo.author}
-                onEdit={() => console.log("수정", story.bookStoryId)}
-                onDelete={() => console.log("삭제", story.bookStoryId)}
+                onEdit={() =>
+                  navigate(`/bookstory/${story.bookStoryId}/detail`)
+                }
+                onDelete={() => {
+                  setSelectedStoryId(story.bookStoryId);
+                  setIsModalOpen(true);
+                }}
+                onClick={() =>
+                  navigate(`/bookstory/${story.bookStoryId}/detail`)
+                }
               />
             ))
           ) : (
@@ -90,6 +129,13 @@ export default function MyBookStoryPage() {
           )}
         </div>
       </div>
+
+      <Modal
+        isOpen={isModalOpen}
+        title={"삭제 하시겠습니까 ?\n한 번 삭제되면, 복구는 불가합니다."}
+        buttons={modalButtons}
+        onBackdrop={() => setIsModalOpen(false)}
+      />
     </div>
   );
 }

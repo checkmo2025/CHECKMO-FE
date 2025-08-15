@@ -29,7 +29,7 @@ export const deleteBookStory = async (bookStoryId: number) => {
 // 책 이야기 수정 API
 export const updateBookStory = async (
   bookStoryId: number,
-  payload: { description: string }
+  payload: { description?: string }
 ) => {
   return axiosInstance.patch(`/book-stories/${bookStoryId}`, payload);
 };
@@ -50,4 +50,9 @@ export type CreateBookStoryRequest = {
 
 export const createBookStory = async (payload: CreateBookStoryRequest) => {
   return await axiosInstance.post("/book-stories", payload);
+};
+
+// 책 이야기 좋아요/취소 API
+export const toggleBookStoryLike = async (bookStoryId: number) => {
+  return axiosInstance.post(`/book-stories/${bookStoryId}/like`);
 };
