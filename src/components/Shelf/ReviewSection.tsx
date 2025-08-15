@@ -15,28 +15,38 @@ import type {
 import LongtermChatInput from '../LongtermChatInput';
 import { getStarIcon } from './getStarIcon';
 import StarSelector from '../BookRecommend/StarSelector';
+import Modal, { type ModalButton } from '../Modal';
 
-function Checkdescription(description: string, Rating : number) {
-  if (Rating < 1) {
-      alert('별점은 1점보다 크거나 같아야 합니다.');
-      return;
-  } else if (description == '') {
-      alert('한줄평을 입력해주세요.');
-      return;
-  }
-  return;
-}
-
-export default function ReviewSection({ meetingId,  currentUser,  size,}: 
-  { meetingId: number;  currentUser: { nickname: string; profileImageUrl: string };  size: number;}) {
-
+export default function ReviewSection({
+  meetingId,
+  currentUser,
+  size,
+}: {
+  meetingId: number;
+  currentUser: { nickname: string; profileImageUrl: string };
+  size: number;
+}) {
   const [newRating, setNewRating] = useState<number>(0);
   const [editRating, setEditRating] = useState<number>(0);
   const [ReviewList, setReviewList] = useState<ReviewItem[]>([]);
   const [editingReviewId, setEditingReviewId] = useState<number | null>(null);
   const [editingInitialText, setEditingInitialText] = useState<string>('');
+  const [infoOpen, setInfoOpen] = useState(false);
+  const [infoTitle, setInfoTitle] = useState('');
+  const infoButtons: ModalButton[] = [
+    {
+      label: '돌아가기',
+      onClick: () => setInfoOpen(false),
+    },
+  ];
+
   const reviewReq: ReviewListRequest = { meetingId, size } as ReviewListRequest;
-  const {  data: ReviewResult,  fetchNextPage,  hasNextPage,  isFetchingNextPage,} = useReviewInfinite(reviewReq);
+  const {
+    data: ReviewResult,
+    fetchNextPage,
+    hasNextPage,
+    isFetchingNextPage,
+  } = useReviewInfinite(reviewReq);
 
   useEffect(() => {
     if (ReviewResult) {
@@ -62,15 +72,37 @@ export default function ReviewSection({ meetingId,  currentUser,  size,}:
     return () => observer.disconnect();
   }, [hasNextPage, isFetchingNextPage, fetchNextPage]);
 
+  function Checkdescription(description: string, Rating: number) {
+    if (Rating < 1) {
+      setInfoTitle('별점이 1점보다 커야 합니다.');
+      setInfoOpen(true);
+      return false;
+    } else if (description == '') {
+      setInfoTitle('한줄평을 입력해주세요.');
+      setInfoOpen(true);
+      return false;
+    } else if (description.length > 40) {
+      setInfoTitle('한줄평은 40자 이내로 입력해주세요.');
+      setInfoOpen(true);
+      return false;
+    }
+    return true;
+  }
+
   // Create
   const createReviewMut = useReviewCreate({ meetingId, size, currentUser });
-  const handleSend = (description: string) => {
-    Checkdescription(description, newRating);
+  function handleSend(description: string) {
+    if (!Checkdescription(description, newRating)) return false;
 
     const payload: ReviewCreateRequest = { description, rate: newRating };
     createReviewMut.mutate(payload, {
-      onSuccess: () => setNewRating(0),
+      onSuccess: () => {
+        setNewRating(0);
+        description = '';
+      },
     });
+    return true;
+
   };
 
   // Update
@@ -81,16 +113,20 @@ export default function ReviewSection({ meetingId,  currentUser,  size,}:
     setEditRating(review.rate);
   };
 
-  const handleUpdate = (description: string) => {
-    Checkdescription(description, editRating);
+  function handleUpdate(description: string) {
+    if (!Checkdescription(description, editRating)) return false;
 
-    const payload: ReviewUpdateRequest = { reviewId: editingReviewId!, description: description, rate: editRating };
+    const payload: ReviewUpdateRequest = {
+      reviewId: editingReviewId!,
+      description: description,
+      rate: editRating,
+    };
     updateMut.mutate(payload, {
       onSuccess: () => {
         setEditingReviewId(null);
-        setEditingInitialText('');
       },
     });
+    return true;
   };
 
   // Delete
@@ -99,10 +135,12 @@ export default function ReviewSection({ meetingId,  currentUser,  size,}:
     deleteMut.mutate(bookReviewId);
   };
 
+  
+
   return (
     <div className="mt-[64px] flex flex-col mb-[73px]">
       <span className="mb-[22px] text-[18px] font-[Pretendard] font-medium leading-[135%] text-black">
-      한줄평
+        한줄평
       </span>
 
       {/* 등록 영역 */}
@@ -131,9 +169,19 @@ export default function ReviewSection({ meetingId,  currentUser,  size,}:
       {/* 리스트 영역 */}
       <div className="flex flex-col gap-3">
         {ReviewList.map((review) => (
-          <div key={review.bookReviewId} className="flex py-2 shadow rounded-2xl border-2 border-[var(--sub-color-2-brown,#EAE5E2)]">
+          <div
+            key={review.bookReviewId}
+            className="flex py-2 shadow rounded-2xl border-2 border-[var(--sub-color-2-brown,#EAE5E2)]"
+          >
             <div className="flex items-center justify-between h-[48px] w-[270px] flex-none ml-[12px] mr-[34px]">
-              <img src={  review.authorInfo.profileImageUrl ||'/assets/ix_user-profile-filled.svg' } className="w-[48px] h-[48px] rounded-full object-cover" alt="프로필"/>
+              <img
+                src={
+                  review.authorInfo.profileImageUrl ||
+                  '/assets/ix_user-profile-filled.svg'
+                }
+                className="w-[48px] h-[48px] rounded-full object-cover"
+                alt="프로필"
+              />
               <div className="flex-1 ml-[19px] font-semibold text-[15px] text-gray-800">
                 {review.authorInfo.nickname}
               </div>
@@ -142,41 +190,74 @@ export default function ReviewSection({ meetingId,  currentUser,  size,}:
                 {/* editingReviewId가 있을 때 없을 때 2가지 경우 */}
                 {editingReviewId === review.bookReviewId ? (
                   <div className="flex justify-end items-center">
-                    <StarSelector value={editRating} onChange={setEditRating} size={10} />
-                  </div>) : (
-                    <div className="flex justify-end items-center">
-                      {[0, 1, 2, 3, 4].map((i) => (
-                        <img key={i} src={getStarIcon(review.rate, i)}  className="w-[20px] h-[20px]"  alt={`${i + 1} star`}/>))}
-                    </div>)} 
+                    <StarSelector
+                      value={editRating}
+                      onChange={setEditRating}
+                      size={10}
+                    />
+                  </div>
+                ) : (
+                  <div className="flex justify-end items-center">
+                    {[0, 1, 2, 3, 4].map((i) => (
+                      <img
+                        key={i}
+                        src={getStarIcon(review.rate, i)}
+                        className="w-[20px] h-[20px]"
+                        alt={`${i + 1} star`}
+                      />
+                    ))}
+                  </div>
+                )}
               </div>
-
             </div>
             {/* editingReviewId가 있을 때 없을 때 2가지 경우 */}
             <div className="flex-1 flex items-center font-pretendard text-sm font-medium leading-[145%] tracking-[-0.014px] break-words whitespace-pre-wrap">
-              {editingReviewId === review.bookReviewId ? ( <LongtermChatInput onSend={handleUpdate}  placeholder={'한줄평을 수정해 주세요'}   buttonIconSrc="/assets/등록.svg" initialValue={editingInitialText} className=""/>
-              ) : (review.description)}
+              {editingReviewId === review.bookReviewId ? (
+                <LongtermChatInput
+                  onSend={handleUpdate}
+                  placeholder={'한줄평을 수정해 주세요'}
+                  buttonIconSrc="/assets/등록.svg"
+                  initialValue={editingInitialText}
+                  className=""
+                />
+              ) : (
+                review.description
+              )}
             </div>
 
             {/* editingReviewId가 있을 때, 내 아이디가 아닐 때 2가지 경우*/}
-            {editingReviewId !== review.bookReviewId && review.authorInfo.nickname === currentUser.nickname && (
-              <div className="ml-auto flex gap-[9px] mr-[25px] flex-shrink-0">
-                {editingReviewId === review.bookReviewId ? (
-                  <button onClick={() => { setEditingReviewId(null); setEditingInitialText(''); }} >
-                    <img src="/assets/취소.svg" className="w-6 h-6" alt="취소"/>
-                  </button>)
-                  : (
-                  <div className="flex gap-[9px]">
-                    <button onClick={() => startEdit(review)}>
-                      <img src="/assets/글쓰기.svg" className="w-6 h-6" alt="수정"/>
+            {editingReviewId !== review.bookReviewId &&
+              review.authorInfo.nickname === currentUser.nickname && (
+                <div className="ml-auto flex gap-[9px] mr-[25px] flex-shrink-0">
+                  {editingReviewId === review.bookReviewId ? (
+                    <button
+                      onClick={() => {
+                        setEditingReviewId(null);
+                        setEditingInitialText('');
+                      }}
+                    >
+                      <img
+                        src="/assets/취소.svg"
+                        className="w-6 h-6"
+                        alt="취소"
+                      />
                     </button>
-                    <button onClick={() => handleDelete(review.bookReviewId)}>
-                      <img src="/assets/삭제.svg" className="w-6 h-6" />
-                    </button>
-                  </div>)}
-              </div>
-            )}
-
-            
+                  ) : (
+                    <div className="flex gap-[9px]">
+                      <button onClick={() => startEdit(review)}>
+                        <img
+                          src="/assets/글쓰기.svg"
+                          className="w-6 h-6"
+                          alt="수정"
+                        />
+                      </button>
+                      <button onClick={() => handleDelete(review.bookReviewId)}>
+                        <img src="/assets/삭제.svg" className="w-6 h-6" />
+                      </button>
+                    </div>
+                  )}
+                </div>
+              )}
           </div>
         ))}
         {isFetchingNextPage && (
@@ -187,6 +268,12 @@ export default function ReviewSection({ meetingId,  currentUser,  size,}:
         <div ref={loadMoreRef} style={{ height: 1 }} />
         <div className="h-20" />
       </div>
+      <Modal
+        isOpen={infoOpen}
+        title={infoTitle}
+        buttons={infoButtons}
+        onBackdrop={() => setInfoOpen(false)}
+      />
     </div>
   );
 }

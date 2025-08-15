@@ -18,8 +18,14 @@ export default function ShelfDetailPage() {
   const topics = ShelfDetail?.topicList.topics
 
   useEffect(() => {
-    setMynickname('oz')
-    setUrl('/assets/ix_user-profile-filled.svg')
+    const nickname = localStorage.getItem('nickname');
+    const profileImageUrl = localStorage.getItem('profileImageUrl');
+    if(!nickname || !profileImageUrl) {
+      console.log("error처리")
+      return;
+    }
+    setMynickname(nickname);
+    setUrl(profileImageUrl);
   }, []) 
 
   if (isLoading) return <div className = "font-[Pretendard] font-semibold text-[16px] text-[#8D8D8D]">로딩 중…</div>

@@ -103,7 +103,7 @@ export default function ShelfHomePage() {
            </div>
           </div>
               {/* 책장 리스트 */}
-              <div className="grid grid-cols-3 gap-x-[12px] gap-y-[24px] overflow-y-auto h-[calc(100vh-171px)] overscroll-none "  style={{ msOverflowStyle: 'none', scrollbarWidth: 'none' }}>
+              <div className="grid grid-cols-3 content-start gap-x-[12px] gap-y-[24px] overflow-y-auto h-[calc(100vh-171px)] overscroll-none "  style={{ msOverflowStyle: 'none', scrollbarWidth: 'none' }}>
                 {ShelfList.map((Shelf) => (
               <Link key={Shelf.meetingInfo.meetingId} to={`${location.pathname}/${Shelf.meetingInfo.meetingId}`} className="flex min-w-90 h-[260px] p-[20px] items-center gap-[20px] rounded-2xl border-2 border-[var(--sub-color-2-brown,#EAE5E2)] bg-[var(--White,#FFF)] hover:shadow-lg transition-shadow block">
                   {/* 왼쪽 */}

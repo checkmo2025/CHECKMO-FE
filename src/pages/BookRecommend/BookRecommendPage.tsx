@@ -45,16 +45,8 @@ const BookRecommendPage = () => {
 
   return (
     <div className="flex flex-col mx-7">
-      <div className="sticky top-0 bg-white z-0">
-        <Header
-          pageTitle={"추천 도서 목록"}
-          userProfile={{
-            username: "오즈",
-            bio: "re_turnto_oz",
-          }}
-          notifications={[]}
-          customClassName="my-7"
-        />
+      <div className="sticky top-0 bg-white z-10">
+        <Header customClassName="my-[30px]" pageTitle={"추천 도서 목록"} />
       </div>
 
       {recommendations.length > 0 ? (

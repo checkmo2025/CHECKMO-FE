@@ -1,7 +1,12 @@
-import likeIcon from "../../assets/icons/likes.png";
+import { useState } from "react";
+import heartEmpty from "../../assets/icons/heart_empty.png";
+import heartFilled from "../../assets/icons/heart_filled.png";
 import reportIcon from "../../assets/icons/report.png";
+import { toggleBookStoryLike } from "../../apis/BookStory/bookstories";
+import { axiosInstance } from "../../apis/axiosInstance";
 
 interface BookStoryCardProps {
+  bookStoryId: number;
   imageUrl: string;
   profileUrl: string;
   userName: string;
@@ -11,22 +16,57 @@ interface BookStoryCardProps {
   bookTitle: string;
   author: string;
   likes: number;
+  likedByMe: boolean;
   viewMode?: "grid" | "list";
+  onToggleLike: (storyId: number, liked: boolean) => void;
+  onToggleSubscribe: (nickname: string, subscribed: boolean) => void;
 }
 
-const BookStoryCard = (props: BookStoryCardProps) => {
-  const {
-    imageUrl,
-    profileUrl,
-    userName,
-    isSubscribed,
-    title,
-    summary,
-    bookTitle,
-    author,
-    likes,
-    viewMode = "grid",
-  } = props;
+const BookStoryCard = ({
+  bookStoryId,
+  imageUrl,
+  profileUrl,
+  userName,
+  isSubscribed,
+  title,
+  summary,
+  bookTitle,
+  author,
+  likes,
+  likedByMe,
+  viewMode = "grid",
+  onToggleLike,
+  onToggleSubscribe,
+}: BookStoryCardProps) => {
+  const [subscribed, setSubscribed] = useState(isSubscribed);
+  const [liked, setLiked] = useState(likedByMe);
+  const [likeCount, setLikeCount] = useState(likes);
+
+  const handleSubscribe = async (e: React.MouseEvent) => {
+    e.stopPropagation();
+    if (subscribed) return;
+    try {
+      await axiosInstance.post(`/members/${userName}/following`);
+      setSubscribed(true);
+      onToggleSubscribe(userName, true);
+    } catch (error) {
+      console.error("팔로우 실패", error);
+      alert("팔로우에 실패했습니다.");
+    }
+  };
+
+  const handleLike = async (e: React.MouseEvent) => {
+    e.stopPropagation();
+    try {
+      await toggleBookStoryLike(bookStoryId);
+      const newLiked = !liked;
+      setLiked(newLiked);
+      setLikeCount((prev) => (newLiked ? prev + 1 : prev - 1));
+      onToggleLike(bookStoryId, newLiked);
+    } catch (error) {
+      console.error("좋아요 처리 실패", error);
+    }
+  };
 
   const isList = viewMode === "list";
 
@@ -48,6 +88,7 @@ const BookStoryCard = (props: BookStoryCardProps) => {
       {/* 내용 */}
       <div className="flex flex-col justify-between flex-1 text-left">
         <div className="flex flex-col gap-1">
+          {/* 프로필 & 구독 버튼 */}
           <div className="flex justify-between items-center text-sm text-gray-700 mb-1">
             <div className="flex items-center gap-2">
               <img
@@ -57,34 +98,46 @@ const BookStoryCard = (props: BookStoryCardProps) => {
               />
               <span className="font-medium">{userName}</span>
             </div>
-            <span
+
+            <button
               className={`text-xs rounded-[0.9375rem] px-[1rem] py-[0.25rem] w-[4.2rem] inline-flex justify-center ${
-                isSubscribed
+                subscribed
                   ? "text-white bg-[#A6917D]"
                   : "text-[#A6917D] border border-[#A6917D]"
               }`}
+              onClick={handleSubscribe}
             >
-              {isSubscribed ? "구독 중" : "구독"}
-            </span>
+              {subscribed ? "구독 중" : "구독"}
+            </button>
           </div>
 
+          {/* 제목, 요약 */}
           <div className="text-base font-semibold">{title}</div>
           <div className="text-sm text-gray-700 line-clamp-2">{summary}</div>
 
+          {/* 책 정보 */}
           <div className="text-xs text-gray-500 mt-1">
             도서 : {bookTitle} | {author}
           </div>
         </div>
 
+        {/* 좋아요 & 신고 */}
         <div className="flex gap-4 mt-3 text-sm text-gray-600 items-center justify-end">
-          <div className="flex items-center gap-1">
-            <img src={likeIcon} alt="like" className="w-4 h-4" />
-            <span>{likes}</span>
+          <div
+            className="flex items-center gap-1 cursor-pointer"
+            onClick={handleLike}
+          >
+            <img
+              src={liked ? heartFilled : heartEmpty}
+              alt="like"
+              className="w-4 h-4"
+            />
+            <span>{likeCount}</span>
           </div>
           <img
             src={reportIcon}
             alt="report"
-            className="w-4 h-4 cursor-pointer"
+            className="w-[19px] h-[19px] cursor-pointer"
           />
         </div>
       </div>
