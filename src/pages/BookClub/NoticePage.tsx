@@ -2,14 +2,19 @@ import { useEffect, useMemo, useRef } from 'react';
 import { useParams } from 'react-router-dom';
 import AnnouncementCard from '../../components/BookClub/AnnouncementCard';
 import AnnouncementList from '../../components/BookClub/AnnouncementList';
+import NoticeCreateDropdown from '../../components/BookClub/NoticeCreateHoverMenu';
+import { useIsStaff } from '../../hooks/BookClub/useIsStaff';
+import { useNavigate } from 'react-router-dom';
 import Header from '../../components/Header';
 import { useClubNotices } from '../../hooks/BookClub/useClubNotices';
 import { useClubNoticesInfinite } from '../../hooks/BookClub/useClubNoticesInfinite';
 import type { noticeListItemDto } from '../../types/clubNotice';
 
 export default function NoticePage(): React.ReactElement {
+  const navigate = useNavigate();
   const { bookclubId } = useParams<{ bookclubId: string }>();
   const numericClubId = useMemo(() => Number(bookclubId) || 0, [bookclubId]);
+  const { data: isStaff } = useIsStaff(numericClubId);
 
   const { notices: topNotices, loading: topLoading, error: topError } = useClubNotices({
     clubId: numericClubId,
@@ -54,19 +59,42 @@ export default function NoticePage(): React.ReactElement {
                 <p className="text-red-500">{topError}</p>
               </div>
             )}
-            {!topLoading && !topError && (
+            {!topLoading && !topError && (topNotices.length ?? 0) > 0 && (
               <AnnouncementCard items={topNotices} />
+            )}
+            {!topLoading && !topError && topNotices.length === 0 && (
+              <div className="w-full h-[120px] flex items-center justify-center border-2 border-[#EAE5E2] rounded-[16px]">
+                <p className="text-[#969696]">아직 등록된 중요 공지사항이 없습니다.</p>
+              </div>
             )}
           </section>
 
-          <section className="mt-[43px] relative">
+          <section className="mt-[43px]">
+            {isStaff && (
+              <div className="relative h-[48px] mb-4">
+                <NoticeCreateDropdown
+                  onSelectNoticeType={(type) => {
+                    const noticeType = type === 'vote' ? 'poll' : 'notice';
+                    navigate(`/bookclub/${numericClubId}/notices/create?type=${noticeType}`);
+                  }}
+                  className="z-10"
+                />
+              </div>
+            )}
             {isError && (
               <div className="w-full h-[120px] flex items-center justify-center border-2 border-[#EAE5E2] rounded-[16px]">
                 <p className="text-red-500">{(error as Error)?.message ?? '공지사항을 불러오지 못했어요.'}</p>
               </div>
             )}
-            <div className="pt-[0px] pb-12">
-              <AnnouncementList items={listItems} />
+            <div className="pb-12">
+              {!isError && listItems.length > 0 && (
+                <AnnouncementList items={listItems} isStaff={!!isStaff} />
+              )}
+              {!isError && !isLoading && listItems.length === 0 && (
+                <div className="w-full h-[120px] flex items-center justify-center border-2 border-[#EAE5E2] rounded-[16px]">
+                  <p className="text-[#969696]">아직 등록된 공지사항이 없습니다.</p>
+                </div>
+              )}
               <div ref={loadMoreRef} className="h-[1px]" />
               {isFetchingNextPage && (
                 <div className="w-full py-4 flex items-center justify-center">

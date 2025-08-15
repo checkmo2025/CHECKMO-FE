@@ -53,3 +53,18 @@ export async function getMyNotifications(
     { params: { cursorId } }
   );
 }
+
+/** 내가 가입한 모임 탈퇴: DELETE /api/clubs/{clubId}/leave */
+export async function leaveClub(clubId: number): Promise<void> {
+  return axiosInstance.delete(`/clubs/${clubId}/leave`);
+}
+
+/** 팔로잉 취소: DELETE /api/members/{memberNickname}/following */
+export async function unfollowMember(memberNickname: string): Promise<void> {
+  return axiosInstance.delete(`/members/${memberNickname}/following`);
+}
+
+/** 팔로워 삭제: DELETE /api/members/{memberNickname}/follower */
+export async function removeFollower(memberNickname: string): Promise<void> {
+  return axiosInstance.delete(`/members/${memberNickname}/follower`);
+}

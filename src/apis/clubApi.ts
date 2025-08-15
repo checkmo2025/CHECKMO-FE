@@ -1,4 +1,4 @@
-import type { ClubDto, CreateClubRequestDto, ClubListResult, JoinClubRequest, JoinClubResult } from "../types/bookClub";
+import type { ClubDto, CreateClubRequestDto, ClubListResult, JoinClubRequest, JoinClubResult, IsStaffResult } from "../types/bookClub";
 import { axiosInstance } from "./axiosInstance";
 
 
@@ -38,5 +38,17 @@ export const requestJoinClub = async (
   payload: JoinClubRequest
 ): Promise<JoinClubResult> => {
   const result: JoinClubResult = await axiosInstance.post(`/clubs/${clubId}/join`, payload);
+  return result;
+};
+
+// 클럽 상세 조회
+export const getClubDetail = async (clubId: number): Promise<ClubDto> => {
+  const result: ClubDto = await axiosInstance.get(`/clubs/${clubId}`);
+  return result;
+};
+
+// 운영진 여부 확인
+export const fetchIsStaff = async (clubId: number): Promise<IsStaffResult> => {
+  const result: IsStaffResult = await axiosInstance.get(`/clubs/${clubId}/staff`);
   return result;
 };

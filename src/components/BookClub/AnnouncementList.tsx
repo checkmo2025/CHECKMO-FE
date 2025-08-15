@@ -1,19 +1,30 @@
 // src/components/BookClub/AnnouncementList.tsx
-import React from 'react';
+import React, { useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
+import { useDeleteVote } from '../../hooks/ClubNotice/useDeleteVote';
 import logoImage from '../../assets/logos/clearmainLogo.png';
 import vector from '../../assets/images/vector.png';
 import type { noticeListItemDto, voteItemDto } from '../../types/clubNotice';
 import { mapTagToRouteType } from '../../types/noticeType';
 import { parseISO, format } from 'date-fns';
+import Modal from '../Modal';
+import { useDeleteGeneralNotice } from '../../hooks/ClubNotice/useDeleteGeneralNotice';
 
 export default function AnnouncementList({
   items,
+  isStaff = false,
 }: {
   items: noticeListItemDto[];
+  isStaff?: boolean;
 }): React.ReactElement {
   const navigate = useNavigate();
   const { bookclubId } = useParams<{ bookclubId: string }>();
+  const clubIdNum = Number(bookclubId) || 0;
+  const { mutate: deleteVote, isPending: deletingVote } = useDeleteVote(clubIdNum);
+  const { mutate: deleteGeneral, isPending: deletingGeneral } = useDeleteGeneralNotice(clubIdNum);
+  const [confirmOpen, setConfirmOpen] = useState(false);
+  const [targetVoteId, setTargetVoteId] = useState<number | null>(null);
+  const [targetGeneralId, setTargetGeneralId] = useState<number | null>(null);
   const handleItemClick = (item: noticeListItemDto) => {
     if (!bookclubId) return;
     const noticeId = item.id;
@@ -126,6 +137,40 @@ export default function AnnouncementList({
             {item.tag}
           </span>
 
+          {/* 삭제하기 버튼 (운영진이면서 투표/공지일 때만 표시) */}
+          {isStaff && (item.tag === '투표' || item.tag === '공지') && (
+            <button
+              onClick={(e) => {
+                e.stopPropagation();
+                if (item.tag === '투표') {
+                  setTargetVoteId(item.id);
+                  setConfirmOpen(true);
+                } else {
+                  setTargetGeneralId(item.id);
+                  setConfirmOpen(true);
+                }
+              }}
+              className="
+                absolute bottom-[63px] right-[21.5px]
+                w-[105px] h-[35px]
+                border-2 border-[#EAE5E2]
+                rounded-[16px]
+                font-medium text-[12px]
+                text-[#8D8D8D]
+                bg-white
+                whitespace-nowrap
+                cursor-pointer
+                hover:bg-[#F7F5F3]
+                transition-colors
+                z-10
+                disabled:opacity-50 disabled:cursor-not-allowed
+              "
+              disabled={deletingVote || deletingGeneral}
+            >
+              삭제하기
+            </button>
+          )}
+
           {/* 상세보기 버튼 */}
           <button
             onClick={(e) => {
@@ -150,6 +195,42 @@ export default function AnnouncementList({
           </button>
         </div>
       ))}
+
+      {/* 삭제 확인 모달 */}
+      <Modal
+        isOpen={confirmOpen}
+        title={targetVoteId != null ? '투표를 삭제하시겠습니까?' : '공지사항을 삭제하시겠습니까?'}
+        buttons={[
+          {
+            label: '삭제하기',
+            variant: 'primary',
+            onClick: () => {
+              if (targetVoteId != null) {
+                deleteVote(targetVoteId);
+              } else if (targetGeneralId != null) {
+                deleteGeneral(targetGeneralId);
+              }
+              setConfirmOpen(false);
+              setTargetVoteId(null);
+              setTargetGeneralId(null);
+            },
+          },
+          {
+            label: '취소',
+            variant: 'outline',
+            onClick: () => {
+              setConfirmOpen(false);
+              setTargetVoteId(null);
+              setTargetGeneralId(null);
+            },
+          },
+        ]}
+        onBackdrop={() => {
+          setConfirmOpen(false);
+          setTargetVoteId(null);
+          setTargetGeneralId(null);
+        }}
+      />
     </div>
   );
 }

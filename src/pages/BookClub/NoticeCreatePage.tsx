@@ -6,12 +6,21 @@ import NoticeCreateNoticeComponent from '../../components/BookClub/NoticeCreateN
 import type {  CreateNoticeRequest,  CreateVoteRequest,} from '../../types/Notice/clubNoticeCreate';
 import { useCreateNotice } from '../../hooks/ClubNotice/useCreateNotice';
 import { useCreateVote } from '../../hooks/ClubNotice/useCreateVote';
-
+import Modal, { type ModalButton } from '../../components/Modal';
+import { set } from 'date-fns';
 export default function NoticeCreatePage() {
   const { bookclubId } = useParams<{ bookclubId: string }>();
   const navigate = useNavigate();
   const [type, setType] = useState<'poll' | 'notice'>('poll');
   const [startTime, setStartTime] = useState(''); // Add startTime state
+  const [infoOpen, setInfoOpen] = useState(false);
+  const [infoTitle, setInfoTitle] = useState("");
+  const infoButtons: ModalButton[] = [
+    {
+      label: '확인',
+      onClick: () => setInfoOpen(false),
+    },
+  ];
 
   const titleInputRef = useRef<HTMLInputElement>(null);
   const noticeRef = useRef<CreateNoticeRequest>({
@@ -43,14 +52,25 @@ export default function NoticeCreatePage() {
       },
     };
     localStorage.setItem('draftData', JSON.stringify(draftData));
-    console.log('Draft saved:', draftData);
-    alert("임시저장되었습니다.");
+    setInfoTitle('임시저장되었습니다.');
+    setInfoOpen(true);
+    
   };
   
   const { mutate: createVote } = useCreateVote(bookclubId!);
   const { mutate: createNotice } = useCreateNotice(bookclubId!);
+
+
+
+
   const handleSubmit = () => {
   if (type === 'poll') {
+    if(voteRef.current.item1 === '' || voteRef.current.item2 === '' || voteRef.current.title === '' || voteRef.current.deadline === ''){
+      setInfoOpen(true);
+      setInfoTitle('투표항목1,2와 제목, 마감일을 모두 입력해주세요.');
+      return;
+    }
+
     voteRef.current.startTime = new Date().toISOString();
     createVote(voteRef.current, {
       onSuccess: (data) => {
@@ -58,19 +78,24 @@ export default function NoticeCreatePage() {
           localStorage.removeItem('draftData');
       },
       onError: (err) => {
-        console.error(err);
-        alert('투표 등록 실패');
+        setInfoOpen(true);
+        setInfoTitle(err.message);  
       },
     });
   } else {
+    if(noticeRef.current.title === '' || noticeRef.current.content === ''){
+      setInfoOpen(true);
+      setInfoTitle('공지제목과 내용을 모두 입력해주세요.');
+      return;
+    }
     createNotice(noticeRef.current, {
       onSuccess: (data) => {
           navigate(`/bookclub/${bookclubId}/notices/${data.noticeItem.id}`, {state: { fromDraft: true },});
           localStorage.removeItem('draftData');
       },
       onError: (err) => {
-        console.error(err);
-        alert('공지 등록 실패');
+        setInfoOpen(true);
+        setInfoTitle(err.message);
       },
     });
   }
@@ -192,6 +217,12 @@ export default function NoticeCreatePage() {
         </div>
         <div className="h-[60px]" />
       </div>
+      <Modal
+        isOpen={infoOpen}
+        title={infoTitle}
+        buttons={infoButtons}
+        onBackdrop={() => setInfoOpen(false)}
+      />
     </div>
   );
 }

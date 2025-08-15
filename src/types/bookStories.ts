@@ -1,7 +1,8 @@
 export interface BookInfoDto {
+  bookId: string;
+  title: string;
   author: string;
   imgUrl: string;
-  title: string;
 }
 
 export interface AuthorInfoDto {
