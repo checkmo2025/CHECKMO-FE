@@ -275,6 +275,9 @@ export default function EditClubPage(): React.ReactElement {
                   };
                   img.src = `${url}?t=${Date.now()}`;
                 },
+                onError: () => {
+                  setPreviewImageUrl(null);
+                }
               });
             }}
           />
