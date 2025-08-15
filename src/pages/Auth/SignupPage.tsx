@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import AuthLeftPanel from "../../components/AuthLeftPanel";
 import { isValidEmail, getPasswordError } from "../../utils/validators";
 import ReactivateAccountModal from "../../components/ReactivateAccountModal";
@@ -9,33 +9,32 @@ import {
   useConfirmEmailCode,
   useSignup,
 } from "../../hooks/useAuth";
-import { useQueryClient } from "@tanstack/react-query"; //  qc
-import { getMyProfile } from "../../apis/My/memberApi"; //  getMyProfile
-import { QK } from "../../hooks/useHeader"; //  QK
+import { useQueryClient } from "@tanstack/react-query";
+import { getMyProfile } from "../../apis/My/memberApi";
+import { QK } from "../../hooks/useHeader";
 
 const SignupPage = () => {
   const navigate = useNavigate();
+  const location = useLocation();
   const qc = useQueryClient();
 
-  // 로그인 상태면 접근 차단 & 프로필 캐시 채운 후 /home 이동
-    useEffect(() => {
-      const isLoggedIn = Boolean(localStorage.getItem("nickname"));
-      const blockedPaths = ["/", "/signup", "/profile"];
-  
-      if (isLoggedIn && blockedPaths.includes(location.pathname)) {
-        (async () => {
-          try {
-            const profile = await getMyProfile();
-            qc.setQueryData(QK.me, profile);
-          } catch (err) {
-            console.error("프로필 불러오기 실패:", err);
-          }
-          navigate("/home", { replace: true });
-        })();
-      }
-    }, [location.pathname, navigate, qc]);
+  useEffect(() => {
+    const isLoggedIn = Boolean(localStorage.getItem("nickname"));
+    const blockedPaths = ["/", "/signup", "/profile"];
 
-  // 단계/입력 상태
+    if (isLoggedIn && blockedPaths.includes(location.pathname)) {
+      (async () => {
+        try {
+          const profile = await getMyProfile();
+          qc.setQueryData(QK.me, profile);
+        } catch (err) {
+          console.error("프로필 불러오기 실패:", err);
+        }
+        navigate("/home", { replace: true });
+      })();
+    }
+  }, [location.pathname, navigate, qc]);
+
   const [step, setStep] = useState(1);
   const [emailId, setEmailId] = useState("");
   const [emailDomain, setEmailDomain] = useState("@naver.com");
@@ -62,13 +61,11 @@ const SignupPage = () => {
   const [showReactivateModal, setShowReactivateModal] = useState(false);
   const [reactivateEmail, setReactivateEmail] = useState("");
 
-  const withdrawnEmails = ["2jw@gmail.com"]; // TODO: 서버에서 판단하도록 변경
-
+  const withdrawnEmails = ["2jw@gmail.com"];
   const [alertMessage, setAlertMessage] = useState("");
 
   const emailOptions = ["@naver.com", "@gmail.com", "@daum.net", "직접 입력"];
 
-  // API 훅
   const { mutate: requestEmailCode, isPending: isSendingCode } = useRequestEmailCode();
   const { mutate: confirmEmailCode, isPending: isConfirmingCode } = useConfirmEmailCode();
   const { mutate: signup, isPending: isSigningUp } = useSignup();
@@ -76,6 +73,36 @@ const SignupPage = () => {
   const getFullEmail = () => {
     const domain = isCustomDomain ? customDomain.trim() : emailDomain.trim();
     return `${emailId.trim()}@${domain.replace(/^@/, "")}`;
+  };
+
+  const handleApiError = (err: any, defaultMsg: string) => {
+    const status = err?.response?.status;
+    const serverMessage = err?.response?.data?.message;
+
+    if (!status) {
+      setAlertMessage("서버와 연결할 수 없습니다. 인터넷 연결을 확인해주세요.");
+      return;
+    }
+
+    switch (status) {
+      case 400:
+        setAlertMessage(serverMessage || "잘못된 요청입니다.");
+        break;
+      case 401:
+        setAlertMessage(serverMessage || "인증 정보가 올바르지 않습니다.");
+        break;
+      case 403:
+        setAlertMessage(serverMessage || "접근 권한이 없습니다.");
+        break;
+      case 404:
+        setAlertMessage(serverMessage || "요청한 경로를 찾을 수 없습니다.");
+        break;
+      case 500:
+        setAlertMessage(serverMessage || "서버 오류가 발생했습니다. 잠시 후 다시 시도해주세요.");
+        break;
+      default:
+        setAlertMessage(serverMessage || err.message || defaultMsg);
+    }
   };
 
   const handleSendCode = () => {
@@ -98,7 +125,7 @@ const SignupPage = () => {
         setVerificationMessage("");
       },
       onError: (err) => {
-        setAlertMessage(err.message || "인증번호 발송에 실패했습니다.");
+        handleApiError(err, "인증번호 발송에 실패했습니다.");
       },
     });
   };
@@ -119,7 +146,7 @@ const SignupPage = () => {
         },
         onError: (err) => {
           setIsVerified(false);
-          setVerificationMessage(err.message || "인증번호 확인에 실패했습니다.");
+          handleApiError(err, "인증번호 확인에 실패했습니다.");
         },
       }
     );
@@ -189,7 +216,7 @@ const SignupPage = () => {
             navigate("/profile");
           },
           onError: (err) => {
-            setAlertMessage(err.message || "회원가입에 실패했습니다.");
+            handleApiError(err, "회원가입에 실패했습니다.");
           },
         }
       );
@@ -219,8 +246,10 @@ const SignupPage = () => {
           </div>
 
           <div className="w-[80%] max-w-md space-y-10">
+            {/* STEP 1 */}
             {step === 1 && (
               <>
+                {/* 이메일 입력 */}
                 <div className="mb-7">
                   <label className="block mb-3 text-[#2C2C2C] text-sm font-semibold">
                     아이디
@@ -278,6 +307,7 @@ const SignupPage = () => {
                   </div>
                 )}
 
+                {/* 인증번호 입력 */}
                 <div>
                   <label className="block mb-2 text-[#2C2C2C] text-sm font-semibold">
                     인증번호
@@ -306,7 +336,7 @@ const SignupPage = () => {
 
                 {verificationMessage && (
                   <p
-                    className={` text-[14px] mt-1 ${
+                    className={`text-[14px] mt-1 ${
                       isVerified ? "text-[#488328]" : "text-[#FF8045]"
                     }`}
                   >
@@ -316,6 +346,7 @@ const SignupPage = () => {
               </>
             )}
 
+            {/* STEP 2 */}
             {step === 2 && (
               <>
                 <div className="mb-7">
@@ -356,6 +387,7 @@ const SignupPage = () => {
               </>
             )}
 
+            {/* STEP 3 */}
             {step === 3 && (
               <>
                 <div className="space-y-8 mb-7">
