@@ -18,7 +18,8 @@ const BookRecommendDetailCard = ({
   const { id, title, content, rate, tag, bookInfo, authorInfo, staff, author } =
     recommendDetail;
 
-  console.log(title + staff); // 배포용 error 방지 코드
+  title;
+  staff; // 배포용 error 방지 코드
 
   const tags = tag.split(",");
 

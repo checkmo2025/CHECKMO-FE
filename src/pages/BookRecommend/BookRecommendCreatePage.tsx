@@ -56,7 +56,9 @@ const BookRecommendCreatePage = () => {
 
   return (
     <div className="mx-10">
-      <NonProfileHeader title="책 추천하기" />
+      <div className="sticky top-0 bg-white z-10">
+        <NonProfileHeader title="책 추천하기" />
+      </div>
       {bookInfo && (
         <BookRecommendCreateCard bookInfo={bookInfo} onSubmit={handleSubmit} />
       )}

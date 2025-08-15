@@ -73,8 +73,6 @@ const BookRecommendCreateCard = ({
           {bookInfo.author}
           {" | "}
           {bookInfo.publisher}
-          {" | "}
-          {/* {format(new Date(bookInfo.createdAt), "yyyy.MM.dd")} */}
         </p>
 
         <section className="flex h-2/3 min-h-[500px]">
