@@ -106,7 +106,7 @@ export default function BookStoryHomePage() {
 
       {/* 탭 */}
       <div className="overflow-y-auto h-[calc(100vh-80px)] w-full flex-1 pt-[30px] pl-[2px] pr-[30px] bg-[#FFFFFF]">
-        <div className="flex items-center gap-2 border-b border-gray-200 mb-6">
+        <div className="flex items-center gap-2 mb-6">
           <div
             className="flex gap-6 overflow-x-auto scrollbar-hide whitespace-nowrap"
             ref={tabContainerRef}
@@ -115,7 +115,7 @@ export default function BookStoryHomePage() {
               <button
                 key={`${tab.scope}-${tab.clubId ?? "default"}`}
                 onClick={() => setActiveTab(index)}
-                className={`pb-2 text-sm font-medium relative transition-colors duration-150 inline-block ${
+                className={`pb-2 text-sm font-medium relative transition-colors duration-150 inline-block cursor-pointer ${
                   index === activeTab
                     ? "text-black border-b-2 border-green-500"
                     : "text-gray-400 hover:text-black"
