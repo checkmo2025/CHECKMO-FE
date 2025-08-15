@@ -1,73 +1,82 @@
-import { useEffect, useState } from "react";
+import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import Header from "../../components/Header";
 import NoticeCard from "../../components/Main/Notices/NoticeCard";
 import BookStoriesCard from "../../components/Main/BookStoriesCard";
-import Header from "../../components/Header";
 
 import type { BookStoryResponseDto } from "../../types/bookStories";
-import { fetchBookStories } from "../../apis/BookStory/bookstories";
+import type { NoticeDto } from "../../types/mainNotices";
 
-import type { NoticeDto } from "../../types/notices";
-import { fetchNotices } from "../../apis/notices";
+import { fetchBookStories } from "../../apis/BookStory/bookstories";
+import { fetchMyClubs } from "../../apis/Main/clubs";
+import { fetchNoticesByClub } from "../../apis/Main/notices";
 
 export default function HomePage() {
+  const navigate = useNavigate();
   const [bookStories, setBookStories] = useState<BookStoryResponseDto[]>([]);
   const [notices, setNotices] = useState<NoticeDto[]>([]);
   const [loadingBooks, setLoadingBooks] = useState(false);
   const [loadingNotices, setLoadingNotices] = useState(false);
   const [errorBooks, setErrorBooks] = useState<string | null>(null);
-  const [errorNotices, setErrorNotices] = useState<string | null>(null);
 
   useEffect(() => {
+    // 책 이야기 API
     setLoadingBooks(true);
     fetchBookStories({ scope: "ALL" })
-      .then((data) => {
-        setBookStories(data?.bookStoryResponses ?? []);
-      })
+      .then((data) => setBookStories(data?.bookStoryResponses ?? []))
       .catch((e) => setErrorBooks(e.message ?? "책 이야기 불러오기 실패"))
       .finally(() => setLoadingBooks(false));
 
+    // 공지사항 API
     setLoadingNotices(true);
-    fetchNotices({ onlyImportant: false })
-      .then((data) => {
-        setNotices(data?.noticeList ?? []);
+    fetchMyClubs()
+      .then((clubs) => {
+        return Promise.all(
+          clubs.map(async (club) => {
+            const notices = await fetchNoticesByClub(club.clubId);
+            // 각 notice에 clubId 추가
+            return notices.map((notice) => ({
+              ...notice,
+              clubId: club.clubId,
+            }));
+          })
+        );
       })
-      .catch((e) => setErrorNotices(e.message ?? "공지사항 불러오기 실패"))
+      .then((noticesArrays) => {
+        const allNotices = noticesArrays.flat();
+        setNotices(allNotices);
+      })
+      .catch((err) => console.error("공지사항 불러오기 실패", err))
       .finally(() => setLoadingNotices(false));
   }, []);
 
   return (
     <div className="absolute left-[315px] right-[42px] opacity-100">
-      {/* 헤더 */}
-      <Header
-        pageTitle="책모 홈"
-        customClassName="mt-[30px]"
-      />
+      <Header pageTitle="책모 홈" customClassName="mt-[30px]" />
 
-      {/* 메인 컨텐츠 */}
       <div className="overflow-y-auto h-[calc(100vh-80px)] w-full flex-1 pt-[30px] pl-[2px] pr-[30px] bg-[#FFFFFF]">
         {/* 공지사항 */}
         <div className="text-xl font-semibold text-gray-800 mb-4">공지사항</div>
         {loadingNotices && <p>공지사항 로딩중...</p>}
-        {errorNotices && (
-          <p className="text-red-500">공지사항 에러: {errorNotices}</p>
-        )}
-        <div className="flex gap-4 overflow-x-auto flex-nowrap scroll-smooth mb-12 scrollbar-hide">
+        <div className="flex gap-4 overflow-x-auto flex-nowrap scroll-smooth mb-12">
           {notices.map((notice) => (
-            <NoticeCard
+            <div
               key={notice.id}
-              title={notice.title}
-              date="날짜 정보 없음"
-              book="책 정보 없음"
-              type={
-                notice.tag === "모임" ||
-                  notice.tag === "투표" ||
-                  notice.tag === "공지"
-                  ? notice.tag
-                  : "공지"
-              }
-              imageUrl="https://placehold.co/262x232?text=공지"
-              content={notice.title}
-            />
+              className="flex-shrink-0 cursor-pointer"
+              onClick={() => {
+                const typeMap: Record<string, string> = {
+                  공지: "general",
+                  투표: "vote",
+                  모임: "meeting",
+                };
+                const type = typeMap[notice.tag] ?? "general";
+                navigate(
+                  `/bookclub/${notice.clubId}/notices/${notice.id}?type=${type}`
+                );
+              }}
+            >
+              <NoticeCard notice={notice} />
+            </div>
           ))}
         </div>
 
@@ -85,8 +94,8 @@ export default function HomePage() {
               story.writtenByMe
                 ? "내 이야기"
                 : story.authorInfo.following
-                  ? "구독 중"
-                  : "구독하기";
+                ? "구독 중"
+                : "구독하기";
 
             return (
               <div key={story.bookStoryId} className="flex-shrink-0 w-[33rem]">

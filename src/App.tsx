@@ -80,15 +80,15 @@ const App = () => {
           <Route path="/info/others/:userId" element={<OthersProfilePage />} />
           <Route path="/createClub" element={<CreateClubPage />} />
 
-            {/* 마이페이지 */}
-            <Route path="mypage">
-              <Route index element={<MyHomePage />} />
-              <Route path="group" element={<MyGroupPage />} />
-              <Route path="subscription" element={<MySubscriptionPage />} />
-              <Route path="notification" element={<MyNotificationPage />} />
-              <Route path="story" element={<MyStoryPage />} />
-              <Route path="myprofile" element={<MyProfilePage />} />
-            </Route>
+          {/* 마이페이지 */}
+          <Route path="mypage">
+            <Route index element={<MyHomePage />} />
+            <Route path="group" element={<MyGroupPage />} />
+            <Route path="subscription" element={<MySubscriptionPage />} />
+            <Route path="notification" element={<MyNotificationPage />} />
+            <Route path="story" element={<MyStoryPage />} />
+            <Route path="myprofile" element={<MyProfilePage />} />
+          </Route>
 
           {/* 책이야기 */}
           <Route path="bookstory">
