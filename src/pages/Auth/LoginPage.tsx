@@ -67,20 +67,21 @@ const LoginPage = () => {
     login(
       { email, password },
       {
-        onSuccess: async (result) => {
-          if (result?.nickname) {
-            localStorage.setItem("nickname", result.nickname);
-          }
-
-          // 로그인 직후 프로필 데이터 캐시에 저장
+        onSuccess: async () => {
           try {
             const profile = await getMyProfile();
+
+            // localStorage에 닉네임 + 프로필 이미지 저장
+            localStorage.setItem("nickname", profile.nickname);
+            localStorage.setItem("profileImageUrl", profile.profileImageUrl ?? "");
+
+            // React Query 캐시에도 저장
             qc.setQueryData(QK.me, profile);
+
+            navigate("/home");
           } catch (err) {
             console.error("프로필 불러오기 실패:", err);
           }
-
-          navigate("/home");
         },
         onError: (err) => {
           setAlertMessage(err.message || "아이디 또는 비밀번호가 올바르지 않습니다.");
