@@ -75,7 +75,10 @@ export default function NoticePage(): React.ReactElement {
                 <NoticeCreateDropdown
                   onSelectNoticeType={(type) => {
                     const noticeType = type === 'vote' ? 'poll' : 'notice';
-                    navigate(`/bookclub/${numericClubId}/notices/create?type=${noticeType}`);
+                    navigate(`/bookclub/${numericClubId}/notices/create`,{
+                      state: { type: noticeType }
+                    });
+
                   }}
                   className="z-10"
                 />
