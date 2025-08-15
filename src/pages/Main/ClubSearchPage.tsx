@@ -48,7 +48,6 @@ export default function ClubSearchPage(): React.ReactElement {
     <>
       <div className="absolute left-[315px] right-[42px] opacity-100">
         <Header pageTitle={'모임 검색하기'}
-          notifications={[]}
           customClassName="mt-[30px]"
           />
 
@@ -122,6 +121,8 @@ export default function ClubSearchPage(): React.ReactElement {
                     participantTypes={club.participantTypes}
                     region={club.region}
                     logoUrl={club.profileImageUrl}
+                    insta={club.insta}
+                    kakao={club.kakao}
                     isMember={member}
                     onJoinRequest={handleJoinRequest}
                   />
