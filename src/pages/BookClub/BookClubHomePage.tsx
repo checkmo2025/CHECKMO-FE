@@ -122,9 +122,9 @@ export default function BookClubHomePage(): React.ReactElement {
             {isErrorStories && (
               <p className="text-red-500">{String((errorStories as Error)?.message || '책 이야기 로딩 에러')}</p>
             )}
-            <div className="grid grid-cols-2 gap-[25px] cursor-pointer">
+            <div className="flex-1 grid grid-cols-2 gap-[25px] cursor-pointer">
               {clubBookStories.map((story) => (
-                <div key={story.bookStoryId} className="flex-shrink-0 w-[33rem]">
+                <div key={story.bookStoryId} className="flex-shrink-0 min-w-[33rem]">
                   <BookStoryCard
                     userImage={story.authorInfo.profileImageUrl}
                     userName={story.authorInfo.nickname}
