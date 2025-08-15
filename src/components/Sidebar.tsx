@@ -364,7 +364,7 @@ const Sidebar = () => {
 
       <nav className="flex flex-col w-full overflow-y-auto space-y-2 mt-6">
         {menus.map((menu) => {
-          const { name, path, icon, submenus } = menu;
+          const { name, path, submenus } = menu;
           const isMenuOpen = openMenus.has(name);
 
           return (
