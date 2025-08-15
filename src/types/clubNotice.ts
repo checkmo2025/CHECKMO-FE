@@ -136,3 +136,6 @@ export type noticeListResult = {
 };
 
 export type clubNoticeListResponse = ApiResponse<noticeListResult>
+
+// 투표 삭제 결과 타입 (인터셉터로 result 문자열만 반환)
+export type DeleteVoteResult = string;

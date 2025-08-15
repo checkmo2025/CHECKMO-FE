@@ -1,5 +1,6 @@
 import type { noticeListResult, meetingInfoDto, generalNoticeItemDto, voteNoticeItemDto } from '../../types/clubNotice';
 import { axiosInstance } from '../axiosInstance';
+import type { DeleteVoteResult } from '../../types/clubNotice';
 
 export const getClubNotices = async (
   clubId: number,
@@ -24,6 +25,20 @@ export const getClubNotices = async (
     return response as unknown as noticeListResult;
   } catch (error) {
     console.error('공지사항 조회 실패:', error);
+    throw error;
+  }
+};
+
+// 투표 공지 삭제
+export const deleteVoteNotice = async (
+  clubId: number,
+  voteId: number
+): Promise<DeleteVoteResult> => {
+  try {
+    const result: DeleteVoteResult = await axiosInstance.delete(`/clubs/${clubId}/notices/votes/${voteId}`);
+    return result;
+  } catch (error) {
+    console.error('투표 공지 삭제 실패:', error);
     throw error;
   }
 };

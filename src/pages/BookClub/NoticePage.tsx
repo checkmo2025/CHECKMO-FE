@@ -88,7 +88,7 @@ export default function NoticePage(): React.ReactElement {
             )}
             <div className="pb-12">
               {!isError && listItems.length > 0 && (
-                <AnnouncementList items={listItems} />
+                <AnnouncementList items={listItems} isStaff={!!isStaff} />
               )}
               {!isError && !isLoading && listItems.length === 0 && (
                 <div className="w-full h-[120px] flex items-center justify-center border-2 border-[#EAE5E2] rounded-[16px]">
