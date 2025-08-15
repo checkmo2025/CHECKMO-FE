@@ -15,8 +15,6 @@ export interface ClubMemberBasicInfo {
 }
 
 export interface ClubMember {
-  nickname: any;
-  name: any;
   clubMemberId: number;
   basicInfo: ClubMemberBasicInfo;
   joinMessage: string;
