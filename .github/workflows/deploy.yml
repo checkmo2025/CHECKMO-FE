@@ -21,63 +21,72 @@ jobs:
 
     steps:
       - name: Checkout
-        # LFS / submodules 쓰면 with: 옵션 추가
         uses: actions/checkout@v4
 
       - name: Use Node 20
         uses: actions/setup-node@v4
         with:
           node-version: 20
-          cache: npm
+          cache: "npm"
 
       - name: Install deps (clean)
         run: npm ci
 
       - name: Create .env from secrets
+        shell: bash
         run: |
           : > .env
           echo "VITE_API_URL=${{ secrets.VITE_API_URL }}" >> .env
           echo "VITE_OAUTH_URL=${{ secrets.VITE_OAUTH_URL }}" >> .env
-        shell: bash
 
       - name: Build
         run: npm run build
 
       - name: Prepare SSH key & known_hosts
+        shell: bash
         run: |
           mkdir -p ~/.ssh
           echo "${{ secrets.SSH_KEY }}" > ~/.ssh/deploy_key
           chmod 600 ~/.ssh/deploy_key
           ssh-keyscan -p "${SSH_PORT}" "${SSH_HOST}" >> ~/.ssh/known_hosts
 
+      # 릴리스 이름을 한 번만 만들고 이후 단계에서 동일하게 사용
+      - name: Set release name
+        shell: bash
+        run: |
+          RELEASE_NAME="release_${{ github.sha }}_${{ github.run_number }}"
+          echo "RELEASE_NAME=$RELEASE_NAME" >> "$GITHUB_ENV"
+
       # dist를 임시 디렉터리로 업로드
       - name: Upload dist to remote /tmp
+        shell: bash
         run: |
-          TS=$(date +%s)
-          echo "TS=$TS" >> $GITHUB_ENV
           rsync -az --delete -e "ssh -i ~/.ssh/deploy_key -p ${SSH_PORT}" \
-            dist/ "${SSH_USER}@${SSH_HOST}:/tmp/checkmo-fe_${TS}/"
+            dist/ "${SSH_USER}@${SSH_HOST}:/tmp/${RELEASE_NAME}/"
 
-      # 원자적 스위치: releases/<sha or ts> 로 이동 후 심볼릭 링크 교체
+      # 원자적 스위치: releases/<RELEASE_NAME> 로 이동 후 심볼릭 링크 교체
       - name: Activate new release & reload nginx
+        shell: bash
         run: |
-          ssh -i ~/.ssh/deploy_key -p "${SSH_PORT}" "${SSH_USER}@${SSH_HOST}" bash -lc '
+          ssh -i ~/.ssh/deploy_key -p "${SSH_PORT}" "${SSH_USER}@${SSH_HOST}" bash -lc "
             set -e
-            RELEASES_DIR="${REMOTE_PATH}/releases"
-            CURRENT_LINK="${REMOTE_PATH}/dist"
-            NEW_REL="release_${{ github.sha }}"
+            RELEASES_DIR='${REMOTE_PATH}/releases'
+            CURRENT_LINK='${REMOTE_PATH}/dist'
+            NEW_REL='${RELEASE_NAME}'
+
             # 디렉터리 보장
-            sudo mkdir -p "$RELEASES_DIR"
-            sudo chown -R $USER:$USER "$RELEASES_DIR"
-            # /tmp에서 릴리스로 이동(이름은 커밋 SHA 기반)
-            sudo rm -rf "$RELEASES_DIR/$NEW_REL"
-            sudo mv "/tmp/checkmo-fe_${TS}" "$RELEASES_DIR/$NEW_REL"
+            sudo mkdir -p \"\$RELEASES_DIR\"
+            # /tmp에서 릴리스로 이동
+            sudo rm -rf \"\$RELEASES_DIR/\$NEW_REL\"
+            sudo mv \"/tmp/\$NEW_REL\" \"\$RELEASES_DIR/\$NEW_REL\"
+
             # 심볼릭 링크 스위치 (원자적)
-            sudo ln -sfn "$RELEASES_DIR/$NEW_REL" "$CURRENT_LINK"
+            sudo ln -sfn \"\$RELEASES_DIR/\$NEW_REL\" \"\$CURRENT_LINK\"
+
             # nginx 점검 후 리로드
             sudo nginx -t
             sudo systemctl reload nginx
-          '
+          "
 
       - name: Done
-        run: echo "🚀 Deployed to ${SSH_HOST} => ${REMOTE_PATH}"
+        run: echo "🚀 Deployed ${RELEASE_NAME} to ${SSH_HOST} => ${REMOTE_PATH}"
