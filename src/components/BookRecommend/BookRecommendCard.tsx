@@ -11,14 +11,11 @@ const BookRecommendCard = ({ recommend }: BookRecommendCardProps) => {
 
   return (
     <div
-      className="
-        font-pretendard relative rounded-xl overflow-hidden
+      className="relative rounded-xl overflow-hidden
         border-2 border-gray-200 bg-white
         transition-transform duration-300 hover:shadow-lg hover:scale-[1.03] hover:z-15
-        h-[clamp(400px,32vw,500px)]   /* ← 뷰포트가 넓어지면 높이도 함께 증가 */
-        flex flex-col
-      "
-    >
+        h-[clamp(400px,32vw,500px)] min-w-[400px]
+        flex flex-col">
       <BookRecommendHeader
         author={{
           nickname: authorInfo.nickname,
@@ -41,17 +38,33 @@ const BookRecommendCard = ({ recommend }: BookRecommendCardProps) => {
           </div>
         </div>
 
-        <div className="ml-4 flex-1 min-w-0 flex flex-col">
-          <h4 className="text-[clamp(16px,1.2vw,20px)] font-semibold text-gray-900 line-clamp-2">
+        <div className="ml-4 flex-1 min-w-0 flex flex-col space-y-2 group">
+          <h4
+            className="font-semibold text-gray-900 text-[clamp(16px,1.2vw,20px)] 
+            line-clamp-2 md:line-clamp-3 xl:line-clamp-2 break-words"
+            title={bookInfo.title}
+          >
             {bookInfo.title}
           </h4>
-          <p className="text-[clamp(12px,1vw,14px)] text-gray-600 mt-1 truncate">
+          <p
+            className="text-gray-600 mt-1 text-[clamp(12px,1vw,14px)] truncate"
+            title={bookInfo.author}
+          >
             {bookInfo.author}
           </p>
-
-          <p className="text-[clamp(12px,1vw,14px)] text-gray-700 mt-2 line-clamp-3">
-            {content}
-          </p>
+          <div
+            className="relative mt-2 text-gray-700 text-[clamp(12px,1vw,14px)]
+            line-clamp-2 md:line-clamp-3 lg:line-clamp-4 break-words
+            transition-[max-height] duration-200 ease-out max-h-24 
+            md:max-h-28 lg:max-h-32 group-hover:max-h-[999px]">
+            <span
+              className="pointer-events-none absolute inset-x-0 bottom-0 h-6
+              bg-gradient-to-b from-transparent to-white opacity-100 
+              group-hover:opacity-0 transition-opacity duration-200"
+              aria-hidden
+            />
+            <p title={content}>{content}</p>
+          </div>
 
           <div className="mt-auto pt-2 flex items-center">
             <StarRating rate={rate} />
