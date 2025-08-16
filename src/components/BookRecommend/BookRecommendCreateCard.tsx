@@ -21,7 +21,10 @@ const BookRecommendCreateCard = ({
   const [title, setTitle] = useState("");
   const [rating, setRating] = useState(0);
   const [content, setContent] = useState("");
-  const [tag, setTag] = useState("");
+  // Array of tags
+  const [tags, setTags] = useState<string[]>([]);
+  // Tag input field
+  const [tagInput, setTagInput] = useState("");
 
   const [modalOpen, setModalOpen] = useState(false);
   const [modalTitle, setModalTitle] = useState("");
@@ -32,6 +35,10 @@ const BookRecommendCreateCard = ({
       variant?: "primary" | "outline" | "danger";
     }[]
   >([]); // zustand 같은 상태 관리 툴로 교체 할 예정
+
+  const handleRemoveTag = (tagToRemove: string) => {
+    setTags(tags.filter((tag) => tag !== tagToRemove));
+  };
 
   // 실제 등록 처리
   const doSubmit = (processedTag: string) => {
@@ -49,8 +56,7 @@ const BookRecommendCreateCard = ({
   };
 
   const onConfirm = () => {
-    const processedTag = tag
-      .split(",")
+    const processedTag = tags
       .map((t) => t.trim())
       .filter((t) => t)
       .join(",");
@@ -97,11 +103,42 @@ const BookRecommendCreateCard = ({
             <label className="block mt-6 mb-2 font-semibold">태그</label>
             <input
               type="text"
-              value={tag}
-              onChange={(e) => setTag(e.target.value)}
-              placeholder="태그를 입력해주세요. (쉼표로 구분)"
+              value={tagInput}
+              onChange={(e) => setTagInput(e.target.value)}
+              placeholder="태그를 입력 후 Enter를 누르세요."
               className="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-[#90D26D] sm:text-sm"
+              onKeyDown={(e) => {
+                if (e.nativeEvent.isComposing) {
+                  return;
+                }
+                if (e.key === "Enter") {
+                  e.preventDefault();
+                  const value = tagInput.trim();
+                  if (value && !tags.includes(value)) {
+                    setTags([...tags, value]);
+                  }
+                  setTagInput("");
+                }
+              }}
             />
+            {/* Render tags as chips */}
+            <div className="flex flex-wrap gap-2 mt-2 mb-2">
+              {tags.map((t, idx) => (
+                <span
+                  key={t + idx}
+                  className="inline-flex items-center justify-center bg-[#90D26D] text-white text-xs px-3 py-1 rounded-full
+                  leading-none transition-colors duration-200 hover:bg-[#7EB95E]"
+                >
+                  {t}
+                  <button
+                    onClick={() => handleRemoveTag(t)}
+                    className="ml-2 flex items-center justify-center text-white text-xs hover:text-gray-100"
+                  >
+                    x
+                  </button>
+                </span>
+              ))}
+            </div>
             <label className="block mt-6 mb-2 font-semibold">별점 선택</label>
             <div className="flex items-center">
               <StarSelector value={rating} onChange={setRating} size={20} />
