@@ -29,6 +29,16 @@ const BookRecommendEditCard = ({
   const [content, setContent] = useState(defaultValues.content);
   const [tags, setTags] = useState<string[]>([]);
   const [tagInput, setTagInput] = useState("");
+  const [isComposing, setIsComposing] = useState(false);
+  const addTagsFromInput = (raw: string) => {
+    const pieces = raw
+      .split(",")
+      .map((t) => t.trim())
+      .filter(Boolean);
+    if (pieces.length === 0) return;
+    const merged = Array.from(new Set([...tags, ...pieces]));
+    setTags(merged);
+  };
 
   // 확인/알림 모달 (카드 내부에서 확인 처리)
   const [modalOpen, setModalOpen] = useState(false);
@@ -100,8 +110,12 @@ const BookRecommendEditCard = ({
   return (
     <>
       <div className="mt-2 p-4">
-        <h1 className="text-3xl font-bold min-w-[650px]">{bookInfo.title}</h1>
-        <p className="mt-6 mb-4 text-sm text-gray-500">{bookInfo.author}</p>
+        <h1 className="font-bold leading-tight text-2xl sm:text-3xl md:text-4xl md:min-w-[650px] line-clamp-2">
+          {bookInfo.title}
+        </h1>
+        <p className="mt-3 sm:mt-4 mb-4 text-xs sm:text-sm text-gray-500">
+          {bookInfo.author}
+        </p>
 
         <section className="flex h-2/3 min-h-[500px] flex-col md:flex-row">
           <div className="min-w-[350px] rounded-xl overflow-hidden">
@@ -127,15 +141,23 @@ const BookRecommendEditCard = ({
               onChange={(e) => setTagInput(e.target.value)}
               placeholder="태그를 입력 후 Enter를 누르세요."
               className="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-[#90D26D] sm:text-sm"
+              onCompositionStart={() => setIsComposing(true)}
+              onCompositionEnd={() => setIsComposing(false)}
               onKeyDown={(e) => {
+                if (isComposing) return;
+
                 if (e.key === "Enter") {
                   e.preventDefault();
                   const value = tagInput.trim();
-                  if (value && !tags.includes(value)) {
-                    setTags([...tags, value]);
-                  }
+                  if (value) addTagsFromInput(value);
                   setTagInput("");
                 }
+              }}
+              onBlur={() => {
+                // 포커스 아웃 시 남은 입력값 반영
+                const value = tagInput.trim();
+                if (value) addTagsFromInput(value);
+                setTagInput("");
               }}
             />
             <div className="flex flex-wrap gap-2 mt-2 mb-2">
