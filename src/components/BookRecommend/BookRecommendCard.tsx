@@ -14,7 +14,7 @@ const BookRecommendCard = ({ recommend }: BookRecommendCardProps) => {
       className="
         font-pretendard relative rounded-xl overflow-hidden
         border-2 border-gray-200 bg-white
-        transition-transform duration-300 hover:shadow-lg hover:scale-[1.02]
+        transition-transform duration-300 hover:shadow-lg hover:scale-[1.03] hover:z-15
         h-[clamp(400px,32vw,500px)]   /* ← 뷰포트가 넓어지면 높이도 함께 증가 */
         flex flex-col
       "

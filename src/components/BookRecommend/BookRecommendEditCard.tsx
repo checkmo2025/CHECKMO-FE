@@ -117,7 +117,7 @@ const BookRecommendEditCard = ({
               value={title}
               onChange={(e) => setTitle(e.target.value)}
               placeholder="추천 제목을 입력해주세요."
-              className="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+              className="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-[#90D26D] focus:border-[#90D26D] sm:text-sm"
             />
 
             <label className="block mt-6 mb-2 font-semibold">태그</label>
@@ -168,7 +168,7 @@ const BookRecommendEditCard = ({
               value={content}
               onChange={(e) => setContent(e.target.value)}
               placeholder="내용을 작성해주세요."
-              className="flex-1 w-full p-4 border border-gray-300 rounded-lg resize-none focus:outline-none focus:ring-2 focus:ring-amber-400"
+              className="flex-1 w-full p-4 border border-gray-300 rounded-lg resize-none focus:outline-none focus:ring-2 focus:ring-[#90D26D]"
             />
           </div>
         </section>
