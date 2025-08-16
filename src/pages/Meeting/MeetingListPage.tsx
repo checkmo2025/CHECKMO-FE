@@ -36,7 +36,7 @@ const MeetingListPage = () => {
         generation: Number(generation),
         meetings: groupedMeetings[Number(generation)],
       }))
-      .sort((a, b) => a.generation - b.generation);
+      .sort((a, b) => b.generation - a.generation);
   }, [data]);
 
   if (status === "pending") {
@@ -48,49 +48,53 @@ const MeetingListPage = () => {
   }
 
   return (
-    <div className="px-10 space-y-10 min-h-screen">
-      <Header pageTitle={"모임"} customClassName="mt-[30px]" />
+    <div className="px-10 min-h-screen">
+      <Header pageTitle={"모임"} customClassName="my-[30px]" />
 
-      {isAdmin && (
-        <Link
-          to="create"
-          className="flex w-[204px] h-[48px] bg-[#F6F3F0] rounded-[100px] ml-auto py-[10px] px-5"
-        >
-          <div className="flex justify-center items-center gap-2 w-full">
-            <img
-              src="/assets/ic_round-plus.svg"
-              alt="모임 추가 아이콘"
-              className="w-7 h-7"
-            />
-            <span className="text-[#2C2C2C] text-[18px] font-semibold">
-              모임 추가하기
-            </span>
-          </div>
-        </Link>
-      )}
+      <div className="pt-3 pb-5">
+        {isAdmin && (
+          <Link
+            to="create"
+            className="flex w-[204px] h-[48px] bg-[#F6F3F0] rounded-[100px] ml-auto"
+          >
+            <div className="flex justify-center items-center gap-2 w-full">
+              <img
+                src="/assets/ic_round-plus.svg"
+                alt="모임 추가 아이콘"
+                className="w-7 h-7"
+              />
+              <span className="text-[#2C2C2C] text-[18px] font-semibold">
+                모임 추가하기
+              </span>
+            </div>
+          </Link>
+        )}
+      </div>
 
-      {generations.map((group) => (
-        <section key={group.generation}>
-          <h2 className="text-xl font-semibold mb-3">{group.generation}기</h2>
-          <div className="flex flex-col space-y-3">
-            {group.meetings.map((meeting) => (
-              <Link
-                key={meeting.meetingId}
-                to={`/bookclub/${bookclubId}/meeting/${meeting.meetingId}`}
-              >
-                <MeetingCard
-                  title={meeting.title}
-                  book={meeting.bookInfo}
-                  meetingDate={meeting.meetingTime}
-                  meetingPlace={meeting.location}
-                  tags={meeting.tag}
-                  generation={group.generation}
-                />
-              </Link>
-            ))}
-          </div>
-        </section>
-      ))}
+      <div className="space-y-10">
+        {generations.map((group) => (
+          <section key={group.generation}>
+            <h2 className="text-xl font-semibold mb-3">{group.generation}기</h2>
+            <div className="flex flex-col space-y-3">
+              {group.meetings.map((meeting) => (
+                <Link
+                  key={meeting.meetingId}
+                  to={`/bookclub/${bookclubId}/meeting/${meeting.meetingId}`}
+                >
+                  <MeetingCard
+                    title={meeting.title}
+                    book={meeting.bookInfo}
+                    meetingDate={meeting.meetingTime}
+                    meetingPlace={meeting.location}
+                    tags={meeting.tag}
+                    generation={group.generation}
+                  />
+                </Link>
+              ))}
+            </div>
+          </section>
+        ))}
+      </div>
       <div ref={ref} style={{ height: "20px" }}>
         {isFetchingNextPage && "Loading more..."}
       </div>

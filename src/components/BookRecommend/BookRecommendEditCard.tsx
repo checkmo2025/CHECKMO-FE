@@ -27,7 +27,18 @@ const BookRecommendEditCard = ({
   const [title, setTitle] = useState(defaultValues.title);
   const [rate, setRate] = useState(defaultValues.rate);
   const [content, setContent] = useState(defaultValues.content);
-  const [tag, setTag] = useState(defaultValues.tag);
+  const [tags, setTags] = useState<string[]>([]);
+  const [tagInput, setTagInput] = useState("");
+  const [isComposing, setIsComposing] = useState(false);
+  const addTagsFromInput = (raw: string) => {
+    const pieces = raw
+      .split(",")
+      .map((t) => t.trim())
+      .filter(Boolean);
+    if (pieces.length === 0) return;
+    const merged = Array.from(new Set([...tags, ...pieces]));
+    setTags(merged);
+  };
 
   // 확인/알림 모달 (카드 내부에서 확인 처리)
   const [modalOpen, setModalOpen] = useState(false);
@@ -45,8 +56,16 @@ const BookRecommendEditCard = ({
     setTitle(defaultValues.title);
     setRate(defaultValues.rate);
     setContent(defaultValues.content);
-    setTag(defaultValues.tag);
+    setTags(
+      defaultValues.tag
+        ? defaultValues.tag.split(",").map((t) => t.trim())
+        : []
+    );
   }, [defaultValues]);
+
+  const handleRemoveTag = (tagToRemove: string) => {
+    setTags(tags.filter((tag) => tag !== tagToRemove));
+  };
 
   const openConfirm = () => {
     setModalTitle("수정하시겠습니까?");
@@ -62,8 +81,7 @@ const BookRecommendEditCard = ({
   };
 
   const handleConfirmEdit = () => {
-    const processedTag = tag
-      .split(",")
+    const processedTag = tags
       .map((t) => t.trim())
       .filter(Boolean)
       .join(",");
@@ -92,8 +110,12 @@ const BookRecommendEditCard = ({
   return (
     <>
       <div className="mt-2 p-4">
-        <h1 className="text-3xl font-bold min-w-[650px]">{bookInfo.title}</h1>
-        <p className="mt-6 mb-4 text-sm text-gray-500">{bookInfo.author}</p>
+        <h1 className="font-bold leading-tight text-2xl sm:text-3xl md:text-4xl md:min-w-[650px] line-clamp-2">
+          {bookInfo.title}
+        </h1>
+        <p className="mt-3 sm:mt-4 mb-4 text-xs sm:text-sm text-gray-500">
+          {bookInfo.author}
+        </p>
 
         <section className="flex h-2/3 min-h-[500px] flex-col md:flex-row">
           <div className="min-w-[350px] rounded-xl overflow-hidden">
@@ -109,18 +131,54 @@ const BookRecommendEditCard = ({
               value={title}
               onChange={(e) => setTitle(e.target.value)}
               placeholder="추천 제목을 입력해주세요."
-              className="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+              className="mt-1 block w-full px-3 py-2 bg-white border-2 border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-[#90D26D] focus:border-[#90D26D] sm:text-sm"
             />
 
             <label className="block mt-6 mb-2 font-semibold">태그</label>
             <input
-              value={tag}
-              onChange={(e) => setTag(e.target.value)}
-              placeholder="태그를 입력해주세요. (쉼표로 구분)"
-              className="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-            />
+              type="text"
+              value={tagInput}
+              onChange={(e) => setTagInput(e.target.value)}
+              placeholder="태그를 입력 후 Enter를 누르세요."
+              className="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-[#90D26D] sm:text-sm"
+              onCompositionStart={() => setIsComposing(true)}
+              onCompositionEnd={() => setIsComposing(false)}
+              onKeyDown={(e) => {
+                if (isComposing) return;
 
-            <label className="block mt-6 mb-2 font-semibold">별점 선택</label>
+                if (e.key === "Enter") {
+                  e.preventDefault();
+                  const value = tagInput.trim();
+                  if (value) addTagsFromInput(value);
+                  setTagInput("");
+                }
+              }}
+              onBlur={() => {
+                // 포커스 아웃 시 남은 입력값 반영
+                const value = tagInput.trim();
+                if (value) addTagsFromInput(value);
+                setTagInput("");
+              }}
+            />
+            <div className="flex flex-wrap gap-2 mt-2 mb-2">
+              {tags.map((t, idx) => (
+                <span
+                  key={t + idx}
+                  className="inline-flex items-center justify-center bg-[#90D26D] text-white text-xs px-3 py-1 rounded-full 
+                 leading-none transition-colors duration-200 hover:bg-[#7EB95E]"
+                >
+                  <span className="flex items-center">{t}</span>
+                  <button
+                    onClick={() => handleRemoveTag(t)}
+                    className="ml-2 flex items-center justify-center text-white text-xs hover:text-gray-100"
+                  >
+                    x
+                  </button>
+                </span>
+              ))}
+            </div>
+
+            <label className="block mt-4 mb-2 font-semibold">별점 선택</label>
             <div className="flex items-center">
               <StarSelector value={rate} onChange={setRate} size={20} />
             </div>
@@ -132,7 +190,7 @@ const BookRecommendEditCard = ({
               value={content}
               onChange={(e) => setContent(e.target.value)}
               placeholder="내용을 작성해주세요."
-              className="flex-1 w-full p-4 border border-gray-300 rounded-lg resize-none focus:outline-none focus:ring-2 focus:ring-amber-400"
+              className="flex-1 w-full p-4 border border-gray-300 rounded-lg resize-none focus:outline-none focus:ring-2 focus:ring-[#90D26D]"
             />
           </div>
         </section>
