@@ -34,7 +34,7 @@ const BookRecommendDetailCard = ({
       <p className="mt-6 mb-4 text-sm text-gray-500">{bookInfo.author}</p>
 
       <section className="flex flex-col md:flex-row md:space-x-8 mt-4 max-h-[75vh]">
-        <div className="flex-shrink-0 md:w-1/3 mx-auto md:mx-0 h-full max-h-[75vh]">
+        <div className="flex-shrink-0 md:w-1/3 mx-auto md:mx-0 h-full max-w-[570px]">
           <img
             src={bookInfo.imgUrl}
             alt={bookInfo.title}
