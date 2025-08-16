@@ -14,7 +14,7 @@ const NonProfileHeaderComponent = ({ title }: NonProfileHeaderProps) => {
       <button onClick={() => navigate(-1)} className="mr-3">
         <img src={backIcon} alt="뒤로가기" />
       </button>
-      <h1 className="text-2xl font-bold">{title}</h1>
+      <h1 className="text-2xl font-bold whitespace-nowrap">{title}</h1>
     </div>
   );
 };
