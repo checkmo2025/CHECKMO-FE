@@ -32,7 +32,7 @@ export const MeetingCard = ({
       className={
         className
           ? `${className}`
-          : `flex border-2 border-[#EAE5E2] min-w-[700px] rounded-xl p-4 bg-white`
+          : `flex border-2 border-[#EAE5E2] min-w-[700px] rounded-xl p-4 bg-white transition-transform duration-300 transform hover:shadow-lg hover:scale-103`
       }
     >
       <div className="w-32 h-40 flex-shrink-0 rounded-2xl overflow-hidden bg-gray-100">

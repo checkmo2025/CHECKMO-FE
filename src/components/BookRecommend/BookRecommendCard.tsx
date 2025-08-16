@@ -11,9 +11,13 @@ const BookRecommendCard = ({ recommend }: BookRecommendCardProps) => {
 
   return (
     <div
-      className="font-pretendard relative rounded-xl overflow-hidden 
-    border-2 border-gray-200 transition-transform duration-300 transform hover:shadow-lg 
-    hover:scale-105 bg-white min-h-[350px] min-w-[300px] flex flex-col"
+      className="
+        font-pretendard relative rounded-xl overflow-hidden
+        border-2 border-gray-200 bg-white
+        transition-transform duration-300 hover:shadow-lg hover:scale-[1.02]
+        h-[clamp(400px,32vw,500px)]   /* ← 뷰포트가 넓어지면 높이도 함께 증가 */
+        flex flex-col
+      "
     >
       <BookRecommendHeader
         author={{
@@ -22,23 +26,34 @@ const BookRecommendCard = ({ recommend }: BookRecommendCardProps) => {
         }}
       />
 
-      <div className="mt-2 mb-4 mx-4 flex-1 flex">
-        <img
-          src={bookInfo.imgUrl.replace(/^(https?:)?\/\//, "//") || "/chess.png"} // 이미지가 없을 경우 기본 이미지
-          className="w-1/3 object-cover rounded-lg min-w-[200px]"
-          onError={(e) => {
-            const target = e.target as HTMLImageElement;
-            target.onerror = null; // 무한 루프 방지
-            target.src = "/chess.png";
-          }}
-        />
-        <div className="ml-4 flex-1 flex flex-col">
-          <h4 className="text-xl font-semibold text-gray-900">
+      <div className="mt-2 mb-4 mx-4 flex-1 flex overflow-hidden">
+        <div className="w-[clamp(200px,18vw,250px)] shrink-0">
+          <div className="w-full h-full aspect-[2/3] overflow-hidden rounded-lg bg-gray-100">
+            <img
+              src={bookInfo.imgUrl?.replace(/^(https?:)?\/\//, "//") || "/chess.png"}
+              className="w-full h-full object-cover"
+              onError={(e) => {
+                const t = e.currentTarget;
+                t.onerror = null;
+                t.src = "/chess.png";
+              }}
+            />
+          </div>
+        </div>
+
+        <div className="ml-4 flex-1 min-w-0 flex flex-col">
+          <h4 className="text-[clamp(16px,1.2vw,20px)] font-semibold text-gray-900 line-clamp-2">
             {bookInfo.title}
           </h4>
-          <p className="text-sm text-gray-600 mt-1">{bookInfo.author}</p>
-          <p className="text-sm text-gray-700 mt-2 line-clamp-3">{content}</p>
-          <div className="mt-auto flex items-center">
+          <p className="text-[clamp(12px,1vw,14px)] text-gray-600 mt-1 truncate">
+            {bookInfo.author}
+          </p>
+
+          <p className="text-[clamp(12px,1vw,14px)] text-gray-700 mt-2 line-clamp-3">
+            {content}
+          </p>
+
+          <div className="mt-auto pt-2 flex items-center">
             <StarRating rate={rate} />
           </div>
         </div>
