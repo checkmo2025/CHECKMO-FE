@@ -1,9 +1,8 @@
-// src/components/BookClub/AnnouncementList.tsx
 import React, { useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useDeleteVote } from '../../hooks/ClubNotice/useDeleteVote';
-import logoImage from '../../assets/logos/clearmainLogo.png';
-import vector from '../../assets/images/vector.png';
+import logoImage from '../../assets/logos/clearMainLogo.png';
+import vector from '../../assets/images/Vector.png';
 import type { noticeListItemDto, voteItemDto } from '../../types/clubNotice';
 import { mapTagToRouteType } from '../../types/noticeType';
 import { parseISO, format } from 'date-fns';
@@ -129,9 +128,9 @@ export default function AnnouncementList({
               font-pretendard text-[12px] font-[600]
               leading-[145%] tracking-[-0.1%]
               text-white whitespace-nowrap
-              ${item.tag === '모임' ? 'bg-[#90D26D]' : 
-                item.tag === '투표' ? 'bg-[#FF8045]' : 
-                'bg-[#FFC648]'} /* 모임: #90D26D, 투표: #FF8045, 공지: #FFC648 */
+              ${item.tag === '모임' ? 'bg-[#90D26D]' :
+                item.tag === '투표' ? 'bg-[#FF8045]' :
+                  'bg-[#FFC648]'} /* 모임: #90D26D, 투표: #FF8045, 공지: #FFC648 */
             `}
           >
             {item.tag}
