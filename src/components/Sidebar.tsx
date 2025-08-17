@@ -46,7 +46,7 @@ const MODAL_ONLY = new Set([
   "/booksearch1",
   "/booksearch2",
   "/bookclub/this",
-  "/bookclub/recommend/create", // 추가
+  "/bookclub/recommend/create",
 ]);
 
 const Sidebar = () => {
@@ -232,7 +232,10 @@ const Sidebar = () => {
     parentMenu?: Menu
   ) => {
     return (
-      <div className={`ml-${level * 4} mt-1 space-y-1 pl-3`}>
+      <div
+        className="mt-1 space-y-1 pl-3"
+        style={{ marginLeft: `${level}rem` }}
+      >
         {submenus.map(({ name, path, isModal, submenus: nested }) => {
           let iconPair = null;
           if (name === "공지사항")
