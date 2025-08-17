@@ -15,7 +15,7 @@ const AnnouncementCard = ({ notice }: AnnouncementCardProps) => {
         <div>
           <div className="flex items-center gap-3 mb-1">
             <img src={mainNoticeIcon} alt="아이콘" className="w-6 h-6" />
-            <span className="text-lg font-medium text-gray-700">
+            <span className="text-lg font-medium text-gray-700 w-[8rem] block truncate">
               {notice.title}
             </span>
           </div>

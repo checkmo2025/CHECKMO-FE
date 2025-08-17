@@ -16,12 +16,12 @@ const MeetingCard = ({ notice }: MeetingCardProps) => {
         <div>
           <div className="flex items-center gap-3 mb-1">
             <img src={mainNoticeIcon} alt="아이콘" className="w-6 h-6" />
-            <span className="text-lg font-medium text-gray-700">
+            <span className="text-lg font-medium text-gray-700 w-[8rem] block truncate">
               {notice.title}
             </span>
           </div>
           <div className="text-xs text-gray-700">다음 모임 날짜 : {date}</div>
-          <div className="text-xs text-gray-700">
+          <div className="text-xs text-gray-700 w-[8rem] truncate">
             다음 모임 장소 : {location}
           </div>
         </div>
