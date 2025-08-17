@@ -52,7 +52,7 @@ const BookClubAdminPage = () => {
         <div className="flex justify-between">
           <div className="flex items-center mb-2">
             {clubDetail.profileImageUrl ? (
-              <img src={clubDetail.profileImageUrl} alt="Profile" className="w-12 h-12 rounded-full mr-4" />
+              <img src={clubDetail.profileImageUrl || "/public/assets/ix_user-profile-filled.svg"}  alt="Profile" className="w-16 h-16 rounded-full mr-4" />
             ) : (
               <FaUserCircle className="w-12 h-12 rounded-full mr-4" />
             )}
