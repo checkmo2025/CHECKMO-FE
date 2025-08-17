@@ -21,7 +21,7 @@ const MeetingCard = ({ notice }: MeetingCardProps) => {
             </span>
           </div>
           <div className="text-xs text-gray-700">다음 모임 날짜 : {date}</div>
-          <div className="text-xs text-gray-700">
+          <div className="text-xs text-gray-700 w-[8rem] truncate">
             다음 모임 장소 : {location}
           </div>
         </div>
