@@ -42,7 +42,12 @@ type Menu = {
   submenus: Submenu[];
 };
 
-const MODAL_ONLY = new Set(["/booksearch1", "/booksearch2", "/bookclub/this"]);
+const MODAL_ONLY = new Set([
+  "/booksearch1",
+  "/booksearch2",
+  "/bookclub/this",
+  "/bookclub/recommend/create", // 추가
+]);
 
 const Sidebar = () => {
   const { bookclubId } = useParams<{ bookclubId?: string }>();
@@ -83,7 +88,7 @@ const Sidebar = () => {
             { name: "책장", path: `/bookclub/${bookclubId}/shelf` },
             {
               name: "모임",
-              path: `/bookclub/${bookclubId}/meeting`,
+              path: "#",
               submenus: [
                 {
                   name: "모임 전체보기",
@@ -94,16 +99,16 @@ const Sidebar = () => {
             },
             {
               name: "책 추천",
-              path: `/bookclub/${bookclubId}/recommend`,
+              path: "#",
               submenus: [
                 {
                   name: "책 추천 전체보기",
                   path: `/bookclub/${bookclubId}/recommend`,
                 },
-                // {
-                //   name: "책 추천 하기",
-                //   path: `/bookclub/${bookclubId}/recommend/create`,
-                // },
+                {
+                  name: "책 추천 하기",
+                  path: `/bookclub/recommend/create`,
+                },
               ],
             },
           ],
@@ -239,6 +244,8 @@ const Sidebar = () => {
           else if (name === "책 추천")
             iconPair = { green: bookGreen, gray: bookGray };
 
+          const isOpen = openMenus.has(name);
+
           if (isModal) {
             return (
               <button
@@ -290,25 +297,40 @@ const Sidebar = () => {
 
           return (
             <div key={name}>
-              <NavLink
-                to={path}
-                end
-                style={{ color: getMenuTextColor(parentMenu!, path) }}
-                className="flex items-center gap-2 text-sm py-1 pl-2 pr-3 rounded hover:bg-[#DDEED6]"
-              >
-                {iconPair && (
-                  <img
-                    src={
-                      getMenuTextColor(parentMenu!, path) === "#3D4C35"
-                        ? iconPair.green
-                        : iconPair.gray
-                    }
-                    className="w-5 h-5"
-                  />
+              <div className="flex items-center justify-between">
+                <NavLink
+                  to={nested ? "#" : path}
+                  end
+                  style={{ color: getMenuTextColor(parentMenu!, path) }}
+                  className="flex items-center gap-2 text-sm py-1 pl-2 pr-3 rounded hover:bg-[#DDEED6]"
+                  onClick={() => {
+                    if (nested) toggleMenu(name);
+                  }}
+                >
+                  {iconPair && (
+                    <img
+                      src={
+                        getMenuTextColor(parentMenu!, path) === "#3D4C35"
+                          ? iconPair.green
+                          : iconPair.gray
+                      }
+                      className="w-5 h-5"
+                    />
+                  )}
+                  {name}
+                </NavLink>
+                {nested && nested.length > 0 && (
+                  <button onClick={() => toggleMenu(name)} className="p-1">
+                    <img
+                      src={isOpen ? toggleClose : toggleOpen}
+                      alt="토글"
+                      className="w-4 h-4"
+                    />
+                  </button>
                 )}
-                {name}
-              </NavLink>
-              {nested &&
+              </div>
+              {isOpen &&
+                nested &&
                 nested.length > 0 &&
                 renderSubmenus(nested, level + 1, parentMenu)}
             </div>
@@ -377,7 +399,9 @@ const Sidebar = () => {
                   className={`flex items-center gap-3 py-2 pl-3 pr-4 w-full rounded-r-lg cursor-pointer hover:bg-[#DDEED6] ${
                     isTopMenuActive(menu) ? "border-l-4 border-[#93C27C]" : ""
                   }`}
-                  onClick={() => toggleMenu(name)}
+                  onClick={() => {
+                    if (submenus.length > 0) toggleMenu(name);
+                  }}
                 >
                   <img src={getIconSrc(menu)} className="w-5 h-5" />
                   <span className="text-[18px] font-medium font-pretendard">
