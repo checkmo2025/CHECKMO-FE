@@ -1,5 +1,6 @@
 import type { GeneralNotice } from "../../../types/mainNotices";
 import mainNoticeIcon from "../../../assets/icons/mainnotice.svg";
+import shortcutIcon from "../../../assets/icons/shortcut.png";
 
 interface AnnouncementCardProps {
   notice: GeneralNotice;
@@ -27,7 +28,7 @@ const AnnouncementCard = ({ notice }: AnnouncementCardProps) => {
             공지
           </div>
           <img
-            src="/src/assets/icons/shortcut.png"
+            src={shortcutIcon}
             className="w-4 h-4 mt-2 cursor-pointer"
             alt="shortcut"
           />

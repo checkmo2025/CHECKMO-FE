@@ -1,5 +1,6 @@
 import type { MeetingNotice } from "../../../types/mainNotices";
 import mainNoticeIcon from "../../../assets/icons/mainnotice.svg";
+import shortcutIcon from "../../../assets/icons/shortcut.png";
 
 interface MeetingCardProps {
   notice: MeetingNotice;
@@ -30,7 +31,7 @@ const MeetingCard = ({ notice }: MeetingCardProps) => {
             모임
           </div>
           <img
-            src="/src/assets/icons/shortcut.png"
+            src={shortcutIcon}
             className="w-4 h-4 mt-2 cursor-pointer"
             alt="shortcut"
           />
