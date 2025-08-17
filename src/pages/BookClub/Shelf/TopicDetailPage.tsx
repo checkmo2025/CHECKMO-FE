@@ -170,10 +170,10 @@ export default function ThemeDetailPage() {
                           : (
                           <div className="flex gap-[9px]">
                             <button onClick={() => startEdit(Topic)}>
-                              <img src="/assets/글쓰기.svg" className="w-6 h-6" alt="수정"/>
+                              <img src="/assets/글쓰기.svg" className="w-6 h-6 hover:cursor-pointer" alt="수정"/>
                             </button>
                             <button onClick={() => handleDelete(Topic.topicId)}>
-                              <img src="/assets/삭제.svg" className="w-6 h-6" />
+                              <img src="/assets/삭제.svg" className="w-6 h-6 hover:cursor-pointer" />
                             </button>
                           </div>)}
                       </div>

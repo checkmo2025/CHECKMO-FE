@@ -247,12 +247,12 @@ export default function ReviewSection({
                       <button onClick={() => startEdit(review)}>
                         <img
                           src="/assets/글쓰기.svg"
-                          className="w-6 h-6"
+                          className="w-6 h-6 hover:cursor-pointer"
                           alt="수정"
                         />
                       </button>
                       <button onClick={() => handleDelete(review.bookReviewId)}>
-                        <img src="/assets/삭제.svg" className="w-6 h-6" />
+                        <img src="/assets/삭제.svg" className="w-6 h-6 hover:cursor-pointer" />
                       </button>
                     </div>
                   )}
