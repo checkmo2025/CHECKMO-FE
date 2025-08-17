@@ -71,7 +71,7 @@ jobs:
           ssh -i ~/.ssh/deploy_key -p "${SSH_PORT}" "${SSH_USER}@${SSH_HOST}" bash -lc "
             set -e
             RELEASES_DIR='${REMOTE_PATH}/releases'
-            CURRENT_LINK='${REMOTE_PATH}/dist'
+            CURRENT_LINK='${REMOTE_PATH}/current'
             NEW_REL='${RELEASE_NAME}'
 
             # 디렉터리 보장
@@ -83,10 +83,13 @@ jobs:
             # 심볼릭 링크 스위치 (원자적)
             sudo ln -sfn \"\$RELEASES_DIR/\$NEW_REL\" \"\$CURRENT_LINK\"
 
+            cd "\$RELEASES_DIR"
+            ls -1t | tail -n +6 | xargs -r sudo rm -rf --
+
             # nginx 점검 후 리로드
             sudo nginx -t
             sudo systemctl reload nginx
           "
 
       - name: Done
-        run: echo "🚀 Deployed ${RELEASE_NAME} to ${SSH_HOST} => ${REMOTE_PATH}"
+        run: echo "🚀 Deployed ${RELEASE_NAME} to ${SSH_HOST} => ${REMOTE_PATH}/current"
