@@ -7,7 +7,7 @@ import type { ShelfHomeRequest, BookShelfInfo, } from '../../../types/Shelf/Shel
 import { getStarIcon } from '../../../components/Shelf/getStarIcon';
 import Modal from '../../../components/Modal';
 
-export default function ShelfHomePage() {
+export default function   ShelfHomePage() {
   const { bookclubId } = useParams<{ bookclubId: string }>();
     const [ShelfList, setShelfList] = useState<BookShelfInfo[]>([]);
     const [isModalOpen, setIsModalOpen] = useState(false);
@@ -65,15 +65,15 @@ export default function ShelfHomePage() {
   return (
     <div className="flex h-screen">
       {/* 메인 컨텐츠 자리 */}
-      <div className="absolute left-[302px] right-[34px]">
+      <div className="">
         {/* 헤더 자리 */}
         <Header pageTitle={'책장'} 
-          customClassName="mt-[30px]"
+          customClassName="px-10 mt-[30px]"
         />
   
-        <div className="mt-[54px] flex flex-col gap-[18px]">
+        <div className="pt-[54px] flex flex-col">
           {/* 타이틀과 기수 */}
-          <div className="flex items-center justify-between w-full h-[24px]">
+          <div className="px-10 flex items-center justify-between w-full h-[24px]">
             <h1 className="font-[Pretendard] font-medium text-[18px] leading-[135%]">독서 목록</h1>
 
             <div className="relative w-[72px] mr-[24px]">
@@ -104,10 +104,10 @@ export default function ShelfHomePage() {
                           absolute top-1/2 right-[12px] -translate-y-1/2"/>
            </div>
           </div>
-              {/* 책장 리스트 */}
-              <div className="grid grid-cols-3 content-start gap-x-[12px] gap-y-[24px] overflow-y-auto h-[calc(100vh-171px)] overscroll-none"  style={{ msOverflowStyle: 'none', scrollbarWidth: 'none' }}>
+          {/* 책장 리스트 */}
+          <div className="pt-[18px] grid grid-cols-3 content-start overflow-y-auto h-[calc(100vh-171px)] overscroll-none px-10"  style={{  gap: "24px 12px",  msOverflowStyle: 'none', scrollbarWidth: 'none' }}>
                 {ShelfList.map((Shelf) => (
-              <Link key={Shelf.meetingInfo.meetingId} to={`${location.pathname}/${Shelf.meetingInfo.meetingId}`} className="flex min-w-90 h-[260px] p-[20px] items-center gap-[20px] rounded-2xl border-2 border-[var(--sub-color-2-brown,#EAE5E2)] bg-[var(--White,#FFF)] hover:shadow-lg transition-shadow block">
+              <Link key={Shelf.meetingInfo.meetingId} to={`${location.pathname}/${Shelf.meetingInfo.meetingId}`} className="flex min-w-90 h-[260px] p-[20px] items-center gap-[20px] rounded-2xl border-2 border-[var(--sub-color-2-brown,#EAE5E2)] bg-[var(--White,#FFF)] hover:shadow-lg hover:scale-[1.03] transition-shadow block">
                   {/* 왼쪽 */}
                   <div className="w-[156px] flex-shrink-0 h-full rounded-2xl overflow-hidden bg-gray-200">
                     <img
