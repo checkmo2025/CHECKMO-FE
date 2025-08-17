@@ -88,7 +88,7 @@ const MemberAdminPage = () => {
           >
             {/* 유저 정보 */}
             <div className="flex items-center">
-              <img src = {member.basicInfo.profileImageUrl || "https://via.placeholder.com/40"} alt="profile" className="w-12 h-12 rounded-full mr-4" />
+              <img src = {member.basicInfo.profileImageUrl || "/public/assets/ix_user-profile-filled.svg"} alt="profile" className="w-12 h-12 rounded-full mr-4" />
               <span className="font-['Pretendard'] text-[18px] font-semibold leading-[135%] text-gray-800">
                 {member.basicInfo.nickname}
               </span>
@@ -103,7 +103,7 @@ const MemberAdminPage = () => {
                     운영진 역할 부여
                   </button>
 
-                  <button className="px-4 py-1.5 rounded-full text-sm bg-[#EFF5ED] text-[#367216] border border-[#90D26D] hover:bg-[#90D26D] hover:text-white "
+                  <button className="w-[90px] px-4 py-1.5 rounded-full text-sm bg-[#EFF5ED] text-[#367216] border border-[#90D26D] hover:bg-[#90D26D] hover:text-white "
                   onClick={() => handleMemberStatus(member.clubMemberId, 'BLOCKED')}>
                     삭제하기
                   </button>
@@ -111,8 +111,8 @@ const MemberAdminPage = () => {
               }
               {member.clubMemberStatus == 'STAFF' &&
                 <div className="flex gap-2">
-                  <div className="px-4 py-1.5 rounded-full text-sm  border border-[#90D26D] bg-[#90D26D] text-white ">
-                    운영진 역할
+                  <div className="flex items-center justify-center w-[90px] px-4 py-1.5 rounded-full text-sm  border border-[#90D26D] bg-[#90D26D] text-white ">
+                    운영진
                   </div>
                 </div>
               }                    

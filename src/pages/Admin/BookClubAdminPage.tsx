@@ -24,7 +24,7 @@ const BookClubAdminPage = () => {
   const navigate = useNavigate();
   const { bookclubId } = useParams();
   const { data: clubDetail } = useClubDetail(Number(bookclubId));
-  console.log(clubDetail)
+  
   if (!clubDetail) {
     return <div>Loading...</div>;
   }
@@ -51,9 +51,13 @@ const BookClubAdminPage = () => {
       <div className="mb-4 px-2">
         <div className="flex justify-between">
           <div className="flex items-center mb-2">
-            <FaUserCircle className="text-5xl text-gray-300 mr-4" />
+            {clubDetail.profileImageUrl ? (
+              <img src={clubDetail.profileImageUrl} alt="Profile" className="w-12 h-12 rounded-full mr-4" />
+            ) : (
+              <FaUserCircle className="w-12 h-12 rounded-full mr-4" />
+            )}
             <div>
-              <p className="text-lg font-semibold">{clubDetail.name}</p>
+              <p className="text-[18px] font-['Pretendard'] font-semibold">{clubDetail.name}</p>
             </div>
           </div>
           {/* 태그들 */}
@@ -68,7 +72,7 @@ const BookClubAdminPage = () => {
             ))}
           </div>
         </div>
-        <p className="mt-4 bg-green-50 text-sm text-gray-700 p-3 rounded">
+        <p className="mt-4 bg-[#EFF5ED] font-['Pretendard'] text-m text-gray-700 p-5 rounded-2xl whitespace-pre-line">
           {clubDetail.description}
         </p>
       </div>
@@ -76,22 +80,19 @@ const BookClubAdminPage = () => {
       {/* 하단 버튼들 */}
       <div className="flex gap-3.5 justify-end px-4">
         <button
-          style={{ backgroundColor: "#EFF5ED", color: "#f18282ff" }}
-          className=" px-4 py-2 rounded-full text-sm cursor-pointer"
+          className="bg-[#EFF5ED] text-[#f18282ff] px-4 py-2 rounded-full text-sm cursor-pointer hover:bg-[#f68282ff] hover:text-white"
           onClick={() => navigate(`/bookclub/${bookclubId}/admin/block`)}
         >
           차단 회원
         </button>
         <button
-          style={{ backgroundColor: "#EFF5ED", color: "#90D26D" }}
-          className=" px-4 py-2 rounded-full text-sm cursor-pointer"
+          className="bg-[#EFF5ED] text-[#90D26D] px-4 py-2 rounded-full text-sm cursor-pointer hover:bg-[#90D26D] hover:text-white"
           onClick={() => navigate(`/bookclub/${bookclubId}/admin/member`)}
         >
           회원 관리
         </button>
         <button
-          style={{ backgroundColor: "#EFF5ED", color: "#90D26D" }}
-          className=" px-4 py-2 rounded-full text-sm cursor-pointer"
+          className="bg-[#EFF5ED] text-[#90D26D] px-4 py-2 rounded-full text-sm cursor-pointer hover:bg-[#90D26D] hover:text-white"
           onClick={() => navigate(`/bookclub/${bookclubId}/admin/register`)}
         >
           가입 관리
