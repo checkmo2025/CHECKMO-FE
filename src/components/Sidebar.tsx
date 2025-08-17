@@ -107,7 +107,7 @@ const Sidebar = () => {
                 },
                 {
                   name: "책 추천 하기",
-                  path: `/bookclub/recommend/create`,
+                  path: `/bookclub/${bookclubId}/recommend/search`,
                 },
               ],
             },
