@@ -47,16 +47,12 @@ const MeetingDetailPage = () => {
   }
 
   const { meetingInfo, teams, topics } = data;
-  console.log(meetingInfo);
-  console.log(teams);
-  console.log(topics);
 
   return (
     <div className="mx-auto px-10 space-y-10">
-      <NonProfileHeader title={meetingInfo.content} />
+      <NonProfileHeader title={meetingInfo.title} />
 
       <MeetingCard
-        title={meetingInfo.title}
         book={meetingInfo.bookInfo}
         meetingDate={meetingInfo.meetingTime}
         meetingPlace={meetingInfo.location}

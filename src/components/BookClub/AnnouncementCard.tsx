@@ -1,8 +1,8 @@
 import React from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import type { noticeListItemDto, voteItemDto } from "../../types/clubNotice";
-import vector from "../../assets/images/vector.png";
-import arrow from "../../assets/images/shortcutArrow.png";
+import vector from "../../assets/images/Vector.png";
+import arrow from "../../assets/images/ShortcutArrow.png";
 import { mapTagToRouteType } from "../../types/noticeType";
 import { parseISO, format } from "date-fns";
 
@@ -63,15 +63,14 @@ function AnnouncementCardItem({
           </h3>
         </div>
         <span
-          className={`inline-flex items-center justify-center w-[52px] h-[22px] opacity-100 rounded-[15px] text-[12px] text-[#FFFFFF] font-pretendard font-semibold leading-[145%] tracking-[-0.1%] whitespace-nowrap ${
-            item.tag === "모임"
-              ? "bg-[#90D26D]"
-              : item.tag === "투표"
+          className={`inline-flex items-center justify-center w-[52px] h-[22px] opacity-100 rounded-[15px] text-[12px] text-[#FFFFFF] font-pretendard font-semibold leading-[145%] tracking-[-0.1%] whitespace-nowrap ${item.tag === "모임"
+            ? "bg-[#90D26D]"
+            : item.tag === "투표"
               ? "bg-[#FF8045]"
               : item.tag === "공지"
-              ? "bg-[#FFC648]"
-              : ""
-          }`}
+                ? "bg-[#FFC648]"
+                : ""
+            }`}
         >
           {item.tag}
         </span>
