@@ -44,7 +44,7 @@ export default function HomePage() {
       })
       .then((noticesArrays) => {
         const allNotices = noticesArrays.flat();
-        console.log("allNotices:", allNotices); // << 이거 추가
+        //console.log("allNotices:", allNotices); // << 이거 추가
 
         setNotices(allNotices);
       })
