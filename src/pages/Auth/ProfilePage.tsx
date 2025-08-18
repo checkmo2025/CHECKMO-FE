@@ -177,17 +177,15 @@ const ProfilePage = () => {
         categoryIds: selectedCategoryIds,
       },
       {
-        onSuccess: async () => {
-          try {
-            // 추가정보 저장 후 최신 프로필 다시 불러와서 캐시에 반영
-            const profile = await getMyProfile();
-            qc.setQueryData(QK.me, profile);
-          } catch (err) {
-            console.error("프로필 동기화 실패:", err);
+        onSuccess: () => setStep(2),
+        onError: (err: any) => {
+          const code = err?.response?.data?.code;
+          if (code === "MEMBER_406") {
+            navigate("/home", { replace: true });
+            return;
           }
-          setStep(2);
+          alert("프로필 저장에 실패했습니다.");
         },
-        onError: () => alert("프로필 저장에 실패했습니다."),
       }
     );
   };
