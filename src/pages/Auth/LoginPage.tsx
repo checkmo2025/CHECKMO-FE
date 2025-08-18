@@ -27,6 +27,7 @@ const LoginPage = () => {
 
   const withdrawnEmails = ["22jw@gmail.com"];
 
+  // 로그인 상태면 접근 차단 & 프로필 캐시 채운 후 /home 이동
   useEffect(() => {
     const isLoggedIn = Boolean(localStorage.getItem("nickname"));
     const blockedPaths = ["/", "/signup", "/profile"];
@@ -70,9 +71,13 @@ const LoginPage = () => {
         onSuccess: async () => {
           try {
             const profile = await getMyProfile();
+
             localStorage.setItem("nickname", profile.nickname);
             localStorage.setItem("profileImageUrl", profile.profileImageUrl ?? "");
+
+            // React Query 캐시에도 저장
             qc.setQueryData(QK.me, profile);
+
             navigate("/home");
           } catch (err) {
             console.error("프로필 불러오기 실패:", err);
@@ -125,7 +130,7 @@ const LoginPage = () => {
 
       <div className="flex-1 overflow-y-auto">
         <div className="flex flex-col items-center w-full min-h-screen py-20 px-6">
-          {/* 로고 이미지 (책모 글씨) */}
+          {/* 로고 */}
           <div className="mb-16 text-center">
             <img
               src="/assets/checkmo_font_logo.png"
