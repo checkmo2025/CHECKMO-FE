@@ -58,7 +58,7 @@ const MeetingDetailPage = () => {
         meetingPlace={meetingInfo.location}
         tags={meetingInfo.tag}
         generation={meetingInfo.generation}
-        className="flex min-w-[700px] px-4 pt-2 pb-4 bg-white mx-5 border-[#EAE5E2] border-b-2"
+        className="flex min-w-[700px] px-4 pt-2 pb-4 bg-white mx-5 border-[#EAE5E2] border-b-2 truncate"
       />
       <button
         onClick={() =>
