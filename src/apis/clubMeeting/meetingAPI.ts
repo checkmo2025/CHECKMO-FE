@@ -40,10 +40,10 @@ export const getMeetingDetail = async (
 
 // 정기 독서 모임 생성
 export const createClubMeeting = async (
-  meetingId: number,
+  clubId: number,
   data: CreateClubMeeting
 ) => {
-  const response = await axiosInstance.post(`/meetings/${meetingId}`, data);
+  const response = await axiosInstance.post(`/clubs/${clubId}/meetings`, data);
   return response;
 };
 
