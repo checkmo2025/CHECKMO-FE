@@ -1,9 +1,9 @@
 import { useState, useEffect } from "react";
 import { Heart, Siren } from "lucide-react";
-import AlertModal from "../../../components/AlertModal";
+import Modal from "../../../components/Modal"; 
 import { useParams } from "react-router-dom";
 import { getOtherProfile, followMember, getTargetBookStories } from "../../../apis/otherApi";
-import { toggleBookStoryLike } from "../../../apis/BookStory/bookstories"; 
+import { toggleBookStoryLike } from "../../../apis/BookStory/bookstories";
 import type { OtherProfile } from "../../../types/other";
 import type { BookStoryResponseDto } from "../../../types/bookStories";
 
@@ -184,8 +184,7 @@ const OthersProfilePage = () => {
                 <div className="flex items-center gap-5 mt-auto ml-[20px]">
                   <div
                     className={`flex items-center gap-1 text-sm cursor-pointer ${
-                      book.likedByMe ? "text-[#90D26D]" : "text-[#2C2C2C]"
-                    } hover:text-[#90D26D]`}
+                      book.likedByMe ? "text-[#90D26D]" : "text-[#2C2C2C]"} hover:text-[#90D26D]`}
                     onClick={() => toggleLike(book.bookStoryId)}
                   >
                     <Heart size={24} />
@@ -204,13 +203,24 @@ const OthersProfilePage = () => {
         </div>
       </main>
 
-      {showReportModal && (
-        <AlertModal
-          message="해당 책이야기를 신고하시겠습니까?"
-          onConfirm={handleReportConfirm}
-          onClose={() => setShowReportModal(false)}
-        />
-      )}
+      {/* 신고 모달 */}
+      <Modal
+        isOpen={showReportModal}
+        title="해당 책이야기를 신고하시겠습니까?"
+        buttons={[
+          {
+            label: "취소",
+            onClick: () => setShowReportModal(false),
+            variant: "outline",
+          },
+          {
+            label: "신고",
+            onClick: handleReportConfirm,
+            variant: "danger",
+          },
+        ]}
+        onBackdrop={() => setShowReportModal(false)}
+      />
     </div>
   );
 };
