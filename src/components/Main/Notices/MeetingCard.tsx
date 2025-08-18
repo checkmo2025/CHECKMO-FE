@@ -1,6 +1,7 @@
 import type { MeetingNotice } from "../../../types/mainNotices";
 import mainNoticeIcon from "../../../assets/icons/mainnotice.svg";
 import shortcutIcon from "../../../assets/icons/shortcut.png";
+import checkerIcon from "../../../assets/images/checker.png";
 
 interface MeetingCardProps {
   notice: MeetingNotice;
@@ -8,11 +9,22 @@ interface MeetingCardProps {
 
 const MeetingCard = ({ notice }: MeetingCardProps) => {
   const date = notice.meetingInfoDTO.meetingTime.split("T")[0];
-  const location = notice.meetingInfoDTO.location;
-  const imgUrl = notice.meetingInfoDTO.bookInfo?.imgUrl ?? notice.imgUrl;
+  const location =
+    !notice.meetingInfoDTO.location ||
+    notice.meetingInfoDTO.location === "string"
+      ? "미정"
+      : notice.meetingInfoDTO.location;
+  // 빈 값으로 들어올 때 undefined가 아니라 "string"으로 들어옴.
+  const imgUrl =
+    notice.meetingInfoDTO.bookInfo?.imgUrl &&
+    notice.meetingInfoDTO.bookInfo.imgUrl !== "string"
+      ? notice.meetingInfoDTO.bookInfo.imgUrl
+      : notice.imgUrl && notice.imgUrl !== "string"
+      ? notice.imgUrl
+      : checkerIcon;
 
   return (
-    <div className="rounded-[1rem] border-2 border-[#EAE5E2] bg-white w-[17.875rem] p-[1.5rem] flex flex-col gap-7 h-[24rem]">
+    <div className="hover:shadow-lg hover:scale-[1.03] rounded-[1rem] border-2 border-[#EAE5E2] bg-white w-[17.875rem] p-[1.5rem] flex flex-col gap-7 h-[24rem]">
       <div className="flex justify-between items-start">
         <div>
           <div className="flex items-center gap-3 mb-1">

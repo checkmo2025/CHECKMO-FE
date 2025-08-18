@@ -323,7 +323,10 @@ const Sidebar = () => {
                   {name}
                 </NavLink>
                 {nested && nested.length > 0 && (
-                  <button onClick={() => toggleMenu(name)} className="p-1">
+                  <button
+                    onClick={() => toggleMenu(name)}
+                    className="p-1 cursor-pointer"
+                  >
                     <img
                       src={isOpen ? toggleClose : toggleOpen}
                       alt="토글"
@@ -413,7 +416,10 @@ const Sidebar = () => {
                 </NavLink>
 
                 {submenus.length > 0 && (
-                  <button onClick={() => toggleMenu(name)} className="p-1">
+                  <button
+                    onClick={() => toggleMenu(name)}
+                    className="p-1 cursor-pointer"
+                  >
                     <img
                       src={isMenuOpen ? toggleClose : toggleOpen}
                       alt="토글"
