@@ -9,6 +9,7 @@ import { useDebounce } from '../../hooks/useDebounce';
 import type { ClubListDto } from '../../types/bookClub';
 import { useClubJoin } from '../../hooks/useClubJoin';
 import { PARTICIPANT_TYPES } from '../../types/bookClub';
+import arrowUpBold from '../../assets/icons/ep_arrow-up-bold.svg';
 
 export default function ClubSearchPage(): React.ReactElement {
   // ── 검색 상태
@@ -216,7 +217,7 @@ export default function ClubSearchPage(): React.ReactElement {
                 aria-expanded={isParticipantOpen}
               >
                 <img
-                  src="/src/assets/icons/ep_arrow-up-bold.svg"
+                  src={arrowUpBold}
                   alt="toggle"
                   className={isParticipantOpen ? "w-[12px] h-[12px] rotate-180" : "w-[12px] h-[12px]"}
                 />
