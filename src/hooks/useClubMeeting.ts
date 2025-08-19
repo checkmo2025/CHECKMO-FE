@@ -37,12 +37,13 @@ export const useMeetingDetail = (meetingId: number) => {
 };
 
 // 정기 독서 모임 생성
-export const useCreateClubMeeting = (meetingId: number) => {
+export const useCreateClubMeeting = (clubId: number) => {
   const queryClient = useQueryClient();
   return useMutation<unknown, Error, CreateClubMeeting>({
-    mutationFn: (data: CreateClubMeeting) => createClubMeeting(meetingId, data),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["meetings"] });
+    mutationFn: (data: CreateClubMeeting) => createClubMeeting(clubId, data),
+    onSuccess: (data) => {
+      queryClient.invalidateQueries({ queryKey: ["meetings", clubId] });
+      return data; // 생성 후 반환된 데이터
     },
   });
 };

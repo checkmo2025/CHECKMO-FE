@@ -15,12 +15,7 @@ const BookRecommendDetailCard = ({
   onDelete,
 }: BookRecommendDetailCardProps) => {
   const navigate = useNavigate();
-  const { id, title, content, rate, tag, bookInfo, authorInfo, staff, author } =
-    recommendDetail;
-
-  // 배포용 error 방지 코드 (미사용 변수 방지)
-  console.log(title, staff);
-
+  const { id, title, content, rate, tag, bookInfo, authorInfo, staff, author } = recommendDetail;
   const tags = tag.split(",").map((t) => t.trim()).filter(Boolean);
 
   const handleEdit = () => {
@@ -31,7 +26,7 @@ const BookRecommendDetailCard = ({
 
   return (
     <div className="mt-2 px-4 sm:px-6 md:px-8 py-2">
-      <h1 className="font-bold text-2xl sm:text-3xl">{bookInfo.title}</h1>
+      <h1 className="font-bold text-2xl sm:text-3xl truncate">{bookInfo.title}</h1>
       <p className="mt-3 sm:mt-4 mb-4 text-xs sm:text-sm text-gray-500">
         {bookInfo.author}
       </p>
@@ -57,7 +52,7 @@ const BookRecommendDetailCard = ({
                 </span>
               ))}
             </div>
-            <div className="flex items-center my-3 sm:my-4 gap-2 sm:gap-3">
+            <div className="flex items-center my-4 sm:my-5 gap-3 sm:gap-4">
               <img
                 src={authorInfo.profileImageUrl}
                 alt={authorInfo.nickname}
@@ -68,6 +63,9 @@ const BookRecommendDetailCard = ({
                 <p className="text-[10px] sm:text-xs text-gray-500">건전한가즈앗코치</p>
               </div>
             </div>
+            <h2 className="text-base sm:text-lg md:text-xl font-semibold mb-3">
+              {title}
+            </h2>
             <p className="text-[13px] sm:text-sm text-gray-800 leading-relaxed whitespace-pre-line">
               {content}
             </p>
@@ -77,18 +75,22 @@ const BookRecommendDetailCard = ({
               <StarRating rate={rate} />
             </div>
 
-            {author && (
-              <div className="flex flex-col sm:flex-row sm:justify-end sm:space-x-2 space-y-2 sm:space-y-0">
-                <ActionButton
-                  onClick={handleEdit}
-                  label="수정하기"
-                  className="w-full sm:w-auto px-6 sm:px-7.5 py-2 bg-[#A6917D] text-white text-xs border-2 border-[#A6917D] rounded-2xl hover:bg-[#907E66] transition"
-                />
-                <ActionButton
-                  onClick={onDelete}
-                  label="삭제하기"
-                  className="w-full sm:w-auto px-6 sm:px-7.5 py-2 bg-white text-black text-xs border-2 border-[#A6917D] rounded-2xl hover:bg-gray-200 transition"
-                />
+            {(author || staff) && (
+              <div className="flex flex-col sm:items-end space-y-2">
+                {author && (
+                  <ActionButton
+                    onClick={handleEdit}
+                    label="수정하기"
+                    className="w-full sm:w-auto px-6 sm:px-7.5 py-2 bg-[#A6917D] text-white text-xs border-2 border-[#A6917D] rounded-2xl hover:bg-[#907E66] transition"
+                  />
+                )}
+                {(author || staff) && (
+                  <ActionButton
+                    onClick={onDelete}
+                    label="삭제하기"
+                    className="w-full sm:w-auto px-6 sm:px-7.5 py-2 bg-white text-black text-xs border-2 border-[#A6917D] rounded-2xl hover:bg-gray-200 transition"
+                  />
+                )}
               </div>
             )}
           </div>

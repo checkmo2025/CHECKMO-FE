@@ -82,7 +82,7 @@ const BookRecommendDetailPage = () => {
 
   return (
     <>
-      <div className="flex flex-col h-screen ml-5 mr-10">
+      <div className="flex flex-col h-screen ml-5 mr-10 min-w-[250px]">
         <div className="sticky top-0 bg-white z-10">
           <Header
             customClassName="mx-3 mb-5 mt-[30px]"

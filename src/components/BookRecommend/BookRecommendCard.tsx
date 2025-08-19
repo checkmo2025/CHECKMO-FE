@@ -7,7 +7,7 @@ interface BookRecommendCardProps {
 }
 
 const BookRecommendCard = ({ recommend }: BookRecommendCardProps) => {
-  const { authorInfo, bookInfo, content, rate } = recommend;
+  const { title, authorInfo, bookInfo, content, rate } = recommend;
 
   return (
     <div
@@ -38,10 +38,18 @@ const BookRecommendCard = ({ recommend }: BookRecommendCardProps) => {
           </div>
         </div>
 
-        <div className="ml-4 flex-1 min-w-0 flex flex-col space-y-2 group">
+        <div className="ml-4 flex-1 min-w-0 flex flex-col space-y-1 group">
+          <h3
+            className="font-semibold text-gray-900 text-[clamp(20px,1.4vw,24px)] 
+            line-clamp-2 md:line-clamp-3 xl:line-clamp-2 break-words mb-1"
+            title={title}
+          >
+            {title}
+          </h3>
+
           <h4
-            className="font-semibold text-gray-900 text-[clamp(16px,1.2vw,20px)] 
-            line-clamp-2 md:line-clamp-3 xl:line-clamp-2 break-words"
+            className="font-medium text-gray-900 text-[clamp(16px,1.2vw,20px)] 
+            line-clamp-2 md:line-clamp-2 xl:line-clamp-1 break-words"
             title={bookInfo.title}
           >
             {bookInfo.title}

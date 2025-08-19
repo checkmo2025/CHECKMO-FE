@@ -24,7 +24,7 @@ export default function MyBookStoryCard({
   return (
     <div
       onClick={onClick}
-      className="cursor-pointer border border-[#EAE5E2] rounded-lg p-4 flex bg-white hover:shadow-md transition-shadow"
+      className="hover:shadow-lg hover:scale-[1.03] cursor-pointer border border-[#EAE5E2] rounded-lg p-4 flex bg-white hover:shadow-md transition-shadow"
     >
       {/* 책 이미지 */}
       <div className="w-32 h-48 bg-gray-200 rounded-md overflow-hidden flex-shrink-0">
@@ -58,6 +58,7 @@ export default function MyBookStoryCard({
               e.stopPropagation();
               onDelete && onDelete();
             }}
+            className="cursor-pointer"
           >
             <Trash2 size={16} color="#A6917D" />
           </button>
@@ -67,6 +68,7 @@ export default function MyBookStoryCard({
               e.stopPropagation();
               onEdit && onEdit();
             }}
+            className="cursor-pointer"
           >
             <Edit2 size={16} color="#A6917D" />
           </button>

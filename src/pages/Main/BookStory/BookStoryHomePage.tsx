@@ -36,8 +36,8 @@ export default function BookStoryHomePage() {
         const filteredStories =
           scope === "FOLLOWING"
             ? (data.bookStoryResponses || []).filter(
-              (story) => story.authorInfo?.following
-            )
+                (story) => story.authorInfo?.following
+              )
             : data.bookStoryResponses || [];
 
         setStories(filteredStories);
@@ -74,10 +74,10 @@ export default function BookStoryHomePage() {
       prev.map((story) =>
         story.bookStoryId === storyId
           ? {
-            ...story,
-            likedByMe: liked,
-            likes: liked ? story.likes + 1 : story.likes - 1,
-          }
+              ...story,
+              likedByMe: liked,
+              likes: liked ? story.likes + 1 : story.likes - 1,
+            }
           : story
       )
     );
@@ -88,9 +88,9 @@ export default function BookStoryHomePage() {
       prev.map((story) =>
         story.authorInfo.nickname === nickname
           ? {
-            ...story,
-            authorInfo: { ...story.authorInfo, following: subscribed },
-          }
+              ...story,
+              authorInfo: { ...story.authorInfo, following: subscribed },
+            }
           : story
       )
     );
@@ -98,14 +98,11 @@ export default function BookStoryHomePage() {
 
   return (
     <div className="absolute left-[315px] right-[42px] opacity-100">
-      <Header
-        pageTitle="책 이야기"
-        customClassName="mt-[30px]"
-      />
+      <Header pageTitle="책 이야기" customClassName="mt-[30px] pl-4" />
 
       {/* 탭 */}
       <div className="overflow-y-auto h-[calc(100vh-80px)] w-full flex-1 pt-[30px] pl-[2px] pr-[30px] bg-[#FFFFFF]">
-        <div className="flex items-center gap-2 mb-6">
+        <div className="flex items-center gap-2 mb-6 pl-4">
           <div
             className="flex gap-6 overflow-x-auto scrollbar-hide whitespace-nowrap"
             ref={tabContainerRef}
@@ -114,10 +111,11 @@ export default function BookStoryHomePage() {
               <button
                 key={`${tab.scope}-${tab.clubId ?? "default"}`}
                 onClick={() => setActiveTab(index)}
-                className={`pb-2 text-sm font-medium relative transition-colors duration-150 inline-block cursor-pointer ${index === activeTab
+                className={`pb-2 text-sm font-medium relative transition-colors duration-150 inline-block cursor-pointer ${
+                  index === activeTab
                     ? "text-black border-b-2 border-green-500"
                     : "text-gray-400 hover:text-black"
-                  }`}
+                }`}
               >
                 {tab.label}
               </button>
@@ -126,13 +124,13 @@ export default function BookStoryHomePage() {
         </div>
 
         {/* 상단 버튼 & 보기 모드 */}
-        <div className="flex justify-between items-center mb-6">
+        <div className="flex justify-between items-center mb-6 pl-4">
           <Link to="/bookstory/search">
             <button className="flex items-center gap-2 px-4 py-2 rounded-full bg-[#A6917D] text-white text-sm font-medium cursor-pointer">
               <Pencil size={16} /> 책 이야기
             </button>
           </Link>
-          <div className="flex gap-2">
+          <div className="flex gap-2 px-4">
             <button onClick={() => setViewMode("grid")}>
               <LayoutGrid
                 size={20}
@@ -150,17 +148,18 @@ export default function BookStoryHomePage() {
 
         {/* 책 이야기 목록 */}
         <div
-          className={`${viewMode === "grid"
-              ? "grid grid-cols-2 gap-6"
-              : "flex flex-col gap-4 w-full"
-            }`}
+          className={`${
+            viewMode === "grid"
+              ? "grid grid-cols-2 gap-6 px-4"
+              : "flex flex-col gap-4 w-full px-4"
+          }`}
         >
           {loading ? (
             <div>로딩 중...</div>
           ) : stories.length > 0 ? (
             stories.map((story) => (
               <div
-                className="cursor-pointer"
+                className="cursor-pointer hover:shadow-lg hover:scale-[1.03]"
                 key={story.bookStoryId}
                 onClick={() =>
                   navigate(`/bookstory/${story.bookStoryId}/detail`)
@@ -177,6 +176,7 @@ export default function BookStoryHomePage() {
                   bookTitle={story.bookInfo.title}
                   author={story.bookInfo.author}
                   likes={story.likes}
+                  writtenByMe={story.writtenByMe}
                   likedByMe={story.likedByMe}
                   viewMode={viewMode}
                   onToggleLike={handleToggleLike}

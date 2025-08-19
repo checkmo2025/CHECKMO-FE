@@ -16,7 +16,7 @@ export default function AnnouncementCard({
   items: noticeListItemDto[];
 }): React.ReactElement {
   return (
-    <div className="overflow-x-auto">
+    <div className="overflow-x-auto py-[6px] px-[6px]">
       <div className="flex gap-[24px] min-w-max">
         {items.map((item, idx) => (
           <AnnouncementCardItem key={idx} item={item} />
@@ -44,7 +44,8 @@ function AnnouncementCardItem({
   return (
     <div
       onClick={handleCardClick}
-      className="relative w-[312px] h-[377px] rounded-[16px] border-2 border-[#EAE5E2] py-[26px] px-[21.5px] flex flex-col overflow-hidden cursor-pointer select-none hover:bg-gray-50 transition-colors"
+      className="relative w-[312px] h-[377px] rounded-[16px] border-2 border-[#EAE5E2] py-[26px] px-[21.5px] flex flex-col overflow-hidden cursor-pointer select-none
+      hover:bg-gray-50 hover:shadow-lg hover:scale-[1.03] transition-all duration-300 origin-center"
     >
       <div className="flex justify-between items-center">
         <div className="flex items-center">

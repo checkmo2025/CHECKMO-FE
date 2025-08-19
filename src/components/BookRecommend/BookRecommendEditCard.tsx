@@ -110,7 +110,7 @@ const BookRecommendEditCard = ({
   return (
     <>
       <div className="mt-2 p-4">
-        <h1 className="font-bold leading-tight text-2xl sm:text-3xl md:text-4xl md:min-w-[650px] line-clamp-2">
+        <h1 className="font-bold leading-tight text-2xl sm:text-3xl md:text-4xl md:min-w-[650px] truncate">
           {bookInfo.title}
         </h1>
         <p className="mt-3 sm:mt-4 mb-4 text-xs sm:text-sm text-gray-500">

@@ -1,12 +1,12 @@
 import type { ApiResponse } from "./apiResponse";
 // 공용 Dto 파일
-export type BookDto = {
+export interface BookDto {
   bookId?: number;
   title: string;
   author: string;
   imgUrl: string;
   publisher?: string;
-};
+}
 
 export type MemberDto = {
   memberId: number;
@@ -84,6 +84,5 @@ export type StatisticsDto = {
   averageRating: number;
 };
 
-
 export type StaffCheckResponse = ApiResponse<boolean>;
-export type StaffCheckResult = StaffCheckResponse['result']; // boolean
+export type StaffCheckResult = StaffCheckResponse["result"]; // boolean

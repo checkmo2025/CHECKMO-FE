@@ -32,18 +32,18 @@ export default function AnnouncementList({
   };
 
   return (
-    <div className="space-y-[12px]">
+    <div className="space-y-[12px] mx-auto">
       {items.map(item => (
         <div
           key={item.id}
           onClick={() => handleItemClick(item)}
           className="
-            w-full h-[204px]
+            w-[1138px] h-[204px]
+            mx-3
             relative flex items-start
             bg-white border-[2px] border-[#EAE5E2] rounded-[16px]
             cursor-pointer
-            hover:bg-gray-50
-            transition-colors
+            hover:bg-gray-50 hover:shadow-lg hover:scale-[1.03] transition-all duration-300 origin-center
           "
         >
           {/* 왼쪽: 이미지 (모임이면 책 이미지, 아니면 로고를 128x64로 표시) */}

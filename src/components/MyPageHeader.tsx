@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import AlertModal from "./AlertModal";
-import { useLogout } from "../hooks/useAuth"; 
+import Modal from "./Modal";
+import { useLogout } from "../hooks/useAuth";
 import { useQueryClient } from "@tanstack/react-query";
 
 type MyPageHeaderProps = {
@@ -13,7 +13,6 @@ const MyPageHeader = ({ title }: MyPageHeaderProps) => {
   const qc = useQueryClient();
   const [showLogoutModal, setShowLogoutModal] = useState(false);
 
-  // 서버 로그아웃 API와 연동되는 훅
   const { mutate: logout, isPending } = useLogout();
 
   const handleLogout = () => {
@@ -23,16 +22,9 @@ const MyPageHeader = ({ title }: MyPageHeaderProps) => {
   const handleConfirmLogout = () => {
     logout(undefined, {
       onSuccess: () => {
-        // 1. 로컬 토큰 삭제
         localStorage.clear();
-
-        // 2. React Query 캐시 초기화
         qc.clear();
-
-        // 3. 모달 닫기
         setShowLogoutModal(false);
-
-        // 4. 로그인 페이지로 이동
         window.location.replace("/");
       },
       onError: (e) => {
@@ -64,13 +56,24 @@ const MyPageHeader = ({ title }: MyPageHeaderProps) => {
         </div>
       </header>
 
-      {showLogoutModal && (
-        <AlertModal
-          message="정말 로그아웃 하시겠습니까?"
-          onConfirm={handleConfirmLogout}
-          onClose={() => setShowLogoutModal(false)}
-        />
-      )}
+      {/* AlertModal → Modal 교체 */}
+      <Modal
+        isOpen={showLogoutModal}
+        title="정말 로그아웃 하시겠습니까?"
+        buttons={[
+          {
+            label: "취소",
+            onClick: () => setShowLogoutModal(false),
+            variant: "outline",
+          },
+          {
+            label: "로그아웃",
+            onClick: handleConfirmLogout,
+            variant: "danger",
+          },
+        ]}
+        onBackdrop={() => setShowLogoutModal(false)}
+      />
     </>
   );
 };

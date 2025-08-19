@@ -3,7 +3,7 @@ import { useNavigate, useLocation } from "react-router-dom";
 import AuthLeftPanel from "../../components/AuthLeftPanel";
 import { isValidEmail, getPasswordError } from "../../utils/validators";
 import ReactivateAccountModal from "../../components/ReactivateAccountModal";
-import AlertModal from "../../components/AlertModal";
+import Modal from "../../components/Modal"; 
 import {
   useRequestEmailCode,
   useConfirmEmailCode,
@@ -75,7 +75,8 @@ const SignupPage = () => {
     return `${emailId.trim()}@${domain.replace(/^@/, "")}`;
   };
 
-  const handleApiError = (err: any, defaultMsg: string) => {
+  // context: "send" | "verify"
+  const handleApiError = (err: any, defaultMsg: string, context?: "send" | "verify") => {
     const status = err?.response?.status;
     const serverMessage = err?.response?.data?.message;
 
@@ -84,6 +85,22 @@ const SignupPage = () => {
       return;
     }
 
+    // 인증번호 확인(verify) 관련: input 아래 표시
+    if (context === "verify") {
+      if (status === 400) {
+        setIsVerified(false);
+        setVerificationMessage(" 인증번호가 올바르지 않습니다.");
+        return;
+      }
+    }
+
+    // 인증번호 발송(send) 관련: 이미 발송됨
+    if (context === "send" && serverMessage?.includes("이미 인증번호가 발송")) {
+      setAlertMessage(serverMessage);
+      return;
+    }
+
+    // 기본 처리: 모달
     switch (status) {
       case 400:
         setAlertMessage(serverMessage || "잘못된 요청입니다.");
@@ -125,7 +142,7 @@ const SignupPage = () => {
         setVerificationMessage("");
       },
       onError: (err) => {
-        handleApiError(err, "인증번호 발송에 실패했습니다.");
+        handleApiError(err, "인증번호 발송에 실패했습니다.", "send");
       },
     });
   };
@@ -145,8 +162,7 @@ const SignupPage = () => {
           }
         },
         onError: (err) => {
-          setIsVerified(false);
-          handleApiError(err, "인증번호 확인에 실패했습니다.");
+          handleApiError(err, "인증번호 확인에 실패했습니다.", "verify");
         },
       }
     );
@@ -181,7 +197,7 @@ const SignupPage = () => {
   const handleNextStep = () => {
     if (step === 1) {
       if (!isVerified) {
-        alert("이메일 인증을 완료해주세요.");
+        setAlertMessage("이메일 인증을 완료해주세요.");
         return;
       }
       setStep(2);
@@ -206,7 +222,7 @@ const SignupPage = () => {
 
     if (step === 3) {
       if (!agreements.privacy || !agreements.terms) {
-        alert("필수 약관에 동의해주세요.");
+        setAlertMessage("필수 약관에 동의해주세요.");
         return;
       }
       signup(
@@ -235,10 +251,12 @@ const SignupPage = () => {
 
       <div className="flex-1 overflow-y-auto">
         <div className="flex flex-col items-center w-full min-h-screen px-6 py-20">
-          <div className="mb-16 text-center">
-            <h1 className="text-5xl sm:text-6xl md:text-7xl font-extrabold text-[#90D26D] break-keep">
-              책모
-            </h1>
+          <div className="mb-8 text-center">
+            <img 
+              src="/assets/checkmo_font_logo.png"   
+              alt="책모 로고" 
+              className="mx-auto w-[100px] h-auto"
+            />
           </div>
 
           <div className="mb-20">
@@ -427,6 +445,7 @@ const SignupPage = () => {
         </div>
       </div>
 
+      {/* ReactivateAccountModal 그대로 유지 */}
       {showReactivateModal && (
         <ReactivateAccountModal
           email={reactivateEmail}
@@ -440,8 +459,20 @@ const SignupPage = () => {
         />
       )}
 
+      {/* Modal */}
       {alertMessage && (
-        <AlertModal message={alertMessage} onClose={() => setAlertMessage("")} />
+        <Modal
+          isOpen={!!alertMessage}
+          title={alertMessage}
+          buttons={[
+            {
+              label: "확인",
+              onClick: () => setAlertMessage(""),
+              variant: "primary",
+            },
+          ]}
+          onBackdrop={() => setAlertMessage("")}
+        />
       )}
     </div>
   );

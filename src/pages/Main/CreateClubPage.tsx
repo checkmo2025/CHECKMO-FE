@@ -133,7 +133,7 @@ export default function CreateClubPage(): React.ReactElement {
       <div className="mt-[15px] flex flex-col items-center overflow-y-auto h-[calc(100vh-90px)] w-full pb-[80px]">
         {/* 모임 이름 */}
         <div className="mt-[36px]">
-          <label className="font-pretendard font-medium text-[18px] leading-[135%] tracking-[-0.1%]">
+          <label className=" font-medium text-[18px]">
             독서 모임을 입력해주세요.
           </label>
           <div className="flex flex-col mt-[16px]">
@@ -168,7 +168,7 @@ export default function CreateClubPage(): React.ReactElement {
               </p>
             )}
             {isDuplicate === true && (
-              <p className="mt-[10px] font-pretendard font-medium text-[12px] leading-[145%] tracking-[-0.1%] text-[#FF8045]">
+              <p className="mt-[10px] font-medium text-[12px] text-[#FF8045]">
                 다른 이름을 입력하거나, 기수 또는 지역명을 추가해 구분해 주세요.
                 <br />
                 예) 독서재량 2기, 독서재량 서울, 북적북적 인문학팀
@@ -184,20 +184,20 @@ export default function CreateClubPage(): React.ReactElement {
 
         {/* 모임 소개 */}
         <div className="mt-[56px] flex flex-col">
-          <label className="font-pretendard font-medium text-[18px] leading-[135%] tracking-[-0.1%]">
+          <label className="font-medium text-[18px]">
             모임의 소개글을 입력해주세요.
           </label>
           <textarea
             value={clubDescription}
             onChange={(e) => setClubDescription(e.target.value)}
             placeholder='내용을 입력해주세요.'
-            className="w-[808px] h-[265px] rounded-[16px] border-[2px] border-[#EAE5E2] px-[20px] py-[20px] text-[14px] text-[#BBBBBB] outline-none mt-[16px] resize-none"
+            className="w-[808px] h-[265px] rounded-[16px] border-[2px] border-[#EAE5E2] px-[20px] py-[20px] text-[14px] text-[#2C2C2C] placeholder:text-[#BBBBBB] outline-none mt-[16px] resize-none"
           />
         </div>
 
         {/* 프로필 사진 업로드 */}
         <div className="mt-[56px] flex flex-col items-center">
-          <label className="font-pretendard font-medium text-[18px] leading-[135%] tracking-[-0.1%] ">
+          <label className="font-medium text-[18px]">
             모임의 프로필 사진을 업로드 해주세요.
           </label>
           <label
@@ -233,7 +233,7 @@ export default function CreateClubPage(): React.ReactElement {
 
         {/* 모임 공개 여부 */}
         <div className="mt-[56px]">
-          <label className="font-pretendard font-medium text-[18px] leading-[135%] tracking-[-0.1%]">
+          <label className="font-medium text-[18px]">
             모임의 공개/비공개 여부를 알려주세요.
           </label>
           <div className="flex gap-[24px]">
@@ -252,11 +252,11 @@ export default function CreateClubPage(): React.ReactElement {
                 }
               `}
             >
-              <span className={`font-pretendard font-semibold text-[12px] leading-[145%] tracking-[-0.1%] text-center ${visibility === '공개' ? 'text-white' : 'text-[#2C2C2C]'
+              <span className={`font-semibold text-[12px]text-center ${visibility === '공개' ? 'text-white' : 'text-[#2C2C2C]'
                 }`}>
                 공개
               </span>
-              <span className={`font-pretendard font-normal text-[12px] mt-[4px] ${visibility === '공개' ? 'text-white' : 'text-[#8D8D8D]'
+              <span className={`font-normal text-[12px] mt-[4px] ${visibility === '공개' ? 'text-white' : 'text-[#8D8D8D]'
                 }`}>
                 누구나 가입 가능
               </span>
@@ -277,11 +277,11 @@ export default function CreateClubPage(): React.ReactElement {
                 }
               `}
             >
-              <span className={`font-pretendard font-semibold text-[12px] leading-[145%] tracking-[-0.1%] text-center ${visibility === '비공개' ? 'text-white' : 'text-[#2C2C2C]'
+              <span className={`font-semibold text-[12px] text-center ${visibility === '비공개' ? 'text-white' : 'text-[#2C2C2C]'
                 }`}>
                 비공개
               </span>
-              <span className={`font-pretendard font-normal text-[12px] mt-[4px] ${visibility === '비공개' ? 'text-white' : 'text-[#8D8D8D]'
+              <span className={`font-normal text-[12px] mt-[4px] ${visibility === '비공개' ? 'text-white' : 'text-[#8D8D8D]'
                 }`}>
                 운영자의 승인 필요
               </span>
@@ -291,7 +291,7 @@ export default function CreateClubPage(): React.ReactElement {
 
         {/* 독서 카테고리 */}
         <div className="mt-[56px]">
-          <label className="font-pretendard font-medium text-[18px] leading-[135%] tracking-[-0.1%] px-[6.5px]">
+          <label className="font-medium text-[18px] px-[6.5px]">
             선호하는 독서 카테고리를 선택해주세요.
           </label>
           <div className="mt-[16px] max-w-[400px]">
@@ -305,7 +305,7 @@ export default function CreateClubPage(): React.ReactElement {
 
         {/* 모임 참여 대상 */}
         <div className="mt-[56px]">
-          <label className="font-pretendard font-medium text-[18px] leading-[135%] tracking-[-0.1%] px-[6.5px]">
+          <label className="font-medium text-[18px] px-[6.5px]">
             모임 참여 대상을 선택해주세요.
           </label>
           <div className="mt-[16px] max-w-[400px]">
@@ -319,7 +319,7 @@ export default function CreateClubPage(): React.ReactElement {
 
         {/* 활동 지역 */}
         <div className="mt-[56px]">
-          <label className="font-pretendard font-medium text-[18px] leading-[135%] tracking-[-0.1%] px-[6.5px]">
+          <label className="font-medium text-[18px] px-[6.5px]">
             활동 지역을 작성해주세요.
           </label>
           <div className="mt-[16px] flex flex-col gap-[16px]">
@@ -333,7 +333,7 @@ export default function CreateClubPage(): React.ReactElement {
 
         {/* SNS/카카오톡 링크 연동 (선택) */}
         <div className="mt-[56px]">
-          <label className="font-pretendard font-medium text-[18px] leading-[135%] tracking-[-0.1%] px-[6.5px]">
+          <label className="font-medium text-[18px] px-[6.5px]">
             SNS/카카오톡 링크 연동 (선택)
           </label>
           <div className="mt-[16px] flex flex-col gap-[16px]">
@@ -352,7 +352,7 @@ export default function CreateClubPage(): React.ReactElement {
 
         {/* 유의사항 */}
         <div className="mt-[86px] w-[393px] h-[88px] flex flex-col items-center">
-          <p className="font-pretendard font-normal text-[12px] leading-[145%] tracking-[-0.1%] text-[#FF8045]">
+          <p className="font-normal text-[12px] text-[#FF8045]">
             등록된 동아리명은 수정이 불가합니다. 위 사항을 한 번 더 확인해주세요!
           </p>
 
@@ -369,7 +369,7 @@ export default function CreateClubPage(): React.ReactElement {
             }
             className="
               w-full mt-[12px] py-[12px] bg-[#90D26D] text-white
-              rounded-[16px] font-pretendard font-semibold text-[20px]
+              rounded-[16px] font-semibold text-[20px]
               disabled:opacity-50 disabled:cursor-not-allowed
               cursor-pointer
             "

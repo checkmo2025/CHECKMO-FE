@@ -21,8 +21,7 @@ export const fetchNoticesByClub = async (
       { params: { onlyImportant: true } }
     )) as FetchNoticesResult;
 
-    //TODO: 콘솔 지우기
-    console.log(`lubId=${clubId} 공지사항:`, noticeList);
+    //console.log(`lubId=${clubId} 공지사항:`, noticeList);
     return noticeList;
   } catch (error) {
     console.error("공지사항 가져오기 실패:", error);
