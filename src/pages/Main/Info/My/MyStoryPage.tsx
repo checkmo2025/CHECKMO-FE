@@ -2,11 +2,12 @@ import { useRef, useCallback, useState } from "react";
 import MyPageHeader from "../../../../components/MyPageHeader";
 import { Pencil, Trash2, Save } from "lucide-react";
 import { useNavigate } from "react-router-dom";
-import { useMyBookStories } from "../../../../hooks/My/useMyBookStories";
+import { useBookStoriesInfinite } from "../../../../hooks/BookStory/useBookStoriesInfinite"; 
 import type { BookStoryResponseDto, BookStoriesResult } from "../../../../types/bookStories";
 import { deleteBookStory, updateBookStory } from "../../../../apis/BookStory/bookstories";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import type { InfiniteData } from "@tanstack/react-query";
+import Modal from "../../../../components/Modal"; 
 
 const MyStoryPage = () => {
   const navigate = useNavigate();
@@ -18,10 +19,11 @@ const MyStoryPage = () => {
     hasNextPage,
     isFetchingNextPage,
     isError,
-  } = useMyBookStories();
+  } = useBookStoriesInfinite({ scope: "MY" });
 
   const [editingId, setEditingId] = useState<number | null>(null);
   const [editContent, setEditContent] = useState("");
+  const [deleteTargetId, setDeleteTargetId] = useState<number | null>(null); 
 
   const observerRef = useRef<IntersectionObserver | null>(null);
 
@@ -121,11 +123,9 @@ const MyStoryPage = () => {
           index === self.findIndex((s) => s.bookStoryId === story.bookStoryId)
       ) ?? [];
 
-  // 삭제 버튼 클릭
-  const handleDelete = (id: number) => {
-    if (window.confirm("정말 삭제하시겠습니까?")) {
-      deleteMutation.mutate(id);
-    }
+  // 삭제 버튼 클릭 → 모달 열기
+  const handleDeleteClick = (id: number) => {
+    setDeleteTargetId(id);
   };
 
   // 수정 모드 진입 (제목은 수정 불가)
@@ -144,11 +144,11 @@ const MyStoryPage = () => {
     <div className="flex w-full h-screen bg-[#FAFAFA] overflow-hidden">
       {isError ? (
         // 로그인 안 됐을 때 → 헤더 제거 + 오류 메시지
-          <div className="p-6">
-            <p className="text-red-500">
-              내 책이야기 정보를 불러오는데 실패했습니다. (로그인이 필요합니다)
-            </p>
-          </div>
+        <div className="p-6">
+          <p className="text-red-500">
+            내 책이야기 정보를 불러오는데 실패했습니다. (로그인이 필요합니다)
+          </p>
+        </div>
       ) : (
         // 로그인 성공 시 → 헤더 + 본문
         <>
@@ -225,7 +225,7 @@ const MyStoryPage = () => {
                           <button
                             onClick={(e) => {
                               e.stopPropagation();
-                              handleDelete(story.bookStoryId);
+                              handleDeleteClick(story.bookStoryId); 
                             }}
                             className="text-[#A6917D] hover:text-[#90D26D]"
                           >
@@ -281,6 +281,30 @@ const MyStoryPage = () => {
           </div>
         </>
       )}
+
+      {/* 삭제 확인 모달 */}
+      <Modal
+        isOpen={deleteTargetId !== null}
+        title={"정말 삭제하시겠습니까?"}
+        onBackdrop={() => setDeleteTargetId(null)}
+        buttons={[
+          {
+            label: "아니요",
+            onClick: () => setDeleteTargetId(null),
+            variant: "outline",
+          },
+          {
+            label: "네",
+            onClick: () => {
+              if (deleteTargetId !== null) {
+                deleteMutation.mutate(deleteTargetId);
+                setDeleteTargetId(null);
+              }
+            },
+            variant: "danger",
+          },
+        ]}
+      />
     </div>
   );
 };
