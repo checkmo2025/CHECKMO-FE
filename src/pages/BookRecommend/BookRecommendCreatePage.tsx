@@ -55,7 +55,7 @@ const BookRecommendCreatePage = () => {
   }
 
   return (
-    <div className="mx-10">
+    <div className="mx-10 min-w-[700px]">
       <NonProfileHeader title="책 추천하기" />
       {bookInfo && (
         <BookRecommendCreateCard bookInfo={bookInfo} onSubmit={handleSubmit} />
