@@ -270,7 +270,7 @@ export default function VoteNoticeContent({ data, registerBackBlocker }: VoteNot
   return (
     <div>
       {/* 메인 콘텐츠 영역 */}
-      <div className="w-[1080px] min-h-[622px] p-[20px] border-[2px] border-[#EAE5E2] rounded-[16px] mb-[36px] mx-auto">
+      <div className="w-[1080px] min-h-[622px] p-[20px] border-[2px] border-[#EAE5E2] rounded-[16px] mb-[36px] ml-1">
         
         {/* 제목 영역 */}
         <div className="w-full h-[57px] border-b-[2px] border-[#EEEEEE] mb-[20px]">
