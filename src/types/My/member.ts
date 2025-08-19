@@ -54,7 +54,7 @@ export type ClubResponse = {
 export type NotificationItem = {
   notificationId: number;
   notificationType: "LIKE" | "COMMENT" | "FOLLOW" | "JOIN_CLUB";
-  senderNickname: string;
+  senderNickname: string | null;
   targetName: string | null;
   read: boolean;
   createdAt: string; // ISO 날짜 문자열
