@@ -46,7 +46,7 @@ export default function NoticePage(): React.ReactElement {
         customClassName="mt-[30px] ml-[52px] mr-[41px] mb-[15px]"
       />
 
-      <div className="flex-1 overflow-y-auto ml-[52px] mr-4">
+      <div className="flex-1 overflow-y-auto ml-[52px] mr-8">
         <div className="mt-[15px]">
           <section className="mb-6">
             {topLoading && (
@@ -71,7 +71,7 @@ export default function NoticePage(): React.ReactElement {
 
           <section className="mt-[43px]">
             {isStaff && (
-              <div className="relative h-[48px] mb-4">
+              <div className="relative h-[48px] mb-4 mr-[20px]">
                 <NoticeCreateDropdown
                   onSelectNoticeType={(type) => {
                     const noticeType = type === 'vote' ? 'poll' : 'notice';
@@ -89,7 +89,7 @@ export default function NoticePage(): React.ReactElement {
                 <p className="text-red-500">{(error as Error)?.message ?? '공지사항을 불러오지 못했어요.'}</p>
               </div>
             )}
-            <div className="pb-12">
+            <div className="pb-12 flex justify-center">
               {!isError && listItems.length > 0 && (
                 <AnnouncementList items={listItems} isStaff={!!isStaff} />
               )}
