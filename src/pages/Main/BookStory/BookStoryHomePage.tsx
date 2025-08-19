@@ -176,6 +176,7 @@ export default function BookStoryHomePage() {
                   bookTitle={story.bookInfo.title}
                   author={story.bookInfo.author}
                   likes={story.likes}
+                  writtenByMe={story.writtenByMe}
                   likedByMe={story.likedByMe}
                   viewMode={viewMode}
                   onToggleLike={handleToggleLike}

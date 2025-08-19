@@ -17,6 +17,7 @@ interface BookStoryCardProps {
   author: string;
   likes: number;
   likedByMe: boolean;
+  writtenByMe: boolean;
   viewMode?: "grid" | "list";
   onToggleLike: (storyId: number, liked: boolean) => void;
   onToggleSubscribe: (nickname: string, subscribed: boolean) => void;
@@ -34,6 +35,7 @@ const BookStoryCard = ({
   author,
   likes,
   likedByMe,
+  writtenByMe,
   viewMode = "grid",
   onToggleLike,
   onToggleSubscribe,
@@ -44,14 +46,21 @@ const BookStoryCard = ({
 
   const handleSubscribe = async (e: React.MouseEvent) => {
     e.stopPropagation();
-    if (subscribed) return;
     try {
-      await axiosInstance.post(`/members/${userName}/following`);
-      setSubscribed(true);
-      onToggleSubscribe(userName, true);
+      if (subscribed) {
+        // 이미 구독 중이면 → 구독 취소
+        await axiosInstance.delete(`/members/${userName}/following`);
+        setSubscribed(false);
+        onToggleSubscribe(userName, false);
+      } else {
+        // 아직 구독 안했으면 → 구독하기
+        await axiosInstance.post(`/members/${userName}/following`);
+        setSubscribed(true);
+        onToggleSubscribe(userName, true);
+      }
     } catch (error) {
-      console.error("팔로우 실패", error);
-      alert("팔로우에 실패했습니다.");
+      console.error("구독 처리 실패", error);
+      alert("구독 처리 중 오류가 발생했습니다.");
     }
   };
 
@@ -99,16 +108,22 @@ const BookStoryCard = ({
               <span className="font-medium">{userName}</span>
             </div>
 
-            <button
-              className={`text-xs rounded-[0.9375rem] px-[1rem] py-[0.25rem] w-[4.2rem] inline-flex justify-center ${
-                subscribed
-                  ? "text-white bg-[#A6917D]"
-                  : "text-[#A6917D] border border-[#A6917D]"
-              }`}
-              onClick={handleSubscribe}
-            >
-              {subscribed ? "구독 중" : "구독"}
-            </button>
+            {writtenByMe ? (
+              <span className="text-xs rounded-[0.9375rem] px-[0.8rem] py-[0.3rem] w-[4.8rem] inline-flex justify-center text-white bg-[#4A5568] cursor-default">
+                내 이야기
+              </span>
+            ) : (
+              <button
+                className={`cursor-pointer text-xs rounded-[0.9375rem] px-[0.8rem] py-[0.3rem] w-[4.8rem] inline-flex justify-center ${
+                  subscribed
+                    ? "text-white bg-[#A6917D]"
+                    : "text-[#A6917D] border border-[#A6917D]"
+                }`}
+                onClick={handleSubscribe}
+              >
+                {subscribed ? "구독 중" : "구독하기"}
+              </button>
+            )}
           </div>
 
           {/* 제목, 요약 */}
