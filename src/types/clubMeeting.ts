@@ -17,7 +17,14 @@ export interface ClubMeeting {
   bookInfo: BookDto;
 }
 
+export type MemberShip = {
+  clubMemberId: number;
+  clubMemberStatus: string;
+  updatedAt: Date;
+};
+
 export type MeetingListResult = {
+  membership: MemberShip;
   meetingInfoList: ClubMeeting[];
   hasNext: boolean;
   nextCursor: number | null;
