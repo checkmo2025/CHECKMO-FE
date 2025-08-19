@@ -34,7 +34,7 @@ export const MeetingCard = ({
       className={
         className
           ? `${className}`
-          : `flex border-2 border-[#EAE5E2] min-w-[700px] rounded-xl p-4 bg-white transition-transform duration-300 hover:shadow-lg hover:scale-[1.03]`
+          : `flex w-full border-2 border-[#EAE5E2] rounded-xl p-4 bg-white transition-transform duration-300 hover:shadow-lg hover:scale-[1.03] min-w-[700px]`
       }
     >
       <div className="w-32 h-40 flex-shrink-0 rounded-2xl overflow-hidden bg-gray-100">
@@ -45,13 +45,13 @@ export const MeetingCard = ({
         />
       </div>
 
-      <div className="flex-1 ml-6 flex flex-col justify-between">
+      <div className="flex-1 ml-6 flex flex-col justify-between min-w-0">
         <div className="flex justify-between items-start">
           {title && (
-            <div className="flex flex-row items-center max-w-[70%]">
+            <div className="flex flex-row items-center max-w-[70%] min-w-0">
               <img className="w-5 h-5 mr-2 flex-shrink-0" src="/chat-logo.png" />
               <h3
-                className="text-md font-medium text-gray-900 truncate"
+                className="text-md font-medium text-gray-900 overflow-hidden text-ellipsis whitespace-nowrap md:whitespace-normal md:line-clamp-1"
                 title={title}
               >
                 {title}
@@ -83,19 +83,19 @@ export const MeetingCard = ({
         </div>
 
         <div className="text-sm font-medium space-y-1 mb-1 w-full">
-          <p className="text-gray-900 truncate" title={book.title}>
+          <p className="text-gray-900 break-words md:line-clamp-1" title={book.title}>
             도서: {book.title}
           </p>
-          <p className="text-gray-900 truncate" title={book.author}>
+          <p className="text-gray-900 break-words md:line-clamp-1" title={book.author}>
             작가: {book.author}
           </p>
-          <p className="text-gray-500 truncate" title={dateStr}>
+          <p className="text-gray-500 break-words md:line-clamp-1" title={dateStr}>
             날짜: {dateStr}
           </p>
-          <p className="text-gray-500 truncate" title={timeStr}>
+          <p className="text-gray-500 break-words md:line-clamp-1" title={timeStr}>
             시간: {timeStr}
           </p>
-          <p className="text-gray-500 truncate" title={meetingPlace}>
+          <p className="text-gray-500 break-words md:line-clamp-1" title={meetingPlace}>
             장소: {meetingPlace}
           </p>
         </div>
