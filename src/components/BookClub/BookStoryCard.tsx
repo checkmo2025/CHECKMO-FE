@@ -4,6 +4,8 @@ import emptyHeartIcon from "../../assets/icons/heart_empty_bigger.png";
 import filledHeartIcon from "../../assets/icons/heart_filled_noLine.png";
 import sirenIcon from "../../assets/images/siren.png";
 import { toggleBookStoryLike } from "../../apis/BookStory/bookstories";
+import { followMember } from "../../apis/otherApi";
+import { unfollowMember } from "../../apis/My/memberApi";
 
 export interface BookStoryCardProps {
   userImage: string;
@@ -38,6 +40,10 @@ export default function BookStoryCard({
   const [likeCount, setLikeCount] = useState(likes);
   const [loading, setLoading] = useState(false);
 
+  // 구독 상태 관리
+  const [subscribed, setSubscribed] = useState(isSubscribed);
+  const [subscribeLoading, setSubscribeLoading] = useState(false);
+
   // 좋아요 처리 함수
   const handleLike = async (e: React.MouseEvent) => {
     e.stopPropagation();
@@ -52,6 +58,30 @@ export default function BookStoryCard({
       console.error("좋아요 처리 실패", err);
     } finally {
       setLoading(false);
+    }
+  };
+
+  // 구독/구독취소 처리 함수
+  const handleSubscribe = async (e: React.MouseEvent) => {
+    e.stopPropagation();
+    if (subscribeLoading) return;
+    
+    setSubscribeLoading(true);
+    try {
+      if (subscribed) {
+        // 구독 취소
+        await unfollowMember(userName);
+        setSubscribed(false);
+      } else {
+        // 구독하기
+        await followMember(userName);
+        setSubscribed(true);
+      }
+    } catch (err) {
+      console.error("구독 처리 실패", err);
+      alert(`${subscribed ? "구독 취소" : "구독"}에 실패했습니다. 다시 시도해주세요.`);
+    } finally {
+      setSubscribeLoading(false);
     }
   };
 
@@ -93,25 +123,29 @@ export default function BookStoryCard({
                 </span>
               </div>
               <span
-                className="
+                className={`
                   w-[60px] h-[24px]
-                  font-pretendard font-medium text-[12px]
-                  leading-[145%] tracking-[-0.1%] text-white
-                  bg-[#A6917D] rounded-[15px]
+                  font-pretendard font-medium text-[12px] rounded-[15px]
                   px-[20px] py-[2px]
                   flex items-center justify-center
                   whitespace-nowrap
-                  cursor-pointer    
-                "
+                  cursor-pointer
+                  transition-colors duration-200
+                  ${subscribed 
+                    ? "bg-[#BFAB96] text-white hover:bg-[#A6917D]" 
+                    : "bg-white text-[#BFAB96] border border-[#BFAB96] hover:bg-[#BFAB96] hover:text-white"
+                  }
+                  ${subscribeLoading ? "opacity-50 cursor-not-allowed" : ""}
+                `}
+                onClick={handleSubscribe}
               >
-                {isSubscribed ? "구독 중" : "구독하기"}
+                {subscribeLoading ? "..." : subscribed ? "구독 중" : "구독"}
               </span>
             </div>
             <h4
               className="
                 mt-[8px]
-                font-pretendard font-semibold text-[20px]
-                leading-[135%] tracking-[-0.1%] text-[#000000]
+                font-pretendard font-semibold text-[20px] text-[#000000]
               "
             >
               {title}
