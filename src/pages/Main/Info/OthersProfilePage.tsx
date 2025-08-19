@@ -99,12 +99,18 @@ const OthersProfilePage = () => {
                       src={profile.profileImageUrl}
                       alt={`${profile.nickname} 프로필`}
                       className="w-[40px] h-[40px] rounded-full object-cover"
+                      onError={(e) => {
+                              e.currentTarget.src = "/assets/basic_profile.png";
+                        }}
                     />
                   ) : (
                     <img
                       src="/assets/basic_profile.png"
                       alt="기본 프로필"
                       className="w-[40px] h-[40px] rounded-full bg-white object-cover scale-110"
+                      onError={(e) => {
+                              e.currentTarget.src = "/assets/basic_profile.png";
+                        }}
                     />
                   )}
                   <p className="text-[18px] font-semibold text-[#2C2C2C]">
@@ -174,12 +180,18 @@ const OthersProfilePage = () => {
                             src={book.authorInfo.profileImageUrl}
                             alt={`${book.authorInfo.nickname} 프로필`}
                             className="w-[24px] h-[24px] rounded-full object-cover"
+                            onError={(e) => {
+                              e.currentTarget.src = "/assets/basic_profile.png";
+                            }}
                           />
                         ) : (
                           <img
                             src="/assets/basic_profile.png"
                             alt="기본 프로필"
                             className="w-[24px] h-[24px] rounded-full bg-white object-cover scale-110"
+                            onError={(e) => {
+                              e.currentTarget.src = "/assets/basic_profile.png";
+                            }}
                           />
                         )}
                         <p className="text-[14px] text-[#8D8D8D]">
