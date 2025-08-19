@@ -260,6 +260,14 @@ const MyStoryPage = () => {
                   {isFetchingNextPage && (
                     <p className="text-center text-gray-400">불러오는 중...</p>
                   )}
+                  {/* 책 이야기 없음 */}
+                  {stories.length === 0 && !isFetchingNextPage && (
+                    <div className="flex items-center justify-center w-full h-[70vh]">
+                      <p className="text-gray-400 text-center">
+                        아직 작성한 책 이야기가 없습니다.
+                      </p>
+                    </div>
+                  )}
                   {!hasNextPage &&
                     !isFetchingNextPage &&
                     stories.length > 0 && (
