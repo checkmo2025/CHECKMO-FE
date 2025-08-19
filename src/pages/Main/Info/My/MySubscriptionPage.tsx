@@ -91,12 +91,11 @@ const MySubscriptionPage = () => {
   );
 
   // 리스트 합치기
-    const followerList: FollowItem[] =
+  const followerList: FollowItem[] =
     followerPages?.pages.flatMap((p: FollowResponse) => p.followList) ?? [];
 
-    const followingList: FollowItem[] =
+  const followingList: FollowItem[] =
     followingPages?.pages.flatMap((p: FollowResponse) => p.followList) ?? [];
-
 
   /** 구독 중(팔로잉) 리스트 렌더 */
   const renderFollowingList = () => {
@@ -106,6 +105,9 @@ const MySubscriptionPage = () => {
 
     return (
       <section className="bg-white border border-[#EAE5E2] rounded-[16px] flex flex-col">
+        {followingList.length === 0 && !followingLoading && (
+          <p className="text-center text-gray-400 py-10">아직 구독한 사용자가 없습니다.</p>
+        )}
         {followingList.map((user, idx) => (
           <div
             key={user.nickname}
@@ -157,6 +159,9 @@ const MySubscriptionPage = () => {
 
     return (
       <section className="bg-white border border-[#EAE5E2] rounded-[16px] flex flex-col">
+        {followerList.length === 0 && !followerLoading && (
+          <p className="text-center text-gray-400 py-10">아직 나를 구독한 사용자가 없습니다.</p>
+        )}
         {followerList.map((user, idx) => (
           <div
             key={user.nickname}
