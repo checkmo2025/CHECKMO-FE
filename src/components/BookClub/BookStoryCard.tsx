@@ -92,7 +92,8 @@ export default function BookStoryCard({
         border-[2px] border-[#EAE5E2]
         overflow-hidden
         cursor-pointer
-        hover:shadow-lg hover:scale-[1.03] transition-all duration-300
+        hover:shadow-lg hover:scale-[1.03] transition-all duration-300 origin-center
+        w-full
       "
       onClick={onClick}
       role="button"
