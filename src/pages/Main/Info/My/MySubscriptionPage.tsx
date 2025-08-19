@@ -7,10 +7,17 @@ import {
   useUnfollowMember,
   useRemoveFollower,
 } from "../../../../hooks/My/useMember";
+import Modal from "../../../../components/Modal";
 
 const MySubscriptionPage = () => {
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState<"followers" | "following">("followers");
+
+  // 에러 모달 상태
+  const [errorModal, setErrorModal] = useState<{ open: boolean; message: string }>({
+    open: false,
+    message: "",
+  });
 
   // 구독 중(팔로잉) 목록
   const {
@@ -35,11 +42,29 @@ const MySubscriptionPage = () => {
   };
 
   const handleUnfollow = (nickname: string) => {
-    unfollowMutation.mutate(nickname);
+    unfollowMutation.mutate(nickname, {
+      onError: (err: any) => {
+        if (err?.response?.status === 400) {
+          setErrorModal({
+            open: true,
+            message: "잘못된 요청입니다. 다시 시도해주세요.",
+          });
+        }
+      },
+    });
   };
 
   const handleRemoveFollower = (nickname: string) => {
-    removeFollowerMutation.mutate(nickname);
+    removeFollowerMutation.mutate(nickname, {
+      onError: (err: any) => {
+        if (err?.response?.status === 400) {
+          setErrorModal({
+            open: true,
+            message: "잘못된 요청입니다. 다시 시도해주세요.",
+          });
+        }
+      },
+    });
   };
 
   /** 구독 중(팔로잉) 리스트 렌더 */
@@ -179,11 +204,11 @@ const MySubscriptionPage = () => {
   if (followingError && followerError) {
     return (
       <div className="flex w-full h-screen bg-[#FAFAFA] overflow-hidden">
-          <div className="p-6">
-            <p className="text-red-500">
-              내 구독 정보를 불러오는데 실패했습니다. (로그인이 필요합니다)
-            </p>
-          </div>
+        <div className="p-6">
+          <p className="text-red-500">
+            내 구독 정보를 불러오는데 실패했습니다. (로그인이 필요합니다)
+          </p>
+        </div>
       </div>
     );
   }
@@ -223,6 +248,20 @@ const MySubscriptionPage = () => {
           </div>
         </main>
       </div>
+
+      {/* 400 에러 모달 */}
+      <Modal
+        isOpen={errorModal.open}
+        title={`요청 오류\n${errorModal.message}`}
+        buttons={[
+          {
+            label: "확인",
+            onClick: () => setErrorModal({ open: false, message: "" }),
+            variant: "primary",
+          },
+        ]}
+        onBackdrop={() => setErrorModal({ open: false, message: "" })}
+      />    
     </div>
   );
 };

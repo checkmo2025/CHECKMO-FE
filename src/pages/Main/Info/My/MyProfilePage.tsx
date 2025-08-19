@@ -3,6 +3,7 @@ import { Camera } from "lucide-react";
 import { useMyProfileQuery, useUpdateMyProfile } from "../../../../hooks/My/useMember";
 import { BOOK_CATEGORIES } from "../../../../types/dto";
 import { uploadImage } from "../../../../apis/imageApi";
+import Modal from "../../../../components/Modal"; // 에러 모달
 
 type CategoryEntry = { id: number; name: string };
 
@@ -21,6 +22,12 @@ const MyProfilePage = () => {
 
   const [isEditing, setIsEditing] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
+
+
+  const [errorModal, setErrorModal] = useState<{ isOpen: boolean; message: string }>({
+    isOpen: false,
+    message: "",
+  });
 
   // 변경 여부 감지
   const isChanged =
@@ -65,7 +72,7 @@ const MyProfilePage = () => {
     setPendingFile(file);
     setUseDefaultImage(false);
 
-    // ✅ 미리보기 즉시 반영
+    // 미리보기 즉시 반영
     const reader = new FileReader();
     reader.onload = () => {
       if (typeof reader.result === "string") setTempProfileImage(reader.result);
@@ -114,12 +121,25 @@ const MyProfilePage = () => {
             setPendingFile(null);
             setUseDefaultImage(false);
           },
+          onError: (error: any) => {
+            // 400/403/404 에러 전용 처리
+            const status = error?.response?.status;
+            if (status === 400) {
+              setErrorModal({ isOpen: true, message: "잘못된 요청입니다. 입력값을 확인해주세요." });
+            } else if (status === 403) {
+              setErrorModal({ isOpen: true, message: "권한이 없습니다. 다시 로그인해주세요." });
+            } else if (status === 404) {
+              setErrorModal({ isOpen: true, message: "요청하신 정보를 찾을 수 없습니다." });
+            } else {
+              setErrorModal({ isOpen: true, message: "알 수 없는 오류가 발생했습니다." });
+            }
+          },
           onSettled: () => setIsSaving(false),
         }
       );
     } catch {
       setIsSaving(false);
-      alert("이미지 업로드 실패");
+      setErrorModal({ isOpen: true, message: "이미지 업로드 실패" });
     }
   };
 
@@ -270,6 +290,14 @@ const MyProfilePage = () => {
           </div>
         </div>
       </main>
+
+      {/* 에러 모달 */}
+      <Modal
+        isOpen={errorModal.isOpen}
+        title={errorModal.message}
+        buttons={[{ label: "확인", onClick: () => setErrorModal({ isOpen: false, message: "" }) }]}
+        onBackdrop={() => setErrorModal({ isOpen: false, message: "" })}
+      />
     </div>
   );
 };

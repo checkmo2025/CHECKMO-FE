@@ -41,12 +41,25 @@ const MyGroupPage = () => {
 
         const code = error?.response?.data?.code;
         const message = error?.response?.data?.message;
+        const status = error?.response?.status;
 
+        // 기존 CLUB_4019 처리
         if (code === "CLUB_4019") {
           setErrorMessage(message || "운영진은 클럽을 탈퇴할 수 없습니다.");
-        } else {
+        }
+        // 추가된 상태 코드 처리
+        else if (status === 400) {
+          setErrorMessage(message || "잘못된 요청입니다.");
+        } else if (status === 403) {
+          setErrorMessage(message || "본인만 탈퇴할 수 있습니다.");
+        } else if (status === 404) {
+          setErrorMessage(message || "존재하지 않는 독서 모임입니다.");
+        }
+        // 그 외 기본 처리
+        else {
           setErrorMessage(message || "탈퇴에 실패했습니다.");
         }
+
         setShowErrorModal(true);
       },
     });
