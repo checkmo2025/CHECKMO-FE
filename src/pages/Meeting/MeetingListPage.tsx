@@ -51,7 +51,7 @@ const MeetingListPage = () => {
     <div className="px-10 min-h-screen">
       <Header pageTitle={"모임"} customClassName="my-[30px]" />
 
-      <div className="pt-3 pb-5">
+      <div className="pt-3 pb-4">
         {isAdmin && (
           <Link
             to="create"
@@ -95,7 +95,7 @@ const MeetingListPage = () => {
           </section>
         ))}
       </div>
-      <div ref={ref} style={{ height: "20px" }}>
+      <div ref={ref} style={{ height: "40px" }}>
         {isFetchingNextPage && "Loading more..."}
       </div>
     </div>

@@ -83,20 +83,27 @@ export const MeetingCard = ({
         </div>
 
         <div className="text-sm font-medium space-y-1 mb-1 w-full">
-          <p className="text-gray-900 break-words md:line-clamp-1" title={book.title}>
-            도서: {book.title}
+          <p className="text-gray-900 flex items-baseline min-w-0">
+            <span className="shrink-0">도서:&nbsp;</span>
+            <span className="truncate block max-w-full" title={book.title}>{book.title}</span>
           </p>
-          <p className="text-gray-900 break-words md:line-clamp-1" title={book.author}>
-            작가: {book.author}
+
+          <p className="text-gray-900 flex items-baseline min-w-0">
+            <span className="shrink-0">작가:&nbsp;</span>
+            <span className="truncate block max-w-full" title={book.author}>{book.author}</span>
           </p>
+
           <p className="text-gray-500 break-words md:line-clamp-1" title={dateStr}>
             날짜: {dateStr}
           </p>
+
           <p className="text-gray-500 break-words md:line-clamp-1" title={timeStr}>
             시간: {timeStr}
           </p>
-          <p className="text-gray-500 break-words md:line-clamp-1" title={meetingPlace}>
-            장소: {meetingPlace}
+
+          <p className="text-gray-500 flex items-baseline min-w-0">
+            <span className="shrink-0">장소:&nbsp;</span>
+            <span className="truncate block max-w-full" title={meetingPlace}>{meetingPlace}</span>
           </p>
         </div>
       </div>
