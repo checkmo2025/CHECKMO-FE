@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import MyPageHeader from "../../../../components/MyPageHeader";
+import Modal from "../../../../components/Modal"; 
 import type { NotificationItem, NotificationResponse } from "../../../../types/My/member";
 import { getMyNotifications, readNotification } from "../../../../apis/My/memberApi";
 
@@ -8,6 +9,7 @@ const MyNotificationPage = () => {
   const [yesterdayList, setYesterdayList] = useState<NotificationItem[]>([]);
   const [weekList, setWeekList] = useState<NotificationItem[]>([]);
   const [isError, setIsError] = useState(false);
+  const [showSettingModal, setShowSettingModal] = useState(false); 
 
   const groupNotificationsByDate = (list: NotificationItem[]) => {
     const today = new Date();
@@ -116,16 +118,15 @@ const MyNotificationPage = () => {
 
   return (
     <div className="flex w-full h-screen bg-[#FAFAFA] overflow-hidden">
-      
-        {/* 최상단 에러 메시지 */}
-        {isError && (
-          <div className="p-6">
-            <p className="text-red-500">
-              내 알림 정보를 불러오는데 실패했습니다. (로그인이 필요합니다)
-            </p>
-          </div>
-        )}
-        
+      {/* 최상단 에러 메시지 */}
+      {isError && (
+        <div className="p-6">
+          <p className="text-red-500">
+            내 알림 정보를 불러오는데 실패했습니다. (로그인이 필요합니다)
+          </p>
+        </div>
+      )}
+
       <div className="flex-1 flex flex-col pt-[88px] overflow-hidden">
         {!isError && (
           <main className="flex-1 overflow-y-auto">
@@ -136,8 +137,8 @@ const MyNotificationPage = () => {
               <div className="flex justify-between items-center">
                 <h3 className="text-[20px] font-semibold text-[#2C2C2C]">오늘</h3>
                 <button
-                  className="text-[#8D8D8D] text-sm hover:underline"
-                  onClick={() => alert("알림 설정 페이지로 이동 예정")}
+                  className="text-[#8D8D8D] text-sm hover:underline cursor-pointer"
+                  onClick={() => setShowSettingModal(true)} 
                 >
                   알림 설정
                 </button>
@@ -159,6 +160,27 @@ const MyNotificationPage = () => {
           </main>
         )}
       </div>
+
+      {/* 알림 설정 모달 */}
+      <Modal
+        isOpen={showSettingModal}
+        title={
+          <>
+            알림 설정
+            <br />
+            <span className="text-sm text-[#2C2C2C]">
+              알림 설정 기능은 추후 개발 예정입니다.
+            </span>
+          </>
+        }
+        buttons={[
+          {
+            label: "확인",
+            onClick: () => setShowSettingModal(false),
+            variant: "primary",
+          },
+        ]}
+      />
     </div>
   );
 };

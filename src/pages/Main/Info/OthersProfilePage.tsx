@@ -12,6 +12,7 @@ const OthersProfilePage = () => {
   const [profile, setProfile] = useState<OtherProfile | null>(null);
   const [isSubscribed, setIsSubscribed] = useState(false);
   const [showReportModal, setShowReportModal] = useState(false);
+  const [showReportCompleteModal, setShowReportCompleteModal] = useState(false);
   const [isError, setIsError] = useState(false); 
 
   const { userId } = useParams<{ userId: string }>();
@@ -72,23 +73,22 @@ const OthersProfilePage = () => {
   const openReportModal = () => setShowReportModal(true);
   const handleReportConfirm = () => {
     setShowReportModal(false);
-    alert("신고 사유 작성 폼으로 이동 예정입니다.");
+    // 알림 메시지
+    setShowReportCompleteModal(true);
   };
 
   return (
     <div className="flex min-h-screen w-full bg-[#FAFAFA] overflow-x-hidden">
-      
-        {/*  에러 문구 */}
-        {isError && (
-          <div className="p-6">
-            <p className="text-red-500">
+      <main className="flex-grow w-full px-4 md:px-8 py-10">
+        
+        {/* 로그인 안된 경우 → 상단에 빨간 문구 */}
+        {isError ? (
+          <div className="w-full bg-white rounded-[12px] p-4 mb-5 text-center">
+            <p className="text-red-500 text-[16px] font-medium">
               다른 사람 프로필 정보를 불러오는데 실패했습니다. (로그인이 필요합니다)
             </p>
           </div>
-        )}
-        
-       <main className="flex-grow w-full px-4 md:px-8 py-10">
-        {!isError && (
+        ) : (
           <>
             {/* 프로필 영역 */}
             <div className="w-full bg-white rounded-[12px] p-4 mb-5">
@@ -205,15 +205,26 @@ const OthersProfilePage = () => {
                     </div>
 
                     <div className="flex items-center gap-5 mt-auto ml-[20px]">
+                      {/* 좋아요 버튼 */}
                       <div
-                        className={`flex items-center gap-1 text-sm cursor-pointer ${
-                          book.likedByMe ? "text-[#90D26D]" : "text-[#2C2C2C]"
-                        } hover:text-[#90D26D]`}
+                        className="flex items-center gap-1 text-sm cursor-pointer"
                         onClick={() => toggleLike(book.bookStoryId)}
                       >
-                        <Heart size={24} />
-                        <span>{book.likes}</span>
+                        <Heart
+                          size={24}
+                          fill={book.likedByMe ? "#FF6B6B" : "none"}
+                          stroke={book.likedByMe ? "#FF6B6B" : "currentColor"}
+                        />
+                        <span
+                          className={
+                            book.likedByMe ? "text-[#FF6B6B]" : "text-[#2C2C2C]"
+                          }
+                        >
+                          {book.likes}
+                        </span>
                       </div>
+
+                      {/* 신고 버튼 */}
                       <div
                         className="flex items-center gap-1 text-[#2C2C2C] hover:text-[#90D26D] text-sm cursor-pointer"
                         onClick={openReportModal}
@@ -246,6 +257,19 @@ const OthersProfilePage = () => {
           },
         ]}
         onBackdrop={() => setShowReportModal(false)}
+      />
+
+      {/* 신고 완료 모달 */}
+      <Modal
+        isOpen={showReportCompleteModal}
+        title="신고 기능은 추후 개발 예정입니다."
+        buttons={[
+          {
+            label: "확인",
+            onClick: () => setShowReportCompleteModal(false),
+            variant: "primary",
+          },
+        ]}
       />
     </div>
   );
