@@ -124,7 +124,8 @@ export default function BookStoryCard({
                   {userName}
                 </span>
               </div>
-              <span
+              <button
+                type="button"
                 className={`
                   w-[60px] h-[24px]
                   font-pretendard font-medium text-[12px] rounded-[15px]
@@ -142,7 +143,7 @@ export default function BookStoryCard({
                 onClick={handleSubscribe}
               >
                 {subscribeLoading ? "..." : subscribed ? "구독 중" : "구독"}
-              </span>
+              </button>
             </div>
             <h4
               className="
@@ -169,8 +170,11 @@ export default function BookStoryCard({
             >
               {summary}
             </p>
-            <div className="mt-auto flex items-center justify-end gap-[8px]">
-              <div className="flex items-center gap-[2px]" onClick={handleLike}>
+            <button
+              type="button"
+              className="mt-auto flex items-center justify-end gap-[8px] flex items-center gap-[2px]"
+              onClick={handleLike}
+            >
                 <img
                   src={liked ? filledHeartIcon : emptyHeartIcon}
                   alt={liked ? "liked" : "not liked"}
@@ -185,7 +189,7 @@ export default function BookStoryCard({
                 >
                   {likeCount}
                 </span>
-              </div>
+              </button>
               <img
                 src={sirenIcon}
                 alt="alert"
@@ -194,7 +198,6 @@ export default function BookStoryCard({
             </div>
           </div>
         </div>
-      </div>
     </div>
   );
 }
