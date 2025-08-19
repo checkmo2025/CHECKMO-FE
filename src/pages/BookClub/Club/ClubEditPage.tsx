@@ -157,7 +157,7 @@ export default function EditClubPage(): React.ReactElement {
       },
       {
         onSuccess: () => {
-          showInfo('모임이 성공적으로 수정되었습니다!');
+          showInfo('모임이 성공적으로 수정되었습니다!', () => navigate(`/bookclub/${numericClubId}/home`));
         },
         onError: () => {
           showInfo('모임 수정에 실패했습니다. 다시 시도해주세요.');
