@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom';
 import { useParams } from 'react-router-dom';
-import { useEffect, useMemo, useRef } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import AnnouncementCard from '../../components/BookClub/AnnouncementCard';
 import type { noticeListItemDto } from '../../types/clubNotice';
 import { useClubNotices } from '../../hooks/BookClub/useClubNotices';
@@ -9,8 +9,9 @@ import BookStoryCard from '../../components/BookClub/BookStoryCard';
 import { useNavigate } from 'react-router-dom';
 import { useBookStoriesInfinite } from '../../hooks/BookStory/useBookStoriesInfinite';
 import type { BookStoryResponseDto } from '../../types/bookStories';
-import { useClubDetail } from '../../hooks/BookClub/useClubDetail';
 import { useIsStaff } from '../../hooks/BookClub/useIsStaff';
+import { fetchMyClubs } from '../../apis/Main/clubs';
+import type { ClubDto } from '../../apis/Main/clubs';
 interface Params {
   bookclubId: string;
   [key: string]: string | undefined;
@@ -23,8 +24,40 @@ export default function BookClubHomePage(): React.ReactElement {
   const { bookclubId } = useParams<Params>();
   const numericClubId = Number.isFinite(Number(bookclubId)) && Number(bookclubId) > 0 ? Number(bookclubId) : 0;
   
-  const { data: club, isLoading: isClubLoading } = useClubDetail(numericClubId);
+  // 사이드바와 동일한 방식으로 클럽 이름 가져오기
+  const [bookclubName, setBookclubName] = useState("모임 이름");
+  const [myClubs, setMyClubs] = useState<ClubDto[]>([]);
+  const [isLoadingClubName, setIsLoadingClubName] = useState(true);
+  
   const { data: isStaff } = useIsStaff(numericClubId);
+
+  // 사이드바와 동일한 방식으로 내 클럽 목록 로드
+  useEffect(() => {
+    const loadClubs = async () => {
+      try {
+        setIsLoadingClubName(true);
+        const clubs = await fetchMyClubs();
+        setMyClubs(clubs);
+      } catch (error) {
+        console.error('클럽 목록 로드 실패:', error);
+      } finally {
+        setIsLoadingClubName(false);
+      }
+    };
+    loadClubs();
+  }, []);
+
+  // 현재 클럽 ID에 해당하는 클럽 이름 설정
+  useEffect(() => {
+    if (bookclubId && myClubs.length > 0) {
+      const matchedClub = myClubs.find((c) => c.clubId === Number(bookclubId));
+      if (matchedClub) {
+        setBookclubName(matchedClub.clubName);
+      } else {
+        setBookclubName("접근 제한된 클럽");
+      }
+    }
+  }, [bookclubId, myClubs]);
 
   // API 훅 사용
   const { notices, loading, error } = useClubNotices({ 
@@ -62,7 +95,7 @@ export default function BookClubHomePage(): React.ReactElement {
 
   return (
     <div className="absolute left-[315px] right-[42px] opacity-100">
-      <Header pageTitle={isClubLoading ? '로딩중...' : `${club?.name ?? ''} 홈`}
+      <Header pageTitle={isLoadingClubName ? '로딩중...' : `${bookclubName} 홈`}
         isAdmin={!!isStaff}
         showManageButton={!!isStaff}
         manageLabel="모임 관리하기"
