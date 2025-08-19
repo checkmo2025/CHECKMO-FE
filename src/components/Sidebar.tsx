@@ -358,7 +358,11 @@ const Sidebar = () => {
       />
       <div className="flex flex-col justify-center">
         <span
-          className={`text-4xl font-bold font-blackHanSans break-words truncate text-[#3D4C35]`}
+          style={{
+            fontFamily: "'Black Han Sans', sans-serif",
+            fontSize: bookclubId ? "2.25rem" : "3rem",
+          }}
+          className="break-words truncate text-[#3D4C35]"
           title={bookclubName}
           onClick={() =>
             navigate(bookclubId ? `/bookclub/${bookclubId}/home` : "/home")
