@@ -42,7 +42,11 @@ const MyPage = () => {
                     className="w-10 h-10 sm:w-12 sm:h-12 rounded-full object-cover"
                   />
                 ) : (
-                  <div className="w-10 h-10 sm:w-12 sm:h-12 bg-[#DADADA] rounded-full"></div>
+                  <img
+                    src="/assets/basic_profile.png"
+                    alt="기본 프로필"
+                    className="w-10 h-10 sm:w-12 sm:h-12 rounded-full object-cover"
+                  />
                 )}
 
                 {/* 닉네임 */}
@@ -121,9 +125,14 @@ const MyPage = () => {
                                 src={member.profileImageUrl}
                                 alt={`${member.nickname} 프로필`}
                                 className="w-6 h-6 rounded-full object-cover"
+                                onError={(e) => (e.currentTarget.src = "/assets/basic_profile.png")}
                               />
                             ) : (
-                              <div className="w-6 h-6 rounded-full bg-[#DADADA]"></div>
+                              <img
+                                src="/assets/basic_profile.png"
+                                alt="기본 프로필"
+                                className="w-6 h-6 rounded-full object-cover"
+                              />
                             )}
                             <p className="text-[#2C2C2C] text-[14px] flex-1 text-center">
                               {member.nickname}
