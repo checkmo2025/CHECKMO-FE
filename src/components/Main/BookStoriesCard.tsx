@@ -2,8 +2,8 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import checker from "../../assets/images/checker.png";
 import likeIcon from "../../assets/icons/heart_empty.png";
-import likedIcon from "../../assets/icons/heart_filled.png";
-import reportIcon from "../../assets/icons/report.png";
+import likedIcon from "../../assets/icons/heart_filled_noLine.png";
+import reportIcon from "../../assets/icons/report2.png";
 import { toggleBookStoryLike } from "../../apis/BookStory/bookstories";
 import { axiosInstance } from "../../apis/axiosInstance";
 
@@ -159,7 +159,7 @@ const BookStoriesCard = ({
                 <img
                   src={liked ? likedIcon : likeIcon}
                   alt="like"
-                  className="w-[19px] h-[19px] cursor-pointer"
+                  className="w-[18px] h-[18px] mr-[6px] cursor-pointer"
                 />
                 <span className="font-pretendard font-medium text-[12px] text-[#000000]">
                   {likeCount}
@@ -168,7 +168,7 @@ const BookStoriesCard = ({
               <img
                 src={reportIcon}
                 alt="alert"
-                className="w-[19px] h-[19px] cursor-pointer"
+                className="w-[22px] h-[22px] "
               />
             </div>
           </div>
