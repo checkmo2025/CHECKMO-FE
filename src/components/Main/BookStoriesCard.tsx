@@ -2,9 +2,10 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import checker from "../../assets/images/checker.png";
 import likeIcon from "../../assets/icons/heart_empty.png";
-import likedIcon from "../../assets/icons/heart_filled.png";
-import reportIcon from "../../assets/icons/report.png";
+import likedIcon from "../../assets/icons/heart_filled_noLine.png";
+import reportIcon from "../../assets/icons/report2.png";
 import { toggleBookStoryLike } from "../../apis/BookStory/bookstories";
+import { axiosInstance } from "../../apis/axiosInstance";
 
 interface BookStoriesCardProps {
   bookStoryId: number;
@@ -34,6 +35,8 @@ const BookStoriesCard = ({
   const [likeCount, setLikeCount] = useState(likes);
   const [loading, setLoading] = useState(false);
 
+  const [subscribed, setSubscribed] = useState(state === "구독 중");
+
   const handleLike = async (e: React.MouseEvent) => {
     e.stopPropagation();
     if (loading) return;
@@ -54,12 +57,53 @@ const BookStoriesCard = ({
     navigate(`/bookstory/${bookStoryId}/detail`);
   };
 
-  const stateClass =
-    state === "내 이야기"
-      ? "text-white bg-[#4A5568]"
-      : state === "구독 중"
-      ? "text-white bg-[#A6917D]"
-      : "text-[#A6917D] border border-[#A6917D]";
+  const handleSubscribe = async (e: React.MouseEvent) => {
+    e.stopPropagation();
+    try {
+      if (subscribed) {
+        // 구독 취소
+        await axiosInstance.delete(`/members/${authorNickname}/following`);
+        setSubscribed(false);
+      } else {
+        // 구독하기
+        await axiosInstance.post(`/members/${authorNickname}/following`);
+        setSubscribed(true);
+      }
+    } catch (error) {
+      console.error("구독 처리 실패", error);
+      alert("구독 처리 중 오류가 발생했습니다.");
+    }
+  };
+
+  const renderStateButton = () => {
+    if (state === "내 이야기") {
+      return (
+        <span className="w-[60px] h-[24px] font-pretendard font-medium text-[12px] leading-[145%] rounded-[15px] px-[20px] py-[2px] flex items-center justify-center whitespace-nowrap text-white bg-[#4A5568] cursor-default">
+          내 이야기
+        </span>
+      );
+    }
+
+    if (subscribed) {
+      return (
+        <button
+          onClick={handleSubscribe}
+          className="cursor-pointer w-[60px] h-[24px] font-pretendard font-medium text-[12px] leading-[145%] rounded-[15px] px-[20px] py-[2px] flex items-center justify-center whitespace-nowrap text-white bg-[#A6917D]"
+        >
+          구독 중
+        </button>
+      );
+    }
+
+    return (
+      <button
+        onClick={handleSubscribe}
+        className="cursor-pointer w-[60px] h-[24px] font-pretendard font-medium text-[12px] leading-[145%] rounded-[15px] px-[20px] py-[2px] flex items-center justify-center whitespace-nowrap text-[#A6917D] border border-[#A6917D]"
+      >
+        구독하기
+      </button>
+    );
+  };
 
   return (
     <div
@@ -96,11 +140,7 @@ const BookStoriesCard = ({
                   {authorNickname}
                 </span>
               </div>
-              <span
-                className={`w-[60px] h-[24px] font-pretendard font-medium text-[12px] leading-[145%] rounded-[15px] px-[20px] py-[2px] flex items-center justify-center whitespace-nowrap ${stateClass}`}
-              >
-                {state}
-              </span>
+              {renderStateButton()}
             </div>
 
             {/* 제목 + 요약 */}
@@ -114,22 +154,18 @@ const BookStoriesCard = ({
             </div>
 
             {/* 하단: 좋아요 + 신고 */}
-            <div className="mt-auto flex items-center justify-end gap-[11px]">
+            <div className="mt-auto flex items-center justify-end gap-[11px] text-sm">
               <div className="flex items-center gap-[2px]" onClick={handleLike}>
                 <img
                   src={liked ? likedIcon : likeIcon}
                   alt="like"
-                  className="w-[19px] h-[19px] cursor-pointer"
+                  className="w-4 h-4 mr-[6px] cursor-pointer"
                 />
-                <span className="font-pretendard font-medium text-[12px] text-[#000000]">
+                <span className="font-pretendard font-medium text-[#000000]">
                   {likeCount}
                 </span>
               </div>
-              <img
-                src={reportIcon}
-                alt="alert"
-                className="w-[19px] h-[19px] cursor-pointer"
-              />
+              <img src={reportIcon} alt="alert" className="w-[22px] h-[22px]" />
             </div>
           </div>
         </div>

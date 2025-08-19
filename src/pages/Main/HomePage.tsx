@@ -92,7 +92,7 @@ export default function HomePage() {
         {errorBooks && (
           <p className="text-red-500">책 이야기 에러: {errorBooks}</p>
         )}
-        <div className="flex gap-4 overflow-x-auto flex-nowrap scroll-smooth scrollbar-hide pl-2">
+        <div className="grid grid-cols-2 gap-4 overflow-y-auto scroll-smooth scrollbar-hide pl-2">
           {bookStories.map((story) => {
             const state: "내 이야기" | "구독 중" | "구독하기" =
               story.writtenByMe
@@ -104,7 +104,7 @@ export default function HomePage() {
             return (
               <div
                 key={story.bookStoryId}
-                className="flex-shrink-0 w-[33rem] p-2"
+                className="flex-shrink-0 w-[31rem] py-2"
               >
                 <BookStoriesCard
                   bookStoryId={story.bookStoryId}
