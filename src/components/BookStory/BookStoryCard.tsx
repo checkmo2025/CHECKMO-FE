@@ -1,7 +1,7 @@
 import { useState } from "react";
 import heartEmpty from "../../assets/icons/heart_empty.png";
-import heartFilled from "../../assets/icons/heart_filled.png";
-import reportIcon from "../../assets/icons/report.png";
+import heartFilled from "../../assets/icons/heart_filled_noLine.png";
+import reportIcon from "../../assets/icons/report2.png";
 import { toggleBookStoryLike } from "../../apis/BookStory/bookstories";
 import { axiosInstance } from "../../apis/axiosInstance";
 
@@ -137,23 +137,19 @@ const BookStoryCard = ({
         </div>
 
         {/* 좋아요 & 신고 */}
-        <div className="flex gap-4 mt-3 text-sm text-gray-600 items-center justify-end">
+        <div className="flex gap-[11px] mt-3 text-sm text-gray-600 items-center justify-end">
           <div
-            className="flex items-center gap-1 cursor-pointer"
+            className="flex items-center gap-[2px] cursor-pointer"
             onClick={handleLike}
           >
             <img
               src={liked ? heartFilled : heartEmpty}
               alt="like"
-              className="w-4 h-4"
+              className="w-4 h-4 mr-[6px] cursor-pointer"
             />
             <span>{likeCount}</span>
           </div>
-          <img
-            src={reportIcon}
-            alt="report"
-            className="w-[19px] h-[19px] cursor-pointer"
-          />
+          <img src={reportIcon} alt="report" className="w-[20px] h-[20px]" />
         </div>
       </div>
     </div>

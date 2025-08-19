@@ -154,22 +154,18 @@ const BookStoriesCard = ({
             </div>
 
             {/* 하단: 좋아요 + 신고 */}
-            <div className="mt-auto flex items-center justify-end gap-[11px]">
+            <div className="mt-auto flex items-center justify-end gap-[11px] text-sm">
               <div className="flex items-center gap-[2px]" onClick={handleLike}>
                 <img
                   src={liked ? likedIcon : likeIcon}
                   alt="like"
-                  className="w-[18px] h-[18px] mr-[6px] cursor-pointer"
+                  className="w-4 h-4 mr-[6px] cursor-pointer"
                 />
-                <span className="font-pretendard font-medium text-[12px] text-[#000000]">
+                <span className="font-pretendard font-medium text-[#000000]">
                   {likeCount}
                 </span>
               </div>
-              <img
-                src={reportIcon}
-                alt="alert"
-                className="w-[22px] h-[22px] "
-              />
+              <img src={reportIcon} alt="alert" className="w-[22px] h-[22px]" />
             </div>
           </div>
         </div>
