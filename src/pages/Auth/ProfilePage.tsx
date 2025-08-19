@@ -244,14 +244,9 @@ const ProfilePage = () => {
                         src={profileImagePreview}
                         alt="Profile"
                         className="w-full h-full object-cover"
-                        style={
-                          profileImagePreview.includes("basic_profile.png")
-                            ? { transform: "scale(1.2)" }
-                            : {}
-                        }
                         onError={(e) => {
                           e.currentTarget.src = "/assets/basic_profile.png";
-                          e.currentTarget.style.transform = "scale(1.2)";
+                          e.currentTarget.style.objectFit = "cover";  // 기본 이미지도 꽉 차게
                         }}
                       />
                     ) : (
@@ -438,17 +433,22 @@ const ProfilePage = () => {
 
             {step === 2 && (
               <div className="flex flex-col items-center">
-                <div className="w-32 h-32 rounded-full border-2 border-[#49863c] flex items-center justify-center overflow-hidden bg-[#F0FBE3] mb-4">
+                <div className="w-32 h-32 rounded-full border-2 border-[#49863c] overflow-hidden bg-[#F0FBE3] mb-4">
                   {profileImagePreview ? (
                     <img
                       src={profileImagePreview}
                       alt="Profile"
                       className="w-full h-full object-cover"
+                      onError={(e) => {
+                        e.currentTarget.src = "/assets/basic_profile.png";
+                      }}
                     />
                   ) : (
-                    <div className="w-full h-full flex items-center justify-center bg-gray-300 text-gray-500 text-sm">
-                      기본
-                    </div>
+                    <img
+                      src="/assets/basic_profile.png"
+                      alt="Default Profile"
+                      className="w-full h-full object-cover"
+                    />
                   )}
                 </div>
                 <h2 className="text-lg font-bold text-[#2C2C2C] mb-2">
