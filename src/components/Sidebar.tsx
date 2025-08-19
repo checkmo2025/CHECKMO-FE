@@ -413,7 +413,10 @@ const Sidebar = () => {
                   }}
                 >
                   <img src={getIconSrc(menu)} className="w-5 h-5" />
-                  <span className="text-[18px] font-medium font-pretendard">
+                  <span
+                    className="text-[18px] font-medium whitespace-nowrap overflow-hidden text-ellipsis block w-[9rem]"
+                    title={name} // hover시 전체 이름 확인 가능
+                  >
                     {name}
                   </span>
                 </NavLink>
