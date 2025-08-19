@@ -16,11 +16,9 @@ export const useUpdateClub = (clubId: number) => {
       // 상세 즉시 재검증 (서버 소스와 동기화 보장)
       queryClient.invalidateQueries({ queryKey: QK_CLUB.detail(clubId) });
       queryClient.refetchQueries({ queryKey: QK_CLUB.detail(clubId) });
-      alert("모임이 성공적으로 수정되었습니다!");
     },
     onError: (error) => {
       console.error("모임 수정 실패:", error);
-      alert("모임 수정에 실패했습니다. 다시 시도해주세요.");
     },
   });
 };

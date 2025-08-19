@@ -9,6 +9,7 @@ import { useUpdateClub } from '../../../hooks/useUpdateClub';
 import { useUploadImage } from '../../../hooks/useUploadImage';
 import { useIsStaff } from '../../../hooks/BookClub/useIsStaff';
 import { useClubNameValidation } from '../../../hooks/useClubNameValidation';
+import Modal, { type ModalButton } from '../../../components/Modal';
 
 // 카테고리 옵션 (문자열 배열로 변환)
 const BOOK_CATEGORY_OPTIONS = Object.values(BOOK_CATEGORIES);
@@ -66,12 +67,31 @@ export default function EditClubPage(): React.ReactElement {
   const { isValidating, isDuplicate, checkClubName, hasManualCheck, resetValidation } = useClubNameValidation();
   const isNameChanged = useMemo(() => clubName.trim() !== (originalClubName ?? '').trim(), [clubName, originalClubName]);
 
+  // 공통 모달 상태 및 헬퍼
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [modalTitle, setModalTitle] = useState<React.ReactNode>('');
+  const [modalButtons, setModalButtons] = useState<ModalButton[]>([]);
+
+  const showInfo = (message: React.ReactNode, onConfirm?: () => void) => {
+    setModalTitle(message);
+    setModalButtons([
+      {
+        label: '확인',
+        onClick: () => {
+          setIsModalOpen(false);
+          onConfirm?.();
+        },
+        variant: 'primary',
+      },
+    ]);
+    setIsModalOpen(true);
+  };
+
 
   // 클럽 정보 로드
   useEffect(() => {
     if (!numericClubId || Number.isNaN(numericClubId) || numericClubId <= 0) {
-      alert('잘못된 접근입니다.');
-      navigate('/');
+      showInfo('잘못된 접근입니다.', () => navigate('/'));
       return;
     }
   }, [numericClubId, navigate]);
@@ -79,8 +99,7 @@ export default function EditClubPage(): React.ReactElement {
   // 운영진이 아니면 접근 차단 UX 처리 (백엔드에서도 차단됨)
   useEffect(() => {
     if (isStaff === false) {
-      alert('이 페이지는 운영진만 접근할 수 있습니다.');
-      navigate(`/bookclub/${numericClubId}/home`);
+      showInfo('이 페이지는 운영진만 접근할 수 있습니다.', () => navigate(`/bookclub/${numericClubId}/home`));
     }
   }, [isStaff, navigate, numericClubId]);
 
@@ -103,23 +122,23 @@ export default function EditClubPage(): React.ReactElement {
   // 클럽 수정 핸들러
   const handleUpdateClub = async () => {
     if (!clubName.trim()) {
-      alert('모임 이름을 입력해주세요.');
+      showInfo('모임 이름을 입력해주세요.');
       return;
     }
     if (!clubDescription.trim()) {
-      alert('모임 소개글을 입력해주세요.');
+      showInfo('모임 소개글을 입력해주세요.');
       return;
     }
     if (visibility === null) {
-      alert('공개/비공개 여부를 선택해주세요.');
+      showInfo('공개/비공개 여부를 선택해주세요.');
       return;
     }
     if (selectedCategories.length === 0) {
-      alert('선호하는 독서 카테고리를 선택해주세요.');
+      showInfo('선호하는 독서 카테고리를 선택해주세요.');
       return;
     }
     if (selectedParticipants.length === 0) {
-      alert('모임 참여 대상을 선택해주세요.');
+      showInfo('모임 참여 대상을 선택해주세요.');
       return;
     }
 
@@ -137,6 +156,12 @@ export default function EditClubPage(): React.ReactElement {
         kakao: kakaoLink || undefined,
       },
       {
+        onSuccess: () => {
+          showInfo('모임이 성공적으로 수정되었습니다!');
+        },
+        onError: () => {
+          showInfo('모임 수정에 실패했습니다. 다시 시도해주세요.');
+        },
         onSettled: () => setIsSubmitting(false),
       }
     );
@@ -277,6 +302,7 @@ export default function EditClubPage(): React.ReactElement {
                 },
                 onError: () => {
                   setPreviewImageUrl(null);
+                  showInfo('이미지 업로드에 실패했습니다. 다시 시도해주세요.');
                 }
               });
             }}
@@ -437,6 +463,13 @@ export default function EditClubPage(): React.ReactElement {
           <div className="h-[100px]"></div>
         </div>
       </div>
+      {/* 공통 모달 */}
+      <Modal
+        isOpen={isModalOpen}
+        title={modalTitle}
+        buttons={modalButtons}
+        onBackdrop={() => setIsModalOpen(false)}
+      />
     </div>
   );
 }
