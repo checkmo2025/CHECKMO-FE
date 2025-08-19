@@ -64,8 +64,8 @@ const ProfilePage = () => {
       const picked = prev.includes(id)
         ? prev.filter((x) => x !== id)
         : prev.length < 15
-        ? [...prev, id]
-        : prev;
+          ? [...prev, id]
+          : prev;
       return picked;
     });
     setCategoryError("");
@@ -280,6 +280,7 @@ const ProfilePage = () => {
                       setProfileImagePreview("/assets/basic_profile.png");
                       setImageError("");
                     }}
+
                     className={`px-3 py-1 rounded-full text-xs font-semibold ${
                       useDefaultImage
                         ? "bg-[#90D26D] text-white cursor-pointer"
@@ -383,9 +384,8 @@ const ProfilePage = () => {
                     )}
                   </div>
                   <div
-                    className={`overflow-hidden transition-all duration-500 ease-in-out ${
-                      isCategoryOpen ? "max-h-[400px] mt-3" : "max-h-0"
-                    }`}
+                    className={`overflow-hidden transition-all duration-500 ease-in-out ${isCategoryOpen ? "max-h-[400px] mt-3" : "max-h-0"
+                      }`}
                   >
                     <div className="grid grid-cols-3 gap-3">
                       {CATEGORY_LIST.map((c) => {

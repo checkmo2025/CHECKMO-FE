@@ -80,7 +80,7 @@ const BookRecommendEditPage = () => {
 
   return (
     <>
-      <div className="flex flex-col h-screen ml-5 mr-10">
+      <div className="flex flex-col h-screen ml-5 mr-10 min-w-[400px]">
         <Header
           pageTitle={"추천 도서 수정"}
           customClassName="mx-3 mb-5 mt-[30px]"
