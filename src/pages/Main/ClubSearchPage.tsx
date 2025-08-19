@@ -1,5 +1,5 @@
 // src/pages/BookClub/ClubSearchPage.tsx
-import React, { useMemo, useState } from 'react';
+import React, { useMemo, useState, useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import ClubCard from '../../components/SearchClub/ClubCard';
 import Modal from '../../components/Modal';
@@ -8,28 +8,104 @@ import { useBookClubList } from '../../hooks/useBookClubList';
 import { useDebounce } from '../../hooks/useDebounce';
 import type { ClubListDto } from '../../types/bookClub';
 import { useClubJoin } from '../../hooks/useClubJoin';
+import { PARTICIPANT_TYPES } from '../../types/bookClub';
+import arrowUpBold from '../../assets/icons/ep_arrow-up-bold.svg';
 
 export default function ClubSearchPage(): React.ReactElement {
+  // ── 검색 상태
   const [query, setQuery] = useState('');
   const [showAlert, setShowAlert] = useState(false);
 
+  // ── 필터 상태 (체크박스/드롭다운)
+  const [isNameChecked, setIsNameChecked] = useState<boolean>(false);
+  const [isRegionChecked, setIsRegionChecked] = useState<boolean>(false);
+  const [participant, setParticipant] = useState<string>('전체');
+  const [isParticipantOpen, setIsParticipantOpen] = useState<boolean>(false);
+  const [isParticipantChecked, setIsParticipantChecked] = useState<boolean>(false);
+
+  // ── 드롭다운 외부 클릭/ESC 닫기 ref
+  const participantDropdownRef = useRef<HTMLDivElement | null>(null);
+
   // 검색 파라미터 구성 (규칙: keyword 없으면 전체 조회)
   const debouncedKeyword = useDebounce(query.trim(), 400);
-  const requestParams = useMemo(() => ({
-    keyword: debouncedKeyword || undefined,
-    region: 0 as 0 | 1,
-    participants: 0 as 0 | 1,
-    size: 10,
-  }), [debouncedKeyword]);
+  // ── 서버 요청 파라미터: AND 교집합 로직 + 예외(대상만 체크)
+  const requestParams = useMemo(() => {
+    const nameFlag = isNameChecked ? (1 as 1) : (0 as 0);
+    const regionFlag = isRegionChecked ? (1 as 1) : (0 as 0);
+    const participantsFlag = isParticipantChecked && participant !== '전체' ? (1 as 1) : (0 as 0);
+
+    // Handling combinations
+    // - Only participants: keyword = participant code, participants=1
+    // - Name/Region combined with participants: let server search by text only; client will AND-filter by participant
+    // - None checked: send text if present
+    const onlyParticipants = participantsFlag === 1 && nameFlag === 0 && regionFlag === 0;
+
+    let keyword: string | undefined = undefined;
+    let participantsParam: 0 | 1 = participantsFlag;
+
+    if (onlyParticipants) {
+      keyword = participant;
+      participantsParam = 1;
+    } else if (participantsFlag === 1 && (nameFlag === 1 || regionFlag === 1)) {
+      // combined with other fields → rely on client-side AND for participants
+      participantsParam = 0;
+      if (nameFlag === 1 && debouncedKeyword) {
+        keyword = debouncedKeyword;
+      } else if (debouncedKeyword) {
+        keyword = debouncedKeyword;
+      }
+    } else {
+      if (nameFlag === 1 && debouncedKeyword) {
+        keyword = debouncedKeyword;
+      } else if (regionFlag === 1 && debouncedKeyword) {
+        keyword = debouncedKeyword;
+      } else if (nameFlag === 0 && regionFlag === 0 && participantsFlag === 0 && debouncedKeyword) {
+        keyword = debouncedKeyword;
+      }
+    }
+
+    return {
+      keyword,
+      name: nameFlag,
+      region: regionFlag,
+      participants: participantsParam,
+      size: 10,
+    };
+  }, [debouncedKeyword, isNameChecked, isRegionChecked, isParticipantChecked, participant]);
 
   const { data, fetchNextPage, hasNextPage, isFetchingNextPage, status, error } = useBookClubList(requestParams);
 
-  const flatClubs: ClubListDto[] = useMemo(
-    () => data?.pages.flatMap(p => p.clubList) ?? [],
-    [data]
-  );
+  // ── 클라이언트 보정: 대상 체크 시 participantTypes 교집합 필터
+  const flatClubs: ClubListDto[] = useMemo(() => {
+    const list = data?.pages.flatMap(p => p.clubList) ?? [];
+    if (isParticipantChecked && participant !== '전체') {
+      return list.filter(({ club }) => (club.participantTypes || []).includes(participant));
+    }
+    return list;
+  }, [data, isParticipantChecked, participant]);
 
   const { mutate: joinClub } = useClubJoin();
+
+  // 드롭다운: 바깥 클릭/ESC 닫기
+  useEffect(() => {
+    const handleClickOutside = (e: MouseEvent) => {
+      if (!isParticipantOpen) return;
+      const target = e.target as Node;
+      if (participantDropdownRef.current && !participantDropdownRef.current.contains(target)) {
+        setIsParticipantOpen(false);
+      }
+    };
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (!isParticipantOpen) return;
+      if (e.key === 'Escape') setIsParticipantOpen(false);
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    document.addEventListener('keydown', handleKeyDown);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+      document.removeEventListener('keydown', handleKeyDown);
+    };
+  }, [isParticipantOpen]);
 
   // 가입 신청 처리
   const handleJoinRequest = (clubId: number, message: string) => {
@@ -54,9 +130,9 @@ export default function ClubSearchPage(): React.ReactElement {
         <div className='flex flex-col flex-1'>
           {/* ── 검색 바 ── */}
           <div>
-            <div className="mt-9 flex items-center h-[53px] py-[10px] px-[17px] rounded-2xl bg-[var(--Color-4,#F4F2F1)]">
+            <div className="mt-9 flex items-center w-[1170px] h-[53px] py-[10px] px-[17px] rounded-2xl bg-[var(--Color-4,#F4F2F1)]">
               <img src="/assets/material-symbols_search-rounded.svg"
-                alt="search" className="w-[33px] h-[33px]" />
+                alt="search" className="w-[24px] h-[24px]" />
               <input
                 type="text"
                 value={query}
@@ -68,10 +144,117 @@ export default function ClubSearchPage(): React.ReactElement {
             </div>
           </div>
 
-          {/* 운영진 안내, 동아리 리스트 */}
-          <div className="flex flex-col mt-[15px]">
-            {/* ── 운영진 안내 & 동아리 신청 버튼 ── */}
-            <div className="flex justify-end items-center mr-[20px] mb-[10px] gap-[8px]">
+          {/* 검색 필터 영역 */}
+          <div className="flex items-center justify-between mt-[10px] mx-[15px] mb-[10px]">
+            <div className="flex items-center gap-[12px]">
+            <label
+              className="flex items-center gap-[6px] text-[14px] text-[#5C5C5C] font-medium cursor-pointer"
+              onClick={(e) => {
+                e.preventDefault();
+                setIsNameChecked((v) => !v);
+              }}
+            >
+              <input
+                type="checkbox"
+                className="sr-only peer"
+                checked={isNameChecked}
+                onChange={(e) => setIsNameChecked(e.target.checked)}
+              />
+              <span className="w-[24px] h-[24px] rounded-full border-[2px] border-[#BBBBBB] peer-checked:border-[#90D26D] peer-checked:bg-[#90D26D] transition-colors"></span>
+              모임 명
+            </label>
+            <label
+              className="flex items-center gap-[6px] text-[14px] text-[#5C5C5C] font-medium cursor-pointer"
+              onClick={(e) => {
+                e.preventDefault();
+                setIsRegionChecked((v) => !v);
+              }}
+            >
+              <input
+                type="checkbox"
+                className="sr-only peer"
+                checked={isRegionChecked}
+                onChange={(e) => setIsRegionChecked(e.target.checked)}
+              />
+              <span className="w-[24px] h-[24px] ml-[8px] rounded-full border-2 border-[#BDBDBD] peer-checked:border-[#90D26D] peer-checked:bg-[#90D26D] transition-colors"></span>
+              지역별
+            </label>
+
+            <div ref={participantDropdownRef} className="relative flex items-center ml-[8px] gap-[2px]">
+              <label
+                className="flex items-center gap-[6px] cursor-pointer"
+                onClick={(e) => {
+                  e.preventDefault();
+                  setIsParticipantChecked((v) => !v);
+                }}
+                aria-label="대상 필터 적용"
+              >
+                <input
+                  type="checkbox"
+                  className="sr-only peer"
+                  checked={isParticipantChecked}
+                  onChange={(e) => setIsParticipantChecked(e.target.checked)}
+                  aria-label="대상 필터 체크박스"
+                />
+                <span className="w-[24px] h-[24px] rounded-full border-2 border-[#BDBDBD] peer-checked:border-[#90D26D] peer-checked:bg-[#90D26D] transition-colors"></span>
+              </label>
+              <button
+                type="button"
+                onClick={() => setIsParticipantOpen((v) => !v)}
+                className="w-[40px] h-[32px] ml-[6px] text-[14px] text-[#5C5C5C] font-medium text-left flex items-center justify-start"
+                aria-haspopup="listbox"
+                aria-expanded={isParticipantOpen}
+              >
+                {participant === '전체'
+                  ? '전체'
+                  : PARTICIPANT_TYPES[participant as keyof typeof PARTICIPANT_TYPES]}
+              </button>
+              <button
+                type="button"
+                aria-label="대상 열고 닫기"
+                onClick={() => setIsParticipantOpen((v) => !v)}
+                className={"w-[20px] h-[20px] flex items-center justify-center"}
+                aria-expanded={isParticipantOpen}
+              >
+                <img
+                  src={arrowUpBold}
+                  alt="toggle"
+                  className={isParticipantOpen ? "w-[12px] h-[12px] rotate-180" : "w-[12px] h-[12px]"}
+                />
+              </button>
+              {isParticipantOpen && (
+                <div className="absolute left-[28px] top-full mt-[6px] z-10 flex w-[70px] py-[10px] pr-[20px] pl-[10px] flex-col items-start gap-[4px] rounded-[4px] bg-[var(--Gray7,#EEE)]">
+                  <button
+                    type="button"
+                    className={`text-[14px] ${participant === '전체' ? 'text-[#5C5C5C]' : 'text-[#BBBBBB]'}`}
+                    onClick={() => {
+                      setParticipant('전체');
+                      setIsParticipantChecked(false);
+                      setIsParticipantOpen(false);
+                    }}
+                  >
+                    전체
+                  </button>
+                  {Object.entries(PARTICIPANT_TYPES).map(([key, label]) => (
+                    <button
+                      key={key}
+                      type="button"
+                      className={`text-[14px] ${participant === key ? 'text-[#5C5C5C]' : 'text-[#BBBBBB]'}`}
+                      onClick={() => {
+                        setParticipant(key);
+                        setIsParticipantChecked(true);
+                        setIsParticipantOpen(false);
+                      }}
+                    >
+                      {label}
+                    </button>
+                  ))}
+                </div>
+              )}
+            </div>
+            </div>
+
+            <div className="flex items-center gap-[8px]">
               <span className="
                 mr-[15px] font-pretendard font-medium text-[14px]
                 leading-[145%] tracking-[-0.1%] text-[#2C2C2C]
@@ -82,20 +265,22 @@ export default function ClubSearchPage(): React.ReactElement {
               <Link
                 to="/createClub"
                 className="
-                  w-[105px] h-[32px]
+                  w-[115px] h-[32px]
                   bg-[#DED6CD] rounded-[16px]
                   px-[12px] py-[5px]
-                  font-pretendard font-medium text-[12px] text-[#5C5C5C]
-                  leading-[145%] tracking-[-0.1%]
+                  font-medium text-[12px] text-[#5C5C5C]
                   flex items-center justify-center
                 "
               >
-                동아리 신청하기
+                독서 모임 생성하기
               </Link>
             </div>
+          </div>
 
+          {/* 운영진 안내, 동아리 리스트 */}
+          <div className="flex flex-col mt-[15px]">
             {/* ── 동아리 리스트 ── */}
-            <div className="flex-col flex items-center space-y-[15px] overflow-y-auto h-[calc(100vh-220px)] w-full" style={{ msOverflowStyle: 'none', scrollbarWidth: 'none' }}
+            <div className="flex-col flex items-center space-y-[15px] overflow-y-auto h-[calc(100vh-220px)] w-full"
               onScroll={(e) => {
                 const el = e.currentTarget;
                 if (hasNextPage && !isFetchingNextPage && el.scrollTop + el.clientHeight >= el.scrollHeight - 40) {

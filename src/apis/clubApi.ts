@@ -11,6 +11,7 @@ export const createClub = async (clubData: CreateClubRequestDto): Promise<ClubDt
 // 클럽 목록 조회
 export type ClubSearchParams = {
   keyword?: string;
+  name?: 0 | 1; // 0=전체, 1=모임명 필터 적용
   region?: 0 | 1; // 0=전체, 1=지역 필터 적용
   participants?: 0 | 1; // 0=전체, 1=대상 유형 필터 적용
   cursorId?: number | null; // 해당 ID보다 작은 클럽만 조회
