@@ -1,9 +1,10 @@
-import React from "react";
+import React, { useState } from "react";
 import checker from "../../assets/images/checker.png";
 import emptyHeartIcon from "../../assets/icons/heart_empty.png";
 import filledHeartIcon from "../../assets/icons/heart_filled.png";
 // heartIcon 제거 (SVG로 대체)
 import sirenIcon from "../../assets/images/siren.png";
+import { toggleBookStoryLike } from "../../apis/BookStory/bookstories";
 
 export interface BookStoryCardProps {
   userImage: string;
@@ -15,6 +16,7 @@ export interface BookStoryCardProps {
   bookImageUrl?: string;
   likedByMe?: boolean;
   onClick?: () => void;
+  bookStoryId: number;
 }
 
 export default function BookStoryCard({
@@ -27,9 +29,32 @@ export default function BookStoryCard({
   bookImageUrl,
   likedByMe = false,
   onClick,
+  bookStoryId,
 }: BookStoryCardProps): React.ReactElement {
   // API에서 받을 이미지 URL 사용 (더미 데이터와 동일한 구조)
   const avatar = userImage || "/default-avatar.png";
+  
+  // 좋아요 상태 관리
+  const [liked, setLiked] = useState(likedByMe);
+  const [likeCount, setLikeCount] = useState(likes);
+  const [loading, setLoading] = useState(false);
+
+  // 좋아요 처리 함수
+  const handleLike = async (e: React.MouseEvent) => {
+    e.stopPropagation();
+    if (loading) return;
+    setLoading(true);
+    try {
+      await toggleBookStoryLike(bookStoryId);
+      if (liked) setLikeCount((prev) => prev - 1);
+      else setLikeCount((prev) => prev + 1);
+      setLiked(!liked);
+    } catch (err) {
+      console.error("좋아요 처리 실패", err);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <div
@@ -110,21 +135,22 @@ export default function BookStoryCard({
               {summary}
             </p>
             <div className="mt-auto flex items-center justify-end gap-[8px]">
-              <img
-                src={likedByMe ? filledHeartIcon : emptyHeartIcon}
-                alt={likedByMe ? "liked" : "not liked"}
-                className="cursor-pointer"
-                width={19}
-                height={19}
-              />
-              <span
-                className="
-                  font-pretendard font-medium text-[12px]
-                  leading-[145%] tracking-[-0.1%] text-[#000000]
-                "
-              >
-                {likes}
-              </span>
+              <div className="flex items-center gap-[2px]" onClick={handleLike}>
+                <img
+                  src={liked ? filledHeartIcon : emptyHeartIcon}
+                  alt={liked ? "liked" : "not liked"}
+                  className="cursor-pointer"
+                  width={19}
+                  height={19}
+                />
+                <span
+                  className="
+                    font-pretendard font-medium text-[12px] text-[#000000]
+                  "
+                >
+                  {likeCount}
+                </span>
+              </div>
               <img
                 src={sirenIcon}
                 alt="alert"

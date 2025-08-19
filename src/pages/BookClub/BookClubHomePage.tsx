@@ -159,6 +159,7 @@ export default function BookClubHomePage(): React.ReactElement {
               {clubBookStories.map((story) => (
                 <div key={story.bookStoryId} className="flex-shrink-0 min-w-[33rem]">
                   <BookStoryCard
+                    bookStoryId={story.bookStoryId}
                     userImage={story.authorInfo.profileImageUrl}
                     userName={story.authorInfo.nickname}
                     isSubscribed={story.authorInfo.following}
