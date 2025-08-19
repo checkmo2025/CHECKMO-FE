@@ -54,9 +54,9 @@ export default function ClubSearchPage(): React.ReactElement {
         <div className='flex flex-col flex-1'>
           {/* ── 검색 바 ── */}
           <div>
-            <div className="mt-9 flex items-center h-[53px] py-[10px] px-[17px] rounded-2xl bg-[var(--Color-4,#F4F2F1)]">
+            <div className="mt-9 flex items-center w-[1170px] h-[53px] py-[10px] px-[17px] rounded-2xl bg-[var(--Color-4,#F4F2F1)]">
               <img src="/assets/material-symbols_search-rounded.svg"
-                alt="search" className="w-[33px] h-[33px]" />
+                alt="search" className="w-[24px] h-[24px]" />
               <input
                 type="text"
                 value={query}
@@ -68,10 +68,15 @@ export default function ClubSearchPage(): React.ReactElement {
             </div>
           </div>
 
+          {/* 검색 필터 영역 */}
+          <div className="flex justify-end items-center ml-[12px] mb-[10px] gap-[8px]">
+            
+          </div>
+
           {/* 운영진 안내, 동아리 리스트 */}
           <div className="flex flex-col mt-[15px]">
             {/* ── 운영진 안내 & 동아리 신청 버튼 ── */}
-            <div className="flex justify-end items-center mr-[20px] mb-[10px] gap-[8px]">
+            <div className="flex justify-end items-center mr-[12px] mb-[10px] gap-[8px]">
               <span className="
                 mr-[15px] font-pretendard font-medium text-[14px]
                 leading-[145%] tracking-[-0.1%] text-[#2C2C2C]
@@ -82,20 +87,19 @@ export default function ClubSearchPage(): React.ReactElement {
               <Link
                 to="/createClub"
                 className="
-                  w-[105px] h-[32px]
+                  w-[115px] h-[32px]
                   bg-[#DED6CD] rounded-[16px]
                   px-[12px] py-[5px]
-                  font-pretendard font-medium text-[12px] text-[#5C5C5C]
-                  leading-[145%] tracking-[-0.1%]
+                  font-medium text-[12px] text-[#5C5C5C]
                   flex items-center justify-center
                 "
               >
-                동아리 신청하기
+                독서 모임 생성하기
               </Link>
             </div>
 
             {/* ── 동아리 리스트 ── */}
-            <div className="flex-col flex items-center space-y-[15px] overflow-y-auto h-[calc(100vh-220px)] w-full" style={{ msOverflowStyle: 'none', scrollbarWidth: 'none' }}
+            <div className="flex-col flex items-center space-y-[15px] overflow-y-auto h-[calc(100vh-220px)] w-full"
               onScroll={(e) => {
                 const el = e.currentTarget;
                 if (hasNextPage && !isFetchingNextPage && el.scrollTop + el.clientHeight >= el.scrollHeight - 40) {

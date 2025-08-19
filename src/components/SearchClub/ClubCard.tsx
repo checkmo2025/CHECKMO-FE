@@ -33,7 +33,7 @@ const ActionButton: React.FC<{
   <button
     onClick={onClick}
     className={`
-      w-[105px] h-[35px] rounded-[15px] px-[19.5px] py-[9px]
+      w-[105px] h-[35px] rounded-[16px] px-[19.5px] py-[9px]
       text-[12px] flex items-center justify-center whitespace-nowrap cursor-pointer
       ${variant === 'primary' 
         ? 'bg-[#A6917D] text-white' 
@@ -51,7 +51,7 @@ const ActionButtons: React.FC<{
   position?: 'top-right' | 'default';
 }> = ({ onJoinClick, onInquiryClick, position = 'default' }) => {
   const positionClass = position === 'top-right' 
-    ? 'absolute right-[20px] top-[20px]' 
+    ? 'absolute right-[20px] top-[25px]' 
     : 'absolute right-[20px] top-[107px]';
   
   return (
@@ -105,7 +105,10 @@ export default function ClubCard({
     setJoinMessage('');
   };
 
-  const handleJoinClick = () => setMode('join');
+  const handleJoinClick = () => {
+    // 이미 가입신청 모드인 경우 기본 모드로 돌아감
+    setMode(mode === 'join' ? 'default' : 'join');
+  };
   
   // 기본 버튼 클릭 시: 이미 가입이면 상위에 알리고 종료, 아니면 가입 작성 모드로 전환
   const onJoinButtonClick = () => {
@@ -115,7 +118,11 @@ export default function ClubCard({
     }
     handleJoinClick();
   };
-  const handleInquiryClick = () => setMode('inquiry');
+
+  const handleInquiryClick = () => {
+    // 이미 문의 모드인 경우 기본 모드로 돌아감
+    setMode(mode === 'inquiry' ? 'default' : 'inquiry');
+  };
 
   // 카테고리 ID를 이름으로 변환
   const categoryNames = category.map(id => BOOK_CATEGORIES[id as keyof typeof BOOK_CATEGORIES] || `카테고리${id}`);
@@ -158,7 +165,7 @@ export default function ClubCard({
       className={`
         relative w-[916px] bg-white rounded-[16px] border-[2px] border-[#EAE5E2]
         overflow-hidden hover:shadow transition-all duration-300
-        ${mode === 'join' ? 'h-[396px]' : mode === 'inquiry' ? 'h-[307px]' : 'h-[204px]'}
+                 ${mode === 'join' ? 'h-[396px]' : mode === 'inquiry' ? ((kakao && insta) ? 'h-[307px]' : 'h-[280px]') : 'h-[204px]'}
       `}
     >
       <div className="flex gap-[16px]">
@@ -170,7 +177,7 @@ export default function ClubCard({
         />
 
         {/* 정보 영역 */}
-        <div className="ml-[29px] flex-1 flex flex-col">
+        <div className="ml-[15px] flex-1 flex flex-col">
           {/* 카테고리 태그 */}
           <div className="flex gap-[12px] mt-[24px] mb-[18px] flex-wrap">
             {categoryNames.map((categoryName) => (
@@ -278,26 +285,27 @@ export default function ClubCard({
               />
               <div className="
                 absolute left-[213px] top-[196px]
-                w-[684px] h-[91px] border-[2px] border-[#EAE5E2]
+                w-[684px] ${(kakao && insta) ? 'h-[91px]' : 'h-[51px]'} border-[2px] border-[#EAE5E2]
                 rounded-[16px] px-[20px] py-[20px]
-                font-pretendard font-medium text-[14px]
-                leading-[145%] tracking-[-0.1%] text-[#2C2C2C]
+                font-medium text-[14px] text-[#2C2C2C]
                 underline underline-offset-2
                 flex flex-col gap-[10px]
               ">
-                {kakao ? (
-                  <a href={kakao} target="_blank" rel="noopener noreferrer" title={kakao}>
-                    {formatUrlForDisplay(kakao)}
-                  </a>
+                {!kakao && !insta ? (
+                  <span className="no-underline text-[#8D8D8D] ">등록된 링크가 없습니다.</span>
                 ) : (
-                  <span className="no-underline text-[#8D8D8D]">등록된 카카오톡 링크가 없습니다.</span>
-                )}
-                {insta ? (
-                  <a href={insta} target="_blank" rel="noopener noreferrer" title={insta}>
-                    {formatUrlForDisplay(insta)}
-                  </a>
-                ) : (
-                  <span className="no-underline text-[#8D8D8D]">등록된 인스타그램 링크가 없습니다.</span>
+                  <>
+                    {kakao && (
+                      <a href={kakao} target="_blank" rel="noopener noreferrer" title={kakao}>
+                        {formatUrlForDisplay(kakao)}
+                      </a>
+                    )}
+                    {insta && (
+                      <a href={insta} target="_blank" rel="noopener noreferrer" title={insta}>
+                        {formatUrlForDisplay(insta)}
+                      </a>
+                    )}
+                  </>
                 )}
               </div>
             </>
