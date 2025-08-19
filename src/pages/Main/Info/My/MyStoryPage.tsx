@@ -150,7 +150,7 @@ const MyStoryPage = () => {
                       ? null
                       : navigate(`/bookstory/${story.bookStoryId}/detail`)
                   }
-                  className="flex gap-5 bg-white rounded-xl border border-[#EAE5E2] px-5 py-5 shadow-sm cursor-pointer"
+                  className="flex gap-5 bg-white rounded-xl border border-[#EAE5E2] px-5 py-5 shadow-sm cursor-pointer transition-transform duration-300 transform hover:shadow-lg hover:scale-105"
                 >
                   {/* 책 이미지 */}
                   {story.bookInfo?.imgUrl ? (
@@ -171,9 +171,12 @@ const MyStoryPage = () => {
                     <div>
                       <div className="flex items-center gap-2 mb-3">
                         <img
-                          src={story.authorInfo.profileImageUrl || ""}
+                          src={story.authorInfo.profileImageUrl || "/assets/basic_profile.png"}
                           alt="프로필"
-                          className="w-[32px] h-[32px] rounded-full bg-gray-300"
+                          className="w-[32px] h-[32px] rounded-full bg-white"
+                          onError={(e) => {
+                            e.currentTarget.src = "/assets/basic_profile.png"; 
+                          }}
                         />
                         <p className="text-[#2C2C2C] text-[20px] font-medium">
                           {story.authorInfo.nickname}
