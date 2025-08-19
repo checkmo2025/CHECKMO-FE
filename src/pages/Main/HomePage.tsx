@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import Header from "../../components/Header";
 import NoticeCard from "../../components/Main/Notices/NoticeCard";
@@ -6,57 +6,110 @@ import BookStoriesCard from "../../components/Main/BookStoriesCard";
 
 import type { BookStoryResponseDto } from "../../types/bookStories";
 import type { NoticeDto } from "../../types/mainNotices";
-
 import { fetchBookStories } from "../../apis/BookStory/bookstories";
+import type { BookStoriesParams } from "../../apis/BookStory/bookstories";
 import { fetchMyClubs } from "../../apis/Main/clubs";
 import { fetchNoticesByClub } from "../../apis/Main/notices";
 
 export default function HomePage() {
   const navigate = useNavigate();
+
   const [bookStories, setBookStories] = useState<BookStoryResponseDto[]>([]);
   const [notices, setNotices] = useState<NoticeDto[]>([]);
   const [loadingBooks, setLoadingBooks] = useState(false);
   const [loadingNotices, setLoadingNotices] = useState(false);
   const [errorBooks, setErrorBooks] = useState<string | null>(null);
+  const [cursorId, setCursorId] = useState<number | null>(null);
+  const [hasNext, setHasNext] = useState(true);
 
-  useEffect(() => {
-    // 책 이야기 API
+  const scrollContainerRef = useRef<HTMLDivElement>(null);
+  const observerRef = useRef<IntersectionObserver | null>(null);
+
+  // 책 이야기
+  const loadBookStories = useCallback(async () => {
+    if (loadingBooks || !hasNext) return;
     setLoadingBooks(true);
-    fetchBookStories({ scope: "ALL" })
-      .then((data) => setBookStories(data?.bookStoryResponses ?? []))
-      .catch((e) => setErrorBooks(e.message ?? "책 이야기 불러오기 실패"))
-      .finally(() => setLoadingBooks(false));
+    try {
+      const params: BookStoriesParams = { scope: "ALL", cursorId };
+      const data = await fetchBookStories(params);
 
-    // 공지사항 API
+      // 중복 제거
+      setBookStories((prev) => {
+        const newStories = data.bookStoryResponses.filter(
+          (story) => !prev.some((s) => s.bookStoryId === story.bookStoryId)
+        );
+        return [...prev, ...newStories];
+      });
+
+      setCursorId(data.nextCursor);
+      setHasNext(data.hasNext);
+    } catch (e: any) {
+      setErrorBooks(e.message ?? "책 이야기 불러오기 실패");
+    } finally {
+      setLoadingBooks(false);
+    }
+  }, [cursorId, hasNext, loadingBooks]);
+
+  // 초기 책 이야기 로드
+  useEffect(() => {
+    loadBookStories();
+  }, []);
+
+  // 공지사항 로드
+  useEffect(() => {
     setLoadingNotices(true);
     fetchMyClubs()
-      .then((clubs) => {
-        return Promise.all(
+      .then((clubs) =>
+        Promise.all(
           clubs.map(async (club) => {
             const notices = await fetchNoticesByClub(club.clubId);
-            // 각 notice에 clubId 추가
             return notices.map((notice) => ({
               ...notice,
               clubId: club.clubId,
             }));
           })
-        );
-      })
-      .then((noticesArrays) => {
-        const allNotices = noticesArrays.flat();
-        //console.log("allNotices:", allNotices); // << 이거 추가
-
-        setNotices(allNotices);
-      })
+        )
+      )
+      .then((noticesArrays) => setNotices(noticesArrays.flat()))
       .catch((err) => console.error("공지사항 불러오기 실패", err))
       .finally(() => setLoadingNotices(false));
   }, []);
 
+  // 무한 스크롤 Intersection Observer
+  useEffect(() => {
+    if (!scrollContainerRef.current) return;
+
+    const options = {
+      root: scrollContainerRef.current,
+      rootMargin: "100px",
+      threshold: 0,
+    };
+
+    observerRef.current = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          loadBookStories();
+        }
+      });
+    }, options);
+
+    const sentinel = document.getElementById("book-story-sentinel");
+    if (sentinel) observerRef.current.observe(sentinel);
+
+    return () => {
+      if (observerRef.current && sentinel)
+        observerRef.current.unobserve(sentinel);
+    };
+  }, [loadBookStories, bookStories]);
+
   return (
-    <div className="absolute left-[315px] right-[42px] opacity-100 ">
+    <div className="absolute left-[315px] right-[42px] opacity-100">
       <Header pageTitle="책모 홈" customClassName="mt-[30px] pl-2" />
 
-      <div className="overflow-y-auto h-[calc(100vh-80px)] w-full flex-1 pt-[30px] pl-[2px] pr-[30px] bg-[#FFFFFF]">
+      <div
+        ref={scrollContainerRef}
+        className="overflow-y-auto h-[calc(100vh-80px)] w-full flex-1 pt-[30px] pl-[2px] pr-[30px] bg-[#FFFFFF]"
+      >
         {/* 공지사항 */}
         <div className="text-xl font-semibold text-gray-800 mb-4 pl-2">
           공지사항
@@ -88,7 +141,7 @@ export default function HomePage() {
         <div className="text-xl font-semibold text-gray-800 mb-4 pl-2">
           책 이야기
         </div>
-        {loadingBooks && <p>책 이야기 로딩중...</p>}
+        {bookStories.length === 0 && loadingBooks && <p>책 이야기 로딩중...</p>}
         {errorBooks && (
           <p className="text-red-500">책 이야기 에러: {errorBooks}</p>
         )}
@@ -121,6 +174,10 @@ export default function HomePage() {
             );
           })}
         </div>
+
+        {/* 무한 스크롤용 sentinel */}
+        <div id="book-story-sentinel" className="h-2"></div>
+        {loadingBooks && <p>추가 책 이야기 로딩중...</p>}
       </div>
     </div>
   );
