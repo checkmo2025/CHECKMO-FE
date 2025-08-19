@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react"; 
+import { useState, useEffect, useRef, useCallback } from "react"; 
 import MyPageHeader from "../../../../components/MyPageHeader";
 import Modal from "../../../../components/Modal"; 
 import type { NotificationItem, NotificationResponse } from "../../../../types/My/member";
@@ -15,14 +15,19 @@ const MyNotificationPage = () => {
     message: "",
   });
 
-  const groupNotificationsByDate = (list: NotificationItem[]) => {
+  // 무한스크롤 상태
+  const [cursorId, setCursorId] = useState<number | null>(null);
+  const [hasNext, setHasNext] = useState(true);
+  const [isFetching, setIsFetching] = useState(false);
+
+  const groupNotificationsByDate = (list: NotificationItem[], append = false) => {
     const today = new Date();
     const yesterday = new Date();
     yesterday.setDate(today.getDate() - 1);
 
-    const todayArr: NotificationItem[] = [];
-    const yesterdayArr: NotificationItem[] = [];
-    const weekArr: NotificationItem[] = [];
+    const todayArr: NotificationItem[] = append ? [...todayList] : [];
+    const yesterdayArr: NotificationItem[] = append ? [...yesterdayList] : [];
+    const weekArr: NotificationItem[] = append ? [...weekList] : [];
 
     list.forEach((n) => {
       const created = new Date(n.createdAt);
@@ -51,14 +56,18 @@ const MyNotificationPage = () => {
     setWeekList(weekArr);
   };
 
-  const fetchNotifications = async () => {
+  const fetchNotifications = async (cursor: number | null, append = false) => {
     try {
-      const res: NotificationResponse = await getMyNotifications(null);
-      groupNotificationsByDate(res.notifications);
+      setIsFetching(true);
+      const res: NotificationResponse = await getMyNotifications(cursor);
+
+      groupNotificationsByDate(res.notifications, append);
+
+      setCursorId(res.nextCursor);
+      setHasNext(res.hasNext);
       setIsError(false);
     } catch (err: any) {
       console.error("알림 불러오기 실패:", err);
-      // 400, 404는 모달로 처리
       if (err?.response?.status === 400) {
         setErrorModal({
           open: true,
@@ -70,21 +79,41 @@ const MyNotificationPage = () => {
           message: "알림 정보를 찾을 수 없습니다.",
         });
       } else {
-        // 나머지는 기존 에러 처리
         setIsError(true);
       }
+    } finally {
+      setIsFetching(false);
     }
   };
 
   useEffect(() => {
-    fetchNotifications();
+    fetchNotifications(null, false);
   }, []);
+
+  // IntersectionObserver
+  const observerRef = useRef<IntersectionObserver | null>(null);
+  const lastElementRef = useCallback(
+    (node: HTMLDivElement | null) => {
+      if (isFetching) return;
+      if (observerRef.current) observerRef.current.disconnect();
+
+      observerRef.current = new IntersectionObserver((entries) => {
+        if (entries[0].isIntersecting && hasNext) {
+          fetchNotifications(cursorId, true);
+        }
+      });
+
+      if (node) observerRef.current.observe(node);
+    },
+    [cursorId, hasNext, isFetching]
+  );
 
   const handleNotificationClick = async (n: NotificationItem) => {
     if (!n.read) {
       try {
         await readNotification(n.notificationId);
-        fetchNotifications();
+        //  읽음 처리 후 다시 불러오기
+        fetchNotifications(null, false);
       } catch (err) {
         console.error("알림 읽음 처리 실패:", err);
       }
@@ -112,6 +141,7 @@ const MyNotificationPage = () => {
     return list.map((n, idx, arr) => (
       <div
         key={n.notificationId}
+        ref={idx === arr.length - 1 ? lastElementRef : null} 
         className={`flex justify-between items-center px-6 py-4 cursor-pointer hover:bg-[#FAFAFA] ${
           idx !== arr.length - 1 ? "border-b border-[#EAE5E2]" : ""
         }`}
@@ -136,7 +166,6 @@ const MyNotificationPage = () => {
 
   return (
     <div className="flex w-full h-screen bg-[#FAFAFA] overflow-hidden">
-      {/* 최상단 에러 메시지 */}
       {isError && (
         <div className="p-6">
           <p className="text-red-500">
@@ -156,7 +185,7 @@ const MyNotificationPage = () => {
                 <h3 className="text-[20px] font-semibold text-[#2C2C2C]">오늘</h3>
                 <button
                   className="text-[#8D8D8D] text-sm hover:underline cursor-pointer"
-                  onClick={() => setShowSettingModal(true)} 
+                  onClick={() => setShowSettingModal(true)}
                 >
                   알림 설정
                 </button>
@@ -174,6 +203,16 @@ const MyNotificationPage = () => {
                 <h3 className="text-[20px] font-semibold text-[#2C2C2C] mb-4">최근 7일</h3>
                 <div className="bg-white rounded-[8px]">{renderList(weekList)}</div>
               </section>
+
+              {/* 로딩 */}
+              {isFetching && (
+                <p className="text-center text-gray-400 py-4">불러오는 중...</p>
+              )}
+
+              {/* 끝 */}
+              {!hasNext && (
+                <p className="text-center text-gray-400 py-4">더 이상 알림 없음</p>
+              )}
             </div>
           </main>
         )}
@@ -200,7 +239,7 @@ const MyNotificationPage = () => {
         ]}
       />
 
-      {/* 에러 모달 (400 / 404) */}
+      {/* 에러 모달 */}
       <Modal
         isOpen={errorModal.open}
         title={errorModal.message || "알림 오류"}
