@@ -1,31 +1,27 @@
 import { useState } from "react";
 import MyPageHeader from "../../../../components/MyPageHeader";
 import { useNavigate } from "react-router-dom";
-import AlertModal from "../../../../components/AlertModal";
-import { useMyClubsQuery, useLeaveClub } from "../../../../hooks/My/useMember"; 
+import Modal from "../../../../components/Modal"; 
+import { useMyClubsQuery, useLeaveClub } from "../../../../hooks/My/useMember";
 import type { ClubItem } from "../../../../types/My/member";
 
 const MyGroupPage = () => {
-  const [showConfirmModal, setShowConfirmModal] = useState(false); 
-  const [showResultModal, setShowResultModal] = useState(false);  
+  const [showConfirmModal, setShowConfirmModal] = useState(false);
+  const [showResultModal, setShowResultModal] = useState(false);
   const [showErrorModal, setShowErrorModal] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
   const [selectedGroupId, setSelectedGroupId] = useState<number | null>(null);
   const [errorImages, setErrorImages] = useState<Record<number, boolean>>({});
-  const [isLeaving, setIsLeaving] = useState(false); 
+  const [isLeaving, setIsLeaving] = useState(false);
   const navigate = useNavigate();
 
-  // 첫 페이지 호출
   const { data, isFetching, isError, refetch } = useMyClubsQuery(null);
-
-  // 탈퇴 훅
   const leaveClubMutation = useLeaveClub();
 
   const handleGroupClick = (id: number) => {
     navigate(`/bookclub/${id}/home`);
   };
 
-  // 탈퇴 실행
   const confirmLeaveGroup = () => {
     if (!selectedGroupId || isLeaving) return;
     setIsLeaving(true);
@@ -56,7 +52,6 @@ const MyGroupPage = () => {
     });
   };
 
-  // 이미지 경로 처리 함수
   const getImageUrl = (url: string | null) => {
     if (!url) return null;
     return url.startsWith("http")
@@ -75,7 +70,6 @@ const MyGroupPage = () => {
       <div className="flex-1 flex flex-col pt-[96px] overflow-hidden">
         <main className="flex-1 overflow-y-auto">
           <div className="px-4 md:px-10 py-8 flex flex-col items-center min-h-full">
-
             {/* 모임 목록 */}
             <div className="w-full space-y-4 flex flex-col">
               {data?.clubList?.map((group: ClubItem) => {
@@ -88,7 +82,6 @@ const MyGroupPage = () => {
                     className="w-full flex flex-col md:flex-row justify-between bg-white border border-[#EAE5E2] rounded-[16px] px-4 md:px-6 py-4 shadow-sm cursor-pointer hover:bg-[#FAFAFA]"
                     onClick={() => handleGroupClick(group.clubId)}
                   >
-                    {/* 왼쪽: 프로필 사진 + 텍스트 */}
                     <div className="flex gap-4 md:gap-6">
                       <div className="bg-gray-200 rounded-[16px] overflow-hidden w-[80px] h-[100px] md:w-[119px] md:h-[119px] flex-shrink-0 flex items-center justify-center">
                         {!isErrorImage ? (
@@ -132,7 +125,6 @@ const MyGroupPage = () => {
                       </div>
                     </div>
 
-                    {/* 오른쪽: 탈퇴 버튼 */}
                     <div className="flex justify-end md:items-end mt-4 md:mt-0">
                       <button
                         onClick={(e) => {
@@ -156,7 +148,6 @@ const MyGroupPage = () => {
               )}
             </div>
 
-            {/* 하단 고정 문구 */}
             <p className="mt-auto text-center text-gray-500 py-4">
               모임이 더 이상 없습니다.
             </p>
@@ -164,35 +155,58 @@ const MyGroupPage = () => {
         </main>
       </div>
 
-      {/* 확인 모달 */}
-      {showConfirmModal && (
-        <AlertModal
-          message="정말 탈퇴 하시겠습니까?"
-          onConfirm={confirmLeaveGroup}
-          onClose={() => {
-            setShowConfirmModal(false);
-            setSelectedGroupId(null);
-          }}
-        />
-      )}
+      {/* 탈퇴 확인 모달 */}
+      <Modal
+        isOpen={showConfirmModal}
+        title="정말 탈퇴 하시겠습니까?"
+        buttons={[
+          {
+            label: "취소",
+            onClick: () => {
+              setShowConfirmModal(false);
+              setSelectedGroupId(null);
+            },
+            variant: "outline",
+          },
+          {
+            label: "탈퇴",
+            onClick: confirmLeaveGroup,
+            variant: "danger",
+          },
+        ]}
+        onBackdrop={() => {
+          setShowConfirmModal(false);
+          setSelectedGroupId(null);
+        }}
+      />
 
       {/* 결과 모달 */}
-      {showResultModal && (
-        <AlertModal
-          message="탈퇴되었습니다."
-          onConfirm={() => setShowResultModal(false)}
-          onClose={() => setShowResultModal(false)} 
-        />
-      )}
+      <Modal
+        isOpen={showResultModal}
+        title="탈퇴되었습니다."
+        buttons={[
+          {
+            label: "확인",
+            onClick: () => setShowResultModal(false),
+            variant: "primary",
+          },
+        ]}
+        onBackdrop={() => setShowResultModal(false)}
+      />
 
       {/* 에러 모달 */}
-      {showErrorModal && (
-        <AlertModal
-          message={errorMessage}
-          onConfirm={() => setShowErrorModal(false)}
-          onClose={() => setShowErrorModal(false)}
-        />
-      )}
+      <Modal
+        isOpen={showErrorModal}
+        title={errorMessage}
+        buttons={[
+          {
+            label: "확인",
+            onClick: () => setShowErrorModal(false),
+            variant: "primary",
+          },
+        ]}
+        onBackdrop={() => setShowErrorModal(false)}
+      />
     </div>
   );
 };
