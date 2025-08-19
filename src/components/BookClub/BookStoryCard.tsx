@@ -1,8 +1,7 @@
 import React, { useState } from "react";
 import checker from "../../assets/images/checker.png";
-import emptyHeartIcon from "../../assets/icons/heart_empty.png";
-import filledHeartIcon from "../../assets/icons/heart_filled.png";
-// heartIcon 제거 (SVG로 대체)
+import emptyHeartIcon from "../../assets/icons/heart_empty_bigger.png";
+import filledHeartIcon from "../../assets/icons/heart_filled_noLine.png";
 import sirenIcon from "../../assets/images/siren.png";
 import { toggleBookStoryLike } from "../../apis/BookStory/bookstories";
 
@@ -31,7 +30,7 @@ export default function BookStoryCard({
   onClick,
   bookStoryId,
 }: BookStoryCardProps): React.ReactElement {
-  // API에서 받을 이미지 URL 사용 (더미 데이터와 동일한 구조)
+
   const avatar = userImage || "/default-avatar.png";
   
   // 좋아요 상태 관리
@@ -140,8 +139,8 @@ export default function BookStoryCard({
                   src={liked ? filledHeartIcon : emptyHeartIcon}
                   alt={liked ? "liked" : "not liked"}
                   className="cursor-pointer"
-                  width={19}
-                  height={19}
+                  width={24}
+                  height={24}
                 />
                 <span
                   className="
