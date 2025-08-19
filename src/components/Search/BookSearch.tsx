@@ -81,7 +81,7 @@ export default function BookSearch({
       {/* 검색 결과 리스트 (스크롤은 내부에서만, 바는 숨김) */}
       {Searchbooks.length > 0 && (
         <div
-          className="mt-[42px] mx-5 flex flex-col overflow-y-auto space-y-6"
+          className="pt-[42px] px-5 flex flex-col overflow-y-auto space-y-6"
           style={{
             msOverflowStyle: "none",
             height: `calc(100vh - ${SearchResultHeight}px)`,
@@ -91,59 +91,61 @@ export default function BookSearch({
           {Searchbooks.map((SearchBook) => (
             <div
               key={SearchBook.isbn}
-              className="flex border-2 border-[var(--sub-color-2-brown,#EAE5E2)] rounded-2xl bg-[var(--White,#FFF)] shadow-sm"
+              className=""
             >
-              {/* 좌측 */}
-              <div className="flex-1 flex p-[10px] gap-[20px]">
-                {/* 썸네일 */}
-                <div className="w-[136px] h-[192px] rounded-2xl overflow-hidden bg-gray-200 flex items-center justify-center">
-                  <img
-                    src={SearchBook.imgUrl}
-                    alt={SearchBook.title}
-                    className="w-full h-full object-cover"
-                  />
-                </div>
-                {/* 텍스트 그룹 컨테이너 */}
-                <div className="flex-1 flex flex-col ">
-                  {/* 아이콘 + 제목/저자 */}
-                  <div className="flex items-start gap-[5px] mb-4">
-                    <img src="/assets/책 제목.svg" className="w-6 h-6" />
-                    <div className="flex gap-[10px] items-center">
-                      <h2 className="font-[Pretendard] font-medium text-[18px] leading-[135%]">
-                        {SearchBook.title}
-                      </h2>
-                    </div>
+              <div className = "flex border-2 border-[var(--sub-color-2-brown,#EAE5E2)] rounded-2xl bg-[var(--White,#FFF)] shadow-sm  hover:shadow-lg hover:scale-[1.03]">
+                  {/* 좌측 */}
+                <div className="flex-1 flex p-[10px] gap-[20px]">
+                  {/* 썸네일 */}
+                  <div className="w-[136px] h-[192px] rounded-2xl overflow-hidden bg-gray-200 flex items-center justify-center">
+                    <img
+                      src={SearchBook.imgUrl}
+                      alt={SearchBook.title}
+                      className="w-full h-full object-cover"
+                    />
                   </div>
-                  {/* 출판사*/}
-                  <span className="font-[Pretendard] font-semibold text-[12px] text-[#8D8D8D]">
-                    {SearchBook.author} | 출판 {SearchBook.publisher}
-                  </span>
-                  {/* 요약 */}
-                  <p className="font-[Pretendard] font-semibold text-[12px] mt-5">
-                    {SearchBook.description}
-                  </p>
+                  {/* 텍스트 그룹 컨테이너 */}
+                  <div className="flex-1 flex flex-col ">
+                    {/* 아이콘 + 제목/저자 */}
+                    <div className="flex items-start gap-[5px] mb-4">
+                      <img src="/assets/책 제목.svg" className="w-6 h-6" />
+                      <div className="flex gap-[10px] items-center">
+                        <h2 className="font-[Pretendard] font-medium text-[18px] leading-[135%]">
+                          {SearchBook.title}
+                        </h2>
+                      </div>
+                    </div>
+                    {/* 출판사*/}
+                    <span className="font-[Pretendard] font-semibold text-[12px] text-[#8D8D8D]">
+                      {SearchBook.author} | 출판 {SearchBook.publisher}
+                    </span>
+                    {/* 요약 */}
+                    <p className="font-[Pretendard] font-semibold text-[12px] mt-5">
+                      {SearchBook.description}
+                    </p>
+                  </div>
                 </div>
-              </div>
-              {/* 우측: 버튼 영역 */}
-              <div className="flex flex-col items-center p-[10px] gap-[10px]">
-                {actions?.map((action: Action, i) => (
-                  <button
-                    key={i}
-                    onClick={() => action.onClick(SearchBook)}
-                    className={` w-[105px] h-[35px] text-[12px] py-[5px] px-[12px] rounded-[16px] flex items-center justify-center font-[Pretendard] font-medium text-[12px] leading-[145%] ${
-                      action.className ?? ""
-                    }`}
-                  >
-                    {action.iconUrl && (
-                      <img
-                        src={action.iconUrl}
-                        alt={action.label}
-                        className="w-4 h-4 mr-[9px] "
-                      />
-                    )}
-                    {action.label}
-                  </button>
-                ))}
+                {/* 우측: 버튼 영역 */}
+                <div className="flex flex-col items-center p-[10px] gap-[10px]">
+                  {actions?.map((action: Action, i) => (
+                    <button
+                      key={i}
+                      onClick={() => action.onClick(SearchBook)}
+                      className={` w-[105px] h-[35px] text-[12px] py-[5px] px-[12px] rounded-[16px] flex items-center justify-center font-[Pretendard] font-medium text-[12px] leading-[145%] ${
+                        action.className ?? ""
+                      }`}
+                    >
+                      {action.iconUrl && (
+                        <img
+                          src={action.iconUrl}
+                          alt={action.label}
+                          className="w-4 h-4 mr-[9px] "
+                        />
+                      )}
+                      {action.label}
+                    </button>
+                  ))}
+                </div>
               </div>
             </div>
           ))}

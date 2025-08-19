@@ -86,7 +86,7 @@ const RegisterAdminPage = () => {
         <div key={member.clubMemberId} className="px-4 mb-10 ">
           <div className="flex justify-between mb-4">
             <div className="flex items-center">
-              <img src={member.basicInfo.profileImageUrl || "https://via.placeholder.com/40"} alt="profile" className="w-12 h-12 rounded-full mr-4" />
+              <img src={member.basicInfo.profileImageUrl || "/public/assets/ix_user-profile-filled.svg"} alt="profile" className="w-12 h-12 rounded-full mr-4" />
               <div>
                 <p className="text-lg font-semibold">{member.basicInfo.nickname}</p>
               </div>
@@ -98,13 +98,13 @@ const RegisterAdminPage = () => {
               onClick={() =>{ navigate(`/info/others/${member.basicInfo.nickname}`) }}>
                 프로필 방문하기
               </button>
-              <button className="px-4 py-1.5 rounded-full text-sm bg-[#EFF5ED] border border-[#90D26D] text-[#367216] hover:bg-[#90D26D] hover:text-white"
+              <button className="w-[90px] px-4 py-1.5 rounded-full text-sm bg-[#EFF5ED] border border-[#90D26D] text-[#367216] hover:bg-[#90D26D] hover:text-white"
               onClick={() => {
                 handleMemberStatus(member.clubMemberId, 'MEMBER');
               }}>
                 승인하기
               </button>
-              <button className="px-4 py-1.5 rounded-full text-sm bg-[#EFF5ED] border border-[#90D26D] text-[#367216] hover:bg-[#90D26D] hover:text-white"
+              <button className="w-[90px] px-4 py-1.5 rounded-full text-sm bg-[#EFF5ED] border border-[#90D26D] text-[#367216] hover:bg-[#90D26D] hover:text-white"
               onClick={() => {
                 handleMemberStatus(member.clubMemberId, 'BLOCKED');
               }}>

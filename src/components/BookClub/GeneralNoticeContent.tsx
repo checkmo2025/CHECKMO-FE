@@ -7,7 +7,7 @@ interface GeneralNoticeContentProps {
 
 export default function GeneralNoticeContent({ data }: GeneralNoticeContentProps): React.ReactElement {
   return (
-    <div className="w-[1080px] h-[622px] p-[20px] border-[2px] border-[#EAE5E2] rounded-[16px] mb-[36px]">
+    <div className="w-[1080px] h-[622px] p-[20px] border-[2px] border-[#EAE5E2] rounded-[16px] mb-[36px] ml-1">
       {/* 제목 영역 */}
         <div className="w-full h-[57px] border-b-[2px] border-[#EEEEEE] mb-[20px]">
           <h3 className="pt-[10px] pb-[20px] pl-[23.5px] font-pretendard font-semibold text-[20px] leading-[145%] tracking-[-0.1%] text-[#000000] ">
