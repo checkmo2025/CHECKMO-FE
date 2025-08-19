@@ -168,8 +168,8 @@ const MySubscriptionPage = () => {
             <button
               className={`text-[16px] font-semibold pb-1 border-b-2 ${
                 activeTab === "followers"
-                  ? "text-[#2C2C2C] border-[#90D26D]"
-                  : "text-gray-400 border-transparent"
+                  ? "text-[#2C2C2C] border-[#90D26D] cursor-pointer"
+                  : "text-gray-400 border-transparent cursor-pointer"
               }`}
               onClick={() => setActiveTab("followers")}
             >
@@ -178,8 +178,8 @@ const MySubscriptionPage = () => {
             <button
               className={`text-[16px] font-semibold pb-1 border-b-2 ${
                 activeTab === "following"
-                  ? "text-[#2C2C2C] border-[#90D26D]"
-                  : "text-gray-400 border-transparent"
+                  ? "text-[#2C2C2C] border-[#90D26D] cursor-pointer"
+                  : "text-gray-400 border-transparent cursor-pointer"
               }`}
               onClick={() => setActiveTab("following")}
             >
