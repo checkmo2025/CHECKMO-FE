@@ -24,7 +24,7 @@ const BookRecommendSearchPage = () => {
   ];
 
   return (
-    <div className="flex flex-col mx-10 my-7">
+    <div className="flex flex-col px-10 py-7">
       <Header pageTitle="책 추천하기" customClassName="mb-10" />
       <div className="flex-grow">
         <BookSearch SearchResultHeight={272} actions={actions} />
