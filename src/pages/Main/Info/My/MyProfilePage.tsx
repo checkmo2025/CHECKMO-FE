@@ -7,7 +7,7 @@ import { uploadImage } from "../../../../apis/imageApi";
 type CategoryEntry = { id: number; name: string };
 
 const MyProfilePage = () => {
-  const { data: me, isLoading } = useMyProfileQuery();
+  const { data: me, isLoading, isError } = useMyProfileQuery(); 
   const { mutate: updateProfile, isPending } = useUpdateMyProfile();
 
   const [nickname, setNickname] = useState("");
@@ -77,7 +77,7 @@ const MyProfilePage = () => {
     if (!isEditing) return;
     setUseDefaultImage(true);
     setPendingFile(null);
-    setTempProfileImage("/assets/basic_profile.png"); // ✅ 기본 이미지
+    setTempProfileImage("/assets/basic_profile.png"); 
   };
 
   const handleKeywordToggle = (keyword: string) => {
@@ -123,7 +123,17 @@ const MyProfilePage = () => {
     }
   };
 
+  //  로딩 상태
   if (isLoading) return <div className="p-10">불러오는 중...</div>;
+
+  //  에러 상태 (로그인 필요)
+  if (isError) {
+    return (
+      <div className="p-10 text-red-500">
+        프로필 정보를 불러올 수 없습니다. (로그인이 필요합니다)
+      </div>
+    );
+  }
 
   return (
     <div className="flex w-full min-h-screen bg-[#FAFAFA]">
@@ -143,7 +153,7 @@ const MyProfilePage = () => {
                     <img src={tempProfileImage} alt="프로필" className="w-full h-full object-cover" />
                   ) : (
                     <img
-                      src="/assets/basic_profile.png" 
+                      src="/assets/basic_profile.png"
                       alt="기본 프로필"
                       className="w-full h-full object-cover"
                     />

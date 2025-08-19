@@ -7,8 +7,8 @@ const MyNotificationPage = () => {
   const [todayList, setTodayList] = useState<NotificationItem[]>([]);
   const [yesterdayList, setYesterdayList] = useState<NotificationItem[]>([]);
   const [weekList, setWeekList] = useState<NotificationItem[]>([]);
+  const [isError, setIsError] = useState(false);
 
-  // 날짜 분류 함수
   const groupNotificationsByDate = (list: NotificationItem[]) => {
     const today = new Date();
     const yesterday = new Date();
@@ -45,13 +45,14 @@ const MyNotificationPage = () => {
     setWeekList(weekArr);
   };
 
-  // 알림 목록 가져오기
   const fetchNotifications = async () => {
     try {
       const res: NotificationResponse = await getMyNotifications(null);
       groupNotificationsByDate(res.notifications);
+      setIsError(false);
     } catch (err) {
       console.error("알림 불러오기 실패:", err);
+      setIsError(true);
     }
   };
 
@@ -59,33 +60,30 @@ const MyNotificationPage = () => {
     fetchNotifications();
   }, []);
 
-  // 알림 읽음 처리
   const handleNotificationClick = async (n: NotificationItem) => {
     if (!n.read) {
       try {
         await readNotification(n.notificationId);
-        fetchNotifications(); // 다시 불러오기
+        fetchNotifications();
       } catch (err) {
         console.error("알림 읽음 처리 실패:", err);
       }
     }
   };
 
-  // 알림 메시지 생성 함수
   const getNotificationText = (item: NotificationItem) => {
     switch (item.notificationType) {
       case "LIKE":
         return `${item.senderNickname} 님이 내 책이야기에 좋아요를 눌렀습니다.`;
       case "FOLLOW":
-        return `${item.senderNickname} 님이 팔로잉을 시작했습니다.`; 
+        return `${item.senderNickname} 님이 팔로잉을 시작했습니다.`;
       case "JOIN_CLUB":
-        return `${item.targetName}에 가입되셨습니다.`; 
+        return `${item.targetName}에 가입되셨습니다.`;
       default:
         return "새로운 알림이 있습니다.";
     }
   };
 
-  // 알림 렌더링 공통
   const renderList = (list: NotificationItem[]) => {
     if (list.length === 0) {
       return <p className="text-center text-gray-400 py-4">알림이 없습니다.</p>;
@@ -106,7 +104,6 @@ const MyNotificationPage = () => {
             }`}
           />
           <div>
-            {/* 여기서는 문구 그대로 출력만 */}
             <p className="text-[14px] text-[#2C2C2C]">{getNotificationText(n)}</p>
             <p className="text-[12px] text-[#8D8D8D]">
               {new Date(n.createdAt).toLocaleString("ko-KR")}
@@ -119,35 +116,48 @@ const MyNotificationPage = () => {
 
   return (
     <div className="flex w-full h-screen bg-[#FAFAFA] overflow-hidden">
-      <MyPageHeader title="내 알림" />
-      <div className="flex-1 flex flex-col pt-[88px] overflow-hidden">
-        <main className="flex-1 overflow-y-auto">
-          <div className="px-10 py-8 space-y-8">
-            {/* 오늘 */}
-            <div className="flex justify-between items-center">
-              <h3 className="text-[20px] font-semibold text-[#2C2C2C]">오늘</h3>
-              <button
-                className="text-[#8D8D8D] text-sm hover:underline"
-                onClick={() => alert("알림 설정 페이지로 이동 예정")}
-              >
-                알림 설정
-              </button>
-            </div>
-            <div className="bg-white rounded-[8px]">{renderList(todayList)}</div>
-
-            {/* 어제 */}
-            <section>
-              <h3 className="text-[20px] font-semibold text-[#2C2C2C] mb-4">어제</h3>
-              <div className="bg-white rounded-[8px]">{renderList(yesterdayList)}</div>
-            </section>
-
-            {/* 최근 7일 */}
-            <section>
-              <h3 className="text-[20px] font-semibold text-[#2C2C2C] mb-4">최근 7일</h3>
-              <div className="bg-white rounded-[8px]">{renderList(weekList)}</div>
-            </section>
+      
+        {/* 최상단 에러 메시지 */}
+        {isError && (
+          <div className="p-6">
+            <p className="text-red-500">
+              내 알림 정보를 불러오는데 실패했습니다. (로그인이 필요합니다)
+            </p>
           </div>
-        </main>
+        )}
+        
+      <div className="flex-1 flex flex-col pt-[88px] overflow-hidden">
+        {!isError && (
+          <main className="flex-1 overflow-y-auto">
+            <div className="px-10 py-8 space-y-8">
+              <MyPageHeader title="내 알림" />
+
+              {/* 오늘 */}
+              <div className="flex justify-between items-center">
+                <h3 className="text-[20px] font-semibold text-[#2C2C2C]">오늘</h3>
+                <button
+                  className="text-[#8D8D8D] text-sm hover:underline"
+                  onClick={() => alert("알림 설정 페이지로 이동 예정")}
+                >
+                  알림 설정
+                </button>
+              </div>
+              <div className="bg-white rounded-[8px]">{renderList(todayList)}</div>
+
+              {/* 어제 */}
+              <section>
+                <h3 className="text-[20px] font-semibold text-[#2C2C2C] mb-4">어제</h3>
+                <div className="bg-white rounded-[8px]">{renderList(yesterdayList)}</div>
+              </section>
+
+              {/* 최근 7일 */}
+              <section>
+                <h3 className="text-[20px] font-semibold text-[#2C2C2C] mb-4">최근 7일</h3>
+                <div className="bg-white rounded-[8px]">{renderList(weekList)}</div>
+              </section>
+            </div>
+          </main>
+        )}
       </div>
     </div>
   );

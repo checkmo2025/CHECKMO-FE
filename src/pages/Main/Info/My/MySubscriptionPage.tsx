@@ -13,12 +13,18 @@ const MySubscriptionPage = () => {
   const [activeTab, setActiveTab] = useState<"followers" | "following">("followers");
 
   // 구독 중(팔로잉) 목록
-  const { data: followingData, isFetching: followingLoading, isError: followingError } =
-    useMyFollowingQuery(null);
+  const {
+    data: followingData,
+    isFetching: followingLoading,
+    isError: followingError,
+  } = useMyFollowingQuery(null);
 
   // 구독자(팔로워) 목록
-  const { data: followerData, isFetching: followerLoading, isError: followerError } =
-    useMyFollowerQuery(null);
+  const {
+    data: followerData,
+    isFetching: followerLoading,
+    isError: followerError,
+  } = useMyFollowerQuery(null);
 
   // 언팔로우 & 팔로워 삭제 훅
   const unfollowMutation = useUnfollowMember();
@@ -39,7 +45,11 @@ const MySubscriptionPage = () => {
   /** 구독 중(팔로잉) 리스트 렌더 */
   const renderFollowingList = () => {
     if (followingError) {
-      return <p className="text-center text-red-500">구독 목록을 불러오는데 실패했습니다.</p>;
+      return (
+        <p className="text-center text-red-500">
+          구독 목록을 불러오는데 실패했습니다. (로그인이 필요합니다)
+        </p>
+      );
     }
     if (!followingData) return null;
 
@@ -67,7 +77,11 @@ const MySubscriptionPage = () => {
                     className="rounded-full w-9 h-9 object-cover"
                   />
                 ) : (
-                  <div className="bg-gray-300 rounded-full w-9 h-9" />
+                  <img
+                    src="/assets/basic_profile.png"
+                    alt="기본 프로필"
+                    className="rounded-full w-9 h-9 object-cover"
+                  />
                 )}
                 <p className="text-[#2C2C2C] text-[18px] font-medium">{user.nickname}</p>
               </div>
@@ -101,7 +115,11 @@ const MySubscriptionPage = () => {
   /** 구독자(팔로워) 리스트 렌더 */
   const renderFollowerList = () => {
     if (followerError) {
-      return <p className="text-center text-red-500">구독자 목록을 불러오는데 실패했습니다.</p>;
+      return (
+        <p className="text-center text-red-500">
+          구독자 목록을 불러오는데 실패했습니다.
+        </p>
+      );
     }
     if (!followerData) return null;
 
@@ -157,6 +175,18 @@ const MySubscriptionPage = () => {
       </section>
     );
   };
+
+  if (followingError && followerError) {
+    return (
+      <div className="flex w-full h-screen bg-[#FAFAFA] overflow-hidden">
+          <div className="p-6">
+            <p className="text-red-500">
+              내 구독 정보를 불러오는데 실패했습니다. (로그인이 필요합니다)
+            </p>
+          </div>
+      </div>
+    );
+  }
 
   return (
     <div className="flex w-full h-screen bg-[#FAFAFA] overflow-hidden">
