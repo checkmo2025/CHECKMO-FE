@@ -77,30 +77,30 @@ export default function HomePage() {
 
   // 무한 스크롤 Intersection Observer
   useEffect(() => {
-    if (!scrollContainerRef.current) return;
+    const root = scrollContainerRef.current;
+    if (!root) return;
 
-    const options = {
-      root: scrollContainerRef.current,
-      rootMargin: "100px",
-      threshold: 0,
-    };
+    // 기존 옵저버 정리
+    observerRef.current?.disconnect();
 
-    observerRef.current = new IntersectionObserver((entries) => {
-      entries.forEach((entry) => {
-        if (entry.isIntersecting) {
-          loadBookStories();
-        }
-      });
-    }, options);
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            loadBookStories();
+          }
+        });
+      },
+      { root, rootMargin: "100px", threshold: 0 }
+    );
+
+    observerRef.current = observer;
 
     const sentinel = document.getElementById("book-story-sentinel");
-    if (sentinel) observerRef.current.observe(sentinel);
+    if (sentinel) observer.observe(sentinel);
 
-    return () => {
-      if (observerRef.current && sentinel)
-        observerRef.current.unobserve(sentinel);
-    };
-  }, [loadBookStories, bookStories]);
+    return () => observer.disconnect();
+  }, [loadBookStories]);
 
   return (
     <div className="absolute left-[315px] right-[42px] opacity-100">
