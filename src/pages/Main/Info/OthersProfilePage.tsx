@@ -86,7 +86,11 @@ const OthersProfilePage = () => {
                   className="w-[40px] h-[40px] rounded-full object-cover"
                 />
               ) : (
-                <div className="w-[40px] h-[40px] bg-gray-300 rounded-full" />
+                <img
+                  src="/assets/basic_profile.png"
+                  alt="기본 프로필"
+                  className="w-[40px] h-[40px] rounded-full bg-white object-cover scale-110"
+                />
               )}
               <p className="text-[18px] font-semibold text-[#2C2C2C]">
                 {profile?.nickname ?? userId}님
@@ -157,7 +161,11 @@ const OthersProfilePage = () => {
                         className="w-[24px] h-[24px] rounded-full object-cover"
                       />
                     ) : (
-                      <div className="w-[24px] h-[24px] bg-gray-300 rounded-full" />
+                      <img
+                        src="/assets/basic_profile.png"
+                        alt="기본 프로필"
+                        className="w-[24px] h-[24px] rounded-full bg-white object-cover scale-110"
+                      />
                     )}
                     <p className="text-[14px] text-[#8D8D8D]">
                       {book.authorInfo.nickname}
