@@ -71,19 +71,17 @@ const MyNotificationPage = () => {
     }
   };
 
-  // 알림 텍스트 변환
-  const getNotificationText = (n: NotificationItem) => {
-    switch (n.notificationType) {
-      case "FOLLOW":
-        return "님이 구독했습니다.";
+  // 알림 메시지 생성 함수
+  const getNotificationText = (item: NotificationItem) => {
+    switch (item.notificationType) {
       case "LIKE":
-        return "님이 책 이야기에 좋아요를 눌렀습니다.";
-      case "COMMENT":
-        return "님이 댓글을 남겼습니다.";
+        return `${item.senderNickname} 님이 내 책이야기에 좋아요를 눌렀습니다.`;
+      case "FOLLOW":
+        return `${item.senderNickname} 님이 팔로잉을 시작했습니다.`; 
       case "JOIN_CLUB":
-        return "님이 클럽에 가입했습니다.";
+        return `${item.targetName}에 가입되셨습니다.`; 
       default:
-        return "";
+        return "새로운 알림이 있습니다.";
     }
   };
 
@@ -96,7 +94,7 @@ const MyNotificationPage = () => {
     return list.map((n, idx, arr) => (
       <div
         key={n.notificationId}
-        className={`flex justify-between items-center px-6 py-4 cursor-pointer ${
+        className={`flex justify-between items-center px-6 py-4 cursor-pointer hover:bg-[#FAFAFA] ${
           idx !== arr.length - 1 ? "border-b border-[#EAE5E2]" : ""
         }`}
         onClick={() => handleNotificationClick(n)}
@@ -108,10 +106,8 @@ const MyNotificationPage = () => {
             }`}
           />
           <div>
-            <p className="text-[14px] text-[#2C2C2C]">
-              {n.senderNickname}{" "}
-              <span className="font-medium">{getNotificationText(n)}</span>
-            </p>
+            {/* 여기서는 문구 그대로 출력만 */}
+            <p className="text-[14px] text-[#2C2C2C]">{getNotificationText(n)}</p>
             <p className="text-[12px] text-[#8D8D8D]">
               {new Date(n.createdAt).toLocaleString("ko-KR")}
             </p>
