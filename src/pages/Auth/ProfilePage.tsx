@@ -290,9 +290,9 @@ const ProfilePage = () => {
                         isNicknameAvailable === false
                           ? "text-[#FF8045]"
                           : isNicknameAvailable === true
-                          ? "text-[#90D26D]"
-                          : "text-[#FF8045]"
-                      }`}
+                            ? "text-[#90D26D]"
+                            : "text-[#FF8045]"
+                        }`}
                     >
                       {nicknameMessage}
                     </p>
