@@ -5,6 +5,7 @@ import Modal from "../../components/Modal";
 import type { SearchBook, Action } from "../../types/BookSearchdto";
 import { useCreateClubMeeting } from "../../hooks/useClubMeeting";
 import type { CreateClubMeeting } from "../../types/clubMeeting";
+import { NonProfileHeader } from "../../components/NonProfileHeader";
 
 type MeetingFormState = {
   tag: string;
@@ -22,6 +23,8 @@ const MeetingCreatePage = () => {
 
   const [isSelected, setIsSelected] = useState(false);
   const [selectedBook, setSelectedBook] = useState<SearchBook | null>(null);
+  const [successModalOpen, setSuccessModalOpen] = useState(false);
+  const [createdMeetingId, setCreatedMeetingId] = useState<number | null>(null);
 
   // 폼 상태를 하나의 객체로 관리
   const [formState, setFormState] = useState<MeetingFormState>({
@@ -71,13 +74,21 @@ const MeetingCreatePage = () => {
       const end = target.selectionEnd;
       const newValue =
         formState.content.substring(0, start) +
-        "\t" +
+        "	" +
         formState.content.substring(end);
       setFormState((prev) => ({ ...prev, content: newValue }));
       requestAnimationFrame(() => {
         target.selectionStart = target.selectionEnd = start + 1;
       });
     }
+  };
+
+  const handleSuccessConfirm = () => {
+    setSuccessModalOpen(false);
+    const navigateTo = createdMeetingId
+      ? `/bookclub/${clubId}/meeting/${createdMeetingId}`
+      : `/bookclub/${clubId}/meeting`;
+    navigate(navigateTo);
   };
 
   const handleSubmit = useCallback(() => {
@@ -111,39 +122,41 @@ const MeetingCreatePage = () => {
     createMeeting(payload, {
       onSuccess: (data: any) => {
         const createdId = data?.result?.meetingId ?? data?.meetingId;
-        if (createdId) {
-          navigate(`/bookclub/${clubId}/meeting/${createdId}`);
-        } else {
-          navigate(`/bookclub/${clubId}/meeting`);
-        }
+        setCreatedMeetingId(createdId ?? null);
+        setSuccessModalOpen(true);
       },
       onError: (err) => {
         console.error(err);
         showAlert("모임 생성에 실패했습니다. 다시 시도해주세요.");
       },
     });
-  }, [clubId, isSelected, selectedBook, formState, createMeeting, navigate]);
+  }, [clubId, isSelected, selectedBook, formState, createMeeting]);
 
   return (
-    <div className="mx-10 mt-15">
+    <div className="mx-10">
       <Modal
         isOpen={modal.isOpen}
         title={modal.message}
         buttons={[{ label: "확인", onClick: closeModal }]}
         onBackdrop={closeModal}
       />
+      <Modal
+        isOpen={successModalOpen}
+        title="등록이 완료되었습니다."
+        buttons={[{ label: "확인", onClick: handleSuccessConfirm }]}
+        onBackdrop={handleSuccessConfirm}
+      />
 
-      <div onClick={() => navigate(-1)} className="flex items-center h-[38px] gap-[3px] cursor-pointer">
-        <img src="/assets/material-symbols_arrow-back-ios.svg" className="w-6 h-6" />
-        <span className="font-[Pretendard] font-bold text-[26px] leading-[135%]">
-          모임 생성하기
-        </span>
-      </div>
+      <NonProfileHeader title={"모임 생성하기"} />
 
-      {!isSelected && <BookSearch SearchResultHeight={290} actions={actions} />}
+      {!isSelected && (
+        <div className="min-w-[700px]">
+          <BookSearch SearchResultHeight={290} actions={actions} />
+        </div>
+      )}
 
       {isSelected && selectedBook && (
-        <div className="flex border-2 border-[var(--sub-color-2-brown,#EAE5E2)] rounded-2xl bg-white shadow-sm mt-9">
+        <div className="flex border-2 border-[var(--sub-color-2-brown,#EAE5E2)] rounded-2xl bg-white shadow-sm mt-9 min-w-[700px]">
           <div className="flex-1 flex p-[10px] gap-[20px]">
             <div className="w-[136px] h-[192px] rounded-2xl overflow-hidden bg-gray-200 flex items-center justify-center">
               <img
@@ -191,7 +204,7 @@ const MeetingCreatePage = () => {
         </div>
       )}
 
-      <div className="mt-5">
+      <div className="mt-5 min-w-[700px]">
         <label className="font-pretendard font-medium text-[18px] px-[6.5px]">
           기수
         </label>
@@ -207,7 +220,7 @@ const MeetingCreatePage = () => {
         </div>
       </div>
 
-      <div className="mt-5">
+      <div className="mt-5 min-w-[700px]">
         <label className="font-pretendard font-medium text-[18px] px-[6.5px]">
           종류
         </label>
@@ -224,7 +237,7 @@ const MeetingCreatePage = () => {
         </div>
       </div>
 
-      <div className="mt-5">
+      <div className="mt-5 min-w-[700px]">
         <label className="font-pretendard font-medium text-[18px] px-[6.5px]">
           날짜
         </label>
@@ -240,7 +253,7 @@ const MeetingCreatePage = () => {
         </div>
       </div>
 
-      <div className="mt-5">
+      <div className="mt-5 min-w-[700px]">
         <label className="font-pretendard font-medium text-[18px] px-[6.5px]">
           장소
         </label>
@@ -257,7 +270,7 @@ const MeetingCreatePage = () => {
         </div>
       </div>
 
-      <div className="w-full flex flex-col items-center p-5 gap-[20px] border-2 border-[var(--sub-color-2-brown,#EAE5E2)] rounded-[16px] bg-white mt-9">
+      <div className="w-full flex flex-col items-center p-5 gap-[20px] border-2 border-[var(--sub-color-2-brown,#EAE5E2)] rounded-[16px] bg-white my-9 min-w-[700px]">
         <input
           type="text"
           name="title"
@@ -279,7 +292,7 @@ const MeetingCreatePage = () => {
         <div className="flex items-center justify-end gap-4 w-full">
           <button
             type="button"
-            className="w-[105px] h-[35px] text-[12px] rounded-[16px] flex items-center justify-center font-[Pretendard] bg-white border-[1.5px] border-[var(--sub-color-1-brown,#BFAB96)]"
+            className="w-[105px] h-[35px] text-[12px] rounded-[16px] flex items-center justify-center font-[Pretendard] bg-white border-[1.5px] border-[var(--sub-color-1-brown,#BFAB96)] transition-colors duration-200 hover:bg-[#F4F2F1]"
             onClick={() => showAlert("임시저장 기능은 추후 구현 예정입니다.")}
           >
             임시저장
@@ -288,10 +301,10 @@ const MeetingCreatePage = () => {
           <button
             type="button"
             disabled={isPending}
-            className="w-[105px] h-[35px] text-[12px] rounded-[16px] flex items-center justify-center font-[Pretendard] bg-[var(--button-brown,#A6917E)] text-white disabled:opacity-60"
+            className="w-[105px] h-[35px] text-[12px] rounded-[16px] flex items-center justify-center font-[Pretendard] bg-[var(--button-brown,#A6917E)] text-white disabled:opacity-60 transition-colors duration-200 hover:bg-[#907E66]"
             onClick={handleSubmit}
           >
-            {isPending ? "생성 중…" : "생성"}
+            {isPending ? "생성 중…" : "생성하기"}
           </button>
         </div>
       </div>

@@ -74,7 +74,7 @@ const BookRecommendCreateCard = ({
   return (
     <>
       <div className="mx-auto mt-2 p-4">
-        <h1 className=" text-3xl font-bold">{bookInfo.title}</h1>
+        <h1 className=" text-3xl font-bold truncate">{bookInfo.title}</h1>
         <p className="mt-6 mb-4 text-sm text-gray-500">
           {bookInfo.author}
           {" | "}

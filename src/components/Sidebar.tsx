@@ -79,115 +79,115 @@ const Sidebar = () => {
 
   const menus: Menu[] = bookclubId
     ? [
-        {
-          name: bookclubName,
-          path: `/bookclub/${bookclubId}/home`,
-          icon: { green: homeGreen, gray: homeGray },
-          submenus: [
-            { name: "공지사항", path: `/bookclub/${bookclubId}/notices` },
-            { name: "책장", path: `/bookclub/${bookclubId}/shelf` },
-            {
-              name: "모임",
-              path: "#",
-              submenus: [
-                {
-                  name: "모임 전체보기",
-                  path: `/bookclub/${bookclubId}/meeting`,
-                },
-                { name: "이번 모임 바로가기", path: `/bookclub/this` },
-              ],
-            },
-            {
-              name: "책 추천",
-              path: "#",
-              submenus: [
-                {
-                  name: "책 추천 전체보기",
-                  path: `/bookclub/${bookclubId}/recommend`,
-                },
-                {
-                  name: "책 추천 하기",
-                  path: `/bookclub/recommend/create`,
-                },
-              ],
-            },
-          ],
-        },
-        {
-          name: "책 검색하기",
-          icon: { green: searchGreen, gray: searchGray },
-          submenus: [
-            { name: "통합검색", path: "/booksearch" },
-            { name: "국내도서", path: "/booksearch1" },
-            { name: "전자책", path: "/booksearch2" },
-          ],
-        },
-        {
-          name: "책 이야기",
-          icon: { green: bookstoryGreen, gray: bookstoryGray },
-          submenus: [
-            { name: "전체보기", path: "/bookstory" },
-            { name: "내 책 이야기", path: "/bookstory/my" },
-          ],
-        },
-        {
-          name: "마이페이지",
-          icon: { green: mypageGreen, gray: mypageGray },
-          submenus: [
-            { name: "내 모임", path: "/mypage/group" },
-            { name: "내 책 이야기", path: "/mypage/story" },
-            { name: "내 알림", path: "/mypage/notification" },
-            { name: "내 구독", path: "/mypage/subscription" },
-          ],
-        },
-      ]
+      {
+        name: bookclubName,
+        path: `/bookclub/${bookclubId}/home`,
+        icon: { green: homeGreen, gray: homeGray },
+        submenus: [
+          { name: "공지사항", path: `/bookclub/${bookclubId}/notices` },
+          { name: "책장", path: `/bookclub/${bookclubId}/shelf` },
+          {
+            name: "모임",
+            path: "#",
+            submenus: [
+              {
+                name: "모임 전체보기",
+                path: `/bookclub/${bookclubId}/meeting`,
+              },
+              { name: "이번 모임 바로가기", path: `/bookclub/this` },
+            ],
+          },
+          {
+            name: "책 추천",
+            path: "#",
+            submenus: [
+              {
+                name: "책 추천 전체보기",
+                path: `/bookclub/${bookclubId}/recommend`,
+              },
+              {
+                name: "책 추천 하기",
+                path: `/bookclub/${bookclubId}/recommend/search`,
+              },
+            ],
+          },
+        ],
+      },
+      {
+        name: "책 검색하기",
+        icon: { green: searchGreen, gray: searchGray },
+        submenus: [
+          { name: "통합검색", path: "/booksearch" },
+          { name: "국내도서", path: "/booksearch1" },
+          { name: "전자책", path: "/booksearch2" },
+        ],
+      },
+      {
+        name: "책 이야기",
+        icon: { green: bookstoryGreen, gray: bookstoryGray },
+        submenus: [
+          { name: "전체보기", path: "/bookstory" },
+          { name: "내 책 이야기", path: "/bookstory/my" },
+        ],
+      },
+      {
+        name: "마이페이지",
+        icon: { green: mypageGreen, gray: mypageGray },
+        submenus: [
+          { name: "내 모임", path: "/mypage/group" },
+          { name: "내 책 이야기", path: "/mypage/story" },
+          { name: "내 알림", path: "/mypage/notification" },
+          { name: "내 구독", path: "/mypage/subscription" },
+        ],
+      },
+    ]
     : [
-        {
-          name: "홈",
-          path: "/home",
-          icon: { green: homeGreen, gray: homeGray },
-          submenus: [],
-        },
-        {
-          name: "독서 모임",
-          icon: { green: bookclubGreen, gray: bookclubGray },
-          submenus: [
-            { name: "내 모임 바로가기", path: "#", isModal: true },
-            { name: "모임 검색하기", path: "/searchClub" },
-            { name: "모임 생성하기", path: "/createClub" },
-          ],
-        },
-        {
-          name: "책 검색하기",
-          path: "/booksearch",
-          icon: { green: searchGreen, gray: searchGray },
-          submenus: [
-            { name: "통합검색", path: "/booksearch" },
-            { name: "국내도서", path: "/booksearch1" },
-            { name: "전자책", path: "/booksearch2" },
-          ],
-        },
-        {
-          name: "책 이야기",
-          path: "/bookstory",
-          icon: { green: bookstoryGreen, gray: bookstoryGray },
-          submenus: [
-            { name: "전체보기", path: "/bookstory" },
-            { name: "내 책 이야기", path: "/bookstory/my" },
-          ],
-        },
-        {
-          name: "마이페이지",
-          path: "/mypage",
-          icon: { green: mypageGreen, gray: mypageGray },
-          submenus: [
-            { name: "내 모임", path: "/mypage/group" },
-            { name: "내 책 이야기", path: "/mypage/story" },
-            { name: "내 알림", path: "/mypage/notification" },
-            { name: "내 구독", path: "/mypage/subscription" },
-          ],
-        },
-      ];
+      {
+        name: "홈",
+        path: "/home",
+        icon: { green: homeGreen, gray: homeGray },
+        submenus: [],
+      },
+      {
+        name: "독서 모임",
+        icon: { green: bookclubGreen, gray: bookclubGray },
+        submenus: [
+          { name: "내 모임 바로가기", path: "#", isModal: true },
+          { name: "모임 검색하기", path: "/searchClub" },
+          { name: "모임 생성하기", path: "/createClub" },
+        ],
+      },
+      {
+        name: "책 검색하기",
+        path: "/booksearch",
+        icon: { green: searchGreen, gray: searchGray },
+        submenus: [
+          { name: "통합검색", path: "/booksearch" },
+          { name: "국내도서", path: "/booksearch1" },
+          { name: "전자책", path: "/booksearch2" },
+        ],
+      },
+      {
+        name: "책 이야기",
+        path: "/bookstory",
+        icon: { green: bookstoryGreen, gray: bookstoryGray },
+        submenus: [
+          { name: "전체보기", path: "/bookstory" },
+          { name: "내 책 이야기", path: "/bookstory/my" },
+        ],
+      },
+      {
+        name: "마이페이지",
+        path: "/mypage",
+        icon: { green: mypageGreen, gray: mypageGray },
+        submenus: [
+          { name: "내 모임", path: "/mypage/group" },
+          { name: "내 책 이야기", path: "/mypage/story" },
+          { name: "내 알림", path: "/mypage/notification" },
+          { name: "내 구독", path: "/mypage/subscription" },
+        ],
+      },
+    ];
 
   const toggleMenu = (menuName: string) => {
     setOpenMenus((prev) => {
@@ -406,9 +406,8 @@ const Sidebar = () => {
                   to={path ?? submenus[0]?.path ?? "#"}
                   end
                   style={{ color: getMenuTextColor(menu) }}
-                  className={`flex items-center gap-3 py-2 pl-3 pr-4 w-full rounded-r-lg cursor-pointer hover:bg-[#DDEED6] ${
-                    isTopMenuActive(menu) ? "border-l-4 border-[#93C27C]" : ""
-                  }`}
+                  className={`flex items-center gap-3 py-2 pl-3 pr-4 w-full rounded-r-lg cursor-pointer hover:bg-[#DDEED6] ${isTopMenuActive(menu) ? "border-l-4 border-[#93C27C]" : ""
+                    }`}
                   onClick={() => {
                     if (submenus.length > 0) toggleMenu(name);
                   }}

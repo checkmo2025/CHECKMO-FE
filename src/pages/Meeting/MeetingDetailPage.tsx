@@ -64,53 +64,54 @@ const MeetingDetailPage = () => {
   })();
 
   return (
-    <div className="mx-auto px-10 space-y-10">
+    <div className="mx-auto px-10">
       <NonProfileHeader title={meetingInfo.title} />
-
-      <div className="relative min-w-[700px]">
-        <MeetingCard
-          book={meetingInfo.bookInfo}
-          meetingDate={meetingInfo.meetingTime}
-          meetingPlace={meetingInfo.location}
-          tags={meetingInfo.tag}
-          generation={meetingInfo.generation}
-          className="flex min-w-[700px] px-4 pt-2 pb-8 bg-white mx-5 truncate"
-        />
-        <hr className="h-[2px] bg-[#EAE5E2] border-0" />
-        <a
-          href="#"
-          onClick={(e) => {
-            e.preventDefault();
-            navigate("manage", {
-              state: {
-                meetingTitle: meetingInfo.title,
-              },
-            });
-          }}
-          className="absolute right-4 bottom-5 text-[#8D8D8D] text-xs font-medium underline underline-offset-2 hover:text-[#907E66] cursor-pointer select-none"
-        >
-          조 관리하기
-        </a>
-      </div>
-
-      <div className="min-w-[700px]">
-        <TopicPreviewSection
-          previews={topics.slice(0, 4)}
-          onMoreClick={handleMoreTopics}
-        />
-      </div>
-      <hr className="h-[1px] bg-[#EAE5E2] border-0" />
-
-      {displayTeams.map((team) => (
-        <div key={team.teamNumber} className="min-w-[700px]">
-          <TeamTopicSection
-            teamNumber={team.teamNumber}
-            topics={(team.topics ?? []).slice(0, 4)}
-            onViewAllClick={() => handleViewAllTeamTopics(team)}
+      <section className="space-y-10">
+        <div className="relative min-w-[700px]">
+          <MeetingCard
+            book={meetingInfo.bookInfo}
+            meetingDate={meetingInfo.meetingTime}
+            meetingPlace={meetingInfo.location}
+            tags={meetingInfo.tag}
+            generation={meetingInfo.generation}
+            className="flex w-full min-w-[700px] px-4 pt-2 pb-8 bg-white mx-5 truncate"
           />
-          <hr className="h-[1px] bg-[#EAE5E2] border-0" />
+          <hr className="h-[2px] bg-[#EAE5E2] border-0" />
+          <a
+            href="#"
+            onClick={(e) => {
+              e.preventDefault();
+              navigate("manage", {
+                state: {
+                  meetingTitle: meetingInfo.title,
+                },
+              });
+            }}
+            className="absolute right-4 bottom-5 text-[#8D8D8D] text-xs font-medium underline underline-offset-2 hover:text-[#907E66] cursor-pointer select-none"
+          >
+            조 관리하기
+          </a>
         </div>
-      ))}
+
+        <div className="min-w-[700px]">
+          <TopicPreviewSection
+            previews={topics.slice(0, 4)}
+            onMoreClick={handleMoreTopics}
+          />
+        </div>
+        <hr className="h-[1px] bg-[#EAE5E2] border-0" />
+
+        {displayTeams.map((team) => (
+          <div key={team.teamNumber} className="min-w-[700px]">
+            <TeamTopicSection
+              teamNumber={team.teamNumber}
+              topics={(team.topics ?? []).slice(0, 4)}
+              onViewAllClick={() => handleViewAllTeamTopics(team)}
+            />
+            <hr className="h-[1px] bg-[#EAE5E2] border-0" />
+          </div>
+        ))}
+      </section>
     </div>
   );
 };

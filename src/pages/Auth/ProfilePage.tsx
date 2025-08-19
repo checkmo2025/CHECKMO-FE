@@ -60,8 +60,8 @@ const ProfilePage = () => {
       const picked = prev.includes(id)
         ? prev.filter((x) => x !== id)
         : prev.length < 15
-        ? [...prev, id]
-        : prev;
+          ? [...prev, id]
+          : prev;
       return picked;
     });
   };
@@ -250,9 +250,8 @@ const ProfilePage = () => {
                       setProfileFile(null);
                       setProfileImagePreview(null);
                     }}
-                    className={`px-3 py-1 rounded-full text-xs font-semibold ${
-                      useDefaultImage ? "bg-[#90D26D] text-white cursor-pointer" : "bg-[#EFF5ED] text-[#2C2C2C] cursor-pointer"
-                    }`}
+                    className={`px-3 py-1 rounded-full text-xs font-semibold ${useDefaultImage ? "bg-[#90D26D] text-white cursor-pointer" : "bg-[#EFF5ED] text-[#2C2C2C] cursor-pointer"
+                      }`}
                   >
                     기본 이미지 사용
                   </button>
@@ -286,8 +285,7 @@ const ProfilePage = () => {
                   </div>
                   {nicknameMessage && (
                     <p
-                      className={`mt-3 text-sm font-medium flex items-center gap-1 ${
-                        isNicknameAvailable === false
+                      className={`mt-3 text-sm font-medium flex items-center gap-1 ${isNicknameAvailable === false
                           ? "text-[#FF8045]"
                           : isNicknameAvailable === true
                             ? "text-[#90D26D]"
@@ -323,9 +321,8 @@ const ProfilePage = () => {
                   </div>
 
                   <div
-                    className={`overflow-hidden transition-all duration-500 ease-in-out ${
-                      isCategoryOpen ? "max-h-[400px] mt-3" : "max-h-0"
-                    }`}
+                    className={`overflow-hidden transition-all duration-500 ease-in-out ${isCategoryOpen ? "max-h-[400px] mt-3" : "max-h-0"
+                      }`}
                   >
                     <div className="grid grid-cols-3 gap-3">
                       {CATEGORY_LIST.map((c) => {
@@ -336,11 +333,10 @@ const ProfilePage = () => {
                             key={c.id}
                             onClick={() => toggleCategory(c.id)}
                             disabled={limitReached}
-                            className={`w-full min-w-[90px] h-10 rounded-full text-sm font-medium border transition ${
-                              picked
+                            className={`w-full min-w-[90px] h-10 rounded-full text-sm font-medium border transition ${picked
                                 ? "bg-[#F8FFEF] text-[#90D26D] border-[#90D26D]"
                                 : "bg-[#e6e4e4] text-[#8D8D8D] border-[#8D8D8D]"
-                            } ${limitReached ? "opacity-60 cursor-not-allowed" : "cursor-pointer"}`}
+                              } ${limitReached ? "opacity-60 cursor-not-allowed" : "cursor-pointer"}`}
                           >
                             {c.name}
                           </button>
