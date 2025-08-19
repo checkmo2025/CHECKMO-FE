@@ -251,7 +251,7 @@ const SignupPage = () => {
 
       <div className="flex-1 overflow-y-auto">
         <div className="flex flex-col items-center w-full min-h-screen px-6 py-20">
-          <div className="mb-16 text-center">
+          <div className="mb-8 text-center">
             <img 
               src="/assets/checkmo_font_logo.png"   
               alt="책모 로고" 
