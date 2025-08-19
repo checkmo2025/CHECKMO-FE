@@ -126,21 +126,25 @@ const Header = ({
 
         {/* 프로필 */}
         <div
-          onClick={() => navigate("/mypage/myprofile")}
+          onClick={() => navigate("/mypage")}
           className="flex gap-2 md:gap-3 items-center min-w-0 cursor-pointer"
         >
-          <div className="w-10 h-10 rounded-full shrink-0 overflow-hidden bg-gray-300 flex items-center justify-center">
+          <div className="w-10 h-10 rounded-full shrink-0 overflow-hidden bg-white flex items-center justify-center">
             {me?.profileImageUrl ? (
               <img
                 src={me.profileImageUrl}
                 alt={me?.nickname ? `${me.nickname}의 프로필` : "기본 프로필"}
                 className="w-full h-full object-cover"
                 onError={(e) => {
-                  (e.target as HTMLImageElement).style.display = "none";
+                  (e.target as HTMLImageElement).style.display = "/assets/basic_profile.png";
                 }}
               />
             ) : (
-              <span className="text-gray-400 text-lg">+</span>
+              <img
+                src="/assets/basic_profile.png"
+                alt="기본 프로필"
+                className="w-full h-full object-cover"
+              />
             )}
           </div>
           <div className="flex flex-col justify-center min-w-0">
