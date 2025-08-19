@@ -129,7 +129,11 @@ const MySubscriptionPage = () => {
                     className="rounded-full w-9 h-9 object-cover"
                   />
                 ) : (
-                  <div className="bg-gray-300 rounded-full w-9 h-9" />
+                  <img
+                    src="/assets/basic_profile.png"
+                    alt="기본 프로필"
+                    className="rounded-full w-9 h-9 object-cover"
+                  />
                 )}
                 <p className="text-[#2C2C2C] text-[18px] font-medium">{user.nickname}</p>
               </div>
