@@ -1,14 +1,14 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect } from "react";  
 import { useNavigate, useLocation } from "react-router-dom";
 import AuthLeftPanel from "../../components/AuthLeftPanel";
-import { isValidEmail } from "../../utils/validators";
+import { isValidEmail, getPasswordError } from "../../utils/validators"; 
 import ReactivateAccountModal from "../../components/ReactivateAccountModal";
-import AlertModal from "../../components/AlertModal";
+import Modal from "../../components/Modal"; 
 import { useLogin } from "../../hooks/useAuth";
 import { GOOGLE_OAUTH_URL, KAKAO_OAUTH_URL } from "../../config";
 import { useQueryClient } from "@tanstack/react-query";
-import { QK } from "../../hooks/useHeader"; // QK.me 키
-import { getMyProfile } from "../../apis/My/memberApi"; // 프로필 API
+import { QK } from "../../hooks/useHeader"; 
+import { getMyProfile } from "../../apis/My/memberApi"; 
 
 const LoginPage = () => {
   const navigate = useNavigate();
@@ -21,11 +21,10 @@ const LoginPage = () => {
   const [showReactivateModal, setShowReactivateModal] = useState(false);
   const [reactivateEmail, setReactivateEmail] = useState("");
   const [alertMessage, setAlertMessage] = useState("");
-  const [passwordError, setPasswordError] = useState("");
+  const [passwordError, setPasswordError] = useState(""); 
 
   const { mutate: login, isPending } = useLogin();
 
-  // (임시) 탈퇴 이메일 – 실제에선 서버 응답으로 처리 권장
   const withdrawnEmails = ["22jw@gmail.com"];
 
   // 로그인 상태면 접근 차단 & 프로필 캐시 채운 후 /home 이동
@@ -51,8 +50,10 @@ const LoginPage = () => {
       setAlertMessage("이메일 형식이 아닙니다!");
       return;
     }
-    if (!password.trim()) {
-      setPasswordError("비밀번호를 입력해주세요!");
+
+    const pwError = getPasswordError(password); 
+    if (pwError) {
+      setPasswordError(pwError);
       return;
     } else {
       setPasswordError("");
@@ -71,7 +72,6 @@ const LoginPage = () => {
           try {
             const profile = await getMyProfile();
 
-            // localStorage에 닉네임 + 프로필 이미지 저장
             localStorage.setItem("nickname", profile.nickname);
             localStorage.setItem("profileImageUrl", profile.profileImageUrl ?? "");
 
@@ -88,7 +88,6 @@ const LoginPage = () => {
           const serverMessage = err?.response?.data?.message;
 
           if (!status) {
-            // 네트워크 오류 또는 서버 미응답
             setAlertMessage("서버와 연결할 수 없습니다. 인터넷 연결을 확인해주세요.");
             return;
           }
@@ -117,7 +116,6 @@ const LoginPage = () => {
     );
   };
 
-  // 소셜 로그인은 단순 리다이렉트
   const redirectTo = (url: string) => {
     window.location.assign(url);
   };
@@ -126,27 +124,25 @@ const LoginPage = () => {
 
   return (
     <div className="flex h-screen font-sans">
-      {/* Left 고정 패널 */}
       <div className="hidden xl:block">
         <AuthLeftPanel />
       </div>
 
-      {/* Right */}
       <div className="flex-1 overflow-y-auto">
         <div className="flex flex-col items-center w-full min-h-screen py-20 px-6">
-          {/* 상단 책모 타이틀 */}
+          {/* 로고 */}
           <div className="mb-16 text-center">
-            <h1 className="text-5xl sm:text-6xl md:text-7xl font-extrabold text-[#90D26D] break-keep">
-              책모
-            </h1>
+            <img
+              src="/assets/checkmo_font_logo.png"
+              alt="책모 로고"
+              className="mx-auto w-[100px] h-auto"
+            />
           </div>
 
           <div className="w-[80%] max-w-md">
-            {/* 이메일 입력 */}
+            {/* 이메일 */}
             <div className="mb-7">
-              <label className="block mb-3 text-[#2C2C2C] text-sm font-semibold">
-                이메일
-              </label>
+              <label className="block mb-3 text-[#2C2C2C] text-sm font-semibold">이메일</label>
               <input
                 type="email"
                 placeholder="이메일을 입력해주세요."
@@ -164,16 +160,17 @@ const LoginPage = () => {
               )}
             </div>
 
-            {/* 비밀번호 입력 */}
+            {/* 비밀번호 */}
             <div className="mb-6">
-              <label className="block mb-3 text-[#2C2C2C] text-sm font-semibold">
-                비밀번호
-              </label>
+              <label className="block mb-3 text-[#2C2C2C] text-sm font-semibold">비밀번호</label>
               <input
                 type="password"
                 placeholder="비밀번호를 입력해주세요."
                 value={password}
-                onChange={(e) => setPassword(e.target.value)}
+                onChange={(e) => {
+                  setPassword(e.target.value);
+                  setPasswordError(getPasswordError(e.target.value) || "");
+                }}
                 onKeyDown={(e) => {
                   if (e.key === "Enter") handleLogin();
                 }}
@@ -186,7 +183,6 @@ const LoginPage = () => {
               )}
             </div>
 
-            {/* 로그인 버튼 */}
             <button
               onClick={handleLogin}
               disabled={isPending}
@@ -195,7 +191,6 @@ const LoginPage = () => {
               {isPending ? "로그인 중..." : "로그인"}
             </button>
 
-            {/* 회원가입 */}
             <div className="flex justify-center mt-3 text-sm">
               <button
                 onClick={goToSignup}
@@ -205,12 +200,9 @@ const LoginPage = () => {
               </button>
             </div>
 
-            {/* 간편 로그인 */}
-            <div className="mt-10 text-center text-[#2C2C2C] text-sm font-medium">
-              간편 로그인
-            </div>
+            {/* 소셜 로그인 */}
+            <div className="mt-10 text-center text-[#2C2C2C] text-sm font-medium">간편 로그인</div>
             <div className="flex justify-center gap-5 mt-4">
-              {/* Google */}
               <button
                 onClick={() => redirectTo(GOOGLE_OAUTH_URL)}
                 className="flex items-center justify-center gap-2 border border-[#DADFE3] bg-white hover:opacity-90 text-[#2C2C2C] text-[13px] font-bold py-2 px-4 rounded w-75 shadow-sm cursor-pointer"
@@ -218,8 +210,6 @@ const LoginPage = () => {
                 <img src="/assets/google-logo.png" alt="Google" className="w-5 h-5" />
                 Google 계정으로 로그인
               </button>
-
-              {/* Kakao */}
               <button
                 onClick={() => redirectTo(KAKAO_OAUTH_URL)}
                 className="flex items-center justify-center gap-2 bg-[#FEE500] hover:opacity-90 text-[#2C2C2C] text-[13px] font-bold py-2 px-4 rounded w-75 shadow cursor-pointer"
@@ -244,9 +234,15 @@ const LoginPage = () => {
         />
       )}
 
-      {alertMessage && (
-        <AlertModal message={alertMessage} onClose={() => setAlertMessage("")} />
-      )}
+      {/* AlertModal → Modal 교체 */}
+      <Modal
+        isOpen={!!alertMessage}
+        title={alertMessage}
+        buttons={[
+          { label: "확인", onClick: () => setAlertMessage(""), variant: "primary" },
+        ]}
+        onBackdrop={() => setAlertMessage("")}
+      />
     </div>
   );
 };
