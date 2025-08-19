@@ -18,10 +18,10 @@ const BookRecommendDetailCard = ({
   const { id, title, content, rate, tag, bookInfo, authorInfo, staff, author } =
     recommendDetail;
 
-  title;
-  staff; // 배포용 error 방지 코드
+  // 배포용 error 방지 코드 (미사용 변수 방지)
+  console.log(title, staff);
 
-  const tags = tag.split(",");
+  const tags = tag.split(",").map((t) => t.trim()).filter(Boolean);
 
   const handleEdit = () => {
     navigate(`/bookclub/${clubId}/recommend/${id}/edit`, {
@@ -30,64 +30,64 @@ const BookRecommendDetailCard = ({
   };
 
   return (
-    <div className="mt-2 p-4">
-      <h1 className=" text-3xl font-bold">{bookInfo.title}</h1>
-      <p className="mt-6 mb-4 text-sm text-gray-500">{bookInfo.author}</p>
-
-      <section className="flex flex-col md:flex-row md:space-x-8 mt-4 max-h-[75vh]">
-        <div className="flex-shrink-0 md:w-1/3 mx-auto md:mx-0 h-full max-h-[75vh]">
-          <img
-            src={bookInfo.imgUrl}
-            alt={bookInfo.title}
-            className="w-full h-full object-contain rounded-lg"
-          />
+    <div className="mt-2 px-4 sm:px-6 md:px-8 py-2">
+      <h1 className="font-bold text-2xl sm:text-3xl">{bookInfo.title}</h1>
+      <p className="mt-3 sm:mt-4 mb-4 text-xs sm:text-sm text-gray-500">
+        {bookInfo.author}
+      </p>
+      <section className="flex flex-col md:flex-row md:gap-8 gap-6 mt-2 md:mt-4">
+        <div className="w-full md:w-1/3 mx-auto md:mx-0 rounded-lg overflow-hidden max-w-[600px]">
+          <div className="w-full aspect-[3/4] bg-white">
+            <img
+              src={bookInfo.imgUrl}
+              alt={bookInfo.title}
+              className="w-full h-full object-contain"
+            />
+          </div>
         </div>
-
-        <div className="flex flex-col flex-1 ml-12 mt-6 md:mt-0 md:ml-10 min-h-0">
-          <div className="flex-grow overflow-y-auto pr-4">
-            <div className="flex flex-wrap gap-2">
-              {tags.map((tag) => (
+        <div className="flex flex-col flex-1 min-h-0 md:ml-2">
+          <div className="flex-grow overflow-visible md:overflow-y-auto md:pr-4 md:max-h-[62vh]">
+            <div className="flex flex-wrap gap-1.5 sm:gap-2">
+              {tags.map((t) => (
                 <span
-                  key={tag}
-                  className="px-4 py-1 rounded-full bg-[#90D26D] text-xs font-normal text-white"
+                  key={t}
+                  className="px-3 py-0.5 sm:px-4 sm:py-1 rounded-full bg-[#90D26D] text-[11px] sm:text-xs font-normal text-white"
                 >
-                  {tag}
+                  {t}
                 </span>
               ))}
             </div>
-
-            <div className="flex items-center my-4 space-x-3">
+            <div className="flex items-center my-3 sm:my-4 gap-2 sm:gap-3">
               <img
                 src={authorInfo.profileImageUrl}
                 alt={authorInfo.nickname}
-                className="w-10 h-10 rounded-full object-cover bg-gray-200"
+                className="w-8 h-8 sm:w-10 sm:h-10 rounded-full object-cover bg-gray-200"
               />
               <div>
-                <p className="font-semibold">{authorInfo.nickname}</p>
-                <p className="text-xs text-gray-500">건전한가즈앗코치</p>
+                <p className="font-semibold text-sm sm:text-base">{authorInfo.nickname}</p>
+                <p className="text-[10px] sm:text-xs text-gray-500">건전한가즈앗코치</p>
               </div>
             </div>
-
-            <p className="text-sm text-gray-800 leading-relaxed whitespace-pre-line">
+            <p className="text-[13px] sm:text-sm text-gray-800 leading-relaxed whitespace-pre-line">
               {content}
             </p>
           </div>
-
           <div className="flex-shrink-0 pt-4">
-            <div className="mb-4 flex items-center">
+            <div className="mb-3 sm:mb-4 flex items-center">
               <StarRating rate={rate} />
             </div>
+
             {author && (
               <div className="flex flex-col sm:flex-row sm:justify-end sm:space-x-2 space-y-2 sm:space-y-0">
                 <ActionButton
                   onClick={handleEdit}
                   label="수정하기"
-                  className="w-full sm:w-auto px-7.5 py-2 bg-[#A6917D] text-white text-xs border-2 border-[#A6917D] rounded-2xl hover:bg-[#907E66] transition"
+                  className="w-full sm:w-auto px-6 sm:px-7.5 py-2 bg-[#A6917D] text-white text-xs border-2 border-[#A6917D] rounded-2xl hover:bg-[#907E66] transition"
                 />
                 <ActionButton
-                  onClick={onDelete} // 부모로부터 받은 함수 호출
+                  onClick={onDelete}
                   label="삭제하기"
-                  className="w-full sm:w-auto px-7.5 py-2 bg-white text-black text-xs border-2 border-[#A6917D] rounded-2xl hover:bg-gray-200 transition"
+                  className="w-full sm:w-auto px-6 sm:px-7.5 py-2 bg-white text-black text-xs border-2 border-[#A6917D] rounded-2xl hover:bg-gray-200 transition"
                 />
               </div>
             )}

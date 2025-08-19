@@ -1,6 +1,11 @@
 import type { ApiResponse } from "./apiResponse";
 import type { AuthorDto, BookDto } from "./dto";
 
+export interface BookInfo extends BookDto {
+  isbn: string;
+  description: string;
+}
+
 export interface ClubMeeting {
   meetingId: number;
   title: string;
@@ -31,7 +36,9 @@ export type MeetingListResponse = ApiResponse<MeetingListResult>;
 export type MeetingDetailResponse = ApiResponse<MeetingDetailResult>;
 
 // 정기 독서 모임 생성
-export type CreateClubMeeting = Omit<ClubMeeting, "meetingId">;
+export type CreateClubMeeting = Omit<ClubMeeting, "meetingId" | "bookInfo"> & {
+  bookInfo: BookInfo;
+};
 
 // 정기 독서 모임 수정
 export type UpdateClubMeeting = Omit<ClubMeeting, "meetingId" | "bookInfo">;

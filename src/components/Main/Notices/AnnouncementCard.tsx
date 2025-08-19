@@ -1,5 +1,6 @@
 import type { GeneralNotice } from "../../../types/mainNotices";
 import mainNoticeIcon from "../../../assets/icons/mainnotice.svg";
+import shortcutIcon from "../../../assets/icons/shortcut.png";
 
 interface AnnouncementCardProps {
   notice: GeneralNotice;
@@ -10,12 +11,12 @@ const AnnouncementCard = ({ notice }: AnnouncementCardProps) => {
   const book = notice.meetingInfoDTO?.bookInfo?.title ?? "정보 없음";
 
   return (
-    <div className="rounded-[1rem] border-2 border-[#EAE5E2] bg-white w-[17.875rem] p-6 flex flex-col gap-7 h-[24rem]">
+    <div className="hover:shadow-lg hover:scale-[1.03] rounded-[1rem] border-2 border-[#EAE5E2] bg-white w-[17.875rem] p-6 flex flex-col gap-7 h-[24rem]">
       <div className="flex justify-between items-start">
         <div>
           <div className="flex items-center gap-3 mb-1">
             <img src={mainNoticeIcon} alt="아이콘" className="w-6 h-6" />
-            <span className="text-lg font-medium text-gray-700">
+            <span className="text-lg font-medium text-gray-700 w-[8rem] block truncate">
               {notice.title}
             </span>
           </div>
@@ -27,7 +28,7 @@ const AnnouncementCard = ({ notice }: AnnouncementCardProps) => {
             공지
           </div>
           <img
-            src="/src/assets/icons/shortcut.png"
+            src={shortcutIcon}
             className="w-4 h-4 mt-2 cursor-pointer"
             alt="shortcut"
           />

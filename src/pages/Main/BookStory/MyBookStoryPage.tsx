@@ -68,10 +68,10 @@ export default function MyBookStoryPage() {
     <div className="absolute left-[315px] right-[42px] opacity-100">
       <Header
         pageTitle={`${nickname}님의 책 이야기`}
-        customClassName="mt-[30px]"
+        customClassName="mt-[30px] pl-2"
       />
       <div className="overflow-y-auto h-[calc(100vh-80px)] w-full flex-1 pt-[30px] pl-[2px] pr-[30px] bg-[#FFFFFF]">
-        <div className="flex justify-between items-center mb-6">
+        <div className="flex justify-between items-center mb-6 pl-2">
           <button
             className="flex items-center gap-2 px-4 py-2 rounded-full bg-[#A6917D] text-white text-sm font-medium cursor-pointer"
             onClick={() => navigate("/bookstory/search")}
@@ -97,8 +97,8 @@ export default function MyBookStoryPage() {
         <div
           className={`${
             viewMode === "grid"
-              ? "grid grid-cols-2 gap-6"
-              : "flex flex-col gap-4 w-full"
+              ? "grid grid-cols-2 gap-6 pl-2"
+              : "flex flex-col gap-4 w-full pl-2"
           }`}
         >
           {loading ? (

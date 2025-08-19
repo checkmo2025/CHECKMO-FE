@@ -1,8 +1,8 @@
 import React from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import type { noticeListItemDto, voteItemDto } from "../../types/clubNotice";
-import vector from "../../assets/images/vector.png";
-import arrow from "../../assets/images/shortcutArrow.png";
+import vector from "../../assets/images/Vector.png";
+import arrow from "../../assets/images/ShortcutArrow.png";
 import { mapTagToRouteType } from "../../types/noticeType";
 import { parseISO, format } from "date-fns";
 
@@ -16,7 +16,7 @@ export default function AnnouncementCard({
   items: noticeListItemDto[];
 }): React.ReactElement {
   return (
-    <div className="overflow-x-auto">
+    <div className="overflow-x-auto py-[6px] px-[6px]">
       <div className="flex gap-[24px] min-w-max">
         {items.map((item, idx) => (
           <AnnouncementCardItem key={idx} item={item} />
@@ -44,7 +44,8 @@ function AnnouncementCardItem({
   return (
     <div
       onClick={handleCardClick}
-      className="relative w-[312px] h-[377px] rounded-[16px] border-2 border-[#EAE5E2] py-[26px] px-[21.5px] flex flex-col overflow-hidden cursor-pointer select-none hover:bg-gray-50 transition-colors"
+      className="relative w-[312px] h-[377px] rounded-[16px] border-2 border-[#EAE5E2] py-[26px] px-[21.5px] flex flex-col overflow-hidden cursor-pointer select-none
+      hover:bg-gray-50 hover:shadow-lg hover:scale-[1.03] transition-all duration-300 origin-center"
     >
       <div className="flex justify-between items-center">
         <div className="flex items-center">
@@ -63,15 +64,14 @@ function AnnouncementCardItem({
           </h3>
         </div>
         <span
-          className={`inline-flex items-center justify-center w-[52px] h-[22px] opacity-100 rounded-[15px] text-[12px] text-[#FFFFFF] font-pretendard font-semibold leading-[145%] tracking-[-0.1%] whitespace-nowrap ${
-            item.tag === "모임"
-              ? "bg-[#90D26D]"
-              : item.tag === "투표"
+          className={`inline-flex items-center justify-center w-[52px] h-[22px] opacity-100 rounded-[15px] text-[12px] text-[#FFFFFF] font-pretendard font-semibold leading-[145%] tracking-[-0.1%] whitespace-nowrap ${item.tag === "모임"
+            ? "bg-[#90D26D]"
+            : item.tag === "투표"
               ? "bg-[#FF8045]"
               : item.tag === "공지"
-              ? "bg-[#FFC648]"
-              : ""
-          }`}
+                ? "bg-[#FFC648]"
+                : ""
+            }`}
         >
           {item.tag}
         </span>

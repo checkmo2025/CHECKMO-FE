@@ -1,5 +1,7 @@
 import type { MeetingNotice } from "../../../types/mainNotices";
 import mainNoticeIcon from "../../../assets/icons/mainnotice.svg";
+import shortcutIcon from "../../../assets/icons/shortcut.png";
+import checkerIcon from "../../../assets/images/checker.png";
 
 interface MeetingCardProps {
   notice: MeetingNotice;
@@ -7,21 +9,32 @@ interface MeetingCardProps {
 
 const MeetingCard = ({ notice }: MeetingCardProps) => {
   const date = notice.meetingInfoDTO.meetingTime.split("T")[0];
-  const location = notice.meetingInfoDTO.location;
-  const imgUrl = notice.meetingInfoDTO.bookInfo?.imgUrl ?? notice.imgUrl;
+  const location =
+    !notice.meetingInfoDTO.location ||
+    notice.meetingInfoDTO.location === "string"
+      ? "미정"
+      : notice.meetingInfoDTO.location;
+  // 빈 값으로 들어올 때 undefined가 아니라 "string"으로 들어옴.
+  const imgUrl =
+    notice.meetingInfoDTO.bookInfo?.imgUrl &&
+    notice.meetingInfoDTO.bookInfo.imgUrl !== "string"
+      ? notice.meetingInfoDTO.bookInfo.imgUrl
+      : notice.imgUrl && notice.imgUrl !== "string"
+      ? notice.imgUrl
+      : checkerIcon;
 
   return (
-    <div className="rounded-[1rem] border-2 border-[#EAE5E2] bg-white w-[17.875rem] p-[1.5rem] flex flex-col gap-7 h-[24rem]">
+    <div className="hover:shadow-lg hover:scale-[1.03] rounded-[1rem] border-2 border-[#EAE5E2] bg-white w-[17.875rem] p-[1.5rem] flex flex-col gap-7 h-[24rem]">
       <div className="flex justify-between items-start">
         <div>
           <div className="flex items-center gap-3 mb-1">
             <img src={mainNoticeIcon} alt="아이콘" className="w-6 h-6" />
-            <span className="text-lg font-medium text-gray-700">
+            <span className="text-lg font-medium text-gray-700 w-[8rem] block truncate">
               {notice.title}
             </span>
           </div>
           <div className="text-xs text-gray-700">다음 모임 날짜 : {date}</div>
-          <div className="text-xs text-gray-700">
+          <div className="text-xs text-gray-700 w-[8rem] truncate">
             다음 모임 장소 : {location}
           </div>
         </div>
@@ -30,7 +43,7 @@ const MeetingCard = ({ notice }: MeetingCardProps) => {
             모임
           </div>
           <img
-            src="/src/assets/icons/shortcut.png"
+            src={shortcutIcon}
             className="w-4 h-4 mt-2 cursor-pointer"
             alt="shortcut"
           />

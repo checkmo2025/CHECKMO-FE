@@ -44,6 +44,8 @@ export default function HomePage() {
       })
       .then((noticesArrays) => {
         const allNotices = noticesArrays.flat();
+        //console.log("allNotices:", allNotices); // << 이거 추가
+
         setNotices(allNotices);
       })
       .catch((err) => console.error("공지사항 불러오기 실패", err))
@@ -51,14 +53,16 @@ export default function HomePage() {
   }, []);
 
   return (
-    <div className="absolute left-[315px] right-[42px] opacity-100">
-      <Header pageTitle="책모 홈" customClassName="mt-[30px]" />
+    <div className="absolute left-[315px] right-[42px] opacity-100 ">
+      <Header pageTitle="책모 홈" customClassName="mt-[30px] pl-2" />
 
       <div className="overflow-y-auto h-[calc(100vh-80px)] w-full flex-1 pt-[30px] pl-[2px] pr-[30px] bg-[#FFFFFF]">
         {/* 공지사항 */}
-        <div className="text-xl font-semibold text-gray-800 mb-4">공지사항</div>
+        <div className="text-xl font-semibold text-gray-800 mb-4 pl-2">
+          공지사항
+        </div>
         {loadingNotices && <p>공지사항 로딩중...</p>}
-        <div className="flex gap-4 overflow-x-auto flex-nowrap scroll-smooth mb-12">
+        <div className="flex gap-4 overflow-x-auto flex-nowrap scroll-smooth mb-12 p-2">
           {notices.map((notice) => (
             <div
               key={notice.id}
@@ -81,14 +85,14 @@ export default function HomePage() {
         </div>
 
         {/* 책 이야기 */}
-        <div className="text-xl font-semibold text-gray-800 mb-4">
+        <div className="text-xl font-semibold text-gray-800 mb-4 pl-2">
           책 이야기
         </div>
         {loadingBooks && <p>책 이야기 로딩중...</p>}
         {errorBooks && (
           <p className="text-red-500">책 이야기 에러: {errorBooks}</p>
         )}
-        <div className="flex gap-4 overflow-x-auto flex-nowrap scroll-smooth scrollbar-hide">
+        <div className="flex gap-4 overflow-x-auto flex-nowrap scroll-smooth scrollbar-hide pl-2">
           {bookStories.map((story) => {
             const state: "내 이야기" | "구독 중" | "구독하기" =
               story.writtenByMe
@@ -98,7 +102,10 @@ export default function HomePage() {
                 : "구독하기";
 
             return (
-              <div key={story.bookStoryId} className="flex-shrink-0 w-[33rem]">
+              <div
+                key={story.bookStoryId}
+                className="flex-shrink-0 w-[33rem] p-2"
+              >
                 <BookStoriesCard
                   bookStoryId={story.bookStoryId}
                   title={story.bookStoryTitle}

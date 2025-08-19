@@ -35,11 +35,11 @@ const BookRecommendEditPage = () => {
     () =>
       initialData
         ? {
-            title: initialData.title,
-            content: initialData.content,
-            rate: initialData.rate,
-            tag: initialData.tag,
-          }
+          title: initialData.title,
+          content: initialData.content,
+          rate: initialData.rate,
+          tag: initialData.tag,
+        }
         : { title: "", content: "", rate: 0, tag: "" },
     [initialData]
   );

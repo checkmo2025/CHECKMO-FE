@@ -1,5 +1,6 @@
 import type { VoteNotice } from "../../../types/mainNotices";
 import mainNoticeIcon from "../../../assets/icons/mainnotice.svg";
+import shortcutIcon from "../../../assets/icons/shortcut.png";
 
 interface VoteCardProps {
   notice: VoteNotice;
@@ -15,12 +16,12 @@ const VoteCard = ({ notice }: VoteCardProps) => {
   const topItems = notice.items.slice(0, 3);
 
   return (
-    <div className="rounded-[1rem] border-2 border-[#EAE5E2] bg-white w-[17.875rem] p-6 flex flex-col gap-7 h-[24rem]">
+    <div className="hover:shadow-lg hover:scale-[1.03] rounded-[1rem] border-2 border-[#EAE5E2] bg-white w-[17.875rem] p-6 flex flex-col gap-7 h-[24rem]">
       <div className="flex justify-between items-start">
         <div>
           <div className="flex items-center gap-3 mb-1">
             <img src={mainNoticeIcon} alt="아이콘" className="w-6 h-6" />
-            <span className="text-lg font-semibold text-gray-800">
+            <span className="text-lg font-semibold text-gray-800 w-[8rem] block truncate">
               {notice.title.length > 10
                 ? notice.title.slice(0, 10) + "…"
                 : notice.title}
@@ -39,7 +40,7 @@ const VoteCard = ({ notice }: VoteCardProps) => {
             투표
           </div>
           <img
-            src="/src/assets/icons/shortcut.png"
+            src={shortcutIcon}
             className="w-4 h-4 mt-2 cursor-pointer"
             alt="shortcut"
           />

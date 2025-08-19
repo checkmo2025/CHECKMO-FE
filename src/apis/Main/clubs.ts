@@ -19,7 +19,7 @@ export const fetchMyClubs = async (): Promise<ClubDto[]> => {
     const { clubList } = (await axiosInstance.get(
       "/clubs/myClubs"
     )) as FetchMyClubsResult;
-    console.log("내 클럽 목록:", clubList);
+    //console.log("내 클럽 목록:", clubList);
     return clubList;
   } catch (error) {
     console.error("내 클럽 가져오기 실패:", error);
