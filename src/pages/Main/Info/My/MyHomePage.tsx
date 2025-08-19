@@ -13,7 +13,7 @@ const MyPage = () => {
 
   // API 호출 (모두 cursor 기반)
   const { data: profileData } = useMyProfileQuery();
-  const { data: clubData } = useMyClubsQuery(null); 
+  const { data: clubData } = useMyClubsQuery(null);
   const { data: followingData } = useMyFollowingQuery(null);
   const { data: followerData } = useMyFollowerQuery(null);
   const { data: notificationData } = useMyNotificationsQuery(null);
@@ -23,6 +23,20 @@ const MyPage = () => {
   const followingList = followingData?.followList ?? [];
   const followerList = followerData?.followList ?? [];
   const notifications = notificationData?.notifications ?? [];
+
+  // 알림 메시지 생성 함수
+  const getNotificationMessage = (item: any) => {
+    switch (item.notificationType) {
+      case "LIKE":
+        return `${item.senderNickname} 님이 내 책이야기에 좋아요를 눌렀습니다.`;
+      case "FOLLOW":
+        return `${item.targetName}이 팔로잉을 시작했습니다.`;
+      case "JOIN_CLUB":
+        return `${item.targetName}에 가입되셨습니다.`;
+      default:
+        return "새로운 알림이 있습니다.";
+    }
+  };
 
   return (
     <div className="relative w-full h-screen bg-[#FAFAFA] overflow-hidden">
@@ -91,7 +105,9 @@ const MyPage = () => {
                 <ul className="divide-y divide-[#EAE5E2]">
                   {clubs.slice(0, 5).map((club) => (
                     <li key={club.clubId} className="py-3">
-                      <p className="text-[#2C2C2C] font-medium text-[15px]">{club.name}</p>
+                      <p className="text-[#2C2C2C] font-medium text-[15px]">
+                        {club.name}
+                      </p>
                     </li>
                   ))}
                 </ul>
@@ -162,12 +178,8 @@ const MyPage = () => {
                     <li key={item.notificationId} className="flex justify-between items-center py-3">
                       <div>
                         <p className="text-[#2C2C2C] text-[14px]">
-                          {item.senderNickname}님이{" "}
-                          {item.notificationType === "LIKE" && "좋아요를 눌렀습니다."}
-                          {item.notificationType === "COMMENT" && "댓글을 남겼습니다."}
-                          {item.notificationType === "FOLLOW" && "팔로우했습니다."}
-                          {item.notificationType === "JOIN_CLUB" && "클럽에 가입했습니다"}
-                       </p>
+                          {getNotificationMessage(item)}
+                        </p>
                         <p className="text-[12px] text-[#8D8D8D] mt-1">{item.createdAt}</p>
                       </div>
                       <div className="w-3 h-3 rounded-full bg-[#90D26D]"></div>
