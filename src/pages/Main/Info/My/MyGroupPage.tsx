@@ -87,7 +87,7 @@ const MyGroupPage = () => {
                   return (
                     <div
                       key={group.clubId}
-                      className="w-full flex flex-col md:flex-row justify-between bg-white border border-[#EAE5E2] rounded-[16px] px-4 md:px-6 py-4 shadow-sm cursor-pointer hover:bg-[#FAFAFA]"
+                      className="w-full flex flex-col md:flex-row justify-between bg-white border border-[#EAE5E2] rounded-[16px] px-4 md:px-6 py-4 shadow-sm cursor-pointer transition-transform duration-300 transform hover:shadow-lg hover:scale-105"
                       onClick={() => handleGroupClick(group.clubId)}
                     >
                       <div className="flex gap-4 md:gap-6">
