@@ -229,7 +229,7 @@ const MyProfilePage = () => {
                 {isEditing ? (
                   <textarea
                     value={tempBio}
-                    onChange={(e) => e.target.value.length <= 30 && setTempBio(e.target.value)}
+                    onChange={(e) => e.target.value.length <= 20 && setTempBio(e.target.value)}
                     className="rounded-lg p-3 text-[#5C5C5C] w-full resize-none"
                     style={{
                       minHeight: "200px",
@@ -237,7 +237,7 @@ const MyProfilePage = () => {
                       border: "1px solid #F4F2F1",
                       outline: "none",
                     }}
-                    placeholder="소개글을 입력하세요 (최대 30자)"
+                    placeholder="소개글을 입력하세요 (최대 20자)"
                   />
                 ) : (
                   <div
@@ -248,12 +248,12 @@ const MyProfilePage = () => {
                       border: "1px solid #F4F2F1",
                     }}
                   >
-                    {bio || "소개글을 입력하세요 (최대 30자)"}
+                    {bio || "소개글을 입력하세요 (최대 20자)"}
                   </div>
                 )}
                 {/* 글자수 카운트 + 오류문구 */}
                 <div className="flex justify-between mt-1">
-                  <p className="text-sm text-[#8D8D8D]">{tempBio.length}/30</p>
+                  <p className="text-sm text-[#8D8D8D]">{tempBio.length}/20</p>
                   {isChanged && isEditing && (
                     <p className="text-sm text-[#FF8045]">수정내용을 저장해주세요!</p>
                   )}

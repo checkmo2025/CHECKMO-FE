@@ -360,9 +360,9 @@ const ProfilePage = () => {
                   </label>
                   <input
                     type="text"
-                    placeholder="50자 이내 (공란 가능)"
+                    placeholder="20자 이내 (공란 가능)"
                     value={bio}
-                    maxLength={50}
+                    maxLength={20}
                     onChange={(e) => setBio(e.target.value)}
                     className="w-full border-b border-[#DADFE3] px-2 py-2 focus:outline-none"
                   />
