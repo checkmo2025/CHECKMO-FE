@@ -12,6 +12,8 @@ import {
   toggleBookStoryLike,
 } from "../../../apis/BookStory/bookstories";
 import Modal, { type ModalButton } from "../../../components/Modal";
+import noProfileImage from "../../../assets/images/userImage.png";
+import checkerImage from "../../../assets/images/checker.png";
 
 export default function BookStoryDetailPage() {
   const { storyId } = useParams<{ storyId: string }>();
@@ -38,6 +40,7 @@ export default function BookStoryDetailPage() {
         const data: BookStoryResponseDto = await axiosInstance.get(
           `/book-stories/${storyId}`
         );
+        console.log(data);
 
         setStory(data);
         setEditDescription(data.description);
@@ -140,26 +143,21 @@ export default function BookStoryDetailPage() {
       <div className="pl-10 mt-12 max-w-5xl mx-auto">
         <div className="flex items-center gap-2 mb-6">
           <img
-            src={authorInfo.profileImageUrl}
+            src={authorInfo.profileImageUrl || noProfileImage}
             alt={authorInfo.nickname}
             className="w-10 h-10 rounded-full"
           />
+
           <span className="text-base font-semibold">{authorInfo.nickname}</span>
         </div>
 
         <div className="flex gap-8">
           <div className="w-64 h-80 rounded-xl bg-gray-200 overflow-hidden">
-            {bookInfo.imgUrl ? (
-              <img
-                src={bookInfo.imgUrl}
-                alt={bookInfo.title}
-                className="w-full h-full object-cover rounded-xl"
-              />
-            ) : (
-              <div className="w-full h-full flex items-center justify-center text-gray-400">
-                이미지 없음
-              </div>
-            )}
+            <img
+              src={bookInfo.imgUrl || checkerImage}
+              alt={bookInfo.title}
+              className="w-full h-full object-cover rounded-xl"
+            />
           </div>
 
           <div className="flex flex-col flex-1 h-80">

@@ -76,8 +76,6 @@ export default function HomePage() {
             console.error(`클럽 ${club.clubId} 공지 가져오기 실패`, err);
           }
         }
-
-        console.log("모든 공지사항:", allNotices);
         setNotices(allNotices);
       } catch (err) {
         console.error("클럽 가져오기 실패", err);

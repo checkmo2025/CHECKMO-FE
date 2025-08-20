@@ -231,11 +231,10 @@ const Sidebar = () => {
     level = 1,
     parentMenu?: Menu
   ) => {
-    // 레벨에 따라 다른 padding 적용
     const paddingClass = level === 1 ? "pl-8" : "pl-7";
 
     return (
-      <div className={`mt-1 space-y-1 ${paddingClass}`}>
+      <div className={`mt-1 space-y-1 ${paddingClass} cursor-pointer`}>
         {submenus.map(({ name, path, isModal, submenus: nested }) => {
           let iconPair = null;
           if (name === "공지사항")
@@ -255,7 +254,7 @@ const Sidebar = () => {
                 key={name}
                 onClick={() => setIsClubListModalOpen(true)}
                 style={{ color: getMenuTextColor(parentMenu!, path) }}
-                className="flex items-center gap-2 text-sm py-1 pl-2 pr-3 rounded hover:bg-[#DDEED6]"
+                className="flex items-center gap-2 text-sm py-1 pl-2 pr-3 rounded hover:bg-[#DDEED6] cursor-pointer"
               >
                 {iconPair && (
                   <img
@@ -281,7 +280,7 @@ const Sidebar = () => {
                   openPlannedModal();
                 }}
                 style={{ color: getMenuTextColor(parentMenu!, path) }}
-                className="flex items-center gap-2 text-sm py-1 pl-2 pr-3 rounded hover:bg-[#DDEED6]"
+                className="flex items-center gap-2 text-sm py-1 pl-2 pr-3 rounded hover:bg-[#DDEED6] cursor-pointer"
               >
                 {iconPair && (
                   <img
@@ -299,13 +298,13 @@ const Sidebar = () => {
           }
 
           return (
-            <div key={name}>
+            <div key={name} className="cursor-pointer">
               <div className="flex items-center justify-between">
                 <NavLink
                   to={nested ? "#" : path}
                   end
                   style={{ color: getMenuTextColor(parentMenu!, path) }}
-                  className="flex items-center gap-2 text-sm py-1 pl-2 pr-3 rounded hover:bg-[#DDEED6]"
+                  className="flex items-center gap-2 text-sm py-1 pl-2 pr-3 rounded hover:bg-[#DDEED6] cursor-pointer"
                   onClick={() => {
                     if (nested) toggleMenu(name);
                   }}
@@ -343,7 +342,7 @@ const Sidebar = () => {
                     animate={{ height: "auto", opacity: 1 }}
                     exit={{ height: 0, opacity: 0 }}
                     transition={{ duration: 0.3, ease: "easeInOut" }}
-                    className="overflow-hidden"
+                    className="overflow-hidden cursor-pointer"
                   >
                     {renderSubmenus(nested, level + 1, parentMenu)}
                   </motion.div>
@@ -366,7 +365,7 @@ const Sidebar = () => {
           navigate(bookclubId ? `/bookclub/${bookclubId}/home` : "/home")
         }
       />
-      <div className="flex flex-col justify-center">
+      <div className="flex flex-col justify-center cursor-pointer">
         <span
           style={{
             fontFamily: "'Black Han Sans', sans-serif",
@@ -383,7 +382,7 @@ const Sidebar = () => {
         {bookclubId && (
           <button
             onClick={() => navigate(`/home`)}
-            className="relative flex items-center mt-1 h-[2.125rem] rounded border border-[#93C27C] bg-[#F1F8EF]"
+            className="relative flex items-center mt-1 h-[2.125rem] rounded border border-[#93C27C] bg-[#F1F8EF] cursor-pointer"
             style={{ width: "100%" }}
           >
             <img
@@ -404,13 +403,13 @@ const Sidebar = () => {
     <div className="flex w-[16.5rem] h-screen flex-col px-6 py-8 bg-[#E9F2E3]">
       {header}
 
-      <nav className="flex flex-col w-full overflow-y-auto space-y-2 mt-6">
+      <nav className="flex flex-col w-full overflow-y-auto space-y-2 mt-6 cursor-pointer">
         {menus.map((menu) => {
           const { name, path, submenus } = menu;
           const isMenuOpen = openMenus.has(name);
 
           return (
-            <div key={name} className="w-full">
+            <div key={name} className="w-full cursor-pointer">
               <div className="flex items-center justify-between">
                 <NavLink
                   to={path ?? submenus[0]?.path ?? "#"}
@@ -453,7 +452,7 @@ const Sidebar = () => {
                     animate={{ height: "auto", opacity: 1 }}
                     exit={{ height: 0, opacity: 0 }}
                     transition={{ duration: 0.3 }}
-                    className="overflow-hidden"
+                    className="overflow-hidden cursor-pointer"
                   >
                     {renderSubmenus(submenus, 1, menu)}
                   </motion.div>
