@@ -24,10 +24,18 @@ export default function HomePage() {
 
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   const observerRef = useRef<IntersectionObserver | null>(null);
+  const lastFetchTimeRef = useRef<number>(0); // 요청 제한용 ref
 
   // 책 이야기
   const loadBookStories = useCallback(async () => {
+    const now = Date.now();
+
     if (loadingBooks || !hasNext) return;
+
+    // 최소 500ms 간격으로만 호출 허용 (throttle)
+    if (now - lastFetchTimeRef.current < 500) return;
+    lastFetchTimeRef.current = now;
+
     setLoadingBooks(true);
     try {
       const params: BookStoriesParams = { scope: "ALL", cursorId };
@@ -80,7 +88,6 @@ export default function HomePage() {
     const root = scrollContainerRef.current;
     if (!root) return;
 
-    // 기존 옵저버 정리
     observerRef.current?.disconnect();
 
     const observer = new IntersectionObserver(
@@ -91,7 +98,11 @@ export default function HomePage() {
           }
         });
       },
-      { root, rootMargin: "100px", threshold: 0 }
+      {
+        root,
+        rootMargin: "0px", // 불필요한 중복 호출 줄이기
+        threshold: 1.0, // sentinel이 완전히 보일 때만 트리거
+      }
     );
 
     observerRef.current = observer;
@@ -118,7 +129,7 @@ export default function HomePage() {
         <div className="flex gap-4 overflow-x-auto flex-nowrap scroll-smooth mb-12 p-2">
           {notices.map((notice) => (
             <div
-              key={notice.id}
+              key={`${notice.clubId}-${notice.id}`} // clubId + notice.id로 유니크 보장
               className="flex-shrink-0 cursor-pointer"
               onClick={() => {
                 const typeMap: Record<string, string> = {
@@ -146,7 +157,7 @@ export default function HomePage() {
           <p className="text-red-500">책 이야기 에러: {errorBooks}</p>
         )}
         <div className="grid grid-cols-2 gap-4 overflow-y-auto scroll-smooth scrollbar-hide pl-2">
-          {bookStories.map((story) => {
+          {bookStories.map((story, index) => {
             const state: "내 이야기" | "구독 중" | "구독하기" =
               story.writtenByMe
                 ? "내 이야기"
@@ -156,7 +167,7 @@ export default function HomePage() {
 
             return (
               <div
-                key={story.bookStoryId}
+                key={`${story.bookStoryId}-${index}`} // bookStoryId + index
                 className="flex-shrink-0 w-[31rem] py-2"
               >
                 <BookStoriesCard
