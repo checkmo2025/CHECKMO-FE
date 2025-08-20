@@ -5,7 +5,7 @@ import backIcon from "../../../assets/icons/backIcon.png";
 import { axiosInstance } from "../../../apis/axiosInstance";
 import type { BookStoryResponseDto } from "../../../types/bookStories";
 import likeIcon from "../../../assets/icons/heart_empty.png";
-import likedIcon from "../../../assets/icons/heart_filled.png";
+import likedIcon from "../../../assets/icons/heart_filled_noLine.png";
 import {
   deleteBookStory,
   updateBookStory,
@@ -140,7 +140,7 @@ export default function BookStoryDetailPage() {
         </button>
       </div>
 
-      <div className="pl-10 mt-12 max-w-5xl mx-auto">
+      <div className="pl-4 mt-12 max-w-5xl mx-auto">
         <div className="flex items-center gap-2 mb-6">
           <img
             src={authorInfo.profileImageUrl || noProfileImage}
@@ -232,7 +232,7 @@ export default function BookStoryDetailPage() {
                       <img
                         src={liked ? likedIcon : likeIcon}
                         alt="좋아요"
-                        className="w-[19px] h-[]19px] cursor-pointer"
+                        className="w-[19px] h-[19px] cursor-pointer"
                       />
                       <span>{likeCount}</span>
                     </div>
