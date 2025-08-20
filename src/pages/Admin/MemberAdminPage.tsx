@@ -87,7 +87,7 @@ const MemberAdminPage = () => {
             className="flex items-center justify-between pb-4"
           >
             {/* 유저 정보 */}
-            <div className="flex items-center " onClick={() => {
+            <div className="flex items-center cursor-pointer" onClick={() => {
                     navigate(`/info/others/${member.basicInfo.nickname}`)
                   }}>
               <img src = {member.basicInfo.profileImageUrl || "/public/assets/ix_user-profile-filled.svg"} alt="profile" className="w-12 h-12 rounded-full mr-4" />

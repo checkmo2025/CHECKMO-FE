@@ -175,7 +175,7 @@ export default function ReviewSection({
             key={review.bookReviewId}
             className="flex py-2 shadow rounded-2xl border-2 border-[var(--sub-color-2-brown,#EAE5E2)]  hover:shadow-md"
           >
-            <div className="flex items-center justify-between h-[48px] w-[270px] flex-none ml-[12px] mr-[34px]" onClick={() => {
+            <div className="flex items-center justify-between h-[48px] w-[270px] flex-none ml-[12px] mr-[34px] cursor-pointer" onClick={() => {
                     navigate(`/info/others/${review.authorInfo.nickname}`)
                   }}>
               <img
