@@ -58,26 +58,35 @@ export default function HomePage() {
   }, []);
 
   useEffect(() => {
-    setLoadingNotices(true);
-    fetchMyClubs()
-      .then((clubs) =>
-        Promise.all(
-          clubs.map(async (club) => {
+    const fetchNoticesSequentially = async () => {
+      setLoadingNotices(true);
+      try {
+        const clubs = await fetchMyClubs();
+        const allNotices: NoticeDto[] = [];
+
+        for (const club of clubs) {
+          try {
             const notices = await fetchNoticesByClub(club.clubId);
-            return notices.map((notice) => ({
-              ...notice,
-              clubId: club.clubId,
-            }));
-          })
-        )
-      )
-      .then((noticesArrays) => {
-        const allNotices = noticesArrays.flat();
-        console.log("모든 공지사항:", allNotices); // <- 최종 데이터 확인
+            allNotices.push(
+              ...notices.map((notice) => ({ ...notice, clubId: club.clubId }))
+            );
+            // 서버 과부하 방지용 딜레이 150ms
+            await new Promise((res) => setTimeout(res, 150));
+          } catch (err) {
+            console.error(`클럽 ${club.clubId} 공지 가져오기 실패`, err);
+          }
+        }
+
+        console.log("모든 공지사항:", allNotices);
         setNotices(allNotices);
-      })
-      .catch((err) => console.error("공지사항 불러오기 실패", err))
-      .finally(() => setLoadingNotices(false));
+      } catch (err) {
+        console.error("클럽 가져오기 실패", err);
+      } finally {
+        setLoadingNotices(false);
+      }
+    };
+
+    fetchNoticesSequentially();
   }, []);
 
   useEffect(() => {
