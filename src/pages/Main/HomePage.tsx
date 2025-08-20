@@ -129,7 +129,7 @@ export default function HomePage() {
         <div className="text-xl font-semibold text-gray-800 mb-4 pl-2">
           공지사항
         </div>
-        {loadingNotices && <p>공지사항 로딩중...</p>}
+        {loadingNotices && <p className=" pl-2">공지사항 로딩중...</p>}
         <div
           className="flex gap-4 overflow-x-auto flex-nowrap scroll-smooth mb-12 p-2
                         max-sm:flex-col max-sm:overflow-x-hidden max-sm:gap-3"
@@ -159,9 +159,11 @@ export default function HomePage() {
         <div className="text-xl font-semibold text-gray-800 mb-4 pl-2">
           책 이야기
         </div>
-        {bookStories.length === 0 && loadingBooks && <p>책 이야기 로딩중...</p>}
+        {bookStories.length === 0 && loadingBooks && (
+          <p className="pl-2">책 이야기 로딩중...</p>
+        )}
         {errorBooks && (
-          <p className="text-red-500">책 이야기 에러: {errorBooks}</p>
+          <p className="text-red-500 pl-2">책 이야기 에러: {errorBooks}</p>
         )}
         <div
           className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-2 
