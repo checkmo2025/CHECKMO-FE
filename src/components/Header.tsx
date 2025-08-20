@@ -35,8 +35,8 @@ const Header = ({
   // 프로필
   const { data: me, isPending: profilePending } = useMyProfileQuery();
 
-  // 알림 5개 불러오기
-  const { notifications, notiLoading } = useHeaderData(5);
+  // 알림 (항상 최대 5개 유지)
+  const { notifications, notiLoading, markAsRead } = useHeaderData(5);
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const modalRef = useRef<HTMLDivElement>(null);
@@ -67,8 +67,9 @@ const Header = ({
     return `${n.senderNickname ?? ""} 님이 ${action}`;
   };
 
-  // 알림 클릭 시 notificationType 기준 redirect 처리
+  // 알림 클릭 시 → 읽음 처리 후 redirect
   const handleNotificationClick = (n: NotificationPreviewItem) => {
+    markAsRead(n.notificationId); // 읽음 처리
     if (n.redirectPath) {
       navigate(n.redirectPath);
       setIsModalOpen(false);
