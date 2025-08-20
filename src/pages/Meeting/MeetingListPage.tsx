@@ -52,7 +52,7 @@ const MeetingListPage = () => {
   }
 
   return (
-    <div className="px-10 min-h-screen">
+    <div className="px-10 min-h-screen min-w-[700px]">
       <Header pageTitle={"모임"} customClassName="my-[30px]" />
 
       <div className="pt-3 pb-4">

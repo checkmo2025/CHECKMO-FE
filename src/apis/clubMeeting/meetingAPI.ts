@@ -3,6 +3,9 @@ import type {
   CreateClubMeeting,
   MeetingDetailResult,
   MeetingListResult,
+  TeamMemberResult,
+  TeamTopicResult,
+  TotalTopicResult,
   UpdateClubMeeting,
 } from "../../types/clubMeeting";
 
@@ -53,5 +56,37 @@ export const updateClubMeeting = async (
   data: UpdateClubMeeting
 ) => {
   const response = await axiosInstance.patch(`/meetings/${meetingId}`, data);
+  return response;
+};
+
+// 독서 모임 발제 전체 보기
+export const getMeetingTopics = async (
+  meetingId: number
+): Promise<TotalTopicResult> => {
+  const response: TotalTopicResult = await axiosInstance.get(
+    `/meetings/${meetingId}/team-topics`
+  );
+  return response;
+};
+
+// 독서 모임 팀 별 발제 보기
+export const getMeetingTeamTopic = async (
+  meetingId: number,
+  teamNumber: number
+): Promise<TeamTopicResult> => {
+  const response: TeamTopicResult = await axiosInstance.get(
+    `/meetings/${meetingId}/teams/${teamNumber}/topics`
+  );
+  return response;
+};
+
+// 독서 모임 팀 별 참여자 보기
+export const getMeetingTeamMember = async (
+  meetingId: number,
+  teamNumber: number
+): Promise<TeamMemberResult> => {
+  const response: TeamMemberResult = await axiosInstance.get(
+    `/meetings/${meetingId}/teams/${teamNumber}/members`
+  );
   return response;
 };
