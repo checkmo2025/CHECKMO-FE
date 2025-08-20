@@ -87,7 +87,7 @@ const MemberBlockPage = () => {
       {Member.map((member) => (
         <div key={member.clubMemberId} className="px-4 mb-10 ">
           <div className="flex justify-between mb-4">
-            <div className="flex items-center">
+            <div className="flex items-center" onClick={() => {navigate(`/info/others/${member.basicInfo.nickname}`)}}>
               <img src={member.basicInfo.profileImageUrl || "/public/assets/ix_user-profile-filled.svg"} alt="profile" className="w-12 h-12 rounded-full mr-4" />
               <div>
                 <p className="text-lg font-semibold">{member.basicInfo.nickname}</p>
