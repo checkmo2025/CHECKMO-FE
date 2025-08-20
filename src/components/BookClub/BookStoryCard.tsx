@@ -117,8 +117,7 @@ export default function BookStoryCard({
                 />
                 <span
                   className="
-                    font-pretendard font-medium text-[12px]
-                    leading-[145%] tracking-[-0.1%] text-[#000000]
+                    font-medium text-[12px] text-[#000000]
                   "
                 >
                   {userName}
@@ -128,7 +127,7 @@ export default function BookStoryCard({
                 type="button"
                 className={`
                   w-[60px] h-[24px]
-                  font-pretendard font-medium text-[12px] rounded-[15px]
+                  font-medium text-[12px] rounded-[15px]
                   px-[20px] py-[2px]
                   flex items-center justify-center
                   whitespace-nowrap
@@ -157,8 +156,7 @@ export default function BookStoryCard({
               className="
                   w-[256px] h-[80px]
                   mt-[4px]
-                  font-pretendard font-normal text-[14px]
-                  leading-[145%] tracking-[-0.1%] text-[#000000]
+                  font-normal text-[14px] text-[#000000]
                   overflow-hidden
                 "
               title={summary}
@@ -170,11 +168,12 @@ export default function BookStoryCard({
             >
               {summary}
             </p>
-            <button
-              type="button"
-              className="mt-auto flex items-center justify-end gap-[8px] flex items-center gap-[2px]"
-              onClick={handleLike}
-            >
+            <div className="mt-auto flex items-center justify-end gap-[10px] pr-[2px]">
+              <button
+                type="button"
+                className="flex items-center gap-[2px]"
+                onClick={handleLike}
+              >
                 <img
                   src={liked ? filledHeartIcon : emptyHeartIcon}
                   alt={liked ? "liked" : "not liked"}
@@ -184,17 +183,18 @@ export default function BookStoryCard({
                 />
                 <span
                   className="
-                    font-pretendard font-medium text-[12px] text-[#000000]
+                    font-medium text-[12px] text-[#000000]
                   "
                 >
                   {likeCount}
                 </span>
               </button>
-              <img
-                src={sirenIcon}
-                alt="alert"
-                className="w-[24px] h-[24px] cursor-pointer"
-              />
+                <img
+                  src={sirenIcon}
+                  alt="alert"
+                  className="w-[24px] h-[24px] cursor-pointer"
+                />
+              </div>
             </div>
           </div>
         </div>

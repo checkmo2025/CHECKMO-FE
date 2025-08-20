@@ -44,7 +44,7 @@ function AnnouncementCardItem({
   return (
     <div
       onClick={handleCardClick}
-      className="relative w-[312px] h-[377px] rounded-[16px] border-2 border-[#EAE5E2] py-[26px] px-[21.5px] flex flex-col overflow-hidden cursor-pointer select-none
+      className="relative w-[312px] h-[377px] rounded-[16px] border-2 border-[#EAE5E2] py-[26px] px-[21.5px] mb-[20px] flex flex-col overflow-hidden cursor-pointer select-none
       hover:bg-gray-50 hover:shadow-lg hover:scale-[1.03] transition-all duration-300 origin-center"
     >
       <div className="flex justify-between items-center">
@@ -79,7 +79,7 @@ function AnnouncementCardItem({
 
       <div className="mt-[9px]">
         {item.tag === "모임" && item.meetingInfoDTO && (
-          <div className="font-pretendard font-normal text-[12px] leading-[145%] tracking-[-0.1%] text-[#000000] space-y-[4px]">
+          <div className="font-normal text-[12px] text-[#000000] space-y-[4px]">
             <p>
               다음 모임 날짜:{" "}
               {(() => {
