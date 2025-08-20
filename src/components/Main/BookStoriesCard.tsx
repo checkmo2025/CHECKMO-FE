@@ -6,6 +6,7 @@ import likedIcon from "../../assets/icons/heart_filled_noLine.png";
 import reportIcon from "../../assets/icons/report2.png";
 import { toggleBookStoryLike } from "../../apis/BookStory/bookstories";
 import { axiosInstance } from "../../apis/axiosInstance";
+import noUserImage from "../../assets/images/userImage.png";
 
 interface BookStoriesCardProps {
   bookStoryId: number;
@@ -122,19 +123,16 @@ const BookStoriesCard = ({
           {/* 상단: 프로필 + 상태 */}
           <div className="flex justify-between items-center">
             <div className="flex items-center gap-2 sm:gap-3 md:gap-4">
-              {authorProfileImageUrl ? (
-                <img
-                  src={authorProfileImageUrl}
-                  alt={`${authorNickname} 프로필 이미지`}
-                  className="w-[24px] h-[24px] sm:w-[26px] sm:h-[26px] md:w-[28px] md:h-[28px] rounded-full object-cover"
-                />
-              ) : (
-                <div className="w-[24px] h-[24px] sm:w-[26px] sm:h-[26px] md:w-[28px] md:h-[28px] bg-gray-300 rounded-full" />
-              )}
+              <img
+                src={authorProfileImageUrl || noUserImage}
+                alt={`${authorNickname} 프로필 이미지`}
+                className="w-[24px] h-[24px] sm:w-[26px] sm:h-[26px] md:w-[28px] md:h-[28px] rounded-full object-cover"
+              />
               <span className="font-pretendard font-normal text-[12px] sm:text-[13px] md:text-[14px] leading-[145%] text-[#000000]">
                 {authorNickname}
               </span>
             </div>
+
             {renderStateButton()}
           </div>
 
