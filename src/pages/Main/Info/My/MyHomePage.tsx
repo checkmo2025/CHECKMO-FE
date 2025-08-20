@@ -121,7 +121,11 @@ const MyPage = () => {
                   <div className="bg-white rounded-xl border border-[#EAE5E2] p-5 shadow-sm min-h-[424px]">
                     <ul className="divide-y divide-[#EAE5E2]">
                       {clubs.slice(0, 5).map((club) => (
-                        <li key={club.clubId} className="py-3">
+                        <li
+                          key={club.clubId}
+                          className="py-3 cursor-pointer hover:bg-[#FAFAFA]"
+                          onClick={() => navigate(`/bookclub/${club.clubId}/home`)}
+                        >
                           <p className="text-[#2C2C2C] font-medium text-[15px]">
                             {club.name}
                           </p>
@@ -151,7 +155,8 @@ const MyPage = () => {
                           {list.slice(0, 5).map((member) => (
                             <div
                               key={`${label}-${member.nickname}`}
-                              className="bg-[#F4F2F1] rounded-lg px-3 py-3 mb-3 flex items-center gap-2"
+                              className="bg-[#F4F2F1] rounded-lg px-3 py-3 mb-3 flex items-center gap-2 cursor-pointer hover:bg-[#FAFAFA]"
+                              onClick={() => navigate(`/info/others/${member.nickname}`)}
                             >
                               {member.profileImageUrl ? (
                                 <img
@@ -196,17 +201,26 @@ const MyPage = () => {
                       {notifications.slice(0, 5).map((item) => (
                         <li
                           key={item.notificationId}
-                          className="flex justify-between items-center py-3"
+                          className="flex justify-between items-center py-3 cursor-pointer hover:bg-[#FAFAFA]"
+                          onClick={() => {
+                            if (item.redirectPath) {
+                              navigate(item.redirectPath);
+                            }
+                          }}
                         >
                           <div>
-                            <p className="text-[#2C2C2C] text-[14px]">
+                            <p className="text-[14px] text-[#2C2C2C]">
                               {getNotificationMessage(item)}
                             </p>
                             <p className="text-[12px] text-[#8D8D8D] mt-1">
                               {item.createdAt}
                             </p>
                           </div>
-                          <div className="w-3 h-3 rounded-full bg-[#90D26D]"></div>
+                          <div
+                            className={`w-3 h-3 rounded-full ${
+                              item.read ? "bg-gray-300" : "bg-[#90D26D]"
+                            }`}
+                          ></div>
                         </li>
                       ))}
                     </ul>
