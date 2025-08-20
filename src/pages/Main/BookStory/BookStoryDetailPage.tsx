@@ -1,6 +1,6 @@
 import { useParams, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
-import { Trash2, Edit2, AlertCircle, Check, X } from "lucide-react";
+import { Trash2, Edit2, Check, X } from "lucide-react";
 import backIcon from "../../../assets/icons/backIcon.png";
 import { axiosInstance } from "../../../apis/axiosInstance";
 import type { BookStoryResponseDto } from "../../../types/bookStories";
@@ -14,6 +14,7 @@ import {
 import Modal, { type ModalButton } from "../../../components/Modal";
 import noProfileImage from "../../../assets/images/userImage.png";
 import checkerImage from "../../../assets/images/checker.png";
+import reportIcon from "../../../assets/icons/report2.png";
 
 export default function BookStoryDetailPage() {
   const { storyId } = useParams<{ storyId: string }>();
@@ -226,18 +227,22 @@ export default function BookStoryDetailPage() {
                 ) : (
                   <>
                     <div
-                      className="flex items-center gap-1 text-sm text-gray-600 cursor-pointer"
+                      className="flex items-center gap-1 sm:gap-2 text-sm text-gray-600 cursor-pointer"
                       onClick={handleLike}
                     >
                       <img
                         src={liked ? likedIcon : likeIcon}
                         alt="좋아요"
-                        className="w-[19px] h-[19px] cursor-pointer"
+                        className="w-4 h-4 sm:w-5 sm:h-5 cursor-pointer"
                       />
                       <span>{likeCount}</span>
                     </div>
                     <button>
-                      <AlertCircle size={16} />
+                      <img
+                        src={reportIcon}
+                        alt="신고"
+                        className="w-5 h-5 sm:w-6 sm:h-6"
+                      />
                     </button>
                   </>
                 )}
