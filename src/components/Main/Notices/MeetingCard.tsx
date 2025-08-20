@@ -8,15 +8,20 @@ interface MeetingCardProps {
 }
 
 const MeetingCard = ({ notice }: MeetingCardProps) => {
-  const date = notice.meetingInfoDTO.meetingTime.split("T")[0];
+  const date =
+    notice.meetingInfoDTO?.meetingTime &&
+    notice.meetingInfoDTO.meetingTime !== "string"
+      ? notice.meetingInfoDTO.meetingTime.split("T")[0]
+      : "미정";
+
   const location =
-    !notice.meetingInfoDTO.location ||
+    !notice.meetingInfoDTO?.location ||
     notice.meetingInfoDTO.location === "string"
       ? "미정"
       : notice.meetingInfoDTO.location;
-  // 빈 값으로 들어올 때 undefined가 아니라 "string"으로 들어옴.
+
   const imgUrl =
-    notice.meetingInfoDTO.bookInfo?.imgUrl &&
+    notice.meetingInfoDTO?.bookInfo?.imgUrl &&
     notice.meetingInfoDTO.bookInfo.imgUrl !== "string"
       ? notice.meetingInfoDTO.bookInfo.imgUrl
       : notice.imgUrl && notice.imgUrl !== "string"

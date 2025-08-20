@@ -24,16 +24,19 @@ export default function HomePage() {
 
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   const observerRef = useRef<IntersectionObserver | null>(null);
+  const lastFetchTimeRef = useRef<number>(0);
 
-  // 책 이야기
   const loadBookStories = useCallback(async () => {
+    const now = Date.now();
     if (loadingBooks || !hasNext) return;
+    if (now - lastFetchTimeRef.current < 500) return;
+    lastFetchTimeRef.current = now;
+
     setLoadingBooks(true);
     try {
       const params: BookStoriesParams = { scope: "ALL", cursorId };
       const data = await fetchBookStories(params);
 
-      // 중복 제거
       setBookStories((prev) => {
         const newStories = data.bookStoryResponses.filter(
           (story) => !prev.some((s) => s.bookStoryId === story.bookStoryId)
@@ -50,12 +53,10 @@ export default function HomePage() {
     }
   }, [cursorId, hasNext, loadingBooks]);
 
-  // 초기 책 이야기 로드
   useEffect(() => {
     loadBookStories();
   }, []);
 
-  // 공지사항 로드
   useEffect(() => {
     setLoadingNotices(true);
     fetchMyClubs()
@@ -70,17 +71,19 @@ export default function HomePage() {
           })
         )
       )
-      .then((noticesArrays) => setNotices(noticesArrays.flat()))
+      .then((noticesArrays) => {
+        const allNotices = noticesArrays.flat();
+        console.log("모든 공지사항:", allNotices); // <- 최종 데이터 확인
+        setNotices(allNotices);
+      })
       .catch((err) => console.error("공지사항 불러오기 실패", err))
       .finally(() => setLoadingNotices(false));
   }, []);
 
-  // 무한 스크롤 Intersection Observer
   useEffect(() => {
     const root = scrollContainerRef.current;
     if (!root) return;
 
-    // 기존 옵저버 정리
     observerRef.current?.disconnect();
 
     const observer = new IntersectionObserver(
@@ -91,11 +94,14 @@ export default function HomePage() {
           }
         });
       },
-      { root, rootMargin: "100px", threshold: 0 }
+      {
+        root,
+        rootMargin: "0px",
+        threshold: 1.0,
+      }
     );
 
     observerRef.current = observer;
-
     const sentinel = document.getElementById("book-story-sentinel");
     if (sentinel) observer.observe(sentinel);
 
@@ -103,23 +109,26 @@ export default function HomePage() {
   }, [loadBookStories]);
 
   return (
-    <div className="absolute left-[315px] right-[42px] opacity-100">
-      <Header pageTitle="책모 홈" customClassName="mt-[30px] pl-2" />
+    <div className="absolute left-[315px] right-[42px] opacity-100 max-xl:static max-xl:w-full">
+      <Header pageTitle="책모 홈" customClassName="mt-[30px] pl-6" />
 
       <div
         ref={scrollContainerRef}
-        className="overflow-y-auto h-[calc(100vh-80px)] w-full flex-1 pt-[30px] pl-[2px] pr-[30px] bg-[#FFFFFF]"
+        className="overflow-y-auto h-[calc(100vh-80px)] w-full flex-1 pt-[30px] px-4 bg-[#FFFFFF]"
       >
         {/* 공지사항 */}
         <div className="text-xl font-semibold text-gray-800 mb-4 pl-2">
           공지사항
         </div>
         {loadingNotices && <p>공지사항 로딩중...</p>}
-        <div className="flex gap-4 overflow-x-auto flex-nowrap scroll-smooth mb-12 p-2">
+        <div
+          className="flex gap-4 overflow-x-auto flex-nowrap scroll-smooth mb-12 p-2
+                        max-sm:flex-col max-sm:overflow-x-hidden max-sm:gap-3"
+        >
           {notices.map((notice) => (
             <div
-              key={notice.id}
-              className="flex-shrink-0 cursor-pointer"
+              key={`${notice.clubId}-${notice.id}`}
+              className="flex-shrink-0 cursor-pointer max-sm:w-full"
               onClick={() => {
                 const typeMap: Record<string, string> = {
                   공지: "general",
@@ -145,8 +154,12 @@ export default function HomePage() {
         {errorBooks && (
           <p className="text-red-500">책 이야기 에러: {errorBooks}</p>
         )}
-        <div className="grid grid-cols-2 gap-4 overflow-y-auto scroll-smooth scrollbar-hide pl-2">
-          {bookStories.map((story) => {
+        <div
+          className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-2 
+                        gap-4 scroll-smooth scrollbar-hide pl-2
+                        max-sm:grid-cols-1 max-md:grid-cols-1"
+        >
+          {bookStories.map((story, index) => {
             const state: "내 이야기" | "구독 중" | "구독하기" =
               story.writtenByMe
                 ? "내 이야기"
@@ -155,29 +168,24 @@ export default function HomePage() {
                 : "구독하기";
 
             return (
-              <div
-                key={story.bookStoryId}
-                className="flex-shrink-0 w-[31rem] py-2"
-              >
-                <BookStoriesCard
-                  bookStoryId={story.bookStoryId}
-                  title={story.bookStoryTitle}
-                  story={story.description}
-                  state={state}
-                  likes={story.likes}
-                  likedByMe={story.likedByMe}
-                  authorNickname={story.authorInfo.nickname}
-                  authorProfileImageUrl={story.authorInfo.profileImageUrl}
-                  bookCoverImageUrl={story.bookInfo.imgUrl}
-                />
-              </div>
+              <BookStoriesCard
+                key={`${story.bookStoryId}-${index}`}
+                bookStoryId={story.bookStoryId}
+                title={story.bookStoryTitle}
+                story={story.description}
+                state={state}
+                likes={story.likes}
+                likedByMe={story.likedByMe}
+                authorNickname={story.authorInfo.nickname}
+                authorProfileImageUrl={story.authorInfo.profileImageUrl}
+                bookCoverImageUrl={story.bookInfo.imgUrl}
+              />
             );
           })}
         </div>
 
-        {/* 무한 스크롤용 sentinel */}
         <div id="book-story-sentinel" className="h-2"></div>
-        {loadingBooks && <p>추가 책 이야기 로딩중...</p>}
+        {loadingBooks && <p>추가 로딩중...</p>}
       </div>
     </div>
   );
