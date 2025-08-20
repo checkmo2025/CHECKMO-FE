@@ -130,7 +130,7 @@ export default function   ShelfHomePage() {
                   </p>
                   {/* 3) term, tag  (10px 아래 여백) */}
                   <div className="flex mt-[10px] gap-2 ">
-                    <p className="flex-shrink-0 h-6 w-[54px] text-[12px] rounded-full bg-[#90D26D] flex items-center justify-center text-[12px]  text-white">
+                    <p className=" h-6 w-[54px] text-[12px] rounded-full bg-[#90D26D] flex items-center justify-center text-white">
                       {Shelf.meetingInfo.generation}기
                     </p>
                     <p className="flex-shrink-0 h-6 px-3 min-w-[54px] text-[12px] rounded-full bg-[#90D26D] flex items-center justify-center text-[12px]  text-white">
