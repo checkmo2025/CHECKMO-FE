@@ -1,4 +1,3 @@
-// HomePage.tsx
 import { useState, useEffect, useRef, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import Header from "../../components/Header";
@@ -118,7 +117,10 @@ export default function HomePage() {
           공지사항
         </div>
         {loadingNotices && <p>공지사항 로딩중...</p>}
-        <div className="flex gap-4 overflow-x-auto flex-nowrap scroll-smooth mb-12 p-2 max-sm:flex-col max-sm:overflow-x-hidden">
+        <div
+          className="flex gap-4 overflow-x-auto flex-nowrap scroll-smooth mb-12 p-2
+                        max-sm:flex-col max-sm:overflow-x-hidden max-sm:gap-3"
+        >
           {notices.map((notice) => (
             <div
               key={`${notice.clubId}-${notice.id}`}
@@ -148,7 +150,11 @@ export default function HomePage() {
         {errorBooks && (
           <p className="text-red-500">책 이야기 에러: {errorBooks}</p>
         )}
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-2 gap-4 scroll-smooth scrollbar-hide pl-2">
+        <div
+          className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-2 
+                        gap-4 scroll-smooth scrollbar-hide pl-2
+                        max-sm:grid-cols-1 max-md:grid-cols-1"
+        >
           {bookStories.map((story, index) => {
             const state: "내 이야기" | "구독 중" | "구독하기" =
               story.writtenByMe
@@ -175,7 +181,7 @@ export default function HomePage() {
         </div>
 
         <div id="book-story-sentinel" className="h-2"></div>
-        {loadingBooks && <p>추가 책 이야기 로딩중...</p>}
+        {loadingBooks && <p>추가 로딩중...</p>}
       </div>
     </div>
   );
