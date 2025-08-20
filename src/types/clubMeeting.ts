@@ -23,6 +23,15 @@ export type MemberShip = {
   updatedAt: Date;
 };
 
+export type MeetingFormState = {
+  tag: string;
+  generation: string;
+  meetingTime: string;
+  location: string;
+  title: string;
+  content: string;
+};
+
 export type MeetingListResult = {
   membership: MemberShip;
   meetingInfoList: ClubMeeting[];
