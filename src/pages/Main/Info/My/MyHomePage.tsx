@@ -144,8 +144,8 @@ const MyPage = () => {
                   </div>
                   <div className="bg-white rounded-xl border border-[#EAE5E2] p-5 shadow-sm min-h-[424px]">
                     <div className="grid grid-cols-2 gap-3">
-                      {[{ label: "팔로잉", list: followingList },
-                        { label: "팔로워", list: followerList }].map(({ label, list }) => (
+                      {[{ label: "구독중", list: followingList },
+                        { label: "구독자", list: followerList }].map(({ label, list }) => (
                         <div key={label}>
                           <p className="text-[#90D26D] text-[13px] mb-3">{label}</p>
                           {list.slice(0, 5).map((member) => (

@@ -124,9 +124,6 @@ const MyGroupPage = () => {
                         <div className="flex flex-col justify-between">
                           <div>
                             <div className="flex gap-2 mb-2 md:mb-3">
-                              <span className="min-w-[48px] md:min-w-[54px] h-[22px] md:h-[24px] rounded-[15px] bg-[#90D26D] text-white text-[12px] md:text-[13px] flex items-center justify-center px-2">
-                                7기
-                              </span>
                               {group.category.map((cat, idx) => (
                                 <span
                                   key={idx}
@@ -155,7 +152,7 @@ const MyGroupPage = () => {
                           }}
                           disabled={isLeaving}
                           className={`text-[#5C5C5C] border border-[#EAE5E2] rounded-full w-[90px] md:w-[105px] h-[32px] md:h-[35px] text-sm mt-auto 
-                            ${isLeaving ? "opacity-50 cursor-not-allowed" : "hover:bg-[#90D26D] hover:text-white"}`}
+                            ${isLeaving ? "opacity-50 cursor-not-allowed" : "hover:bg-[#90D26D] hover:text-white cursor-pointer"}`}
                         >
                           탈퇴하기
                         </button>
@@ -186,17 +183,18 @@ const MyGroupPage = () => {
         title="정말 탈퇴 하시겠습니까?"
         buttons={[
           {
+            label: "탈퇴",
+            onClick: confirmLeaveGroup,
+            variant: "danger",
+          },
+
+          {
             label: "취소",
             onClick: () => {
               setShowConfirmModal(false);
               setSelectedGroupId(null);
             },
             variant: "outline",
-          },
-          {
-            label: "탈퇴",
-            onClick: confirmLeaveGroup,
-            variant: "danger",
           },
         ]}
         onBackdrop={() => {
