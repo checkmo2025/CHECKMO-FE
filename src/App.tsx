@@ -47,6 +47,7 @@ import MeetingTeamTopicListPage from "./pages/Meeting/MeetingTeamTopicListPage";
 import BookRecommendEditPage from "./pages/BookRecommend/BookRecommendEditPage";
 import MyBookStoryPage from "./pages/Main/BookStory/MyBookStoryPage";
 import MemberBlockPage from "./pages/Admin/MemberBlockPage";
+import MeetingEditPage from "./pages/Meeting/MeetingEditPage";
 const App = () => {
   const qc = useQueryClient();
 
@@ -143,6 +144,7 @@ const App = () => {
             <Route path="meeting">
               <Route index element={<MeetingListPage />} />
               <Route path=":meetingId" element={<MeetingDetailPage />} />
+              <Route path=":meetingId/edit" element={<MeetingEditPage />} />
 
               <Route path="create" element={<MeetingCreatePage />} />
               <Route path=":meetingId/manage" element={<DetailMeatingManagePage />} />

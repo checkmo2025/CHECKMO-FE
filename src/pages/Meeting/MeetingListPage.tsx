@@ -1,5 +1,5 @@
 import { MeetingCard } from "../../components/Meeting/MeetingCard";
-import { Link, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import Header from "../../components/Header";
 import { useMeetingList } from "../../hooks/useClubMeeting";
 import { useEffect, useMemo } from "react";
@@ -7,10 +7,12 @@ import { useInView } from "react-intersection-observer";
 import type { ClubMeeting } from "../../types/clubMeeting";
 
 const MeetingListPage = () => {
-  const isAdmin = true; // 추후에 로그인 정보로 변경 예정
+  const navigate = useNavigate();
   const { bookclubId } = useParams<{ bookclubId: string }>();
   const { data, fetchNextPage, hasNextPage, isFetchingNextPage, status } =
     useMeetingList(Number(bookclubId));
+  const membership = data?.pages[0].membership;
+  const isAdmin = membership?.clubMemberStatus === 'STAFF';
   const { ref, inView } = useInView();
 
   useEffect(() => {
@@ -21,7 +23,9 @@ const MeetingListPage = () => {
 
   const generations = useMemo(() => {
     if (!data) return [];
-    const meetings = data.pages.flatMap((page) => page.meetingInfoList);
+    const meetings = data.pages.flatMap(
+      ({ meetingInfoList }) => meetingInfoList,
+    );
     const groupedMeetings = meetings.reduce((acc, meeting) => {
       const generation = meeting.generation;
       if (!acc[generation]) {
@@ -88,6 +92,12 @@ const MeetingListPage = () => {
                     meetingPlace={meeting.location}
                     tags={meeting.tag}
                     generation={group.generation}
+                    canEdit={isAdmin}
+                    onEdit={() =>
+                      navigate(
+                        `/bookclub/${bookclubId}/meeting/${meeting.meetingId}/edit`
+                      )
+                    }
                   />
                 </Link>
               ))}

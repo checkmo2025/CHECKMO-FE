@@ -11,6 +11,8 @@ interface MeetingCardProps {
   generation?: number;
   className?: string;
   tagAlign?: "left" | "right";
+  canEdit?: boolean;
+  onEdit?: () => void;
 }
 
 export const MeetingCard = ({
@@ -22,6 +24,8 @@ export const MeetingCard = ({
   generation,
   className = "",
   tagAlign = "right",
+  canEdit = false,
+  onEdit,
 }: MeetingCardProps) => {
   const date = parseISO(meetingDate);
   const dateStr = format(date, "yyyy.MM.dd");
@@ -33,8 +37,8 @@ export const MeetingCard = ({
     <div
       className={
         className
-          ? `${className}`
-          : `flex w-full border-2 border-[#EAE5E2] rounded-xl p-4 bg-white transition-transform duration-300 hover:shadow-lg hover:scale-[1.03] min-w-[700px]`
+          ? `${className} relative`
+          : `relative flex w-full border-2 border-[#EAE5E2] rounded-xl p-4 bg-white transition-transform duration-300 hover:shadow-lg hover:scale-[1.03] min-w-[700px]`
       }
     >
       <div className="w-32 h-40 flex-shrink-0 rounded-2xl overflow-hidden bg-gray-100">
@@ -59,8 +63,10 @@ export const MeetingCard = ({
             </div>
           )}
 
-          <div className={`flex flex-wrap gap-2 max-w-[30%] ${tagAlign === "left" ? "justify-start" : "justify-end"
-            }`}>
+          <div
+            className={`flex flex-wrap gap-2 max-w-[30%] ${tagAlign === "left" ? "justify-start" : "justify-end"
+              }`}
+          >
             {tag &&
               tag.map((t) => (
                 <span
@@ -85,12 +91,16 @@ export const MeetingCard = ({
         <div className="text-sm font-medium space-y-1 mb-1 w-full">
           <p className="text-gray-900 flex items-baseline min-w-0">
             <span className="shrink-0">도서:&nbsp;</span>
-            <span className="truncate block max-w-full" title={book.title}>{book.title}</span>
+            <span className="truncate block max-w-full" title={book.title}>
+              {book.title}
+            </span>
           </p>
 
           <p className="text-gray-900 flex items-baseline min-w-0">
             <span className="shrink-0">작가:&nbsp;</span>
-            <span className="truncate block max-w-full" title={book.author}>{book.author}</span>
+            <span className="truncate block max-w-full" title={book.author}>
+              {book.author}
+            </span>
           </p>
 
           <p className="text-gray-500 break-words md:line-clamp-1" title={dateStr}>
@@ -103,10 +113,27 @@ export const MeetingCard = ({
 
           <p className="text-gray-500 flex items-baseline min-w-0">
             <span className="shrink-0">장소:&nbsp;</span>
-            <span className="truncate block max-w-full" title={meetingPlace}>{meetingPlace}</span>
+            <span className="truncate block max-w-full" title={meetingPlace}>
+              {meetingPlace}
+            </span>
           </p>
         </div>
       </div>
+
+      {canEdit && (
+        <button
+          type="button"
+          aria-label="수정하기"
+          onClick={(e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            onEdit?.();
+          }}
+          className="absolute right-4 bottom-2 -translate-y-1/2 px-6 py-2 bg-white text-black text-xs border-2 border-[#A6917D] rounded-2xl hover:bg-gray-200 transition"
+        >
+          수정하기
+        </button>
+      )}
     </div>
   );
 };

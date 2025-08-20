@@ -4,17 +4,8 @@ import BookSearch from "../../components/Search/BookSearch";
 import Modal from "../../components/Modal";
 import type { SearchBook, Action } from "../../types/BookSearchdto";
 import { useCreateClubMeeting } from "../../hooks/useClubMeeting";
-import type { CreateClubMeeting } from "../../types/clubMeeting";
+import type { CreateClubMeeting, MeetingFormState } from "../../types/clubMeeting";
 import { NonProfileHeader } from "../../components/NonProfileHeader";
-
-type MeetingFormState = {
-  tag: string;
-  generation: string;
-  meetingTime: string;
-  location: string;
-  title: string;
-  content: string;
-};
 
 const MeetingCreatePage = () => {
   const navigate = useNavigate();
