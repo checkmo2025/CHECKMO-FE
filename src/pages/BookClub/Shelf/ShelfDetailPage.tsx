@@ -80,7 +80,7 @@ export default function ShelfDetailPage() {
             {/* 발제 리스트 */}
             <div className="flex flex-col gap-3 ">
               {topics!.map((topic : TopicItem) => (
-                <div key={topic.topicId} className="py-2 flex shadow rounded-2xl border-2 border-[var(--sub-color-2-brown,#EAE5E2)] hover:shadow-md">
+                <div key={topic.topicId} className="py-2 flex shadow rounded-2xl border-2 border-[var(--sub-color-2-brown,#EAE5E2)] ransition-transform duration-300  hover:shadow-md">
                   <div className= "flex h-[48px] ml-[12px] gap-[19px] items-center w-[222px] flex-shrink-0" >
                     <img src= {topic.authorInfo.profileImageUrl || '/assets/ix_user-profile-filled.svg'} className="w-[48px] h-[48px] rounded-full object-cover" />
                     <div className="font-semibold text-[15px] text-gray-800">{topic.authorInfo.nickname}</div>

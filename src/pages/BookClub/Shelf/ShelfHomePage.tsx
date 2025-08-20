@@ -118,7 +118,7 @@ export default function   ShelfHomePage() {
                 <Link
                   key={Shelf.meetingInfo.meetingId}
                   to={`${location.pathname}/${Shelf.meetingInfo.meetingId}`}
-                  className="flex h-[260px] p-[20px] items-center gap-[20px] rounded-2xl border-2 border-[var(--sub-color-2-brown,#EAE5E2)] bg-[var(--White,#FFF)] hover:shadow-lg hover:scale-[1.03] transition-shadow block"
+                  className="flex h-[260px] p-[20px] items-center gap-[20px] rounded-2xl border-2 border-[var(--sub-color-2-brown,#EAE5E2)] bg-[var(--White,#FFF)] ransition-transform duration-300  hover:shadow-lg hover:scale-[1.03] transition-shadow block"
                 >
                   {/* 왼쪽 */}
                   <div className="w-[156px] flex-shrink-0 h-full rounded-2xl overflow-hidden bg-gray-200">

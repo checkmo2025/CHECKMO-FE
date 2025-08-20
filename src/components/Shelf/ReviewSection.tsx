@@ -144,7 +144,7 @@ export default function ReviewSection({
       </span>
 
       {/* 등록 영역 */}
-      <div className="flex py-2 shadow rounded-2xl border-2 border-[var(--sub-color-2-brown,#EAE5E2)] w-full mb-3  hover:shadow-md">
+      <div className="flex py-2 shadow rounded-2xl border-2 border-[var(--sub-color-2-brown,#EAE5E2)] w-full mb-3  transition-transform duration-300 hover:shadow-md">
         <div className="flex items-center justify-between h-[48px] w-[270px] flex-none ml-[12px] mr-[34px]">
           <img
             src={currentUser.profileImageUrl}
