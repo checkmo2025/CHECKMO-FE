@@ -105,9 +105,9 @@ export default function   ShelfHomePage() {
            </div>
           </div>
           {/* 책장 리스트 */}
-          <div className="pt-[18px] grid grid-cols-3 content-start overflow-y-auto h-[calc(100vh-171px)] overscroll-none px-10"  style={{  gap: "24px 12px",  msOverflowStyle: 'none', scrollbarWidth: 'none' }}>
+          <div className="pt-[18px] grid grid-cols-1 gap-x-1 gap-y-2 lg:grid-cols-2 lg:gap-x-2 lg:gap-y-4 xl:grid-cols-3 lg:gap-x-3 lg:gap-y-6 content-start overflow-y-auto h-[calc(100vh-171px)] overscroll-none px-10"  style={{ msOverflowStyle: 'none', scrollbarWidth: 'none' }}>
                 {ShelfList.map((Shelf) => (
-              <Link key={Shelf.meetingInfo.meetingId} to={`${location.pathname}/${Shelf.meetingInfo.meetingId}`} className="flex min-w-90 h-[260px] p-[20px] items-center gap-[20px] rounded-2xl border-2 border-[var(--sub-color-2-brown,#EAE5E2)] bg-[var(--White,#FFF)] hover:shadow-lg hover:scale-[1.03] transition-shadow block">
+              <Link key={Shelf.meetingInfo.meetingId} to={`${location.pathname}/${Shelf.meetingInfo.meetingId}`} className="flex h-[260px] p-[20px] items-center gap-[20px] rounded-2xl border-2 border-[var(--sub-color-2-brown,#EAE5E2)] bg-[var(--White,#FFF)] hover:shadow-lg hover:scale-[1.03] transition-shadow block">
                   {/* 왼쪽 */}
                   <div className="w-[156px] flex-shrink-0 h-full rounded-2xl overflow-hidden bg-gray-200">
                     <img
