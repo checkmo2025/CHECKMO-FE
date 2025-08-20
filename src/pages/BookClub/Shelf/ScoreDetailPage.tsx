@@ -36,7 +36,7 @@ export default function ScoreDetailPage() {
             src="/assets/material-symbols_arrow-back-ios.svg"
             className="w-[30px] h-[30px] h-full flex items-center justify-center"
           />
-          <h1 className="font-[Pretendard] font-bold text-[28px] leading-[135%]">
+          <h1 className="font-[Pretendard] font-bold text-[28px] leading-[135%] line-clamp-1">
             {bookTitle}
           </h1>
         </div>
