@@ -5,7 +5,7 @@ import type { NotificationPreviewItem } from "../types/header";
 export const TYPE_TEXT: Record<string, string> = {
   LIKE: "좋아요를 눌렀습니다.",
   COMMENT: "댓글을 남겼습니다.",
-  FOLLOW: "팔로우했습니다.",
+  FOLLOW: "구독했습니다.",
   CLUB_JOIN: "모임에 가입했습니다.",
 };
 
