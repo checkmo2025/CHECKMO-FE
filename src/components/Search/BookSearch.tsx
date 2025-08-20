@@ -48,7 +48,7 @@ export default function BookSearch({
     const el = loadMoreRef.current;
     if (el) observer.observe(el);
     return () => observer.disconnect();
-  }, [hasNext, isFetching]);
+  }, [hasNext, isFetching, Searchbooks]);
 
   return (
     <div className=" flex flex-col flex-1">
