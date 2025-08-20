@@ -72,8 +72,26 @@ export type TeamTopic = {
   topics: Topic[];
 };
 
-// 전체 발제 목록과 선택한 팀 정보 전체 조회
-export type TopicResponse = ApiResponse<Topic>;
+export type TotalTopicResult = {
+  topics: Topic[];
+  membership: MemberShip;
+};
 
-// 팀 별 선택된 발제 조회
-export type TeamTopicResponse = ApiResponse<TeamTopic>;
+export type TeamTopicResult = {
+  membership: MemberShip;
+  teamTopic: TeamTopic;
+};
+
+export type TeamMemberResult = {
+  membership: MemberShip;
+  members: AuthorDto[];
+};
+
+// 독서 모임 발제와 선택한 팀 정보 전체 조회
+export type TotalTopicResponse = ApiResponse<TotalTopicResult>;
+
+// 팀 별 발제 조회
+export type TeamTopicResponse = ApiResponse<TeamTopicResult>;
+
+// 팀 별 참여자 조회
+export type TeamMemberResponse = ApiResponse<TeamMemberResult>;

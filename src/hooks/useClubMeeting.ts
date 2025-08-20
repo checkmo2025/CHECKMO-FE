@@ -8,12 +8,18 @@ import {
   createClubMeeting,
   getMeetingDetail,
   getMeetingList,
+  getMeetingTeamMember,
+  getMeetingTeamTopic,
+  getMeetingTopics,
   updateClubMeeting,
 } from "../apis/clubMeeting/meetingAPI";
 import type {
   CreateClubMeeting,
   MeetingDetailResult,
   MeetingListResult,
+  TeamMemberResult,
+  TeamTopicResult,
+  TotalTopicResult,
   UpdateClubMeeting,
 } from "../types/clubMeeting";
 
@@ -33,6 +39,7 @@ export const useMeetingDetail = (meetingId: number) => {
   return useQuery<MeetingDetailResult, Error>({
     queryKey: ["meeting", meetingId],
     queryFn: () => getMeetingDetail(meetingId),
+    enabled: !!meetingId,
   });
 };
 
@@ -57,5 +64,38 @@ export const useUpdateClubMeeting = (meetingId: number) => {
       queryClient.invalidateQueries({ queryKey: ["meetings"] });
       queryClient.invalidateQueries({ queryKey: ["meeting", meetingId] });
     },
+  });
+};
+
+// 독서 모임 발제 전체 보기
+export const useGetMeetingTopics = (meetingId: number) => {
+  return useQuery<TotalTopicResult, Error>({
+    queryKey: ["meetingTopics", meetingId],
+    queryFn: () => getMeetingTopics(meetingId),
+    enabled: !!meetingId,
+  });
+};
+
+// 독서 모임 팀 별 발제 보기
+export const useGetMeetingTeamTopic = (
+  meetingId: number,
+  teamNumber: number
+) => {
+  return useQuery<TeamTopicResult, Error>({
+    queryKey: ["meetingTeamTopic", meetingId, teamNumber],
+    queryFn: () => getMeetingTeamTopic(meetingId, teamNumber),
+    enabled: !!meetingId && !!teamNumber,
+  });
+};
+
+// 독서 모임 팀 별 참여자 보기
+export const useGetMeetingTeamMember = (
+  meetingId: number,
+  teamNumber: number
+) => {
+  return useQuery<TeamMemberResult, Error>({
+    queryKey: ["meetingTeamMembers", meetingId, teamNumber],
+    queryFn: () => getMeetingTeamMember(meetingId, teamNumber),
+    enabled: !!meetingId && !!teamNumber,
   });
 };
