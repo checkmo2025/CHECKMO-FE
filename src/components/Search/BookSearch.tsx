@@ -90,7 +90,7 @@ export default function BookSearch({
         >
           {Searchbooks.map((SearchBook) => (
             <div key={SearchBook.isbn}>
-              <div className = "flex h-[215px] border-2 border-[var(--sub-color-2-brown,#EAE5E2)] rounded-2xl bg-[var(--White,#FFF)] shadow-sm  hover:shadow-lg hover:scale-[1.03]">
+              <div className = "min-w-[300px] flex h-[215px] border-2 border-[var(--sub-color-2-brown,#EAE5E2)] rounded-2xl bg-[var(--White,#FFF)] shadow-sm ransition-transform duration-300  hover:shadow-lg hover:scale-[1.03]">
                   {/* 좌측 */}
                 <div className="flex-1 flex p-[10px] gap-[20px]">
                   {/* 썸네일 */}
