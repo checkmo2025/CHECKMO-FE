@@ -186,79 +186,93 @@ const MeetingEditPage = () => {
             )}
 
             <div className="mt-5 min-w-[700px]">
-                <label className="font-pretendard font-medium text-[18px] px-[6.5px]">
+                <label className="font-medium text-[18px] px-[6.5px]">
                     기수
                 </label>
-                <div className="flex items-center h-[53px] py-[10px] px-[10px] rounded-2xl bg-[var(--Color-4,#F4F2F1)] mt-3">
+                <div
+                    className="flex items-center h-[53px] py-[10px] px-[10px] rounded-2xl 
+             bg-[var(--Color-4,#F4F2F1)] my-3 border-2 border-transparent
+             hover:border-[#BFAB96] focus-within:border-[#A6917E] transition"
+                >
                     <input
                         type="text"
                         name="generation"
                         placeholder="ex. 7기"
-                        className="text-[18px] mx-[14px] font-pretendard font-medium bg-transparent outline-none flex-1"
+                        className="text-[18px] mx-[14px]  font-medium bg-transparent outline-none flex-1"
                         value={formState.generation}
                         onChange={handleFormChange}
                     />
                 </div>
-            </div>
 
-            <div className="mt-5 min-w-[700px]">
-                <label className="font-pretendard font-medium text-[18px] px-[6.5px]">
+
+                <label className="font-medium text-[18px] px-[6.5px]">
                     종류
                 </label>
-                <div className="flex items-center h-[53px] py-[10px] px-[10px] rounded-2xl bg-[var(--Color-4,#F4F2F1)] mt-3">
+                <div
+                    className="flex items-center h-[53px] py-[10px] px-[10px] rounded-2xl 
+             bg-[var(--Color-4,#F4F2F1)] my-3 border-2 border-transparent
+             hover:border-[#BFAB96] focus-within:border-[#A6917E] transition"
+                >
                     <input
                         type="text"
                         name="tag"
                         placeholder="최대 6글자로 입력해주세요."
-                        className="text-[18px] mx-[14px] font-pretendard font-medium bg-transparent outline-none flex-1"
+                        className="text-[18px] mx-[14px]  font-medium bg-transparent outline-none flex-1"
                         value={formState.tag}
                         maxLength={6}
                         onChange={handleFormChange}
                     />
                 </div>
-            </div>
 
-            <div className="mt-5 min-w-[700px]">
-                <label className="font-pretendard font-medium text-[18px] px-[6.5px]">
+                <label className="font-medium text-[18px] px-[6.5px]">
                     날짜
                 </label>
-                <div className="flex items-center h-[53px] py-[10px] px-[17px] rounded-2xl bg-[var(--Color-4,#F4F2F1)] mt-3">
+                <div
+                    className="flex items-center h-[53px] py-[10px] px-[17px] rounded-2xl 
+             bg-[var(--Color-4,#F4F2F1)] my-3 border-2 border-transparent
+             hover:border-[#BFAB96] focus-within:border-[#A6917E] transition"
+                >
                     <img src="/assets/일정.svg" className="w-6 h-6" />
                     <input
                         type="datetime-local"
                         name="meetingTime"
                         value={formState.meetingTime}
                         onChange={handleFormChange}
-                        className="text-[18px] mx-[14px] font-pretendard font-medium bg-transparent outline-none flex-1"
+                        className="text-[18px] mx-[14px]  font-medium bg-transparent outline-none flex-1"
                     />
                 </div>
-            </div>
 
-            <div className="mt-5 min-w-[700px]">
-                <label className="font-pretendard font-medium text-[18px] px-[6.5px]">
+                <label className="font-medium text-[18px] px-[6.5px]">
                     장소
                 </label>
-                <div className="flex items-center h-[53px] py-[10px] px-[10px] rounded-2xl bg-[var(--Color-4,#F4F2F1)] mt-3">
+                <div
+                    className="flex items-center h-[53px] py-[10px] px-[10px] rounded-2xl 
+             bg-[var(--Color-4,#F4F2F1)] my-3 border-2 border-transparent
+             hover:border-[#BFAB96] focus-within:border-[#A6917E] transition"
+                >
                     <img src="/assets/bx_map.svg" className="w-6 h-6" />
                     <input
                         type="text"
                         name="location"
                         placeholder="홍익대학교"
-                        className="text-[18px] mx-[14px] font-pretendard font-medium bg-transparent outline-none flex-1"
+                        className="text-[18px] mx-[14px]  font-medium bg-transparent outline-none flex-1"
                         value={formState.location}
                         onChange={handleFormChange}
                     />
                 </div>
             </div>
 
-            <div className="w-full flex flex-col items-center p-5 gap-[20px] border-2 border-[var(--sub-color-2-brown,#EAE5E2)] rounded-[16px] bg-white my-9 min-w-[700px]">
+            <div
+                className="w-full px-5 pb-5 pt-2 border-[#EAE5E2] border-2 rounded-2xl transition
+                   hover:border-[#BFAB96] focus-within:border-[#A6917E] my-9 md:min-w-[700px]"
+            >
                 <input
                     type="text"
                     name="title"
                     value={formState.title}
                     onChange={handleFormChange}
                     placeholder="제목을 입력해주세요."
-                    className="w-full h-[48px] border-0 border-b-2 border-gray-300 focus:outline-none focus:border-gray-500 font-pretendard font-medium"
+                    className="w-full h-[48px] border-0 border-b-2 border-gray-300 focus:outline-none focus:border-gray-500  font-medium"
                 />
 
                 <textarea
@@ -267,7 +281,7 @@ const MeetingEditPage = () => {
                     onChange={handleFormChange}
                     onKeyDown={handleTextareaKeyDown}
                     placeholder="내용을 자유롭게 입력해주세요."
-                    className="mt-5 w-full min-h-[300px] font-pretendard text-base outline-none leading-snug resize-none"
+                    className="mt-5 w-full min-h-[300px]  text-base outline-none leading-snug resize-none"
                 />
 
                 <div className="flex items-center justify-end gap-4 w-full">
