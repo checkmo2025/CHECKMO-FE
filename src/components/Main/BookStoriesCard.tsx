@@ -1,3 +1,4 @@
+// BookStoriesCard.tsx
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import checker from "../../assets/images/checker.png";
@@ -34,7 +35,6 @@ const BookStoriesCard = ({
   const [liked, setLiked] = useState(likedByMe);
   const [likeCount, setLikeCount] = useState(likes);
   const [loading, setLoading] = useState(false);
-
   const [subscribed, setSubscribed] = useState(state === "구독 중");
 
   const handleLike = async (e: React.MouseEvent) => {
@@ -43,8 +43,7 @@ const BookStoriesCard = ({
     setLoading(true);
     try {
       await toggleBookStoryLike(bookStoryId);
-      if (liked) setLikeCount((prev) => prev - 1);
-      else setLikeCount((prev) => prev + 1);
+      setLikeCount((prev) => prev + (liked ? -1 : 1));
       setLiked(!liked);
     } catch (err) {
       console.error("좋아요 처리 실패", err);
@@ -61,11 +60,9 @@ const BookStoriesCard = ({
     e.stopPropagation();
     try {
       if (subscribed) {
-        // 구독 취소
         await axiosInstance.delete(`/members/${authorNickname}/following`);
         setSubscribed(false);
       } else {
-        // 구독하기
         await axiosInstance.post(`/members/${authorNickname}/following`);
         setSubscribed(true);
       }
@@ -110,10 +107,10 @@ const BookStoriesCard = ({
       className="hover:shadow-lg hover:scale-[1.03] rounded-[16px] border-[2px] border-[#EAE5E2] overflow-hidden cursor-pointer"
       onClick={handleCardClick}
     >
-      <div className="flex flex-col gap-[10px] p-[28px] h-full">
-        <div className="flex gap-[20px] flex-1">
+      <div className="flex flex-col gap-[10px] p-[20px] sm:p-[28px] h-full">
+        <div className="flex flex-col md:flex-row gap-[10px]">
           {/* 왼쪽 책 이미지 */}
-          <div className="w-[200px] h-[290px] bg-gray-100 rounded-lg overflow-hidden">
+          <div className="w-full md:w-[200px] h-[290px] bg-gray-100 rounded-lg overflow-hidden flex-shrink-0">
             <img
               src={bookCoverImageUrl ?? checker}
               alt={`${title} 책 표지`}
@@ -145,7 +142,7 @@ const BookStoriesCard = ({
 
             {/* 제목 + 요약 */}
             <div className="mt-[12px] flex flex-col gap-[14px]">
-              <h4 className="font-pretendard font-semibold text-[20px] leading-[135%] text-[#000000]">
+              <h4 className="font-pretendard font-semibold text-[18px] md:text-[20px] leading-[135%] text-[#000000] break-words">
                 {title}
               </h4>
               <p className="min-w-[10rem] font-pretendard font-normal text-[14px] leading-[145%] text-[#000000] break-words line-clamp-4">
