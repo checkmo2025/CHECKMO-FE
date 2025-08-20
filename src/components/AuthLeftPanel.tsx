@@ -9,7 +9,7 @@ const AuthLeftPanel = () => {
       }}
     >
       <img
-        src="/assets/book-logo.png"
+        src="/assets/book_logo.png"
         alt="책모 로고"
         className="w-60 max-w-full h-auto mb-2"
       />

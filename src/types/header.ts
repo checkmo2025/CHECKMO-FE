@@ -1,16 +1,22 @@
 export type NotificationPreviewItem = {
   notificationId: number;
-  notificationType: string; 
-  senderNickname: string | null; 
-  targetName?: string | null;    
+  notificationType: "LIKE" | "COMMENT" | "FOLLOW" | "JOIN_CLUB"; 
+  senderNickname: string; 
+  targetName: string;    
   read: boolean;
   createdAt: string;   
   redirectPath: string;
 };
 
-export type NotificationPreviewResult = {
-  notifications: NotificationPreviewItem[];
-};
+// API 응답 전체 구조
+export interface NotificationPreviewResponse {
+  isSuccess: boolean;
+  code: string;
+  message: string;
+  result: {
+    notifications: NotificationPreviewItem[];
+  };
+}
 
 export type MyProfileResult = {
   nickname: string;
@@ -26,8 +32,5 @@ export type HeaderUserProfile = {
   imgUrl?: string;
 };
 
-export type HeaderNotification = {
-  message: string;
-  time: string;
-  redirectPath?: string;
-};
+// 실제 화면에서 쓰일 데이터 형태
+export type HeaderNotification = NotificationPreviewItem;

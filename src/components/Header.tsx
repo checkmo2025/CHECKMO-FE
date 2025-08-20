@@ -2,7 +2,8 @@ import { useState, useEffect, useRef } from "react";
 import { FaBell } from "react-icons/fa";
 import { useNavigate, useParams } from "react-router-dom";
 import { useMyProfileQuery } from "../hooks/My/useMember";
-import { useHeaderData } from "../hooks/useHeader";
+import { useHeaderData, TYPE_TEXT } from "../hooks/useHeader";
+import type { NotificationPreviewItem } from "../types/header";
 
 interface HeaderProps {
   pageTitle: string;
@@ -34,7 +35,7 @@ const Header = ({
   // 프로필
   const { data: me, isPending: profilePending } = useMyProfileQuery();
 
-  // ✅ 모든 페이지에서 알림 5개 불러오기
+  // 알림 5개 불러오기
   const { notifications, notiLoading } = useHeaderData(5);
 
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -57,10 +58,28 @@ const Header = ({
     else navigate(manageTo);
   };
 
+  // 알림 메시지 변환
+  const renderMessage = (n: NotificationPreviewItem) => {
+    if (n.notificationType === "JOIN_CLUB") {
+      return `${n.targetName}에 가입되셨습니다.`;
+    }
+    const action = TYPE_TEXT[n.notificationType] ?? "";
+    return `${n.senderNickname ?? ""} 님이 ${action}`;
+  };
+
+  // 알림 클릭 시 notificationType 기준 redirect 처리
+  const handleNotificationClick = (n: NotificationPreviewItem) => {
+    if (n.redirectPath) {
+      navigate(n.redirectPath);
+      setIsModalOpen(false);
+    }
+  };
+
   return (
     <header
       className={`${
-        customClassName ?? "fixed left-[264px] right-0 top-3 h-[56px] lg:px-13 px-4 md:px-8 "
+        customClassName ??
+        "fixed left-[264px] right-0 top-3 h-[56px] lg:px-13 px-4 md:px-8 "
       } bg-white flex justify-between items-center z-50`}
     >
       {/* 타이틀 + 관리 버튼 */}
@@ -80,12 +99,12 @@ const Header = ({
         <button
           onClick={() => setIsModalOpen((p) => !p)}
           aria-label="Notifications"
-          className="relative w-8 h-8 flex justify-center items-center shrink-0"
+          className="relative w-8 h-8 flex justify-center items-center shrink-0 cursor-pointer"
           disabled={notiLoading}
         >
           <FaBell size={32} color="#90D26D" />
           {!notiLoading && unreadCount > 0 && (
-            <span className="absolute -top-1 -right-1 min-w-[18px] h-[18px] px-[4px] rounded-full text-[11px] bg-[#90D26D] text-white flex items-center justify-center">
+            <span className="absolute -top-1 -right-1 min-w-[18px] h-[18px] px-[4px] rounded-full text-[11px] bg-[#90D26D] text-white flex items-center justify-center cursor-pointer">
               {unreadCount}
             </span>
           )}
@@ -102,21 +121,24 @@ const Header = ({
             ) : unreadCount === 0 ? (
               <div className="text-sm text-[#8D8D8D]">알림이 존재하지 않습니다.</div>
             ) : (
-              <ul className="space-y-2">
-                {notifications!.map((n, i) => (
+              <ul className="divide-y divide-gray-200">
+                {notifications!.map((n) => (
                   <li
-                    key={i}
-                    className="flex justify-between items-center px-[10px] py-[8px] hover:bg-[#F1F8EF] rounded-[12px]"
+                    key={n.notificationId}
+                    onClick={() => handleNotificationClick(n)}
+                    className="flex justify-between items-center px-[10px] py-[12px] hover:bg-[#F1F8EF] rounded-[12px] cursor-pointer"
                   >
                     <div className="flex flex-col">
                       <span className="text-[#2C2C2C] text-[14px] font-medium leading-[145%]">
-                        {n.message}
+                        {renderMessage(n)}
                       </span>
-                      <span className="text-[#8D8D8D] text-[12px] font-normal leading-[145%]">
-                        {n.time}
+                      <span className="text-[#8D8D8D] text-[12px] font-normal leading-[145%] mt-1">
+                        {n.createdAt}
                       </span>
                     </div>
-                    <div className="w-[15px] h-[15px] bg-[#90D26D] rounded-full flex-shrink-0" />
+                    {!n.read && (
+                      <div className="w-[15px] h-[15px] bg-[#90D26D] rounded-full flex-shrink-0" />
+                    )}
                   </li>
                 ))}
               </ul>
@@ -136,7 +158,7 @@ const Header = ({
                 alt={me?.nickname ? `${me.nickname}의 프로필` : "기본 프로필"}
                 className="w-full h-full object-cover"
                 onError={(e) => {
-                  (e.target as HTMLImageElement).style.display = "/assets/basic_profile.png";
+                  (e.target as HTMLImageElement).src = "/assets/basic_profile.png";
                 }}
               />
             ) : (

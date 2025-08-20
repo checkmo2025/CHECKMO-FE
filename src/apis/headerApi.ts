@@ -1,5 +1,5 @@
 import { axiosInstance } from "./axiosInstance";
-import type { MyProfileResult, NotificationPreviewResult } from "../types/header";
+import type { MyProfileResult, NotificationPreviewItem } from "../types/header";
 
 function asResult<T>(data: any): T {
   if (data && typeof data === "object" && "result" in data) {
@@ -24,8 +24,14 @@ export async function getMyProfile(): Promise<MyProfileResult> {
   }
 }
 
-export async function getNotificationPreview(size = 5): Promise<NotificationPreviewResult> {
-  const { data } = await axiosInstance.get("/notifications/preview", { params: { size } });
-  const result = asResult<NotificationPreviewResult>(data);
-  return result ?? { notifications: [] };
-}
+/** 알림 미리보기 조회 */
+export const getNotificationPreview = async (
+  size: number
+): Promise<NotificationPreviewItem[]> => {
+  const res: any = await axiosInstance.get(
+    "/notifications/preview",
+    { params: { size } }
+  );
+
+  return res.notifications;
+};
