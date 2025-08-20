@@ -38,14 +38,14 @@ export default function ShelfDetailPage() {
         {/* 상단 뒤로가기 영역 */}
         <div onClick={() => navigate(-1)} className="flex items-center h-[38px] gap-[3px] cursor-pointer mb-[30px]">
           {/* 1) 왼쪽 아이콘 영역 (30px) */}
-          <div className="w-[30px] h-full flex items-center justify-center">
-            <img src="/assets/material-symbols_arrow-back-ios.svg" className="w-[30px] h-[30px]"/>
-          </div>
+
+          <img src="/assets/material-symbols_arrow-back-ios.svg" className="w-[30px] h-[30px]"/>
+
 
           {/* 2) 책 이름 */}
-          <span className="font-[Pretendard] font-bold text-[28px] leading-[135%]">
+          <h1 className="font-[Pretendard] font-bold text-[28px] leading-[135%] line-clamp-1">
             {ShelfDetail?.bookDetailInfo.title}
-          </span>
+          </h1>
         </div>
         {/* 메인 */}
          <div className="pt-[10px] overflow-y-auto h-[calc(100vh-117px)] overscroll-none " style={{ msOverflowStyle: 'none', scrollbarWidth: 'none' }}>
