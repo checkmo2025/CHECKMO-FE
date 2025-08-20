@@ -10,8 +10,8 @@ const MeetingTopicListPage = () => {
   const { title, meetingTime } = (location.state as { title: string; meetingTime: string }) || {};
 
   const meetId = Number(meetingId ?? 0);
-  const date = parseISO(meetingTime);
-  const dateStr = format(date, "yyyy.MM.dd");
+  const dateStr = format(parseISO(meetingTime), "yyyy.MM.dd");
+  const headerTitle = `${dateStr} | ${title}`;
 
   const { data: topicsResult, isLoading: areTopicsLoading } =
     useGetMeetingTopics(meetId);
@@ -28,7 +28,7 @@ const MeetingTopicListPage = () => {
 
   return (
     <div className="mx-auto px-10 space-y-5">
-      <NonProfileHeader title={dateStr + " | " + title} />
+      <NonProfileHeader title={headerTitle} />
       <TopicPreviewSection previews={topics} />
     </div>
   );
