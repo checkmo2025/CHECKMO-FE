@@ -145,7 +145,9 @@ export default function ThemeDetailPage() {
             <div className="flex flex-col gap-3">
               {TopicList.map((Topic: TopicItem) => (
                 <div key={Topic.topicId} className="flex py-2 flex shadow rounded-2xl border-2 border-[var(--sub-color-2-brown,#EAE5E2)] hover:shadow-md">
-                    <div className= "flex-shrink-0 items-center w-[222px] h-[48px] ml-[12px] flex gap-[19px] mr-[15px] " >
+                    <div className= "flex-shrink-0 items-center w-[222px] h-[48px] ml-[12px] flex gap-[19px] mr-[15px] " onClick={() => {
+                      navigate(`/info/others/${Topic.authorInfo.nickname}`)
+                    }}>
                       <img src= {Topic.authorInfo.profileImageUrl || '/assets/ix_user-profile-filled.svg'} className="w-[48px] h-[48px] rounded-full object-cover" />
                       <div className="font-semibold text-[15px] text-gray-800 mb-1">{Topic.authorInfo.nickname}</div>
                     </div>
