@@ -1,40 +1,51 @@
 import { useLocation, useParams } from "react-router-dom";
-import type { Topic } from "../../types/clubMeeting";
 import { format, parseISO } from "date-fns";
 import { NonProfileHeader } from "../../components/NonProfileHeader";
 import { TeamTopicSection } from "../../components/Meeting/TeamTopicSection";
 import TeamTopicParticipant from "../../components/Meeting/TeamTopicParticipant";
+import { useGetMeetingTeamMember, useGetMeetingTeamTopic } from "../../hooks/useClubMeeting";
 
 const MeetingTeamTopicListPage = () => {
-  const { teamId } = useParams<{ teamId: string }>();
+  const { meetingId, teamId } = useParams<{ meetingId: string, teamId: string }>();
   const location = useLocation();
-  const { date, bookTitle, topics } = location.state as {
-    date: string;
-    bookTitle: string;
-    teamNumber: number;
-    topics: Topic[];
-  };
-  const dateStr = format(parseISO(date), "yyyy.MM.dd");
-  const title = `${dateStr} | ${bookTitle}`;
+  const { title, meetingTime } = (location.state as { title: string; meetingTime: string }) || {};
+  const dateStr = format(parseISO(meetingTime), "yyyy.MM.dd");
+  const headerTitle = `${dateStr} | ${title}`;
 
-  const participants = [
-    { memberId: 1, nickName: "oz", imgUrl: "userImage.png" },
-    { memberId: 2, nickName: "ojh", imgUrl: "userImage.png" },
-    { memberId: 3, nickName: "returntooz", imgUrl: "userImage.png" },
-    { memberId: 4, nickName: "re", imgUrl: "userImage.png" },
-    { memberId: 5, nickName: "turnto", imgUrl: "userImage.png" },
-    { memberId: 6, nickName: "ozi", imgUrl: "userImage.png" },
-  ];
+  const meetId = Number(meetingId ?? 0);
+  const tId = Number(teamId ?? 0);
+  const { data: teamTopicResult, isLoading: isTopicLoading } =
+    useGetMeetingTeamTopic(meetId, tId);
+
+  const { data: teamMemberResult, isLoading: isMemeberLoading } =
+    useGetMeetingTeamMember(meetId, tId);
+
+  if (isMemeberLoading || isTopicLoading) {
+    return <div>Loading...</div>;
+  }
+
+  if (!teamTopicResult) {
+    return <div>Error: Could not fetch teamTopic data.</div>;
+  }
+
+  if (!teamMemberResult) {
+    return <div>Error: Could not fetch teamMember data.</div>;
+  }
+
+  const topics = teamTopicResult.topics;
+  const participants = teamMemberResult.members;
+
   return (
-    <div className="w-full px-10 space-y-10">
-      <NonProfileHeader title={title} />
-      <div className="flex flex-row space-x-10">
-        <div className="flex-1">
-          <TeamTopicSection teamNumber={parseInt(teamId!)} topics={topics} />
+    <div className="w-full px-10 space-y-5 min-w-[900px]">
+      <NonProfileHeader title={headerTitle} />
+      <div className="flex gap-5 md:gap-8 items-start">
+        <div className="flex-1 min-w-0">
+          <TeamTopicSection teamNumber={Number(teamId)} topics={topics} />
         </div>
-        <div className="flex-0">
+
+        <div className="shrink-0 basis-[240px]">
           <TeamTopicParticipant
-            teamName={teamId!}
+            teamName={Number(teamId)}
             participants={participants}
           />
         </div>

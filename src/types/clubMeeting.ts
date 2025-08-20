@@ -79,7 +79,8 @@ export type TotalTopicResult = {
 
 export type TeamTopicResult = {
   membership: MemberShip;
-  teamTopic: TeamTopic;
+  teamNumber: number; // 1=A조, 2=B조 …
+  topics: Topic[];
 };
 
 export type TeamMemberResult = {
