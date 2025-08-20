@@ -77,10 +77,12 @@ const Header = ({
 
   return (
     <header
-      className={`${
-        customClassName ??
-        "fixed left-[264px] right-0 top-3 h-[56px] lg:px-13 px-4 md:px-8 "
-      } bg-white flex justify-between items-center z-50`}
+      className={`
+        w-full
+        mt-[30px] pb-[30px] bg-white flex justify-between items-center
+        border-b border-gray-200
+        ${customClassName ?? ""}
+      `}
     >
       {/* 타이틀 + 관리 버튼 */}
       <div className="flex items-center gap-3">

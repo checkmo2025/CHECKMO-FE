@@ -135,8 +135,8 @@ const MySubscriptionPage = () => {
               }}
               className={`px-3 py-1 rounded-full text-[13px] font-medium text-white ${
                 user.following
-                  ? "bg-[#90D26D] hover:bg-[#7bb95b]"
-                  : "bg-[#8D8D8D] hover:bg-[#aaa]"
+                  ? "bg-[#90D26D] hover:bg-[#7bb95b] cursor-pointer"
+                  : "bg-[#8D8D8D] hover:bg-[#aaa] cursor-pointer"
               }`}
             >
               {user.following ? "삭제" : "구독"}
@@ -185,7 +185,7 @@ const MySubscriptionPage = () => {
                 e.stopPropagation();
                 handleRemoveFollower(user.nickname);
               }}
-              className="px-3 py-1 rounded-full text-[13px] font-medium text-white bg-[#90D26D] hover:bg-[#7bb95b]">
+              className="px-3 py-1 rounded-full text-[13px] font-medium text-white bg-[#90D26D] hover:bg-[#7bb95b] cursor-pointer">
               삭제
             </button>
           </div>

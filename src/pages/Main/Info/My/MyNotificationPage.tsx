@@ -125,7 +125,7 @@ const MyNotificationPage = () => {
       case "LIKE":
         return `${item.senderNickname} 님이 내 책이야기에 좋아요를 눌렀습니다.`;
       case "FOLLOW":
-        return `${item.senderNickname} 님이 팔로잉을 시작했습니다.`;
+        return `${item.senderNickname} 님이 구독했습니다.`;
       case "JOIN_CLUB":
         return `${item.targetName}에 가입되셨습니다.`;
       default:
