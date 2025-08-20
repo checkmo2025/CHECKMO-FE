@@ -192,7 +192,7 @@ export default function BookStoryHomePage() {
           {stories.length === 0 && loading && <div>로딩 중...</div>}
           {stories.map((story) => (
             <div
-              className="cursor-pointer hover:shadow-lg hover:scale-[1.03]"
+              className="cursor-pointer hover:shadow-lg hover:scale-[1.03] transition-transform duration-300"
               key={story.bookStoryId}
               onClick={() => navigate(`/bookstory/${story.bookStoryId}/detail`)}
             >

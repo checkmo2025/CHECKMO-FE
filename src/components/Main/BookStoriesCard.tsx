@@ -103,7 +103,7 @@ const BookStoriesCard = ({
 
   return (
     <div
-      className="hover:shadow-lg hover:scale-[1.03] rounded-[16px] border-[2px] border-[#EAE5E2] overflow-hidden cursor-pointer transition-transform duration-200"
+      className="hover:shadow-lg hover:scale-[1.03] rounded-[16px] border-[2px] border-[#EAE5E2] overflow-hidden cursor-pointer transition-transform duration-300"
       onClick={handleCardClick}
     >
       <div className="flex flex-col sm:flex-col md:flex-row gap-4 p-4 sm:p-4 md:p-6 lg:p-6 xl:p-8">

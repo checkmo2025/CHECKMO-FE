@@ -128,7 +128,11 @@ export default function BookStoryDetailPage() {
           className="flex items-center gap-2 text-lg font-semibold mb-4"
           type="button"
         >
-          <img src={backIcon} alt="뒤로가기" className="w-5 h-5" />
+          <img
+            src={backIcon}
+            alt="뒤로가기"
+            className="w-5 h-5 cursor-pointer"
+          />
           {bookStoryTitle}
         </button>
       </div>
