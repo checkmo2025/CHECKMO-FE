@@ -66,10 +66,7 @@ export default function MyBookStoryPage() {
 
   return (
     <div className="absolute left-[315px] right-[42px] opacity-100">
-      <Header
-        pageTitle={`${nickname}님의 책 이야기`}
-        customClassName="mt-[30px] pl-2"
-      />
+      <Header pageTitle={`${nickname}님의 책 이야기`} customClassName="pl-2" />
       <div className="overflow-y-auto h-[calc(100vh-80px)] w-full flex-1 pt-[30px] pl-[2px] pr-[30px] bg-[#FFFFFF]">
         <div className="flex justify-between items-center mb-6 pl-2">
           <button

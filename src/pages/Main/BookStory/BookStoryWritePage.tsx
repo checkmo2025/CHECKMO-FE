@@ -17,7 +17,6 @@ export default function BookStoryWritePage() {
 
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
-  // const [loading, setLoading] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   const handleAddStory = async () => {
@@ -61,9 +60,9 @@ export default function BookStoryWritePage() {
       className="absolute left-[315px] right-[42px] top-0 bottom-0 flex flex-col opacity-100"
       style={{ maxWidth: "1080px", margin: "0 auto" }}
     >
-      <Header pageTitle="책 이야기" customClassName="mt-[30px]" />
+      <Header pageTitle="책 이야기" />
 
-      <main className="overflow-y-auto flex-grow pt-[30px] px-0">
+      <main className="overflow-y-auto flex-grow px-0">
         <div className="max-w-full mx-auto p-0 space-y-8 text-gray-900">
           {/* 책 정보 */}
           <section className="relative flex items-start gap-6 p-6 border border-[#EAE5E2] rounded-xl bg-white">

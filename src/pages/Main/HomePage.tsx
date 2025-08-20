@@ -119,7 +119,7 @@ export default function HomePage() {
 
   return (
     <div className="absolute left-[315px] right-[42px] opacity-100 max-xl:static max-xl:w-full">
-      <Header pageTitle="책모 홈" customClassName="my-[30px] pl-6" />
+      <Header pageTitle="책모 홈" customClassName="pl-6" />
 
       <div
         ref={scrollContainerRef}

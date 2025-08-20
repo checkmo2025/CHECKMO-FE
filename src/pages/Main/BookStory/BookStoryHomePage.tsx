@@ -129,7 +129,7 @@ export default function BookStoryHomePage() {
 
   return (
     <div className="absolute left-[315px] right-[42px] opacity-100">
-      <Header pageTitle="책 이야기" customClassName="mt-[30px] pl-4" />
+      <Header pageTitle="책 이야기" customClassName="pl-4" />
 
       {/* 탭 및 목록 컨테이너 */}
       <div
