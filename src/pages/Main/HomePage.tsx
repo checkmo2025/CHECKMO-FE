@@ -71,7 +71,11 @@ export default function HomePage() {
           })
         )
       )
-      .then((noticesArrays) => setNotices(noticesArrays.flat()))
+      .then((noticesArrays) => {
+        const allNotices = noticesArrays.flat();
+        console.log("모든 공지사항:", allNotices); // <- 최종 데이터 확인
+        setNotices(allNotices);
+      })
       .catch((err) => console.error("공지사항 불러오기 실패", err))
       .finally(() => setLoadingNotices(false));
   }, []);
