@@ -58,26 +58,35 @@ export default function HomePage() {
   }, []);
 
   useEffect(() => {
-    setLoadingNotices(true);
-    fetchMyClubs()
-      .then((clubs) =>
-        Promise.all(
-          clubs.map(async (club) => {
+    const fetchNoticesSequentially = async () => {
+      setLoadingNotices(true);
+      try {
+        const clubs = await fetchMyClubs();
+        const allNotices: NoticeDto[] = [];
+
+        for (const club of clubs) {
+          try {
             const notices = await fetchNoticesByClub(club.clubId);
-            return notices.map((notice) => ({
-              ...notice,
-              clubId: club.clubId,
-            }));
-          })
-        )
-      )
-      .then((noticesArrays) => {
-        const allNotices = noticesArrays.flat();
-        console.log("모든 공지사항:", allNotices); // <- 최종 데이터 확인
+            allNotices.push(
+              ...notices.map((notice) => ({ ...notice, clubId: club.clubId }))
+            );
+            // 서버 과부하 방지용 딜레이 150ms
+            await new Promise((res) => setTimeout(res, 150));
+          } catch (err) {
+            console.error(`클럽 ${club.clubId} 공지 가져오기 실패`, err);
+          }
+        }
+
+        console.log("모든 공지사항:", allNotices);
         setNotices(allNotices);
-      })
-      .catch((err) => console.error("공지사항 불러오기 실패", err))
-      .finally(() => setLoadingNotices(false));
+      } catch (err) {
+        console.error("클럽 가져오기 실패", err);
+      } finally {
+        setLoadingNotices(false);
+      }
+    };
+
+    fetchNoticesSequentially();
   }, []);
 
   useEffect(() => {
@@ -110,7 +119,7 @@ export default function HomePage() {
 
   return (
     <div className="absolute left-[315px] right-[42px] opacity-100 max-xl:static max-xl:w-full">
-      <Header pageTitle="책모 홈" customClassName="mt-[30px] pl-6" />
+      <Header pageTitle="책모 홈" customClassName="my-[30px] pl-6" />
 
       <div
         ref={scrollContainerRef}
@@ -120,7 +129,7 @@ export default function HomePage() {
         <div className="text-xl font-semibold text-gray-800 mb-4 pl-2">
           공지사항
         </div>
-        {loadingNotices && <p>공지사항 로딩중...</p>}
+        {loadingNotices && <p className=" pl-2">공지사항 로딩중...</p>}
         <div
           className="flex gap-4 overflow-x-auto flex-nowrap scroll-smooth mb-12 p-2
                         max-sm:flex-col max-sm:overflow-x-hidden max-sm:gap-3"
@@ -150,9 +159,11 @@ export default function HomePage() {
         <div className="text-xl font-semibold text-gray-800 mb-4 pl-2">
           책 이야기
         </div>
-        {bookStories.length === 0 && loadingBooks && <p>책 이야기 로딩중...</p>}
+        {bookStories.length === 0 && loadingBooks && (
+          <p className="pl-2">책 이야기 로딩중...</p>
+        )}
         {errorBooks && (
-          <p className="text-red-500">책 이야기 에러: {errorBooks}</p>
+          <p className="text-red-500 pl-2">책 이야기 에러: {errorBooks}</p>
         )}
         <div
           className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-2 
