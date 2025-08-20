@@ -157,9 +157,12 @@ const BookStoriesCard = ({
               <img
                 src={liked ? likedIcon : likeIcon}
                 alt="like"
-                className="w-4 h-4 sm:w-5 sm:h-5 cursor-pointer"
+                className="w-3 h-3 sm:w-5 sm:h-5 cursor-pointer"
               />
-              <span className="font-medium text-[#000000] text-[12px] sm:text-[13px] md:text-[14px]">
+              <span
+                className={`font-medium text-[#000000] text-[12px] sm:text-[13px] md:text-[14px] inline-block`}
+                style={{ minWidth: `${likeCount.toString().length}ch` }}
+              >
                 {likeCount}
               </span>
             </div>

@@ -146,10 +146,27 @@ export default function BookStoryDetailPage() {
           <img
             src={authorInfo.profileImageUrl || noProfileImage}
             alt={authorInfo.nickname}
-            className="w-10 h-10 rounded-full"
+            className="w-10 h-10 rounded-full cursor-pointer"
+            onClick={() => {
+              if (isMyStory) {
+                navigate("/mypage/myprofile");
+              } else {
+                navigate(`/info/others/${authorInfo.nickname}`);
+              }
+            }}
           />
-
-          <span className="text-base font-semibold">{authorInfo.nickname}</span>
+          <span
+            className="text-base font-semibold cursor-pointer"
+            onClick={() => {
+              if (isMyStory) {
+                navigate("/mypage/myprofile");
+              } else {
+                navigate(`/info/others/${authorInfo.nickname}`);
+              }
+            }}
+          >
+            {authorInfo.nickname}
+          </span>
         </div>
 
         <div className="flex gap-8">

@@ -147,7 +147,10 @@ const App = () => {
               <Route path=":meetingId/edit" element={<MeetingEditPage />} />
 
               <Route path="create" element={<MeetingCreatePage />} />
-              <Route path=":meetingId/manage" element={<DetailMeatingManagePage />} />
+              <Route
+                path=":meetingId/manage"
+                element={<DetailMeatingManagePage />}
+              />
               <Route
                 path=":meetingId/topics"
                 element={<MeetingTopicListPage />}
