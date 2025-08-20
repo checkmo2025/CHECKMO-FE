@@ -8,34 +8,27 @@ import { NonProfileHeader } from "../../components/NonProfileHeader";
 import { useMeetingDetail } from "../../hooks/useClubMeeting";
 
 const MeetingDetailPage = () => {
-
   const navigate = useNavigate();
   const { meetingId } = useParams<{ meetingId: string }>();
   const { data, isLoading, isError } = useMeetingDetail(Number(meetingId));
 
+  const title = data?.meetingInfo.bookInfo?.title ?? "";
+  const meetingTime = data?.meetingInfo?.meetingTime ?? "";
+
   const handleMoreTopics = useCallback(() => {
-    if (!data) return;
     navigate("topics", {
       state: {
-        date: data.meetingInfo.meetingTime,
-        bookTitle: data.meetingInfo.bookInfo.title,
-        topics: data.topics,
+        title: title,
+        meetingTime: meetingTime,
       },
     });
-  }, [navigate, data]);
+  }, [navigate, title, meetingTime]);
 
   const handleViewAllTeamTopics = useCallback(
     (team: TeamTopic) => {
-      if (!data) return;
-      navigate(`teamTopic/${team.teamNumber}`, {
-        state: {
-          date: data.meetingInfo.meetingTime,
-          bookTitle: data.meetingInfo.bookInfo.title,
-          topics: team.topics,
-        },
-      });
+      navigate(`teamTopic/${team.teamNumber}`);
     },
-    [navigate, data]
+    [navigate]
   );
 
   if (isLoading) {
