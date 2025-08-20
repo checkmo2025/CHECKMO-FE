@@ -7,15 +7,20 @@ import {
   useMyFollowerQuery,
   useMyNotificationsQuery,
 } from "../../../../hooks/My/useMember";
+import { useQueryClient } from "@tanstack/react-query";
+import { readNotification } from "../../../../apis/My/memberApi";
 
 const MyPage = () => {
   const navigate = useNavigate();
+  const qc = useQueryClient();
 
   // API 호출 (모두 cursor 기반)
   const { data: profileData, error: profileError } = useMyProfileQuery();
   const { data: clubData, error: clubError } = useMyClubsQuery(null);
-  const { data: followingData, error: followingError } = useMyFollowingQuery(null);
-  const { data: followerData, error: followerError } = useMyFollowerQuery(null);
+  const { data: followingData, error: followingError } =
+    useMyFollowingQuery(null);
+  const { data: followerData, error: followerError } =
+    useMyFollowerQuery(null);
   const { data: notificationData, error: notificationError } =
     useMyNotificationsQuery(null);
 
@@ -41,7 +46,11 @@ const MyPage = () => {
 
   // 에러 발생 여부 (로그인 안된 경우도 포함)
   const hasError =
-    profileError || clubError || followingError || followerError || notificationError;
+    profileError ||
+    clubError ||
+    followingError ||
+    followerError ||
+    notificationError;
 
   return (
     <div className="relative w-full h-screen bg-[#FAFAFA] overflow-hidden">
@@ -124,7 +133,9 @@ const MyPage = () => {
                         <li
                           key={club.clubId}
                           className="py-3 cursor-pointer hover:bg-[#FAFAFA]"
-                          onClick={() => navigate(`/bookclub/${club.clubId}/home`)}
+                          onClick={() =>
+                            navigate(`/bookclub/${club.clubId}/home`)
+                          }
                         >
                           <p className="text-[#2C2C2C] font-medium text-[15px]">
                             {club.name}
@@ -148,15 +159,21 @@ const MyPage = () => {
                   </div>
                   <div className="bg-white rounded-xl border border-[#EAE5E2] p-5 shadow-sm min-h-[424px]">
                     <div className="grid grid-cols-2 gap-3">
-                      {[{ label: "구독중", list: followingList },
-                        { label: "구독자", list: followerList }].map(({ label, list }) => (
+                      {[
+                        { label: "구독중", list: followingList },
+                        { label: "구독자", list: followerList },
+                      ].map(({ label, list }) => (
                         <div key={label}>
-                          <p className="text-[#90D26D] text-[13px] mb-3">{label}</p>
+                          <p className="text-[#90D26D] text-[13px] mb-3">
+                            {label}
+                          </p>
                           {list.slice(0, 5).map((member) => (
                             <div
                               key={`${label}-${member.nickname}`}
                               className="bg-[#F4F2F1] rounded-lg px-3 py-3 mb-3 flex items-center gap-2 cursor-pointer hover:bg-[#FAFAFA]"
-                              onClick={() => navigate(`/info/others/${member.nickname}`)}
+                              onClick={() =>
+                                navigate(`/info/others/${member.nickname}`)
+                              }
                             >
                               {member.profileImageUrl ? (
                                 <img
@@ -164,7 +181,8 @@ const MyPage = () => {
                                   alt={`${member.nickname} 프로필`}
                                   className="w-6 h-6 rounded-full object-cover"
                                   onError={(e) =>
-                                    (e.currentTarget.src = "/assets/basic_profile.png")
+                                    (e.currentTarget.src =
+                                      "/assets/basic_profile.png")
                                   }
                                 />
                               ) : (
@@ -202,9 +220,22 @@ const MyPage = () => {
                         <li
                           key={item.notificationId}
                           className="flex justify-between items-center py-3 cursor-pointer hover:bg-[#FAFAFA]"
-                          onClick={() => {
-                            if (item.redirectPath) {
-                              navigate(item.redirectPath);
+                          onClick={async () => {
+                            try {
+                              // 읽음 처리 API 호출
+                              await readNotification(item.notificationId);
+
+                              // 캐시 무효화 → 새로 불러오기
+                              qc.invalidateQueries({
+                                queryKey: ["mypage", "notifications"],
+                              });
+
+                              // 경로 이동
+                              if (item.redirectPath) {
+                                navigate(item.redirectPath);
+                              }
+                            } catch (err) {
+                              console.error("알림 읽음 처리 실패:", err);
                             }
                           }}
                         >
