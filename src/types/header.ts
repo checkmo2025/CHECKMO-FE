@@ -1,6 +1,6 @@
 export type NotificationPreviewItem = {
   notificationId: number;
-  notificationType: "LIKE" | "COMMENT" | "FOLLOW" | "CLUB_JOIN"; 
+  notificationType: "LIKE" | "COMMENT" | "FOLLOW" | "JOIN_CLUB"; 
   senderNickname: string; 
   targetName: string;    
   read: boolean;
