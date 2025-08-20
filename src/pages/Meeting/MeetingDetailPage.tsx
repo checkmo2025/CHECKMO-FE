@@ -26,9 +26,14 @@ const MeetingDetailPage = () => {
 
   const handleViewAllTeamTopics = useCallback(
     (team: TeamTopic) => {
-      navigate(`teamTopic/${team.teamNumber}`);
+      navigate(`teamTopic/${team.teamNumber}`, {
+        state: {
+          title: title,
+          meetingTime: meetingTime,
+        },
+      });
     },
-    [navigate]
+    [navigate, title, meetingTime]
   );
 
   if (isLoading) {
