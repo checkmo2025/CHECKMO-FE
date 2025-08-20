@@ -113,7 +113,7 @@ export default function MeetingNoticeContent({ data }: MeetingNoticeContentProps
       </div>
 
       {/* 하단: 상세 설명 */}
-      <div className="w-full max-w-[1170px] h-auto p-[16px] lg:p-[20px] border-[2px] border-[#EAE5E2] rounded-[16px] mb-[36px]">
+      <div className="w-full max-w-[1170px] h-auto p-[16px] lg:p-[20px] border-[2px] border-[#EAE5E2] rounded-[16px] mb-[36px] mr-[12px] md:mr-[18px]">
         <p className="font-medium text-[14px] text-[#2c2c2c] whitespace-pre-line">
           {data.content}
         </p>
