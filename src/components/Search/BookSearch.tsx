@@ -89,11 +89,8 @@ export default function BookSearch({
           }}
         >
           {Searchbooks.map((SearchBook) => (
-            <div
-              key={SearchBook.isbn}
-              className=""
-            >
-              <div className = "flex border-2 border-[var(--sub-color-2-brown,#EAE5E2)] rounded-2xl bg-[var(--White,#FFF)] shadow-sm  hover:shadow-lg hover:scale-[1.03]">
+            <div key={SearchBook.isbn}>
+              <div className = "flex h-[215px] border-2 border-[var(--sub-color-2-brown,#EAE5E2)] rounded-2xl bg-[var(--White,#FFF)] shadow-sm  hover:shadow-lg hover:scale-[1.03]">
                   {/* 좌측 */}
                 <div className="flex-1 flex p-[10px] gap-[20px]">
                   {/* 썸네일 */}
@@ -110,17 +107,17 @@ export default function BookSearch({
                     <div className="flex items-start gap-[5px] mb-4">
                       <img src="/assets/책 제목.svg" className="w-6 h-6" />
                       <div className="flex gap-[10px] items-center">
-                        <h2 className="font-[Pretendard] font-medium text-[18px] leading-[135%]">
+                        <h2 className="font-[Pretendard] font-medium text-[18px] leading-[135%] line-clamp-3">
                           {SearchBook.title}
                         </h2>
                       </div>
                     </div>
                     {/* 출판사*/}
-                    <span className="font-[Pretendard] font-semibold text-[12px] text-[#8D8D8D]">
+                    <span className="font-[Pretendard] font-semibold text-[12px] text-[#8D8D8D] line-clamp-3">
                       {SearchBook.author} | 출판 {SearchBook.publisher}
                     </span>
                     {/* 요약 */}
-                    <p className="font-[Pretendard] font-semibold text-[12px] mt-5">
+                    <p className="font-[Pretendard] font-semibold text-[12px] mt-5 overflow-hidden">
                       {SearchBook.description}
                     </p>
                   </div>
