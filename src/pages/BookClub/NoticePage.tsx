@@ -43,12 +43,12 @@ export default function NoticePage(): React.ReactElement {
   return (
     <div className="w-full h-screen flex flex-col">
       <Header pageTitle={'공지사항'}
-        customClassName="mt-[30px] ml-[52px] mr-[41px] mb-[15px]"
+        customClassName="mt-[20px] sm:mt-[30px] ml-4 sm:ml-[52px] mr-4 sm:mr-[41px] mb-[10px] sm:mb-[15px]"
       />
 
-      <div className="flex-1 overflow-y-auto ml-[52px] mr-8">
+      <div className="flex-1 overflow-y-auto sm:ml-[52px] sm:mr-8">
         <div className="mt-[15px]">
-          <section className="mb-6">
+          <section className="sm:ml-4 mb-6">
             {topLoading && (
               <div className="w-full h-[120px] flex items-center justify-center border-2 border-[#EAE5E2] rounded-[16px]">
                 <p className="text-[#969696]">중요 공지사항을 불러오는 중...</p>
@@ -71,7 +71,7 @@ export default function NoticePage(): React.ReactElement {
 
           <section className="mt-[43px]">
             {isStaff && (
-              <div className="relative h-[48px] mb-4 mr-[20px]">
+              <div className="relative h-[48px] mb-4 mr-0 sm:mr-[20px]">
                 <NoticeCreateDropdown
                   onSelectNoticeType={(type) => {
                     const noticeType = type === 'vote' ? 'poll' : 'notice';

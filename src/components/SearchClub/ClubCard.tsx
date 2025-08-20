@@ -55,7 +55,7 @@ const ActionButtons: React.FC<{
     : 'absolute right-[20px] top-[107px]';
   
   return (
-    <div className={`${positionClass} flex flex-col gap-[10px]`}>
+    <div className={`${positionClass} hidden sm:flex flex-col gap-[10px]`}>
       <ActionButton
         variant="primary"
         onClick={onJoinClick}
@@ -173,7 +173,7 @@ export default function ClubCard({
         <img
           src={logoUrl ?? checker}
           alt="club"
-          className="w-[164px] h-[164px] ml-[20px] mt-[20px] rounded-lg object-cover"
+          className="hidden sm:block w-[164px] h-[164px] ml-[20px] mt-[20px] rounded-lg object-cover"
         />
 
         {/* 정보 영역 */}

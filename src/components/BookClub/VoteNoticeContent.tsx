@@ -270,11 +270,11 @@ export default function VoteNoticeContent({ data, registerBackBlocker }: VoteNot
   return (
     <div>
       {/* 메인 콘텐츠 영역 */}
-      <div className="w-[1080px] min-h-[622px] p-[20px] border-[2px] border-[#EAE5E2] rounded-[16px] mb-[36px] ml-1">
+      <div className="w-full max-w-[1150px] min-h-[622px] p-[20px] border-[2px] border-[#EAE5E2] rounded-[16px] mb-[36px] ml-1 mr-[12px] md:mr-[18px]">
         
         {/* 제목 영역 */}
         <div className="w-full h-[57px] border-b-[2px] border-[#EEEEEE] mb-[20px]">
-          <h3 className="pt-[10px] pb-[20px] pl-[23.5px] font-pretendard font-semibold text-[20px] leading-[145%] tracking-[-0.1%] text-[#000000] ">
+          <h3 className="pt-[10px] pb-[20px] pl-[23.5px] font-semibold text-[20px] text-[#000000] ">
             {current.title}
           </h3>
         </div>
@@ -306,12 +306,12 @@ export default function VoteNoticeContent({ data, registerBackBlocker }: VoteNot
         })()}
 
         {/* 투표 설명 */}
-        <p className="px-[20px] py-[10px] font-pretendard font-medium text-[18px] leading-[180%] tracking-[-0.1%] text-[#2c2c2c] whitespace-pre mb-[20px]">
+        <p className="px-[20px] py-[10px] font-medium text-[18px] text-[#2c2c2c] whitespace-pre mb-[20px]">
             {current.content}
         </p>
 
         {/* 투표 섹션 */}
-        <div className="w-[969px] px-[40px] mt-[40px]">
+        <div className="w-full px-[40px] mt-[40px]">
           <form onSubmit={handleVoteSubmit}>
             
             {/* 투표 옵션들 */}
@@ -333,11 +333,11 @@ export default function VoteNoticeContent({ data, registerBackBlocker }: VoteNot
                   />
                   
                   {/* 투표 옵션 박스 */}
-                  <div className={`w-[933px] h-[64px] rounded-[16px] p-[20px] flex items-center justify-between ${
+                  <div className={`w-full h-[64px] rounded-[16px] p-[20px] flex items-center justify-between ${
                     hasVoted ? 'bg-[#FFFFFF] border-[2px] border-[#DED6CD]' : 'bg-[#EEEEEE]'
                   }`}>
                     {/* 옵션 라벨 (왼쪽) */}
-                    <span className="font-pretendard font-medium text-[18px] leading-[145%] tracking-[-0.1%] text-[#2C2C2C]">
+                    <span className="font-medium text-[18px] text-[#2C2C2C]">
                       {option.item}
                     </span>
                     
@@ -362,7 +362,7 @@ export default function VoteNoticeContent({ data, registerBackBlocker }: VoteNot
                 <button
                   type="submit"
                   disabled={selectedIndexes.length === 0}
-                  className="w-[105px] h-[35px] bg-[#FF8045] text-white rounded-[16px] font-pretendard font-semibold text-[12px] leading-[145%] tracking-[-0.1%] whitespace-nowrap cursor-pointer disabled:bg-gray-400 disabled:cursor-not-allowed"
+                  className="w-[105px] h-[35px] bg-[#FF8045] text-white rounded-[16px] font-semibold text-[12px] whitespace-nowrap cursor-pointer disabled:bg-gray-400 disabled:cursor-not-allowed"
                 >
                   투표하기
                 </button>
@@ -371,7 +371,7 @@ export default function VoteNoticeContent({ data, registerBackBlocker }: VoteNot
                 <button
                   type="button"
                   onClick={handleRevote}
-                  className="w-[105px] h-[35px] bg-[#FF8045] text-white rounded-[16px] font-pretendard font-semibold text-[12px] leading-[145%] tracking-[-0.1%] whitespace-nowrap cursor-pointer hover:bg-[#e6723e] transition-colors"
+                  className="w-[105px] h-[35px] bg-[#FF8045] text-white rounded-[16px] font-semibold text-[12px] whitespace-nowrap cursor-pointer hover:bg-[#e6723e] transition-colors"
                 >
                   다시 투표
                 </button>

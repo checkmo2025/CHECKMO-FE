@@ -32,12 +32,12 @@ export default function NoticeDetailPage(): React.ReactElement {
         >
           <img src={backIcon} alt="back" />
         </button>
-        <h1 className="font-pretendard font-semibold text-[24px] leading-[135%] tracking-[-0.1%] text-[#2c2c2c]">
+        <h1 className="font-bold text-[24px] text-[#2c2c2c]">
           공지사항
         </h1>
       </div>
 
-      <div className=" overflow-y-auto h-[calc(100vh-100px)] w-full">
+      <div className="ml-[5px] sm:ml-[5px] pr-[12px] md:pr-[18px] overflow-y-auto h-[calc(100vh-110px)] w-full">
         {!hasValidIds ? (
           <div className="w-full h-[120px] flex items-center justify-center">
             <p className="text-red-500">유효하지 않은 공지입니다.</p>

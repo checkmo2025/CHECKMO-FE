@@ -44,27 +44,24 @@ function AnnouncementCardItem({
   return (
     <div
       onClick={handleCardClick}
-      className="relative w-[312px] h-[377px] rounded-[16px] border-2 border-[#EAE5E2] py-[26px] px-[21.5px] flex flex-col overflow-hidden cursor-pointer select-none
+      className="relative w-[312px] h-[380px] rounded-[16px] border-2 border-[#EAE5E2] py-[26px] px-[21.5px] mb-[20px] flex flex-col overflow-hidden cursor-pointer select-none
       hover:bg-gray-50 hover:shadow-lg hover:scale-[1.03] transition-all duration-300 origin-center"
     >
       <div className="flex justify-between items-center">
         <div className="flex items-center">
-          <img src={vector} alt="icon" className="w-[24px] h-[21px]" />
+          <img src={vector} alt="icon" className="w-[24px] h-[24px]" />
           <h3
             className="
               ml-[13px]
-              font-pretendard
               font-medium
               text-[18px]
-              leading-[135%]
-              tracking-[-0.1%]
             "
           >
             {item.title}
           </h3>
         </div>
         <span
-          className={`inline-flex items-center justify-center w-[52px] h-[22px] opacity-100 rounded-[15px] text-[12px] text-[#FFFFFF] font-pretendard font-semibold leading-[145%] tracking-[-0.1%] whitespace-nowrap ${item.tag === "모임"
+          className={`inline-flex items-center justify-center w-[52px] h-[22px] opacity-100 rounded-[15px] text-[12px] text-[#FFFFFF] font-semibold whitespace-nowrap ${item.tag === "모임"
             ? "bg-[#90D26D]"
             : item.tag === "투표"
               ? "bg-[#FF8045]"
@@ -79,7 +76,7 @@ function AnnouncementCardItem({
 
       <div className="mt-[9px]">
         {item.tag === "모임" && item.meetingInfoDTO && (
-          <div className="font-pretendard font-normal text-[12px] leading-[145%] tracking-[-0.1%] text-[#000000] space-y-[4px]">
+          <div className="font-normal text-[12px] text-[#000000] space-y-[4px]">
             <p>
               다음 모임 날짜:{" "}
               {(() => {
@@ -91,8 +88,10 @@ function AnnouncementCardItem({
                 }
               })()}
             </p>
-            <p>다음 모임 책: {item.meetingInfoDTO.bookInfo?.title}</p>
-            <div className="absolute top-[80px] right-[24px]">
+            <p className="line-clamp-1">
+              다음 모임 책: {item.meetingInfoDTO.bookInfo?.title}
+            </p>
+            <div className="absolute top-[67px] right-[24px]">
               <img src={arrow} alt="icon" className="w-[24px] h-[24px] -mt-3" />
             </div>
             <div className="absolute bottom-[24.5px]">
@@ -112,11 +111,11 @@ function AnnouncementCardItem({
         )}
 
         {item.tag === "투표" && (
-          <div className="font-pretendard font-normal text-[12px] leading-[145%] tracking-[-0.1%] text-[#000000] space-y-[4px]">
+          <div className="font-normal text-[12px] text-[#000000] space-y-[4px]">
             <p className="mt-[24px] mb-[16px] whitespace-pre-line">
               {item.content}
             </p>
-            <div className="absolute top-[80px] right-[24px]">
+            <div className="absolute top-[67px] right-[24px]">
               <img src={arrow} alt="icon" className="w-[24px] h-[24px] -mt-3" />
             </div>
             <div className="w-[269px] h-[207px] mt-[46px] border-[2px] border-[#EAE5E2] rounded-[16px]">
@@ -132,11 +131,8 @@ function AnnouncementCardItem({
                       w-[224px] h-[46px]
                       cursor-pointer
                       border-b-2 border-[#EAE5E2]
-                      font-pretendard
                       font-medium
                       text-[14px]
-                      leading-[145%]
-                      tracking-[-0.1%]
                       text-[#434343]
                     "
                     >
@@ -171,11 +167,8 @@ function AnnouncementCardItem({
                   bg-[#FF8045] 
                   text-white 
                   rounded-[15px]
-                  font-pretendard
                   font-semibold
                   text-[12px]
-                  leading-[145%]
-                  tracking-[-0.1%]                 
                   whitespace-nowrap
                   cursor-pointer
                 "
@@ -190,14 +183,9 @@ function AnnouncementCardItem({
         <div className="mt-[9px]">
           {item.tag === "공지" && (
             <div
-              className="   
-            font-normal           
-            text-[12px]           
-            text-[#000000]
-            space-y-[4px]    
-             "
+              className="font-normal text-[12px] text-[#000000] space-y-[4px]"
             >
-              <div className="absolute top-[80px] right-[24px]">
+              <div className="absolute top-[67px] right-[24px]">
                 <img src={arrow} alt="icon" className="w-[24px] h-[24px] -mt-3" />
               </div>
               <p className="mt-[46px] font-normal text-[12px] whitespace-pre-line">
