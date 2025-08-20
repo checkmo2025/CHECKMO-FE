@@ -62,15 +62,15 @@ const MyPageHeader = ({ title }: MyPageHeaderProps) => {
         title="정말 로그아웃 하시겠습니까?"
         buttons={[
           {
-            label: "취소",
-            onClick: () => setShowLogoutModal(false),
-            variant: "outline",
-          },
-          {
             label: "로그아웃",
             onClick: handleConfirmLogout,
             variant: "danger",
           },
+          {
+            label: "취소",
+            onClick: () => setShowLogoutModal(false),
+            variant: "outline",
+          },          
         ]}
         onBackdrop={() => setShowLogoutModal(false)}
       />
