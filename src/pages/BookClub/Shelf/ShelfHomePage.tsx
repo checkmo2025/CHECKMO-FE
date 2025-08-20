@@ -61,7 +61,17 @@ export default function   ShelfHomePage() {
   }, [hasNext, isLoading, nextCursor]);
 
   if ( isError ) return <p className="text-red-500">Error: {error?.message}</p>;
-
+  if(ShelfList.length === 0) {
+    return (
+      
+      <div className="flex flex-col w-full h-[120px] flex">
+        <Header pageTitle={'책장'} 
+          customClassName="w-full px-10 mt-[30px]"
+        />
+        <p className="mt-20 text-[#969696] text-center">책장이 비어있습니다.</p>
+      </div>
+    );
+  }
   return (
     <div className="flex h-screen">
       {/* 메인 컨텐츠 자리 */}
