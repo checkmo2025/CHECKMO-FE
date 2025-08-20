@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { NavLink, useParams, useNavigate, useLocation } from "react-router-dom";
+import { motion, AnimatePresence } from "framer-motion";
 import exitIcon from "../assets/icons/exit.png";
 import logoImage from "../assets/logos/mainlogo.png";
 import toggleClose from "../assets/icons/toggleClose.png";
@@ -230,11 +231,11 @@ const Sidebar = () => {
     level = 1,
     parentMenu?: Menu
   ) => {
+    // 레벨에 따라 다른 padding 적용
+    const paddingClass = level === 1 ? "pl-8" : "pl-7";
+
     return (
-      <div
-        className="mt-1 space-y-1 pl-3"
-        style={{ marginLeft: `${level}rem` }}
-      >
+      <div className={`mt-1 space-y-1 ${paddingClass}`}>
         {submenus.map(({ name, path, isModal, submenus: nested }) => {
           let iconPair = null;
           if (name === "공지사항")
@@ -334,10 +335,20 @@ const Sidebar = () => {
                   </button>
                 )}
               </div>
-              {isOpen &&
-                nested &&
-                nested.length > 0 &&
-                renderSubmenus(nested, level + 1, parentMenu)}
+              <AnimatePresence>
+                {isOpen && nested && nested.length > 0 && (
+                  <motion.div
+                    key={name}
+                    initial={{ height: 0, opacity: 0 }}
+                    animate={{ height: "auto", opacity: 1 }}
+                    exit={{ height: 0, opacity: 0 }}
+                    transition={{ duration: 0.2, ease: "easeInOut" }}
+                    className="overflow-hidden"
+                  >
+                    {renderSubmenus(nested, level + 1, parentMenu)}
+                  </motion.div>
+                )}
+              </AnimatePresence>
             </div>
           );
         })}
@@ -415,7 +426,7 @@ const Sidebar = () => {
                   <img src={getIconSrc(menu)} className="w-5 h-5" />
                   <span
                     className="text-[18px] font-medium whitespace-nowrap overflow-hidden text-ellipsis block w-[9rem]"
-                    title={name} // hover시 전체 이름 확인 가능
+                    title={name}
                   >
                     {name}
                   </span>
@@ -434,9 +445,20 @@ const Sidebar = () => {
                   </button>
                 )}
               </div>
-              {isMenuOpen &&
-                submenus.length > 0 &&
-                renderSubmenus(submenus, 1, menu)}
+              <AnimatePresence>
+                {isMenuOpen && (
+                  <motion.div
+                    key="submenu"
+                    initial={{ height: 0, opacity: 0 }}
+                    animate={{ height: "auto", opacity: 1 }}
+                    exit={{ height: 0, opacity: 0 }}
+                    transition={{ duration: 0.3 }}
+                    className="overflow-hidden"
+                  >
+                    {renderSubmenus(submenus, 1, menu)}
+                  </motion.div>
+                )}
+              </AnimatePresence>
             </div>
           );
         })}
