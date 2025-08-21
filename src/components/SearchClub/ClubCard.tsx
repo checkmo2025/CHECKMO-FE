@@ -328,7 +328,7 @@ export default function ClubCard({
               <button
                 onClick={handleJoinRequest}
                 className="
-                  absolute left-[787px] top-[321px]
+                  absolute left-[770px] top-[321px]
                   w-[90px] h-[35px] rounded-[16px] text-[12px]
                   flex items-center justify-center
                   cursor-pointer
