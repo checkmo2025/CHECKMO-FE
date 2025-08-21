@@ -35,3 +35,8 @@ export const getNotificationPreview = async (
 
   return res.notifications;
 };
+
+/** 알림 읽음 처리: PATCH /api/notifications/{notificationId}/read */
+export async function readNotification(notificationId: number): Promise<void> {
+  return axiosInstance.patch(`/notifications/${notificationId}/read`);
+}

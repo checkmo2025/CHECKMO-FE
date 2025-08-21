@@ -50,7 +50,7 @@ const MemberAdminPage = () => {
       ]);
       setInfoOpen(true);
     } else if (nextStatus == 'MEMBER') {
-      setInfoTitle("가입을 승인하시겠습니까?");
+      setInfoTitle("정말로 이 회원의 운영진 역할을 해제하시겠습니까?");
       setInfoButtons([
         { label: "확인", onClick: () => {mutate({ memberId, status: nextStatus }); setInfoOpen(false);}},
         { label: "취소", onClick: () => setInfoOpen(false) , variant: "outline" },
@@ -87,7 +87,9 @@ const MemberAdminPage = () => {
             className="flex items-center justify-between pb-4"
           >
             {/* 유저 정보 */}
-            <div className="flex items-center">
+            <div className="flex items-center cursor-pointer" onClick={() => {
+                    navigate(`/info/others/${member.basicInfo.nickname}`)
+                  }}>
               <img src = {member.basicInfo.profileImageUrl || "/public/assets/ix_user-profile-filled.svg"} alt="profile" className="w-12 h-12 rounded-full mr-4" />
               <span className="font-['Pretendard'] text-[18px] font-semibold leading-[135%] text-gray-800">
                 {member.basicInfo.nickname}
@@ -96,26 +98,28 @@ const MemberAdminPage = () => {
 
             {/* 버튼들 */}
             <div>
-              {member.clubMemberStatus !== 'STAFF' &&
+              {(member.clubMemberStatus !== 'STAFF' &&
                 <div className="flex gap-2">
-                  <button className="px-4 py-1.5 rounded-full text-sm bg-[#EFF5ED] text-[#367216] border border-[#90D26D] hover:bg-[#90D26D] hover:text-white "
-                  onClick={() => handleMemberStatus(member.clubMemberId, 'STAFF')}>
-                    운영진 역할 부여
-                  </button>
-
-                  <button className="w-[90px] px-4 py-1.5 rounded-full text-sm bg-[#EFF5ED] text-[#367216] border border-[#90D26D] hover:bg-[#90D26D] hover:text-white "
+                    
+                  <button className="w-[90px] px-4 py-1.5 rounded-full text-sm  border border-[#90D26D] bg-[#EFF5ED] text-[#367216] hover:bg-[#90D26D] hover:text-white "
                   onClick={() => handleMemberStatus(member.clubMemberId, 'BLOCKED')}>
                     삭제하기
                   </button>
+
+                  <button className="px-4 py-1.5 rounded-full text-sm border border-[#90D26D] bg-[#EFF5ED] text-[#367216] hover:bg-[#90D26D] hover:text-white cursor-pointer"
+                  onClick={() => handleMemberStatus(member.clubMemberId, 'STAFF')}>
+                    운영진 승격
+                  </button>
                 </div>
-              }
-              {member.clubMemberStatus == 'STAFF' &&
+              )}
+              {member.clubMemberStatus == 'STAFF' && member.basicInfo.nickname !== localStorage.getItem('nickname') && (
                 <div className="flex gap-2">
-                  <div className="flex items-center justify-center w-[90px] px-4 py-1.5 rounded-full text-sm  border border-[#90D26D] bg-[#90D26D] text-white ">
-                    운영진
+                  <div className="px-4 py-1.5 rounded-full text-sm border border-[#f18282ff] bg-[#EFF5ED] text-[#f18282ff] hover:bg-[#f18282ff] hover:text-white cursor-pointer "
+                  onClick={() => handleMemberStatus(member.clubMemberId, 'MEMBER')}>
+                    운영진 해제
                   </div>
                 </div>
-              }                    
+              )}                    
             </div>
           </li>
         ))}

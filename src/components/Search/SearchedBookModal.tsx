@@ -73,8 +73,7 @@ export default function SearchedBookModal({ isOpen, onClose, searchBook}: Props)
               <button
                 className="rounded-lg px-4 py-2 bg-[var(--button-brown,#A6917E)] text-white hover:brightness-90"
                 onClick={() => {
-
-                  navigate(`/bookstory/${searchBook.isbn}/write`);
+                  navigate(`/bookstory/${searchBook.isbn}/write`, { state: { book: searchBook } });
                   onClose();
                 }}
               >

@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { Heart, Siren } from "lucide-react";
 import Modal from "../../../components/Modal"; 
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import { getOtherProfile, followMember, getTargetBookStories } from "../../../apis/otherApi";
 import { toggleBookStoryLike } from "../../../apis/BookStory/bookstories";
 import type { OtherProfile } from "../../../types/other";
@@ -16,6 +16,7 @@ const OthersProfilePage = () => {
   const [isError, setIsError] = useState(false); 
 
   const { userId } = useParams<{ userId: string }>();
+  const navigate = useNavigate();
 
   /** 다른 사람 프로필 + 책이야기 불러오기 */
   useEffect(() => {
@@ -73,7 +74,6 @@ const OthersProfilePage = () => {
   const openReportModal = () => setShowReportModal(true);
   const handleReportConfirm = () => {
     setShowReportModal(false);
-    // 알림 메시지
     setShowReportCompleteModal(true);
   };
 
@@ -100,8 +100,8 @@ const OthersProfilePage = () => {
                       alt={`${profile.nickname} 프로필`}
                       className="w-[40px] h-[40px] rounded-full object-cover"
                       onError={(e) => {
-                              e.currentTarget.src = "/assets/basic_profile.png";
-                        }}
+                        e.currentTarget.src = "/assets/basic_profile.png";
+                      }}
                     />
                   ) : (
                     <img
@@ -109,8 +109,8 @@ const OthersProfilePage = () => {
                       alt="기본 프로필"
                       className="w-[40px] h-[40px] rounded-full bg-white object-cover scale-110"
                       onError={(e) => {
-                              e.currentTarget.src = "/assets/basic_profile.png";
-                        }}
+                        e.currentTarget.src = "/assets/basic_profile.png";
+                      }}
                     />
                   )}
                   <p className="text-[18px] font-semibold text-[#2C2C2C]">
@@ -155,7 +155,8 @@ const OthersProfilePage = () => {
               {books.map((book) => (
                 <div
                   key={book.bookStoryId}
-                  className="flex bg-white rounded-[12px] border border-[#EAE5E2] p-6"
+                  className="flex bg-white rounded-[12px] border border-[#EAE5E2] p-6 transition-transform duration-300 transform hover:shadow-lg hover:scale-103 cursor-pointer"
+                  onClick={() => navigate(`/bookstory/${book.bookStoryId}/detail`)}
                 >
                   {/* 책 이미지 */}
                   {book.bookInfo?.imgUrl ? (
@@ -220,7 +221,10 @@ const OthersProfilePage = () => {
                       {/* 좋아요 버튼 */}
                       <div
                         className="flex items-center gap-1 text-sm cursor-pointer"
-                        onClick={() => toggleLike(book.bookStoryId)}
+                        onClick={(e) => {
+                          e.stopPropagation(); 
+                          toggleLike(book.bookStoryId);
+                        }}
                       >
                         <Heart
                           size={24}
@@ -239,7 +243,10 @@ const OthersProfilePage = () => {
                       {/* 신고 버튼 */}
                       <div
                         className="flex items-center gap-1 text-[#2C2C2C] hover:text-[#90D26D] text-sm cursor-pointer"
-                        onClick={openReportModal}
+                        onClick={(e) => {
+                          e.stopPropagation(); 
+                          openReportModal();
+                        }}
                       >
                         <Siren size={26} />
                       </div>
@@ -258,15 +265,15 @@ const OthersProfilePage = () => {
         title="해당 책이야기를 신고하시겠습니까?"
         buttons={[
           {
-            label: "취소",
-            onClick: () => setShowReportModal(false),
-            variant: "outline",
-          },
-          {
             label: "신고",
             onClick: handleReportConfirm,
             variant: "danger",
           },
+          {
+            label: "취소",
+            onClick: () => setShowReportModal(false),
+            variant: "outline",
+          },         
         ]}
         onBackdrop={() => setShowReportModal(false)}
       />
@@ -283,7 +290,7 @@ const OthersProfilePage = () => {
           },
         ]}
       />
-    </div>
+    </div>  
   );
 };
 

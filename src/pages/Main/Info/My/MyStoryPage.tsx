@@ -227,7 +227,7 @@ const MyStoryPage = () => {
                               e.stopPropagation();
                               handleDeleteClick(story.bookStoryId); 
                             }}
-                            className="text-[#A6917D] hover:text-[#90D26D]"
+                            className="text-[#A6917D] hover:text-[#90D26D] cursor-pointer"
                           >
                             <Trash2 size={24} />
                           </button>
@@ -237,7 +237,7 @@ const MyStoryPage = () => {
                                 e.stopPropagation();
                                 handleSave(story.bookStoryId);
                               }}
-                              className="text-[#A6917D] hover:text-[#90D26D]"
+                              className="text-[#A6917D] hover:text-[#90D26D] cursor-pointer"
                             >
                               <Save size={24} />
                             </button>
@@ -247,7 +247,7 @@ const MyStoryPage = () => {
                                 e.stopPropagation();
                                 handleEdit(story);
                               }}
-                              className="text-[#A6917D] hover:text-[#90D26D]"
+                              className="text-[#A6917D] hover:text-[#90D26D] cursor-pointer"
                             >
                               <Pencil size={24} />
                             </button>
@@ -289,11 +289,6 @@ const MyStoryPage = () => {
         onBackdrop={() => setDeleteTargetId(null)}
         buttons={[
           {
-            label: "아니요",
-            onClick: () => setDeleteTargetId(null),
-            variant: "outline",
-          },
-          {
             label: "네",
             onClick: () => {
               if (deleteTargetId !== null) {
@@ -302,6 +297,12 @@ const MyStoryPage = () => {
               }
             },
             variant: "danger",
+          },
+          
+          {
+            label: "아니요",
+            onClick: () => setDeleteTargetId(null),
+            variant: "outline",
           },
         ]}
       />
