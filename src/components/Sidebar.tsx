@@ -366,13 +366,13 @@ const Sidebar = () => {
           navigate(bookclubId ? `/bookclub/${bookclubId}/home` : "/home")
         }
       />
-      <div className="flex flex-col justify-center cursor-pointer">
+      <div className="flex flex-col items-center cursor-pointer">
         <span
           style={{
             fontFamily: "'Black Han Sans', sans-serif",
             fontSize: bookclubId ? "2.25rem" : "3rem",
           }}
-          className="max-w-[160px] whitespace-nowrap overflow-hidden text-ellipsis text-[#3D4C35]"
+          className="max-w-[160px] whitespace-nowrap overflow-hidden text-ellipsis text-[#3D4C35] text-center"
           title={bookclubName}
           onClick={() =>
             navigate(bookclubId ? `/bookclub/${bookclubId}/home` : "/home")
@@ -383,15 +383,10 @@ const Sidebar = () => {
         {bookclubId && (
           <button
             onClick={() => navigate(`/home`)}
-            className="relative flex items-center mt-1 h-[2.125rem] rounded border border-[#93C27C] bg-[#F1F8EF] cursor-pointer"
-            style={{ width: "100%" }}
+            className="relative flex items-center mt-1 h-[2.125rem] w-[8rem] rounded border border-[#93C27C] bg-[#F1F8EF] cursor-pointer"
           >
-            <img
-              src={exitIcon}
-              alt="home"
-              className="w-4 h-4 ml-[0.875rem] absolute left-0"
-            />
-            <span className="absolute left-0 right-0 text-center text-[0.85rem] text-[#3D4C35] font-medium">
+            <img src={exitIcon} alt="home" className="w-4 h-4 ml-7" />
+            <span className="text-[0.85rem] text-[#3D4C35] font-medium ml-2">
               메인 홈
             </span>
           </button>
