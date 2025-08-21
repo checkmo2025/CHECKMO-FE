@@ -41,32 +41,32 @@ export default function NoticePage(): React.ReactElement {
   const listItems = allNotices;
 
   return (
-    <div className="w-full h-screen flex flex-col">
-      <Header pageTitle={'공지사항'}
-        customClassName="mt-[20px] sm:mt-[30px] ml-4 sm:ml-[52px] mr-4 sm:mr-[41px] mb-[10px] sm:mb-[15px]"
-      />
+    <div className="absolute left-[315px] right-[42px] opacity-100">
+      <Header pageTitle={'공지사항'} />
 
-      <div className="flex-1 overflow-y-auto sm:ml-[52px] sm:mr-8">
+      <div className="overflow-y-auto h-[calc(100vh-105px)] w-full sm:mr-[25px]">
         <div className="mt-[15px]">
-          <section className="sm:ml-4 mb-6">
-            {topLoading && (
-              <div className="w-full h-[120px] flex items-center justify-center border-2 border-[#EAE5E2] rounded-[16px]">
-                <p className="text-[#969696]">중요 공지사항을 불러오는 중...</p>
-              </div>
-            )}
-            {topError && (
-              <div className="w-full h-[120px] flex items-center justify-center border-2 border-[#EAE5E2] rounded-[16px]">
-                <p className="text-red-500">{topError}</p>
-              </div>
-            )}
-            {!topLoading && !topError && (topNotices.length ?? 0) > 0 && (
-              <AnnouncementCard items={topNotices} />
-            )}
-            {!topLoading && !topError && topNotices.length === 0 && (
-              <div className="w-full h-[120px] flex items-center justify-center border-2 border-[#EAE5E2] rounded-[16px]">
-                <p className="text-[#969696]">아직 등록된 중요 공지사항이 없습니다.</p>
-              </div>
-            )}
+          <section className="sm: mb-6">
+            <div className="mx-auto w-full max-w-[1700px] px-4 sm:pr-5 pl-3">
+              {topLoading && (
+                <div className="h-[120px] flex items-center justify-center border-2 border-[#EAE5E2] rounded-[16px]">
+                  <p className="text-[#969696]">중요 공지사항을 불러오는 중...</p>
+                </div>
+              )}
+              {topError && (
+                <div className="h-[120px] flex items-center justify-center border-2 border-[#EAE5E2] rounded-[16px]">
+                  <p className="text-red-500">{topError}</p>
+                </div>
+              )}
+              {!topLoading && !topError && (topNotices.length ?? 0) > 0 && (
+                <AnnouncementCard items={topNotices} />
+              )}
+              {!topLoading && !topError && topNotices.length === 0 && (
+                <div className="h-[120px] flex items-center justify-center border-2 border-[#EAE5E2] rounded-[16px]">
+                  <p className="text-[#969696]">아직 등록된 중요 공지사항이 없습니다.</p>
+                </div>
+              )}
+            </div>
           </section>
 
           <section className="mt-[43px]">
@@ -94,7 +94,7 @@ export default function NoticePage(): React.ReactElement {
                 <AnnouncementList items={listItems} isStaff={!!isStaff} />
               )}
               {!isError && !isLoading && listItems.length === 0 && (
-                <div className="w-full h-[120px] flex items-center justify-center border-2 border-[#EAE5E2] rounded-[16px]">
+                <div className="w-full h-[120px] flex items-center justify-center ml-[15px] mr-[15px] border-2 border-[#EAE5E2] rounded-[16px]">
                   <p className="text-[#969696]">아직 등록된 공지사항이 없습니다.</p>
                 </div>
               )}
