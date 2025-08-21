@@ -58,7 +58,7 @@ export default function   ShelfHomePage() {
     const el = loadMoreRef.current;
     if (el) observer.observe(el);
     return () => observer.disconnect();
-  }, [hasNext, isLoading, nextCursor]);
+  }, [hasNext, isLoading, nextCursor, ShelfList]);
 
   if ( isError ) return <p className="text-red-500">Error: {error?.message}</p>;
   return (
