@@ -131,7 +131,7 @@ export default function BookClubHomePage(): React.ReactElement {
             
             {/* 공지사항이 없는 경우 */}
             {!loading && !error && notices.length === 0 && (
-              <div className="w-full h-[377px] flex items-center justify-center border-2 border-[#EAE5E2] rounded-[16px]">
+              <div className="w-[calc(100%-24px)] h-[377px] flex items-center justify-center border-2 border-[#EAE5E2] rounded-[16px] mx-[12px]">
                 <p className="text-[#969696]">아직 등록된 중요 공지사항이 없습니다.</p>
               </div>
             )}
@@ -151,26 +151,39 @@ export default function BookClubHomePage(): React.ReactElement {
             {isErrorStories && (
               <p className="text-red-500">{String((errorStories as Error)?.message || '책 이야기 로딩 에러')}</p>
             )}
-            <div className="flex-1 grid grid-cols-1 sm:grid-cols-1 md:grid-cols-1 lg:grid-cols-2 gap-[25px] cursor-pointer pb-[30px]">
-              {clubBookStories.map((story) => (
-                <BookStoryCard
-                  key={story.bookStoryId}
-                  bookStoryId={story.bookStoryId}
-                  userImage={story.authorInfo.profileImageUrl}
-                  userName={story.authorInfo.nickname}
-                  isSubscribed={story.authorInfo.following}
-                  title={story.bookStoryTitle}
-                  summary={story.description}
-                  likes={story.likes}
-                  likedByMe={story.likedByMe}
-                  bookImageUrl={story.bookInfo.imgUrl}
-                  onClick={() => navigate(`/bookstory/${story.bookStoryId}/detail`)}
-                />
-              ))}
-            </div>
-            <div ref={loadMoreRef} />
-            {isFetchingNextPage && (
-              <p className="text-[#969696] mt-2">불러오는 중...</p>
+
+            {/* 책 이야기가 없는 경우 */}
+            {!isLoadingStories && !isErrorStories && clubBookStories.length === 0 && (
+              <div className="w-[calc(100%-6px)] h-[377px] flex items-center justify-center border-2 border-[#EAE5E2] rounded-[16px] mx-[3px] mb-[50px]">
+                <p className="text-[#969696]">등록된 책 이야기가 없습니다.</p>
+              </div>
+            )}
+
+            {/* 책 이야기 목록 */}
+            {!isLoadingStories && !isErrorStories && clubBookStories.length > 0 && (
+              <>
+                <div className="flex-1 grid grid-cols-1 sm:grid-cols-1 md:grid-cols-1 lg:grid-cols-2 gap-[25px] cursor-pointer pb-[30px]">
+                  {clubBookStories.map((story) => (
+                    <BookStoryCard
+                      key={story.bookStoryId}
+                      bookStoryId={story.bookStoryId}
+                      userImage={story.authorInfo.profileImageUrl}
+                      userName={story.authorInfo.nickname}
+                      isSubscribed={story.authorInfo.following}
+                      title={story.bookStoryTitle}
+                      summary={story.description}
+                      likes={story.likes}
+                      likedByMe={story.likedByMe}
+                      bookImageUrl={story.bookInfo.imgUrl}
+                      onClick={() => navigate(`/bookstory/${story.bookStoryId}/detail`)}
+                    />
+                  ))}
+                </div>
+                <div ref={loadMoreRef} />
+                {isFetchingNextPage && (
+                  <p className="text-[#969696] mt-2">불러오는 중...</p>
+                )}
+              </>
             )}
           </section>
       </div>
