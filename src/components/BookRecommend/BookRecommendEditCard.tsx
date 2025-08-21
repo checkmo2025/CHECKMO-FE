@@ -27,18 +27,7 @@ const BookRecommendEditCard = ({
   const [title, setTitle] = useState(defaultValues.title);
   const [rate, setRate] = useState(defaultValues.rate);
   const [content, setContent] = useState(defaultValues.content);
-  const [tags, setTags] = useState<string[]>([]);
-  const [tagInput, setTagInput] = useState("");
-  const [isComposing, setIsComposing] = useState(false);
-  const addTagsFromInput = (raw: string) => {
-    const pieces = raw
-      .split(",")
-      .map((t) => t.trim())
-      .filter(Boolean);
-    if (pieces.length === 0) return;
-    const merged = Array.from(new Set([...tags, ...pieces]));
-    setTags(merged);
-  };
+  const [tagInput, setTagInput] = useState(defaultValues.tag);
 
   // 확인/알림 모달 (카드 내부에서 확인 처리)
   const [modalOpen, setModalOpen] = useState(false);
@@ -56,16 +45,12 @@ const BookRecommendEditCard = ({
     setTitle(defaultValues.title);
     setRate(defaultValues.rate);
     setContent(defaultValues.content);
-    setTags(
+    setTagInput(
       defaultValues.tag
-        ? defaultValues.tag.split(",").map((t) => t.trim())
-        : []
+        ? defaultValues.tag
+        : ""
     );
   }, [defaultValues]);
-
-  const handleRemoveTag = (tagToRemove: string) => {
-    setTags(tags.filter((tag) => tag !== tagToRemove));
-  };
 
   const openConfirm = () => {
     setModalTitle("수정하시겠습니까?");
@@ -81,15 +66,10 @@ const BookRecommendEditCard = ({
   };
 
   const handleConfirmEdit = () => {
-    const processedTag = tags
-      .map((t) => t.trim())
-      .filter(Boolean)
-      .join(",");
-
     if (
       !title.trim() ||
       !content.trim() ||
-      !processedTag ||
+      !tagInput ||
       rate === undefined ||
       rate === null
     ) {
@@ -103,7 +83,7 @@ const BookRecommendEditCard = ({
       title: title.trim(),
       content: content.trim(),
       rate,
-      tag: processedTag,
+      tag: tagInput,
     });
   };
 
@@ -141,43 +121,7 @@ const BookRecommendEditCard = ({
               onChange={(e) => setTagInput(e.target.value)}
               placeholder="태그를 입력 후 Enter를 누르세요."
               className="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-[#90D26D] sm:text-sm"
-              onCompositionStart={() => setIsComposing(true)}
-              onCompositionEnd={() => setIsComposing(false)}
-              onKeyDown={(e) => {
-                if (isComposing) return;
-
-                if (e.key === "Enter") {
-                  e.preventDefault();
-                  const value = tagInput.trim();
-                  if (value) addTagsFromInput(value);
-                  setTagInput("");
-                }
-              }}
-              onBlur={() => {
-                // 포커스 아웃 시 남은 입력값 반영
-                const value = tagInput.trim();
-                if (value) addTagsFromInput(value);
-                setTagInput("");
-              }}
             />
-            <div className="flex flex-wrap gap-2 mt-2 mb-2">
-              {tags.map((t, idx) => (
-                <span
-                  key={t + idx}
-                  className="inline-flex items-center justify-center bg-[#90D26D] text-white text-xs px-3 py-1 rounded-full 
-                 leading-none transition-colors duration-200 hover:bg-[#7EB95E]"
-                >
-                  <span className="flex items-center">{t}</span>
-                  <button
-                    onClick={() => handleRemoveTag(t)}
-                    className="ml-2 flex items-center justify-center text-white text-xs hover:text-gray-100"
-                  >
-                    x
-                  </button>
-                </span>
-              ))}
-            </div>
-
             <label className="block mt-4 mb-2 font-semibold">별점 선택</label>
             <div className="flex items-center">
               <StarSelector value={rate} onChange={setRate} size={20} />
