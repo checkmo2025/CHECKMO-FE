@@ -110,7 +110,7 @@ const BookStoryCard = ({
             </div>
 
             {writtenByMe ? (
-              <span className="text-xs rounded-[0.9375rem] px-[0.8rem] py-[0.3rem] w-[4.8rem] inline-flex justify-center text-white bg-[#4A5568] cursor-default">
+              <span className="text-xs rounded-[0.9375rem] px-[0.8rem] py-[0.3rem] w-[4.8rem] inline-flex justify-center text-[#A6917D] bg-[#DED6CD] cursor-default">
                 내 이야기
               </span>
             ) : (

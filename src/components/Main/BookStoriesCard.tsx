@@ -75,7 +75,7 @@ const BookStoriesCard = ({
   const renderStateButton = () => {
     if (state === "내 이야기") {
       return (
-        <span className="w-[60px] h-[24px] font-pretendard font-medium text-[12px] leading-[145%] rounded-[15px] px-[20px] py-[2px] flex items-center justify-center whitespace-nowrap text-white bg-[#4A5568] cursor-default">
+        <span className="w-[60px] h-[24px] font-pretendard font-medium text-[12px] leading-[145%] rounded-[15px] px-[20px] py-[2px] flex items-center justify-center whitespace-nowrap text-[#A6917D] bg-[#DED6CD] cursor-default">
           내 이야기
         </span>
       );
