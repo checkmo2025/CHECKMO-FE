@@ -1,6 +1,9 @@
 import { Edit2, Trash2 } from "lucide-react";
+import noUserImage from "../../assets/images/userImage.png";
 
 type Props = {
+  profileUrl: string;
+  userName: string;
   imageUrl: string;
   title: string;
   summary: string;
@@ -12,6 +15,8 @@ type Props = {
 };
 
 export default function MyBookStoryCard({
+  profileUrl,
+  userName,
   imageUrl,
   title,
   summary,
@@ -24,54 +29,86 @@ export default function MyBookStoryCard({
   return (
     <div
       onClick={onClick}
-      className="hover:shadow-lg hover:scale-[1.03] transition-transform duration-300 cursor-pointer border border-[#EAE5E2] rounded-lg p-4 flex bg-white"
+      className="rounded-[16px] border-2 border-[#EAE5E2] overflow-hidden cursor-pointer hover:shadow-lg hover:scale-[1.03] transition-all duration-300 origin-center w-full"
+      role="button"
     >
-      {/* 책 이미지 */}
-      <div className="w-32 h-48 bg-gray-200 rounded-md overflow-hidden flex-shrink-0">
-        {imageUrl && (
-          <img
-            src={imageUrl}
-            alt={bookTitle}
-            className="w-full h-full object-cover"
-          />
-        )}
-      </div>
-
-      {/* 내용 영역 */}
-      <div className="flex flex-col ml-4 flex-1">
-        {/* 제목 */}
-        <h3 className="text-lg font-semibold mb-2">{title}</h3>
-
-        {/* 요약 */}
-        <p className="text-gray-700 text-sm mb-2 line-clamp-2">{summary}</p>
-
-        {/* 책 정보 */}
-        <div className="text-gray-500 text-xs mb-2">
-          도서: {bookTitle} | {author}
+      <div className="flex flex-col md:flex-row gap-4 p-7 h-full">
+        {/* 왼쪽 책 이미지 */}
+        <div className="w-full md:w-[200px] h-[290px] bg-gray-100 rounded-lg overflow-hidden flex-shrink-0">
+          {imageUrl && (
+            <img
+              src={imageUrl}
+              alt={bookTitle}
+              loading="lazy"
+              className="w-full h-full object-cover"
+            />
+          )}
         </div>
 
-        {/* 하단 버튼 */}
-        <div className="flex gap-4 mt-auto justify-end">
-          {/* 삭제 버튼 */}
-          <button
-            onClick={(e) => {
-              e.stopPropagation();
-              onDelete && onDelete();
-            }}
-            className="cursor-pointer"
-          >
-            <Trash2 size={16} color="#A6917D" />
-          </button>
-
-          <button
-            onClick={(e) => {
-              e.stopPropagation();
-              onEdit && onEdit();
-            }}
-            className="cursor-pointer"
-          >
-            <Edit2 size={16} color="#A6917D" />
-          </button>
+        {/* 오른쪽 텍스트 영역 */}
+        <div className="flex-1 flex flex-col min-w-0">
+          {" "}
+          {/* 상단: 프로필 */}
+          <div className="flex justify-between items-center">
+            <div className="flex items-center gap-2">
+              <img
+                src={profileUrl || noUserImage}
+                alt={`${userName} 프로필 이미지`}
+                className="w-6 h-6 rounded-full object-cover"
+              />
+              <span className="font-medium text-sm text-black">{userName}</span>
+            </div>
+          </div>
+          {/* 제목 + 요약 */}
+          <div className="mt-2 flex flex-col gap-1">
+            {" "}
+            <h4
+              className="font-semibold text-xl text-black overflow-hidden"
+              style={{
+                display: "-webkit-box",
+                WebkitLineClamp: 2,
+                WebkitBoxOrient: "vertical",
+              }}
+            >
+              {title}
+            </h4>
+            <p
+              className="font-normal text-sm text-gray-700 overflow-hidden"
+              style={{
+                display: "-webkit-box",
+                WebkitLineClamp: 4,
+                WebkitBoxOrient: "vertical",
+              }}
+            >
+              {summary}
+            </p>
+          </div>
+          {/* 관련 도서 정보 */}
+          <div className="text-gray-500 text-xs mt-4 truncate">
+            도서: {bookTitle} | {author}
+          </div>
+          {/* 하단: 수정/삭제 버튼 */}
+          <div className="mt-auto flex items-center justify-end gap-4 pt-2">
+            {" "}
+            <button
+              onClick={(e) => {
+                e.stopPropagation();
+                onDelete?.();
+              }}
+              className="cursor-pointer"
+            >
+              <Trash2 size={18} color="#A6917D" />
+            </button>
+            <button
+              onClick={(e) => {
+                e.stopPropagation();
+                onEdit?.();
+              }}
+              className="cursor-pointer"
+            >
+              <Edit2 size={18} color="#A6917D" />
+            </button>
+          </div>
         </div>
       </div>
     </div>

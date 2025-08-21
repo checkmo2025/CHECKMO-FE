@@ -1,9 +1,9 @@
-import { useState } from "react";
-import heartEmpty from "../../assets/icons/heartEmpty.png";
-import heartFilled from "../../assets/icons/heartFilled.png";
+import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import checker from "../../assets/images/checker.png";
+import likeIcon from "../../assets/icons/heartEmpty.png";
+import likedIcon from "../../assets/icons/heartFilled.png";
 import reportIcon from "../../assets/icons/report3.png";
-import { toggleBookStoryLike } from "../../apis/BookStory/bookstories";
-import { axiosInstance } from "../../apis/axiosInstance";
 import noUserImage from "../../assets/images/userImage.png";
 
 interface BookStoryCardProps {
@@ -14,12 +14,9 @@ interface BookStoryCardProps {
   isSubscribed: boolean;
   title: string;
   summary: string;
-  bookTitle: string;
-  author: string;
   likes: number;
   likedByMe: boolean;
   writtenByMe: boolean;
-  viewMode?: "grid" | "list";
   onToggleLike: (storyId: number, liked: boolean) => void;
   onToggleSubscribe: (nickname: string, subscribed: boolean) => void;
 }
@@ -32,43 +29,37 @@ const BookStoryCard = ({
   isSubscribed,
   title,
   summary,
-  bookTitle,
-  author,
   likes,
   likedByMe,
   writtenByMe,
-  viewMode = "grid",
   onToggleLike,
   onToggleSubscribe,
 }: BookStoryCardProps) => {
+  const navigate = useNavigate();
+
   const [subscribed, setSubscribed] = useState(isSubscribed);
   const [liked, setLiked] = useState(likedByMe);
   const [likeCount, setLikeCount] = useState(likes);
+  const [subscribeLoading, setSubscribeLoading] = useState(false);
 
   const handleSubscribe = async (e: React.MouseEvent) => {
     e.stopPropagation();
+    if (subscribeLoading) return;
+    setSubscribeLoading(true);
     try {
-      if (subscribed) {
-        // 이미 구독 중이면 → 구독 취소
-        await axiosInstance.delete(`/members/${userName}/following`);
-        setSubscribed(false);
-        onToggleSubscribe(userName, false);
-      } else {
-        // 아직 구독 안했으면 → 구독하기
-        await axiosInstance.post(`/members/${userName}/following`);
-        setSubscribed(true);
-        onToggleSubscribe(userName, true);
-      }
+      const newSubscribed = !subscribed;
+      setSubscribed(newSubscribed);
+      onToggleSubscribe(userName, newSubscribed);
     } catch (error) {
       console.error("구독 처리 실패", error);
-      alert("구독 처리 중 오류가 발생했습니다.");
+    } finally {
+      setSubscribeLoading(false);
     }
   };
 
   const handleLike = async (e: React.MouseEvent) => {
     e.stopPropagation();
     try {
-      await toggleBookStoryLike(bookStoryId);
       const newLiked = !liked;
       setLiked(newLiked);
       setLikeCount((prev) => (newLiked ? prev + 1 : prev - 1));
@@ -78,79 +69,99 @@ const BookStoryCard = ({
     }
   };
 
-  const isList = viewMode === "list";
+  const handleCardClick = () => {
+    navigate(`/bookstory/${bookStoryId}/detail`);
+  };
 
   return (
     <div
-      className={`rounded-xl shadow-sm bg-white p-4 w-full flex ${
-        isList ? "gap-4" : "gap-6"
-      } min-w-0`}
+      className="rounded-[16px] border-2 border-[#EAE5E2] overflow-hidden cursor-pointer hover:shadow-lg hover:scale-[1.03] transition-all duration-300 origin-center w-full"
+      onClick={handleCardClick}
+      role="button"
     >
-      {/* 이미지 */}
-      <div
-        className={`${
-          isList ? "w-[11rem] h-[15.5rem]" : "w-[12.5rem] h-[18.125rem]"
-        } bg-gray-200 rounded-md overflow-hidden flex-shrink-0`}
-      >
-        <img src={imageUrl} alt="book" className="w-full h-full object-cover" />
-      </div>
+      <div className="flex flex-col md:flex-row gap-4 p-7 h-full">
+        {/* 왼쪽 책 이미지 */}
+        <div className="w-full md:w-[200px] h-[290px] bg-gray-100 rounded-lg overflow-hidden flex-shrink-0">
+          <img
+            src={imageUrl || checker}
+            alt={`${title} 책 표지`}
+            loading="lazy"
+            className="w-full h-full object-cover"
+          />
+        </div>
 
-      {/* 내용 */}
-      <div className="flex flex-col justify-between flex-1 text-left">
-        <div className="flex flex-col gap-1">
-          {/* 프로필 & 구독 버튼 */}
-          <div className="flex justify-between items-center text-sm text-gray-700 mb-1">
+        {/* 오른쪽 텍스트 영역 */}
+        <div className="flex-1 flex flex-col">
+          {/* 상단: 프로필 + 상태 */}
+          <div className="flex justify-between items-center">
             <div className="flex items-center gap-2">
               <img
                 src={profileUrl || noUserImage}
-                alt="profile"
-                className="w-6 h-6 rounded-full"
+                alt={`${userName} 프로필 이미지`}
+                className="w-6 h-6 rounded-full object-cover"
               />
-              <span className="font-medium">{userName}</span>
+              <span className="font-medium text-sm text-black">{userName}</span>
             </div>
 
             {writtenByMe ? (
-              <span className="text-xs rounded-[0.9375rem] px-[0.8rem] py-[0.3rem] w-[4.8rem] inline-flex justify-center text-[#A6917D] bg-[#DED6CD] cursor-default">
+              <span className="w-[60px] h-[24px] font-medium text-[12px] rounded-[15px] px-5 py-0.5 flex items-center justify-center whitespace-nowrap cursor-default text-[#A6917D] bg-[#DED6CD]">
                 내 이야기
               </span>
             ) : (
               <button
-                className={`cursor-pointer text-xs rounded-[0.9375rem] px-[0.8rem] py-[0.3rem] w-[4.8rem] inline-flex justify-center ${
+                type="button"
+                className={`w-[60px] h-[24px] font-medium text-[12px] rounded-[15px] px-5 py-0.5 flex items-center justify-center whitespace-nowrap transition-colors duration-200 cursor-pointer ${
                   subscribed
-                    ? "text-white bg-[#A6917D]"
-                    : "text-[#A6917D] border border-[#A6917D]"
-                }`}
+                    ? "bg-[#A6917D] text-white hover:bg-[#8c7a69]"
+                    : "bg-white text-[#A6917D] border border-[#A6917D] hover:bg-[#A6917D] hover:text-white"
+                } ${subscribeLoading ? "opacity-50 cursor-not-allowed" : ""}`}
                 onClick={handleSubscribe}
+                disabled={subscribeLoading}
               >
-                {subscribed ? "구독 중" : "구독하기"}
+                {subscribeLoading ? "..." : subscribed ? "구독 중" : "구독"}
               </button>
             )}
           </div>
 
-          {/* 제목, 요약 */}
-          <div className="text-base font-semibold">{title}</div>
-          <div className="text-sm text-gray-700 line-clamp-2">{summary}</div>
-
-          {/* 책 정보 */}
-          <div className="text-xs text-gray-500 mt-1">
-            도서 : {bookTitle} | {author}
+          {/* 제목 + 요약 */}
+          <div className="mt-2 flex flex-col gap-1">
+            <h4 className="font-pretendard font-semibold text-xl text-black break-words">
+              {title}
+            </h4>
+            <p
+              className="font-normal text-sm text-black break-words overflow-hidden"
+              style={{
+                display: "-webkit-box",
+                WebkitLineClamp: 4,
+                WebkitBoxOrient: "vertical",
+              }}
+            >
+              {summary}
+            </p>
           </div>
-        </div>
 
-        {/* 좋아요 & 신고 */}
-        <div className="flex gap-[11px] mt-3 text-sm text-gray-600 items-center justify-end">
-          <div
-            className="flex items-center gap-[2px] cursor-pointer"
-            onClick={handleLike}
-          >
+          {/* 하단: 좋아요 + 신고 */}
+          <div className="mt-auto flex items-center justify-end gap-2.5">
+            <button
+              type="button"
+              className="flex items-center gap-1 cursor-pointer"
+              onClick={handleLike}
+            >
+              <img
+                src={liked ? likedIcon : likeIcon}
+                alt={liked ? "liked" : "not liked"}
+                className="w-6 h-6"
+              />
+              <span className="font-medium text-sm text-black">
+                {likeCount}
+              </span>
+            </button>
             <img
-              src={liked ? heartFilled : heartEmpty}
-              alt="like"
-              className="w-4 h-4 mr-[6px] cursor-pointer"
+              src={reportIcon}
+              alt="report"
+              className="w-6 h-6 cursor-pointer"
             />
-            <span>{likeCount}</span>
           </div>
-          <img src={reportIcon} alt="report" className="w-4 h-4" />
         </div>
       </div>
     </div>
