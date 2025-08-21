@@ -1,9 +1,9 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import checker from "../../assets/images/checker.png";
-import likeIcon from "../../assets/icons/heart_empty.png";
-import likedIcon from "../../assets/icons/heart_filled_noLine.png";
-import reportIcon from "../../assets/icons/report2.png";
+import likeIcon from "../../assets/icons/heartEmpty.png";
+import likedIcon from "../../assets/icons/heartFilled.png";
+import reportIcon from "../../assets/icons/report3.png";
 import { toggleBookStoryLike } from "../../apis/BookStory/bookstories";
 import { axiosInstance } from "../../apis/axiosInstance";
 import noUserImage from "../../assets/images/userImage.png";

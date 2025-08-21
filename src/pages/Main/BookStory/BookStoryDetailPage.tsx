@@ -4,8 +4,8 @@ import { Trash2, Edit2, Check, X } from "lucide-react";
 import backIcon from "../../../assets/icons/backIcon.png";
 import { axiosInstance } from "../../../apis/axiosInstance";
 import type { BookStoryResponseDto } from "../../../types/bookStories";
-import likeIcon from "../../../assets/icons/heart_empty.png";
-import likedIcon from "../../../assets/icons/heart_filled_noLine.png";
+import likeIcon from "../../../assets/icons/heartEmpty.png";
+import likedIcon from "../../../assets/icons/heartFilled.png";
 import {
   deleteBookStory,
   updateBookStory,
@@ -14,7 +14,7 @@ import {
 import Modal, { type ModalButton } from "../../../components/Modal";
 import noProfileImage from "../../../assets/images/userImage.png";
 import checkerImage from "../../../assets/images/checker.png";
-import reportIcon from "../../../assets/icons/report2.png";
+import reportIcon from "../../../assets/icons/report3.png";
 
 export default function BookStoryDetailPage() {
   const { storyId } = useParams<{ storyId: string }>();
@@ -258,7 +258,7 @@ export default function BookStoryDetailPage() {
                       <img
                         src={reportIcon}
                         alt="신고"
-                        className="w-5 h-5 sm:w-6 sm:h-6"
+                        className="w-4 h-4 sm:w-5 sm:h-5"
                       />
                     </button>
                   </>
