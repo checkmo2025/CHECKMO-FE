@@ -10,7 +10,9 @@ import { useDebounce } from '../../hooks/useDebounce';
 import type { ClubListDto } from '../../types/bookClub';
 import { useClubJoin } from '../../hooks/useClubJoin';
 import { PARTICIPANT_TYPES } from '../../types/bookClub';
-import arrowUpBold from '../../assets/icons/ep_arrow-up-bold.svg';
+import { AnimatePresence, motion } from 'framer-motion';
+import toggleOpen from '../../assets/icons/toggleOpen.png';
+import toggleClose from '../../assets/icons/toggleClose.png';
 import { fetchMyClubs, type ClubDto as MyClubDto } from '../../apis/Main/clubs';
 import alertCircle from '../../assets/icons/alert_circle_loop.png';
 
@@ -90,6 +92,20 @@ export default function ClubSearchPage(): React.ReactElement {
     };
   }, [isParticipantOpen]);
 
+  // 무한 스크롤: 페이지 하단 sentinel 관찰 (브라우저 외부 스크롤바 기준)
+  const loadMoreRef = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    if (!hasNextPage || isFetchingNextPage || status !== 'success') return;
+    const observer = new IntersectionObserver(([entry]) => {
+      if (entry.isIntersecting) {
+        fetchNextPage();
+      }
+    });
+    const el = loadMoreRef.current;
+    if (el) observer.observe(el);
+    return () => observer.disconnect();
+  }, [hasNextPage, isFetchingNextPage, fetchNextPage, status]);
+
   // 가입 신청 처리
   const handleJoinRequest = (clubId: number, message: string) => {
     if (message === 'already_member') {
@@ -105,22 +121,24 @@ export default function ClubSearchPage(): React.ReactElement {
 
   return (
     <>
-      <div className="absolute top-0 bottom-0 left-[315px] right-[42px] opacity-100 flex flex-col overflow-hidden">
-        <Header pageTitle={'모임 검색하기'}
-        />
+      <main className="w-full px-4 sm:px-[42px]">
+        <div className="sticky top-0 z-20 bg-[#FFFFFF] pt-4 sm:pt-[30px] pb-[1px]">
+          <Header pageTitle={'모임 검색하기'}
+            customClassName="!mt-0"
+          />
 
-        <div className='flex flex-col flex-1 min-h-0'>
-          {myClubs && myClubs.length === 0 && (
-            <div className="flex items-center justify-center absolute top-[70px] gap-[10px]">
-              <img src={alertCircle} alt="alert" className="w-[24px] h-[24px]" />
-              <p className=" text-[14px] text-[#FF8045] font-medium">
-                아직 모임에서 활동중이 아니시군요! 책모에서 다양한 독서 동아리에 가입해보세요!
-              </p>
-            </div>
-          )}
-          {/* ── 검색 바 ── */}
-          <div className='shrink-0'>
-            <div className="mt-9 flex items-center w-[1170px] h-[53px] py-[10px] px-[17px] rounded-2xl bg-[var(--Color-4,#F4F2F1)]">
+          <div className="w-full">
+            {myClubs && myClubs.length === 0 && (
+              <div className="mt-2 sm:mt-0 sm:absolute sm:top-[73px] sm:left-0 flex items-center justify-start gap-[10px] text-left w-full">
+                <img src={alertCircle} alt="alert" className="w-[24px] h-[24px]" />
+                <p className="text-[14px] text-[#FF8045] font-medium truncate max-w-[280px] sm:max-w-[700px]">
+                  아직 모임에서 활동중이 아니시군요! 책모에서 다양한 독서 동아리에 가입해보세요!
+                </p>
+              </div>
+            )}
+
+            {/* ── 검색 바 ── */}
+            <div className="mt-5 flex items-center w-full max-w-[1170px] h-[44px] sm:h-[53px] py-[8px] sm:py-[10px] px-[14px] sm:px-[17px] rounded-2xl bg-[var(--Color-4,#F4F2F1)] mx-auto">
               <img src="/assets/material-symbols_search-rounded.svg"
                 alt="search" className="w-[24px] h-[24px]" />
               <input
@@ -129,174 +147,178 @@ export default function ClubSearchPage(): React.ReactElement {
                 onChange={e => setQuery(e.target.value)}
                 placeholder="검색하기 (모임 명, 지역별 검색)"
                 className="flex-1 bg-transparent outline-none 
-                  font-medium text-[18px] mx-[14px]"
+                  font-medium text-[16px] sm:text-[18px] mx-3 sm:mx-[14px]"
               />
             </div>
-          </div>
 
-          {/* 검색 필터 영역 */}
-          <div className="flex items-center justify-between mt-[10px] ml-[15px] mr-[8px] mb-[10px] shrink-0">
-            <div className="flex items-center gap-[12px]">
-              <div ref={participantDropdownRef} className="relative flex items-center gap-[6px]">
-                <button
-                  type="button"
-                  onClick={() => setIsParticipantOpen((v) => !v)}
-                  className="w-[40px] h-[32px] text-[14px] text-[#5C5C5C] font-medium text-left flex items-center justify-start"
-                  aria-haspopup="listbox"
-                  aria-expanded={isParticipantOpen}
-                >
-                  {participant === '전체'
-                    ? '전체'
-                    : PARTICIPANT_TYPES[participant as keyof typeof PARTICIPANT_TYPES]}
-                </button>
-                <button
-                  type="button"
-                  aria-label="대상 열고 닫기"
-                  onClick={() => setIsParticipantOpen((v) => !v)}
-                  className={"w-[20px] h-[20px] flex items-center justify-center"}
-                  aria-expanded={isParticipantOpen}
-                >
-                  <img
-                    src={arrowUpBold}
-                    alt="toggle"
-                    className={isParticipantOpen ? "w-[12px] h-[12px] rotate-180" : "w-[12px] h-[12px]"}
-                  />
-                </button>
-                {isParticipantOpen && (
-                  <div className="absolute -left-[4px] top-full mt-[6px] z-10 flex w-[70px] py-[10px] pr-[20px] pl-[10px] flex-col items-start gap-[4px] rounded-[4px] bg-[var(--Gray7,#EEE)]">
-                    <button
-                      type="button"
-                      className={`text-[14px] ${participant === '전체' ? 'text-[#5C5C5C]' : 'text-[#BBBBBB]'}`}
-                      onClick={() => {
-                        setParticipant('전체');
-                        setIsParticipantOpen(false);
-                      }}
-                    >
-                      전체
-                    </button>
-                    {Object.entries(PARTICIPANT_TYPES).map(([key, label]) => (
-                      <button
-                        key={key}
-                        type="button"
-                        className={`text-[14px] ${participant === key ? 'text-[#5C5C5C]' : 'text-[#BBBBBB]'}`}
-                        onClick={() => {
-                          setParticipant(key);
-                          setIsParticipantOpen(false);
-                        }}
+            {/* 검색 필터 영역 */}
+            <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between mt-2 mb-2 sm:mt-[10px] sm:mb-[10px] px-2 sm:px-0">
+              <div className="flex items-center gap-[12px]">
+                <div ref={participantDropdownRef} className="cursor-pointer relative flex items-center gap-[6px]">
+                  <button
+                    type="button"
+                    onClick={() => setIsParticipantOpen((v) => !v)}
+                    className="cursor-pointer w-[40px] h-[32px] text-[14px] text-[#5C5C5C] font-medium text-left flex items-center justify-start"
+                    aria-haspopup="listbox"
+                    aria-expanded={isParticipantOpen}
+                  >
+                    {participant === '전체'
+                      ? '전체'
+                      : PARTICIPANT_TYPES[participant as keyof typeof PARTICIPANT_TYPES]}
+                  </button>
+                  <button
+                    type="button"
+                    aria-label="대상 열고 닫기"
+                    onClick={() => setIsParticipantOpen((v) => !v)}
+                    className={"cursor-pointer w-[20px] h-[20px] flex items-center justify-center"}
+                    aria-expanded={isParticipantOpen}
+                  >
+                    <img
+                      src={isParticipantOpen ? toggleClose : toggleOpen}
+                      alt={isParticipantOpen ? '대상 목록 닫기' : '대상 목록 열기'}
+                      className="w-[12px] h-[12px]"
+                    />
+                  </button>
+                  <AnimatePresence>
+                    {isParticipantOpen && (
+                      <motion.div
+                        initial={{ height: 0, opacity: 0 }}
+                        animate={{ height: 'auto', opacity: 1 }}
+                        exit={{ height: 0, opacity: 0 }}
+                        transition={{ duration: 0.2, ease: 'easeInOut' }}
+                        className="absolute -left-[4px] top-full mt-[6px] z-10 w-[70px] rounded-[4px] bg-[var(--Gray7,#EEE)] overflow-hidden"
                       >
-                        {label}
-                      </button>
-                    ))}
-                  </div>
-                )}
+                        <div className="py-[10px] pr-[20px] pl-[10px] flex flex-col items-start gap-[4px]">
+                          <button
+                            type="button"
+                            className={`cursor-pointer text-[14px] ${participant === '전체' ? 'text-[#5C5C5C]' : 'text-[#BBBBBB]'}`}
+                            onClick={() => {
+                              setParticipant('전체');
+                              setIsParticipantOpen(false);
+                            }}
+                          >
+                            전체
+                          </button>
+                          {Object.entries(PARTICIPANT_TYPES).map(([key, label]) => (
+                            <button
+                              key={key}
+                              type="button"
+                              className={`cursor-pointer text-[14px] ${participant === key ? 'text-[#5C5C5C]' : 'text-[#BBBBBB]'}`}
+                              onClick={() => {
+                                setParticipant(key);
+                                setIsParticipantOpen(false);
+                              }}
+                            >
+                              {label}
+                            </button>
+                          ))}
+                        </div>
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
+                </div>
+
+                <label
+                  className="flex items-center gap-[6px] text-[14px] text-[#5C5C5C] font-medium cursor-pointer"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    setIsNameChecked((v) => !v);
+                  }}
+                >
+                  <input
+                    type="checkbox"
+                    className="sr-only peer"
+                    checked={isNameChecked}
+                    onChange={(e) => setIsNameChecked(e.target.checked)}
+                  />
+                  <span className="w-[24px] h-[24px] rounded-full border-[2px] border-[#BBBBBB] peer-checked:border-[#90D26D] peer-checked:bg-[#90D26D] transition-colors"></span>
+                  모임 명
+                </label>
+                <label
+                  className="flex items-center gap-[6px] text-[14px] text-[#5C5C5C] font-medium cursor-pointer"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    setIsRegionChecked((v) => !v);
+                  }}
+                >
+                  <input
+                    type="checkbox"
+                    className="sr-only peer"
+                    checked={isRegionChecked}
+                    onChange={(e) => setIsRegionChecked(e.target.checked)}
+                  />
+                  <span className="w-[24px] h-[24px] rounded-full border-2 border-[#BDBDBD] peer-checked:border-[#90D26D] peer-checked:bg-[#90D26D] transition-colors"></span>
+                  지역별
+                </label>
               </div>
 
-              <label
-                className="flex items-center gap-[6px] text-[14px] text-[#5C5C5C] font-medium cursor-pointer"
-                onClick={(e) => {
-                  e.preventDefault();
-                  setIsNameChecked((v) => !v);
-                }}
-              >
-                <input
-                  type="checkbox"
-                  className="sr-only peer"
-                  checked={isNameChecked}
-                  onChange={(e) => setIsNameChecked(e.target.checked)}
-                />
-                <span className="w-[24px] h-[24px] rounded-full border-[2px] border-[#BBBBBB] peer-checked:border-[#90D26D] peer-checked:bg-[#90D26D] transition-colors"></span>
-                모임 명
-              </label>
-              <label
-                className="flex items-center gap-[6px] text-[14px] text-[#5C5C5C] font-medium cursor-pointer"
-                onClick={(e) => {
-                  e.preventDefault();
-                  setIsRegionChecked((v) => !v);
-                }}
-              >
-                <input
-                  type="checkbox"
-                  className="sr-only peer"
-                  checked={isRegionChecked}
-                  onChange={(e) => setIsRegionChecked(e.target.checked)}
-                />
-                <span className="w-[24px] h-[24px] rounded-full border-2 border-[#BDBDBD] peer-checked:border-[#90D26D] peer-checked:bg-[#90D26D] transition-colors"></span>
-                지역별
-              </label>
-            </div>
-
-          <div className="flex items-center gap-[8px]">
-            <span className="
-              mr-[15px] font-medium text-[14px]
-              text-[#2C2C2C]
-              underline underline-offset-2
-            ">
-              독서모임 운영진이신가요?
-            </span>
-            <Link
-              to="/createClub"
-              className="
-                w-[115px] h-[32px]
-                bg-[#DED6CD] rounded-[16px]
-                px-[12px] py-[5px]
-                font-medium text-[12px] text-[#5C5C5C]
-                flex items-center justify-center
-              "
-            >
-              독서모임 생성하기
-            </Link>
-          </div>
-        </div>
-
-          {/* 동아리 리스트 */}
-          <div className="flex flex-col mt-[15px] flex-1 min-h-0">
-            {/* ── 동아리 리스트 ── */}
-            <div className="flex flex-col items-center space-y-[15px] overflow-y-auto flex-1 w-full"
-              onScroll={(e) => {
-                const el = e.currentTarget;
-                if (hasNextPage && !isFetchingNextPage && el.scrollTop + el.clientHeight >= el.scrollHeight - 40) {
-                  fetchNextPage();
-                }
-              }}
-            >
-              {status === 'pending' && (
-                <div className="py-8 text-sm text-gray-500">로딩 중...</div>
-              )}
-              {status === 'error' && (
-                <div className="py-8 text-sm text-red-500">
-                  데이터를 불러오는 중 오류가 발생했습니다.
-                  {error?.message && <p className="text-xs mt-2">{error.message}</p>}
-                </div>
-              )}
-              {status === 'success' && flatClubs.map(({ club, member }) => (
-                <div key={club.clubId} className='h-full'>
-                  <ClubCard
-                    id={club.clubId}
-                    title={club.name}
-                    category={club.category}
-                    participantTypes={club.participantTypes}
-                    region={club.region}
-                    logoUrl={club.profileImageUrl}
-                    insta={club.insta}
-                    kakao={club.kakao}
-                    isMember={member}
-                    onJoinRequest={handleJoinRequest}
-                  />
-                </div>
-              ))}
-              {status === 'success' && flatClubs.length > 0 && (
-                <div className="h-[100px]" aria-hidden="true" />
-              )}
-              {status === 'success' && flatClubs.length === 0 && (
-                <div className="py-8 text-sm text-gray-500">검색 결과가 없습니다.</div>
-              )}
-              {isFetchingNextPage && (
-                <div className="py-4 text-xs text-gray-400">더 불러오는 중...</div>
-              )}
+              <div className="hidden sm:flex items-center gap-2 sm:w-auto sm:justify-end">
+                <span className="
+                  hidden lg:inline whitespace-nowrap
+                  mr-[15px] font-medium text-[14px]
+                  text-[#2C2C2C]
+                  underline underline-offset-2
+                ">
+                  독서모임 운영진이신가요?
+                </span>
+                <Link
+                  to="/createClub"
+                  className="
+                    w-[115px] h-[32px]
+                    bg-[#DED6CD] rounded-[16px]
+                    px-[12px] py-[5px]
+                    font-medium text-[12px] text-[#5C5C5C]
+                    flex items-center justify-center text-center shrink-0
+                    hover:bg-[#A6917D] hover:text-white transition-colors
+                  "
+                >
+                  독서모임 생성하기
+                </Link>
+              </div>
             </div>
           </div>
         </div>
-      </div>
+
+        {/* 동아리 리스트 */}
+        <section className="w-full">
+          <div className="w-full max-w-[916px] mx-auto px-4 sm:px-2 flex flex-col items-stretch space-y-[15px]">
+            {status === 'pending' && (
+              <div className="py-8 text-sm text-gray-500">로딩 중...</div>
+            )}
+            {status === 'error' && (
+              <div className="py-8 text-sm text-red-500">
+                데이터를 불러오는 중 오류가 발생했습니다.
+                {error?.message && <p className="text-xs mt-2">{error.message}</p>}
+              </div>
+            )}
+            {status === 'success' && flatClubs.map(({ club, member }) => (
+              <div key={club.clubId} className='h-full w-full'>
+                <ClubCard
+                  id={club.clubId}
+                  title={club.name}
+                  category={club.category}
+                  participantTypes={club.participantTypes}
+                  region={club.region}
+                  logoUrl={club.profileImageUrl}
+                  insta={club.insta}
+                  kakao={club.kakao}
+                  isMember={member}
+                  onJoinRequest={handleJoinRequest}
+                />
+              </div>
+            ))}
+            {status === 'success' && flatClubs.length === 0 && (
+              <div className="py-8 text-sm text-gray-500">검색 결과가 없습니다.</div>
+            )}
+            <div ref={loadMoreRef} className="h-[1px]" />
+            {isFetchingNextPage && (
+              <div className="w-full py-4 flex items-center justify-center">
+                <p className="text-[#969696]">더 불러오는 중...</p>
+              </div>
+            )}
+          </div>
+        </section>
+      </main>
 
       {/* 알림 모달 */}
       {showAlert && (

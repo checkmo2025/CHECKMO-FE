@@ -1,26 +1,18 @@
 // src/components/BookClub/ClubCard.tsx
-import React, { useState } from 'react';
-import checker from '../../assets/images/checker.png';
+import React, { useLayoutEffect, useRef, useState } from 'react';
+import bookclubDefault from '../../assets/images/bookclubDefaultImage.png';
 import { BOOK_CATEGORIES, PARTICIPANT_TYPES } from '../../types/dto';
 
 export interface ClubCardProps {
   id: number;
   title: string;
-  /** 카테고리 ID 배열, ex: [1, 2, 3] */
   category: number[];
-  /** 참여자 유형 배열, ex: ['STUDENT', 'WORKER'] */
   participantTypes: string[];
-  /** 활동 지역, ex: '서울' */
   region: string;
-  /** 동아리 썸네일 URL */
   logoUrl?: string;
-  /** 문의 링크 - 카카오톡 */
   kakao?: string;
-  /** 문의 링크 - 인스타그램 */
   insta?: string;
-  /** 현재 사용자 기준 이미 가입된 모임인지 여부 */
   isMember?: boolean;
-  /** 가입 신청 처리 함수 */
   onJoinRequest?: (clubId: number, message: string) => void;
 }
 
@@ -35,9 +27,10 @@ const ActionButton: React.FC<{
     className={`
       w-[105px] h-[35px] rounded-[16px] px-[19.5px] py-[9px]
       text-[12px] flex items-center justify-center whitespace-nowrap cursor-pointer
+      transition-colors
       ${variant === 'primary' 
-        ? 'bg-[#A6917D] text-white' 
-        : 'bg-white border-[1.5px] border-[#BFAB96] text-[#434343]'
+        ? 'bg-[#DED6CD] text-[#BFAB96] hover:bg-[#A6917D] hover:text-white'
+        : 'bg-white border-[1.5px] border-[#BFAB96] text-[#434343] hover:bg-[#EAE5E2] hover:border-[#A6917D] hover:text-2C2C2C'
       }
     `}
   >
@@ -50,12 +43,11 @@ const ActionButtons: React.FC<{
   onInquiryClick: () => void;
   position?: 'top-right' | 'default';
 }> = ({ onJoinClick, onInquiryClick, position = 'default' }) => {
-  const positionClass = position === 'top-right' 
-    ? 'absolute right-[20px] top-[25px]' 
+  const positionClass = position === 'top-right'
+    ? 'absolute right-[20px] top-[25px]'
     : 'absolute right-[20px] top-[107px]';
-  
   return (
-    <div className={`${positionClass} hidden sm:flex flex-col gap-[10px]`}>
+    <div className={`${positionClass} hidden lg:flex flex-col gap-[10px]`}>
       <ActionButton
         variant="primary"
         onClick={onJoinClick}
@@ -84,8 +76,83 @@ export default function ClubCard({
   isMember = false,
   onJoinRequest,
 }: ClubCardProps): React.ReactElement {
+  const cardRef = useRef<HTMLDivElement>(null);
+  const previousModeRef = useRef<'default' | 'join' | 'inquiry'>('default');
   const [mode, setMode] = useState<'default' | 'join' | 'inquiry'>('default');
   const [joinMessage, setJoinMessage] = useState('');
+
+  const getScrollParent = (element: HTMLElement | null): HTMLElement | Window => {
+    if (!element) return window;
+    let parent: HTMLElement | null = element.parentElement;
+    while (parent) {
+      const style = getComputedStyle(parent);
+      const overflowY = style.overflowY;
+      if (overflowY === 'auto' || overflowY === 'scroll') {
+        return parent;
+      }
+      parent = parent.parentElement;
+    }
+    return window;
+  };
+
+  const animateScroll = (target: HTMLElement | Window, deltaY: number, durationMs: number) => {
+    if (deltaY === 0 || durationMs <= 0) return;
+    const startTime = performance.now();
+    const startY = target instanceof HTMLElement ? target.scrollTop : window.scrollY;
+    const endY = startY + deltaY;
+    const easeInOutCubic = (t: number) => (t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2);
+
+    const step = (now: number) => {
+      const elapsed = now - startTime;
+      const progress = Math.min(1, elapsed / durationMs);
+      const eased = easeInOutCubic(progress);
+      const currentY = startY + (endY - startY) * eased;
+      if (target instanceof HTMLElement) {
+        target.scrollTop = currentY;
+      } else {
+        window.scrollTo(0, currentY);
+      }
+      if (progress < 1) requestAnimationFrame(step);
+    };
+
+    requestAnimationFrame(step);
+  };
+
+
+  useLayoutEffect(() => {
+    const el = cardRef.current;
+    if (!el) return;
+
+    const isExpandingFromDefault = previousModeRef.current === 'default' && (mode === 'join' || mode === 'inquiry');
+    previousModeRef.current = mode;
+    if (!isExpandingFromDefault) return;
+
+    const scrollParent = getScrollParent(el);
+    const elRect = el.getBoundingClientRect();
+    const margin = mode === 'join' ? 250 : 150; // 모드별 여유 마진
+    const duration = 500; // 스크롤 애니메이션 지속 시간
+
+    if (scrollParent instanceof HTMLElement) {
+      const parentRect = scrollParent.getBoundingClientRect();
+      const bottomOverflow = elRect.bottom - parentRect.bottom + margin;
+      const topOverflow = parentRect.top - elRect.top + margin;
+      let scrollDelta = 0;
+      if (bottomOverflow > 0) scrollDelta = bottomOverflow;
+      else if (topOverflow > 0) scrollDelta = -topOverflow;
+      if (scrollDelta !== 0) {
+        animateScroll(scrollParent, scrollDelta, duration);
+      }
+    } else {
+      const bottomOverflow = elRect.bottom - window.innerHeight + margin;
+      const topOverflow = 0 - elRect.top + margin;
+      let scrollDelta = 0;
+      if (bottomOverflow > 0) scrollDelta = bottomOverflow;
+      else if (topOverflow > 0) scrollDelta = -topOverflow;
+      if (scrollDelta !== 0) {
+        animateScroll(window, scrollDelta, duration);
+      }
+    }
+  }, [mode]);
 
   // 가입 신청 처리
   const handleJoinRequest = () => {
@@ -162,22 +229,23 @@ export default function ClubCard({
 
   return (
     <div
+      ref={cardRef}
       className={`
-        relative w-[916px] bg-white rounded-[16px] border-[2px] border-[#EAE5E2]
+        relative w-full max-w-[916px] mx-auto bg-white rounded-[16px] border-[2px] border-[#EAE5E2]
         overflow-hidden hover:shadow transition-all duration-300
                  ${mode === 'join' ? 'h-[396px]' : mode === 'inquiry' ? ((kakao && insta) ? 'h-[307px]' : 'h-[280px]') : 'h-[204px]'}
       `}
     >
-      <div className="flex gap-[16px]">
-        {/* 썸네일 */}
+      <div className="flex gap-[16px] w-full">
         <img
-          src={logoUrl ?? checker}
+          src={(logoUrl && logoUrl.trim() !== '') ? logoUrl : bookclubDefault}
+          onError={(e) => { (e.currentTarget as HTMLImageElement).src = bookclubDefault; }}
           alt="club"
-          className="hidden sm:block w-[164px] h-[164px] ml-[20px] mt-[20px] rounded-lg object-cover"
+          className="w-[164px] h-[164px] ml-[20px] mt-[20px] rounded-lg object-cover"
         />
 
         {/* 정보 영역 */}
-        <div className="ml-[15px] flex-1 flex flex-col">
+        <div className="ml-[15px] flex-1 flex flex-col min-w-0">
           {/* 카테고리 태그 */}
           <div className="flex gap-[12px] mt-[24px] mb-[18px] flex-wrap">
             {categoryNames.map((categoryName) => (
@@ -203,9 +271,8 @@ export default function ClubCard({
           {/* 모임명 */}
           <h3
             className="
-              font-pretendard font-medium text-[18px]
-              leading-[135%] tracking-[-0.1%] text-[#2C2C2C]
-              mb-[18px]
+              font-medium text-[18px] text-[#2C2C2C]
+              mb-[18px] line-clamp-1
             "
           >
             {title}
@@ -214,16 +281,14 @@ export default function ClubCard({
           {/* 모임 대상 & 활동 지역 */}
           <p
             className="
-              font-pretendard font-medium text-[14px]
-              leading-[145%] tracking-[-0.1%] text-[#8D8D8D]
+              font-medium text-[14px] text-[#8D8D8D]
             "
           >
             모임 대상 | {participantNames.join(', ')}
           </p>
           <p
             className="
-              font-pretendard font-medium text-[14px]
-              leading-[145%] tracking-[-0.1%] text-[#8D8D8D]
+              font-medium text-[14px] text-[#8D8D8D]
             "
           >
             활동 지역 | {region}
@@ -237,6 +302,7 @@ export default function ClubCard({
               onInquiryClick={handleInquiryClick}
             />
           )}
+          
 
           {/* 가입 신청 모드 */}
           {mode === 'join' && (
@@ -254,8 +320,7 @@ export default function ClubCard({
                   className="
                     w-full h-[180px] border-[2px] border-[#EAE5E2]
                     rounded-[16px] px-[20px] py-[20px]
-                    font-pretendard font-medium text-[14px]
-                    leading-[145%] tracking-[-0.1%] text-[#2C2C2C]
+                    font-medium text-[14px] text-[#2C2C2C]
                     outline-none resize-none
                   "
                 />
@@ -264,10 +329,10 @@ export default function ClubCard({
                 onClick={handleJoinRequest}
                 className="
                   absolute left-[787px] top-[321px]
-                  w-[90px] h-[35px]
-                  bg-[#A6917D] text-white rounded-[16px] text-[12px]
+                  w-[90px] h-[35px] rounded-[16px] text-[12px]
                   flex items-center justify-center
                   cursor-pointer
+                  bg-[#DED6CD] text-[#BFAB96] hover:bg-[#A6917D] hover:text-white
                 "
               >
                 가입 신청하기
@@ -310,6 +375,8 @@ export default function ClubCard({
               </div>
             </>
           )}
+
+
         </div>
       </div>
     </div>
