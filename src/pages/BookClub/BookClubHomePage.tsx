@@ -97,13 +97,13 @@ export default function BookClubHomePage(): React.ReactElement {
         />
 
       { /* ── 메인 컨텐츠 ── */}
-      <div className="overflow-y-auto h-[calc(100vh-105px)] w-full flex-1 pt-[27px] pl-[2px] pr-[30px] bg-[#FFFFFF]">
+      <div className="overflow-y-auto h-[calc(100vh-105px)] w-full flex-1 pt-[27px] pl-[2px] bg-[#FFFFFF]">
         <div className="flex flex-col gap-[20px]">
           {/* ── 공지사항 섹션 ── */}
           <section className="w-full">
             <div className="px-[7px] flex justify-between items-center mb-4">
               <h2 className="text-[18px] font-semibold">공지사항</h2>  
-              <Link to={`/bookclub/${numericClubId}/notices`} className="text-[14px] text-[#969696] mr-1 hover:underline">
+              <Link to={`/bookclub/${numericClubId}/notices`} className="text-[14px] text-[#969696] mr-[3px] hover:underline">
                 + 더보기
               </Link>
             </div>

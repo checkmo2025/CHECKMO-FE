@@ -6,6 +6,8 @@ import sirenIcon from "../../assets/images/siren.png";
 import { toggleBookStoryLike } from "../../apis/BookStory/bookstories";
 import { followMember } from "../../apis/otherApi";
 import { unfollowMember } from "../../apis/My/memberApi";
+import defaultUserImage from '../../assets/images/userImage.png';
+import { useMyProfileQuery } from "../../hooks/My/useMember";
 
 export interface BookStoryCardProps {
   userImage: string;
@@ -33,7 +35,8 @@ export default function BookStoryCard({
   bookStoryId,
 }: BookStoryCardProps): React.ReactElement {
 
-  const avatar = userImage || "/default-avatar.png";
+  const avatar = userImage || defaultUserImage;
+  const isDefaultAvatar = !userImage;
   
   // 좋아요 상태 관리
   const [liked, setLiked] = useState(likedByMe);
@@ -43,6 +46,10 @@ export default function BookStoryCard({
   // 구독 상태 관리
   const [subscribed, setSubscribed] = useState(isSubscribed);
   const [subscribeLoading, setSubscribeLoading] = useState(false);
+
+  // 내 이야기 여부 판단
+  const { data: myProfile } = useMyProfileQuery();
+  const isMyStory = myProfile?.nickname === userName;
 
   // 좋아요 처리 함수
   const handleLike = async (e: React.MouseEvent) => {
@@ -113,7 +120,7 @@ export default function BookStoryCard({
                 <img
                   src={avatar}
                   alt={userName}
-                  className="w-[24px] h-[24px] rounded-full"
+                  className={`${isDefaultAvatar ? "w-[29px] h-[29px]" : "w-[24px] h-[24px]"} rounded-full`}
                 />
                 <span
                   className="
@@ -131,17 +138,19 @@ export default function BookStoryCard({
                   px-[20px] py-[2px]
                   flex items-center justify-center
                   whitespace-nowrap
-                  cursor-pointer
                   transition-colors duration-200
-                  ${subscribed 
-                    ? "bg-[#BFAB96] text-white hover:bg-[#A6917D]" 
-                    : "bg-white text-[#BFAB96] border border-[#BFAB96] hover:bg-[#BFAB96] hover:text-white"
+                  ${isMyStory
+                    ? "cursor-default text-[#A6917D] bg-[#DED6CD]"
+                    : `cursor-pointer ${subscribed 
+                        ? "bg-[#BFAB96] text-white hover:bg-[#A6917D]" 
+                        : "bg-white text-[#BFAB96] border border-[#BFAB96] hover:bg-[#BFAB96] hover:text-white"}
+                      ${subscribeLoading ? "opacity-50 cursor-not-allowed" : ""}`
                   }
-                  ${subscribeLoading ? "opacity-50 cursor-not-allowed" : ""}
                 `}
-                onClick={handleSubscribe}
+                onClick={isMyStory ? undefined : handleSubscribe}
+                disabled={isMyStory}
               >
-                {subscribeLoading ? "..." : subscribed ? "구독 중" : "구독"}
+                {isMyStory ? "내 이야기" : subscribeLoading ? "..." : subscribed ? "구독 중" : "구독"}
               </button>
             </div>
             <h4
