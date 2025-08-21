@@ -5,6 +5,8 @@ import type {
   MeetingListResult,
   TeamMemberResult,
   TeamTopicResult,
+  TopicSelect,
+  TopicSelectResponse,
   TotalTopicResult,
   UpdateClubMeeting,
 } from "../../types/clubMeeting";
@@ -87,6 +89,19 @@ export const getMeetingTeamMember = async (
 ): Promise<TeamMemberResult> => {
   const response: TeamMemberResult = await axiosInstance.get(
     `/meetings/${meetingId}/teams/${teamNumber}/members`
+  );
+  return response;
+};
+
+// 팀에서 Topic 선택/해제
+export const updateTopicSelect = async (
+  meetingId: number,
+  topicId: number,
+  data: TopicSelect
+): Promise<TopicSelectResponse> => {
+  const response: TopicSelectResponse = await axiosInstance.post(
+    `/meetings/${meetingId}/topics/${topicId}`,
+    data
   );
   return response;
 };

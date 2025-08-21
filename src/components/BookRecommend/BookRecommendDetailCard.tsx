@@ -57,9 +57,13 @@ const BookRecommendDetailCard = ({
                 src={authorInfo.profileImageUrl}
                 alt={authorInfo.nickname}
                 className="w-8 h-8 sm:w-10 sm:h-10 rounded-full object-cover bg-gray-200"
+                onClick={() => navigate(`/info/others/${authorInfo.nickname}`)}
               />
               <div>
-                <p className="font-semibold text-sm sm:text-base">{authorInfo.nickname}</p>
+                <p className="font-semibold text-sm sm:text-base"
+                  onClick={() => navigate(`/info/others/${authorInfo.nickname}`)}>
+                  {authorInfo.nickname}
+                </p>
                 <p className="text-[10px] sm:text-xs text-gray-500">건전한가즈앗코치</p>
               </div>
             </div>
