@@ -232,11 +232,7 @@ const MyNotificationPage = () => {
         isOpen={showSettingModal}
         title={
           <>
-            알림 설정
-            <br />
-            <span className="text-sm text-[#2C2C2C]">
-              알림 설정 기능은 추후 개발 예정입니다.
-            </span>
+            알림 설정은 추후 개발 예정입니다.
           </>
         }
         buttons={[

@@ -108,9 +108,6 @@ const OthersProfilePage = () => {
                       src="/assets/basic_profile.png"
                       alt="기본 프로필"
                       className="w-[40px] h-[40px] rounded-full bg-white object-cover scale-110"
-                      onError={(e) => {
-                        e.currentTarget.src = "/assets/basic_profile.png";
-                      }}
                     />
                   )}
                   <p className="text-[18px] font-semibold text-[#2C2C2C]">
@@ -158,19 +155,22 @@ const OthersProfilePage = () => {
                   className="flex bg-white rounded-[12px] border border-[#EAE5E2] p-6 transition-transform duration-300 transform hover:shadow-lg hover:scale-103 cursor-pointer"
                   onClick={() => navigate(`/bookstory/${book.bookStoryId}/detail`)}
                 >
-                  {/* 책 이미지 */}
+                  {/* 책 이미지 (기본 이미지 적용) */}
                   {book.bookInfo?.imgUrl ? (
                     <img
                       src={book.bookInfo.imgUrl}
                       alt={book.bookInfo.title}
                       className="w-[176px] h-[248px] rounded-[16px] object-cover flex-shrink-0"
                       onError={(e) => {
-                        e.currentTarget.src = "";
-                        e.currentTarget.style.display = "none";
+                        e.currentTarget.src = "/assets/basic_book_image.png"; // 기본 책 이미지
                       }}
                     />
                   ) : (
-                    <div className="w-[176px] h-[248px] bg-[#E0E0E0] rounded-[16px] flex-shrink-0" />
+                    <img
+                      src="/assets/basic_book_image.png"
+                      alt="기본 책 이미지"
+                      className="w-[176px] h-[248px] rounded-[16px] object-cover flex-shrink-0"
+                    />
                   )}
 
                   <div className="flex flex-col justify-between ml-6 w-full">
@@ -190,9 +190,6 @@ const OthersProfilePage = () => {
                             src="/assets/basic_profile.png"
                             alt="기본 프로필"
                             className="w-[24px] h-[24px] rounded-full bg-white object-cover scale-110"
-                            onError={(e) => {
-                              e.currentTarget.src = "/assets/basic_profile.png";
-                            }}
                           />
                         )}
                         <p className="text-[14px] text-[#8D8D8D]">

@@ -152,7 +152,7 @@ const Header = ({
         {/* 프로필 */}
         <div
           onClick={() => navigate("/mypage")}
-          className="flex gap-2 md:gap-3 items-center min-w-0 cursor-pointer"
+          className="flex gap-2 md:gap-3 items-center min-w-0 cursor-pointer rounded-[8px] hover:bg-[#EEEEEE] px-3 py-2"
         >
           <div className="w-10 h-10 rounded-full shrink-0 overflow-hidden bg-white flex items-center justify-center">
             {me?.profileImageUrl ? (

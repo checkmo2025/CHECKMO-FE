@@ -36,7 +36,7 @@ const MyPage = () => {
       case "LIKE":
         return `${item.senderNickname} 님이 내 책이야기에 좋아요를 눌렀습니다.`;
       case "FOLLOW":
-        return `${item.targetName}이 팔로잉을 시작했습니다.`;
+        return `${item.targetName}님이 구독했습니다.`;
       case "JOIN_CLUB":
         return `${item.targetName}에 가입되셨습니다.`;
       default:
@@ -170,7 +170,7 @@ const MyPage = () => {
                           {list.slice(0, 5).map((member) => (
                             <div
                               key={`${label}-${member.nickname}`}
-                              className="bg-[#F4F2F1] rounded-lg px-3 py-3 mb-3 flex items-center gap-2 cursor-pointer hover:bg-[#FAFAFA]"
+                              className="bg-[#F4F2F1] rounded-lg px-3 py-3 mb-3 flex items-center gap-2 cursor-pointer hover:bg-[#EEEEEE]"
                               onClick={() =>
                                 navigate(`/info/others/${member.nickname}`)
                               }
