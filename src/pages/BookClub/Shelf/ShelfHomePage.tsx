@@ -71,7 +71,7 @@ export default function   ShelfHomePage() {
           />
         </div>
   
-        <div className="pt-[54px] flex flex-col">
+        <div className="pt-[24px] flex flex-col">
           <div className="px-10 flex items-center justify-between w-full h-[24px]">
             <h1 className="font-[Pretendard] font-medium text-[18px] leading-[135%]">독서 목록</h1>
 
