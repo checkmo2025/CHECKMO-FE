@@ -142,29 +142,22 @@ export default function BookStoryDetailPage() {
       </div>
 
       <div className="pl-4 mt-12 max-w-5xl mx-auto">
-        <div className="flex items-center gap-2 mb-6">
+        <div
+          className="flex items-center gap-2 mb-6 w-fit cursor-pointer p-1 rounded-lg transition-colors duration-300 hover:bg-[#EEE]"
+          onClick={() => {
+            if (isMyStory) {
+              navigate("/mypage/myprofile");
+            } else {
+              navigate(`/info/others/${authorInfo.nickname}`);
+            }
+          }}
+        >
           <img
             src={authorInfo.profileImageUrl || noProfileImage}
             alt={authorInfo.nickname}
-            className="w-10 h-10 rounded-full cursor-pointer"
-            onClick={() => {
-              if (isMyStory) {
-                navigate("/mypage/myprofile");
-              } else {
-                navigate(`/info/others/${authorInfo.nickname}`);
-              }
-            }}
+            className="w-10 h-10 rounded-full"
           />
-          <span
-            className="text-base font-semibold cursor-pointer"
-            onClick={() => {
-              if (isMyStory) {
-                navigate("/mypage/myprofile");
-              } else {
-                navigate(`/info/others/${authorInfo.nickname}`);
-              }
-            }}
-          >
+          <span className="text-base font-semibold pr-1">
             {authorInfo.nickname}
           </span>
         </div>

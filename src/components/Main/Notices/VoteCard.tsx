@@ -7,67 +7,58 @@ interface VoteCardProps {
 }
 
 const VoteCard = ({ notice }: VoteCardProps) => {
-  const date = (
-    notice.deadline ??
-    notice.meetingInfoDTO?.meetingTime ??
-    ""
-  ).split("T")[0];
-  const location = notice.meetingInfoDTO?.location ?? "장소 미정";
   const topItems = notice.items.slice(0, 3);
 
   return (
-    <div className="hover:shadow-lg hover:scale-[1.03] transition-transform duration-300 rounded-[1rem] border-2 border-[#EAE5E2] bg-white w-[17.875rem] p-6 flex flex-col gap-7 h-[24rem]">
+    <div className="relative w-[312px] h-[380px] flex-shrink-0 rounded-[16px] border-2 border-[#EAE5E2] p-6 flex flex-col overflow-hidden cursor-pointer select-none hover:bg-gray-50 hover:shadow-lg hover:scale-[1.03] transition-all duration-300">
       <div className="flex justify-between items-start">
-        <div>
-          <div className="flex items-center gap-3 mb-1">
-            <img src={mainNoticeIcon} alt="아이콘" className="w-6 h-6" />
-            <span className="text-lg font-semibold text-gray-800 w-[8rem] block truncate">
-              {notice.title.length > 10
-                ? notice.title.slice(0, 10) + "…"
-                : notice.title}
-            </span>
-          </div>
-          <div className="text-xs text-gray-700">
-            모임 날짜 : {date || "미정"}
-          </div>
-          <div className="text-xs text-gray-700">모임 장소 : {location}</div>
-          <div className="text-xs text-gray-700">
-            뒷풀이 장소 : {notice.afterPartyPlace ?? "장소 미정"}
-          </div>
+        <div className="flex items-center">
+          <img src={mainNoticeIcon} alt="icon" className="w-6 h-6" />
+          <h3 className="ml-3 font-medium text-lg w-[150px] truncate">
+            {notice.title}
+          </h3>
         </div>
-        <div className="flex flex-col items-end">
-          <div className="bg-[#FF8045] px-4 py-2 rounded-2xl text-xs text-white font-semibold">
-            투표
-          </div>
-          <img
-            src={shortcutIcon}
-            className="w-4 h-4 mt-2 cursor-pointer"
-            alt="shortcut"
-          />
-        </div>
+        <span className="inline-flex items-center justify-center w-[52px] h-[22px] rounded-[15px] text-xs text-white font-semibold bg-[#FF8045]">
+          투표
+        </span>
       </div>
 
-      <div className="border border-[#EAE5E2] rounded-xl px-4 py-4 flex flex-col gap-3">
-        {topItems.map((item, idx) => (
-          <label
-            key={idx}
-            className="flex items-center gap-2 cursor-not-allowed border-b border-b-[#EAE5E2] py-2"
-          >
-            <input
-              type="radio"
-              name={`vote-${notice.title}`}
-              className="accent-[#FF8045]"
-              disabled
-            />
-            <span className="text-sm text-gray-700">{item.item}</span>
-          </label>
-        ))}
-        <button
-          className="bg-[#FF8045] text-white text-xs font-semibold rounded-full px-4 py-2 mt-4 self-end"
-          disabled
-        >
-          투표 하기
-        </button>
+      <p className="mt-6 mb-4 text-sm whitespace-pre-line line-clamp-2">
+        {notice.content}
+      </p>
+
+      <img
+        src={shortcutIcon}
+        alt="shortcut"
+        className="absolute top-[67px] right-6 w-6 h-6"
+      />
+
+      <div className="w-full mt-auto border-2 border-[#EAE5E2] rounded-[16px]">
+        <form className="p-4">
+          {topItems.map((option, i) => (
+            <label
+              key={`${option.item}-${i}`}
+              className="ml-2 flex items-center w-full h-[46px] cursor-pointer border-b-2 border-[#EAE5E2] font-medium text-sm text-[#434343] last:border-b-0"
+            >
+              <input
+                type="radio"
+                name={`vote-${notice.id}`}
+                value={option.item}
+                disabled
+                className="w-6 h-6 border-2 border-[#BBBBBB] rounded-full appearance-none cursor-pointer mr-2 checked:bg-[#FF8045] bg-white transition-all duration-200"
+              />
+              <span className="ml-3">{option.item}</span>
+            </label>
+          ))}
+          <div className="flex justify-end mt-4">
+            <button
+              type="button"
+              className="w-[69px] h-[24px] bg-[#FF8045] text-white rounded-[15px] font-semibold text-xs whitespace-nowrap cursor-pointer"
+            >
+              투표하기
+            </button>
+          </div>
+        </form>
       </div>
     </div>
   );

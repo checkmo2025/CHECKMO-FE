@@ -8,57 +8,50 @@ interface MeetingCardProps {
 }
 
 const MeetingCard = ({ notice }: MeetingCardProps) => {
-  const date =
-    notice.meetingInfoDTO?.meetingTime &&
-    notice.meetingInfoDTO.meetingTime !== "string"
-      ? notice.meetingInfoDTO.meetingTime.split("T")[0]
-      : "미정";
+  const date = notice.meetingInfoDTO?.meetingTime
+    ? new Date(notice.meetingInfoDTO.meetingTime).toLocaleDateString("ko-KR", {
+        year: "numeric",
+        month: "2-digit",
+        day: "2-digit",
+      })
+    : "미정";
 
-  const location =
-    !notice.meetingInfoDTO?.location ||
-    notice.meetingInfoDTO.location === "string"
-      ? "미정"
-      : notice.meetingInfoDTO.location;
-
-  const imgUrl =
-    notice.meetingInfoDTO?.bookInfo?.imgUrl &&
-    notice.meetingInfoDTO.bookInfo.imgUrl !== "string"
-      ? notice.meetingInfoDTO.bookInfo.imgUrl
-      : notice.imgUrl && notice.imgUrl !== "string"
-      ? notice.imgUrl
-      : checkerIcon;
+  const imgUrl = notice.meetingInfoDTO?.bookInfo?.imgUrl || checkerIcon;
 
   return (
-    <div className="hover:shadow-lg hover:scale-[1.03] transition-transform duration-300 rounded-[1rem] border-2 border-[#EAE5E2] bg-white w-[17.875rem] p-[1.5rem] flex flex-col gap-7 h-[24rem]">
+    <div className="relative w-[312px] h-[380px] flex-shrink-0 rounded-[16px] border-2 border-[#EAE5E2] p-6 flex flex-col overflow-hidden cursor-pointer select-none hover:bg-gray-50 hover:shadow-lg hover:scale-[1.03] transition-all duration-300">
       <div className="flex justify-between items-start">
-        <div>
-          <div className="flex items-center gap-3 mb-1">
-            <img src={mainNoticeIcon} alt="아이콘" className="w-6 h-6" />
-            <span className="text-lg font-medium text-gray-700 w-[8rem] block truncate">
-              {notice.title}
-            </span>
-          </div>
-          <div className="text-xs text-gray-700">다음 모임 날짜 : {date}</div>
-          <div className="text-xs text-gray-700 w-[8rem] truncate">
-            다음 모임 장소 : {location}
-          </div>
+        <div className="flex items-center">
+          <img src={mainNoticeIcon} alt="icon" className="w-6 h-6" />
+          <h3 className="ml-3 font-medium text-lg w-[150px] truncate">
+            {notice.title}
+          </h3>
         </div>
-        <div className="flex flex-col items-end">
-          <div className="bg-[#90D26D] px-4 py-2 rounded-2xl text-xs text-white font-semibold">
-            모임
-          </div>
-          <img
-            src={shortcutIcon}
-            className="w-4 h-4 mt-2 cursor-pointer"
-            alt="shortcut"
-          />
-        </div>
+        <span className="inline-flex items-center justify-center w-[52px] h-[22px] rounded-[15px] text-xs text-white font-semibold bg-[#90D26D]">
+          모임
+        </span>
       </div>
+
+      <div className="mt-2 text-xs text-gray-700 space-y-1 pr-10">
+        <p>다음 모임 날짜: {date}</p>
+        <p className="truncate">
+          다음 모임 책: {notice.meetingInfoDTO.bookInfo?.title ?? "정보 없음"}
+        </p>
+      </div>
+
       <img
-        src={imgUrl}
-        alt="모임 이미지"
-        className="w-[16.375rem] h-[14.5rem] object-cover rounded-[1rem]"
+        src={shortcutIcon}
+        alt="shortcut"
+        className="absolute top-[67px] right-6 w-6 h-6"
       />
+
+      <div className="absolute bottom-6 left-1/2 -translate-x-1/2 mt-3 w-[262px] h-[232px] bg-gray-100 rounded-lg overflow-hidden">
+        <img
+          src={imgUrl}
+          alt={notice.title}
+          className="w-full h-full object-cover"
+        />
+      </div>
     </div>
   );
 };

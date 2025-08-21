@@ -127,7 +127,7 @@ export default function BookStoryWritePage() {
               </button>
               <button
                 onClick={handleAddStory}
-                className="rounded-[1rem] bg-[#A6917D] px-6 py-2 text-sm font-semibold text-white hover:bg-beige-600 w-[6.5625rem]"
+                className="rounded-[1rem] bg-[#A6917D] px-6 py-2 text-sm font-semibold text-white hover:bg-beige-600 w-[6.5625rem] cursor-pointer"
               >
                 등록
               </button>
