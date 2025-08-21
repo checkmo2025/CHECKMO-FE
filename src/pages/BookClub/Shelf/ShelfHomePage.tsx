@@ -62,16 +62,16 @@ export default function   ShelfHomePage() {
 
   if ( isError ) return <p className="text-red-500">Error: {error?.message}</p>;
   return (
-    <div className="flex h-screen ">
-      {/* 메인 컨텐츠 자리 */}
+    <div className="flex h-screen">
       <div className="w-full">
-        {/* 헤더 자리 */}
-        <Header pageTitle={'책장'} 
-          customClassName="px-10 mt-[30px]"
-        />
+        <div className = "mx-10">
+          <Header
+            pageTitle={"책장"}
+            customClassName=""
+          />
+        </div>
   
         <div className="pt-[54px] flex flex-col">
-          {/* 타이틀과 기수 */}
           <div className="px-10 flex items-center justify-between w-full h-[24px]">
             <h1 className="font-[Pretendard] font-medium text-[18px] leading-[135%]">독서 목록</h1>
 
@@ -103,7 +103,6 @@ export default function   ShelfHomePage() {
                           absolute top-1/2 right-[12px] -translate-y-1/2"/>
            </div>
           </div>
-          {/* 책장: 비었을 때 */}
           {!ShelfList || ShelfList.length === 0 ? (
             <div className="flex flex-col w-full h-[120px] px-10">
               <p className="mt-20 text-[#969696] text-center">책장이 비어있습니다.</p>
@@ -195,7 +194,6 @@ export default function   ShelfHomePage() {
                       </div>
                     </div>
 
-                    {/* 별점 */}
                     <div className="mt-[20px] flex items-center">
                       {Array.from({ length: 5 }).map((_, i) => {
                         const src = getStarIcon(Shelf.meetingInfo.averageRate, i)
