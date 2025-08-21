@@ -63,7 +63,7 @@ export default function NoticePage(): React.ReactElement {
               <AnnouncementCard items={topNotices} />
             )}
             {!topLoading && !topError && topNotices.length === 0 && (
-              <div className="w-[calc(100%-24px)] h-[120px] mx-[12px] flex items-center justify-center border-2 border-[#EAE5E2] rounded-[16px]">
+              <div className="w-[calc(100%-44px)] h-[120px] mx-[22px] flex items-center justify-center border-2 border-[#EAE5E2] rounded-[16px]">
                 <p className="text-[#969696]">아직 등록된 중요 공지사항이 없습니다.</p>
               </div>
             )}
@@ -72,7 +72,7 @@ export default function NoticePage(): React.ReactElement {
 
         <section className="px-[9px] w-full">
           {isStaff && (
-            <div className="relative h-[48px] mb-4 mr-[20px]">
+            <div className="relative h-[48px] mb-4 mr-[20px] hidden md:flex justify-end">
               <NoticeCreateDropdown
                 onSelectNoticeType={(type) => {
                   const noticeType = type === 'vote' ? 'poll' : 'notice';
@@ -95,7 +95,7 @@ export default function NoticePage(): React.ReactElement {
               <AnnouncementList items={listItems} isStaff={!!isStaff} />
             )}
             {!isError && !isLoading && listItems.length === 0 && (
-              <div className="w-[calc(100%-24px)] h-[120px] mx-[12px] flex items-center justify-center border-2 border-[#EAE5E2] rounded-[16px]">
+              <div className="w-[calc(100%-24px)] h-[120px] mx-[15px] flex items-center justify-center border-2 border-[#EAE5E2] rounded-[16px]">
                 <p className="text-[#969696]">아직 등록된 공지사항이 없습니다.</p>
               </div>
             )}
