@@ -32,16 +32,19 @@ export const useHeaderData = (size = 5) => {
   const { mutate: markAsRead } = useMutation({
     mutationFn: (id: number) => readNotification(id),
     onSuccess: async (_, id) => {
-      // 1. 캐시에서 해당 알림 제거
+      // 1. 캐시에서 해당 알림 read=true로 표시 (UI 즉시 반영)
       qc.setQueryData<NotificationPreviewItem[]>(QK.notiPreview(size), (old) =>
-        old ? old.filter((n) => n.notificationId !== id) : old
+        old
+          ? old.map((n) =>
+              n.notificationId === id ? { ...n, read: true } : n
+            )
+          : old
       );
 
       // 2. 최신 알림 다시 가져와서 부족하면 채워주기
       const fresh = await getNotificationPreview(size);
       qc.setQueryData(QK.notiPreview(size), (old: NotificationPreviewItem[] | undefined) => {
         if (!old) return fresh;
-        // 이미 표시 중인 알림 + 새 알림 합쳐서 최대 size개
         const merged = [...old];
         fresh.forEach((n) => {
           if (!merged.find((m) => m.notificationId === n.notificationId)) {
@@ -51,9 +54,10 @@ export const useHeaderData = (size = 5) => {
         return merged.slice(0, size);
       });
 
-      // 3. 다른 알림 관련 캐시도 invalidate
-      qc.invalidateQueries({ queryKey: ["notifications"] });
-      qc.invalidateQueries({ queryKey: ["mypage", "notifications"] });
+      // 3. Header와 알림 페이지 모두 강제 동기화 (refetchQueries로 즉시 서버 반영)
+      await qc.refetchQueries({ queryKey: QK.notiPreview(5) });
+      await qc.refetchQueries({ queryKey: ["notifications"], exact: false });
+      await qc.refetchQueries({ queryKey: ["mypage", "notifications"], exact: false });
     },
   });
 
