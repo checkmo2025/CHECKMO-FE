@@ -11,7 +11,7 @@ const AnnouncementCard = ({ notice }: AnnouncementCardProps) => {
   const book = notice.meetingInfoDTO?.bookInfo?.title ?? "정보 없음";
 
   return (
-    <div className="hover:shadow-lg hover:scale-[1.03] rounded-[1rem] border-2 border-[#EAE5E2] bg-white w-[17.875rem] p-6 flex flex-col gap-7 h-[24rem]">
+    <div className="hover:shadow-lg hover:scale-[1.03] transition-transform duration-300 rounded-[1rem] border-2 border-[#EAE5E2] bg-white w-[17.875rem] p-6 flex flex-col gap-7 h-[24rem]">
       <div className="flex justify-between items-start">
         <div>
           <div className="flex items-center gap-3 mb-1">

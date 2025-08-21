@@ -76,8 +76,6 @@ export default function HomePage() {
             console.error(`클럽 ${club.clubId} 공지 가져오기 실패`, err);
           }
         }
-
-        console.log("모든 공지사항:", allNotices);
         setNotices(allNotices);
       } catch (err) {
         console.error("클럽 가져오기 실패", err);
@@ -119,7 +117,7 @@ export default function HomePage() {
 
   return (
     <div className="absolute left-[315px] right-[42px] opacity-100 max-xl:static max-xl:w-full">
-      <Header pageTitle="책모 홈" customClassName="my-[30px] pl-6" />
+      <Header pageTitle="책모 홈" customClassName="pl-6" />
 
       <div
         ref={scrollContainerRef}

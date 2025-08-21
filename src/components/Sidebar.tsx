@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { NavLink, useParams, useNavigate, useLocation } from "react-router-dom";
+import { motion, AnimatePresence } from "framer-motion";
 import exitIcon from "../assets/icons/exit.png";
 import logoImage from "../assets/logos/mainlogo.png";
 import toggleClose from "../assets/icons/toggleClose.png";
@@ -27,6 +28,8 @@ import BookClubListModal from "./BookClubListModal";
 
 import { fetchMyClubs } from "../apis/Main/clubs";
 import type { ClubDto } from "../apis/Main/clubs";
+import { fetchClubDetail } from "../apis/BookClub/getBookClub"; // ✅ 추가
+import type { ClubDetailDto } from "../apis/BookClub/getBookClub"; // ✅ 추가
 
 type Submenu = {
   name: string;
@@ -55,6 +58,7 @@ const Sidebar = () => {
   const location = useLocation();
 
   const [bookclubName, setBookclubName] = useState("모임 이름");
+  const [clubProfileImage, setClubProfileImage] = useState<string | null>(null); // ✅ 추가
   const [openMenus, setOpenMenus] = useState<Set<string>>(new Set());
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [myClubs, setMyClubs] = useState<ClubDto[]>([]);
@@ -74,6 +78,17 @@ const Sidebar = () => {
     if (bookclubId) {
       const matchedClub = myClubs.find((c) => c.clubId === Number(bookclubId));
       if (matchedClub) setBookclubName(matchedClub.clubName);
+
+      fetchClubDetail(Number(bookclubId))
+        .then((detail: ClubDetailDto) => {
+          //console.log("클럽 상세 정보:", detail);
+          if (detail?.profileImageUrl) {
+            setClubProfileImage(detail.profileImageUrl);
+          }
+        })
+        .catch((err) => {
+          console.error("클럽 정보 불러오기 실패:", err);
+        });
     }
   }, [bookclubId, myClubs]);
 
@@ -132,6 +147,7 @@ const Sidebar = () => {
         },
         {
           name: "마이페이지",
+          path: "/mypage",
           icon: { green: mypageGreen, gray: mypageGray },
           submenus: [
             { name: "내 모임", path: "/mypage/group" },
@@ -230,11 +246,10 @@ const Sidebar = () => {
     level = 1,
     parentMenu?: Menu
   ) => {
+    const paddingClass = level === 1 ? "pl-8" : "pl-7";
+
     return (
-      <div
-        className="mt-1 space-y-1 pl-3"
-        style={{ marginLeft: `${level}rem` }}
-      >
+      <div className={`mt-1 space-y-1 ${paddingClass} cursor-pointer`}>
         {submenus.map(({ name, path, isModal, submenus: nested }) => {
           let iconPair = null;
           if (name === "공지사항")
@@ -254,7 +269,7 @@ const Sidebar = () => {
                 key={name}
                 onClick={() => setIsClubListModalOpen(true)}
                 style={{ color: getMenuTextColor(parentMenu!, path) }}
-                className="flex items-center gap-2 text-sm py-1 pl-2 pr-3 rounded hover:bg-[#DDEED6]"
+                className="flex items-center gap-2 text-sm py-1 pl-2 pr-3 rounded hover:bg-[#DDEED6] cursor-pointer"
               >
                 {iconPair && (
                   <img
@@ -280,7 +295,7 @@ const Sidebar = () => {
                   openPlannedModal();
                 }}
                 style={{ color: getMenuTextColor(parentMenu!, path) }}
-                className="flex items-center gap-2 text-sm py-1 pl-2 pr-3 rounded hover:bg-[#DDEED6]"
+                className="flex items-center gap-2 text-sm py-1 pl-2 pr-3 rounded hover:bg-[#DDEED6] cursor-pointer"
               >
                 {iconPair && (
                   <img
@@ -298,13 +313,13 @@ const Sidebar = () => {
           }
 
           return (
-            <div key={name}>
+            <div key={name} className="cursor-pointer">
               <div className="flex items-center justify-between">
                 <NavLink
                   to={nested ? "#" : path}
                   end
                   style={{ color: getMenuTextColor(parentMenu!, path) }}
-                  className="flex items-center gap-2 text-sm py-1 pl-2 pr-3 rounded hover:bg-[#DDEED6]"
+                  className="flex items-center gap-2 text-sm py-1 pl-2 pr-3 rounded hover:bg-[#DDEED6] cursor-pointer"
                   onClick={() => {
                     if (nested) toggleMenu(name);
                   }}
@@ -334,10 +349,20 @@ const Sidebar = () => {
                   </button>
                 )}
               </div>
-              {isOpen &&
-                nested &&
-                nested.length > 0 &&
-                renderSubmenus(nested, level + 1, parentMenu)}
+              <AnimatePresence>
+                {isOpen && nested && nested.length > 0 && (
+                  <motion.div
+                    key={name}
+                    initial={{ height: 0, opacity: 0 }}
+                    animate={{ height: "auto", opacity: 1 }}
+                    exit={{ height: 0, opacity: 0 }}
+                    transition={{ duration: 0.3, ease: "easeInOut" }}
+                    className="overflow-hidden cursor-pointer"
+                  >
+                    {renderSubmenus(nested, level + 1, parentMenu)}
+                  </motion.div>
+                )}
+              </AnimatePresence>
             </div>
           );
         })}
@@ -348,20 +373,30 @@ const Sidebar = () => {
   const header = (
     <div className="flex items-center gap-4 cursor-pointer">
       <img
-        src={logoImage}
+        src={bookclubId && clubProfileImage ? clubProfileImage : logoImage}
         alt="logo"
-        style={{ width: "3.00188rem", height: "4.63044rem" }}
+        style={{
+          width: "3.00188rem",
+          height: "4.63044rem",
+          objectFit: "cover",
+          borderRadius: bookclubId ? "10%" : "0", // 동그랗게 안함, 클럽이면 살짝 둥글게
+          cursor: "pointer", // 클릭 가능 표시
+        }}
         onClick={() =>
           navigate(bookclubId ? `/bookclub/${bookclubId}/home` : "/home")
         }
+        onError={(e) => {
+          e.currentTarget.src = logoImage;
+        }} // 이미지 로드 실패 시 로고로 fallback
       />
-      <div className="flex flex-col justify-center">
+
+      <div className="flex flex-col items-center cursor-pointer">
         <span
           style={{
             fontFamily: "'Black Han Sans', sans-serif",
             fontSize: bookclubId ? "2.25rem" : "3rem",
           }}
-          className="max-w-[160px] whitespace-nowrap overflow-hidden text-ellipsis text-[#3D4C35]"
+          className="max-w-[160px] whitespace-nowrap overflow-hidden text-ellipsis text-[#3D4C35] text-center"
           title={bookclubName}
           onClick={() =>
             navigate(bookclubId ? `/bookclub/${bookclubId}/home` : "/home")
@@ -372,15 +407,10 @@ const Sidebar = () => {
         {bookclubId && (
           <button
             onClick={() => navigate(`/home`)}
-            className="relative flex items-center mt-1 h-[2.125rem] rounded border border-[#93C27C] bg-[#F1F8EF]"
-            style={{ width: "100%" }}
+            className="relative flex items-center mt-1 h-[2.125rem] w-[8rem] rounded border border-[#93C27C] bg-[#F1F8EF] cursor-pointer"
           >
-            <img
-              src={exitIcon}
-              alt="home"
-              className="w-4 h-4 ml-[0.875rem] absolute left-0"
-            />
-            <span className="absolute left-0 right-0 text-center text-[0.85rem] text-[#3D4C35] font-medium">
+            <img src={exitIcon} alt="home" className="w-4 h-4 ml-7" />
+            <span className="text-[0.85rem] text-[#3D4C35] font-medium ml-2">
               메인 홈
             </span>
           </button>
@@ -393,13 +423,13 @@ const Sidebar = () => {
     <div className="flex w-[16.5rem] h-screen flex-col px-6 py-8 bg-[#E9F2E3]">
       {header}
 
-      <nav className="flex flex-col w-full overflow-y-auto space-y-2 mt-6">
+      <nav className="flex flex-col w-full overflow-y-auto space-y-2 mt-6 cursor-pointer">
         {menus.map((menu) => {
           const { name, path, submenus } = menu;
           const isMenuOpen = openMenus.has(name);
 
           return (
-            <div key={name} className="w-full">
+            <div key={name} className="w-full cursor-pointer">
               <div className="flex items-center justify-between">
                 <NavLink
                   to={path ?? submenus[0]?.path ?? "#"}
@@ -415,7 +445,7 @@ const Sidebar = () => {
                   <img src={getIconSrc(menu)} className="w-5 h-5" />
                   <span
                     className="text-[18px] font-medium whitespace-nowrap overflow-hidden text-ellipsis block w-[9rem]"
-                    title={name} // hover시 전체 이름 확인 가능
+                    title={name}
                   >
                     {name}
                   </span>
@@ -434,9 +464,20 @@ const Sidebar = () => {
                   </button>
                 )}
               </div>
-              {isMenuOpen &&
-                submenus.length > 0 &&
-                renderSubmenus(submenus, 1, menu)}
+              <AnimatePresence>
+                {isMenuOpen && (
+                  <motion.div
+                    key="submenu"
+                    initial={{ height: 0, opacity: 0 }}
+                    animate={{ height: "auto", opacity: 1 }}
+                    exit={{ height: 0, opacity: 0 }}
+                    transition={{ duration: 0.3 }}
+                    className="overflow-hidden cursor-pointer"
+                  >
+                    {renderSubmenus(submenus, 1, menu)}
+                  </motion.div>
+                )}
+              </AnimatePresence>
             </div>
           );
         })}

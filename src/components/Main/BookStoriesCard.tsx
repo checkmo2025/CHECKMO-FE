@@ -1,11 +1,12 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import checker from "../../assets/images/checker.png";
-import likeIcon from "../../assets/icons/heart_empty.png";
-import likedIcon from "../../assets/icons/heart_filled_noLine.png";
-import reportIcon from "../../assets/icons/report2.png";
+import likeIcon from "../../assets/icons/heartEmpty.png";
+import likedIcon from "../../assets/icons/heartFilled.png";
+import reportIcon from "../../assets/icons/report3.png";
 import { toggleBookStoryLike } from "../../apis/BookStory/bookstories";
 import { axiosInstance } from "../../apis/axiosInstance";
+import noUserImage from "../../assets/images/userImage.png";
 
 interface BookStoriesCardProps {
   bookStoryId: number;
@@ -103,7 +104,7 @@ const BookStoriesCard = ({
 
   return (
     <div
-      className="hover:shadow-lg hover:scale-[1.03] rounded-[16px] border-[2px] border-[#EAE5E2] overflow-hidden cursor-pointer transition-transform duration-200"
+      className="hover:shadow-lg hover:scale-[1.03] rounded-[16px] border-[2px] border-[#EAE5E2] overflow-hidden cursor-pointer transition-transform duration-300"
       onClick={handleCardClick}
     >
       <div className="flex flex-col sm:flex-col md:flex-row gap-4 p-4 sm:p-4 md:p-6 lg:p-6 xl:p-8">
@@ -122,19 +123,16 @@ const BookStoriesCard = ({
           {/* 상단: 프로필 + 상태 */}
           <div className="flex justify-between items-center">
             <div className="flex items-center gap-2 sm:gap-3 md:gap-4">
-              {authorProfileImageUrl ? (
-                <img
-                  src={authorProfileImageUrl}
-                  alt={`${authorNickname} 프로필 이미지`}
-                  className="w-[24px] h-[24px] sm:w-[26px] sm:h-[26px] md:w-[28px] md:h-[28px] rounded-full object-cover"
-                />
-              ) : (
-                <div className="w-[24px] h-[24px] sm:w-[26px] sm:h-[26px] md:w-[28px] md:h-[28px] bg-gray-300 rounded-full" />
-              )}
+              <img
+                src={authorProfileImageUrl || noUserImage}
+                alt={`${authorNickname} 프로필 이미지`}
+                className="w-[24px] h-[24px] sm:w-[26px] sm:h-[26px] md:w-[28px] md:h-[28px] rounded-full object-cover"
+              />
               <span className="font-pretendard font-normal text-[12px] sm:text-[13px] md:text-[14px] leading-[145%] text-[#000000]">
                 {authorNickname}
               </span>
             </div>
+
             {renderStateButton()}
           </div>
 
@@ -157,9 +155,12 @@ const BookStoriesCard = ({
               <img
                 src={liked ? likedIcon : likeIcon}
                 alt="like"
-                className="w-4 h-4 sm:w-5 sm:h-5 cursor-pointer"
+                className="w-3 h-3 sm:w-5 sm:h-5 cursor-pointer"
               />
-              <span className="font-pretendard font-medium text-[#000000] text-[12px] sm:text-[13px] md:text-[14px]">
+              <span
+                className={`font-medium text-[#000000] text-[12px] sm:text-[13px] md:text-[14px] inline-block`}
+                style={{ minWidth: `${likeCount.toString().length}ch` }}
+              >
                 {likeCount}
               </span>
             </div>

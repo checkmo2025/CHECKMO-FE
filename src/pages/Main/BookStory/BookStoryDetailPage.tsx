@@ -1,17 +1,20 @@
 import { useParams, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
-import { Trash2, Edit2, AlertCircle, Check, X } from "lucide-react";
+import { Trash2, Edit2, Check, X } from "lucide-react";
 import backIcon from "../../../assets/icons/backIcon.png";
 import { axiosInstance } from "../../../apis/axiosInstance";
 import type { BookStoryResponseDto } from "../../../types/bookStories";
-import likeIcon from "../../../assets/icons/heart_empty.png";
-import likedIcon from "../../../assets/icons/heart_filled.png";
+import likeIcon from "../../../assets/icons/heartEmpty.png";
+import likedIcon from "../../../assets/icons/heartFilled.png";
 import {
   deleteBookStory,
   updateBookStory,
   toggleBookStoryLike,
 } from "../../../apis/BookStory/bookstories";
 import Modal, { type ModalButton } from "../../../components/Modal";
+import noProfileImage from "../../../assets/images/userImage.png";
+import checkerImage from "../../../assets/images/checker.png";
+import reportIcon from "../../../assets/icons/report3.png";
 
 export default function BookStoryDetailPage() {
   const { storyId } = useParams<{ storyId: string }>();
@@ -38,6 +41,7 @@ export default function BookStoryDetailPage() {
         const data: BookStoryResponseDto = await axiosInstance.get(
           `/book-stories/${storyId}`
         );
+        console.log(data);
 
         setStory(data);
         setEditDescription(data.description);
@@ -128,34 +132,50 @@ export default function BookStoryDetailPage() {
           className="flex items-center gap-2 text-lg font-semibold mb-4"
           type="button"
         >
-          <img src={backIcon} alt="뒤로가기" className="w-5 h-5" />
+          <img
+            src={backIcon}
+            alt="뒤로가기"
+            className="w-5 h-5 cursor-pointer"
+          />
           {bookStoryTitle}
         </button>
       </div>
 
-      <div className="pl-10 mt-12 max-w-5xl mx-auto">
+      <div className="pl-4 mt-12 max-w-5xl mx-auto">
         <div className="flex items-center gap-2 mb-6">
           <img
-            src={authorInfo.profileImageUrl}
+            src={authorInfo.profileImageUrl || noProfileImage}
             alt={authorInfo.nickname}
-            className="w-10 h-10 rounded-full"
+            className="w-10 h-10 rounded-full cursor-pointer"
+            onClick={() => {
+              if (isMyStory) {
+                navigate("/mypage/myprofile");
+              } else {
+                navigate(`/info/others/${authorInfo.nickname}`);
+              }
+            }}
           />
-          <span className="text-base font-semibold">{authorInfo.nickname}</span>
+          <span
+            className="text-base font-semibold cursor-pointer"
+            onClick={() => {
+              if (isMyStory) {
+                navigate("/mypage/myprofile");
+              } else {
+                navigate(`/info/others/${authorInfo.nickname}`);
+              }
+            }}
+          >
+            {authorInfo.nickname}
+          </span>
         </div>
 
         <div className="flex gap-8">
           <div className="w-64 h-80 rounded-xl bg-gray-200 overflow-hidden">
-            {bookInfo.imgUrl ? (
-              <img
-                src={bookInfo.imgUrl}
-                alt={bookInfo.title}
-                className="w-full h-full object-cover rounded-xl"
-              />
-            ) : (
-              <div className="w-full h-full flex items-center justify-center text-gray-400">
-                이미지 없음
-              </div>
-            )}
+            <img
+              src={bookInfo.imgUrl || checkerImage}
+              alt={bookInfo.title}
+              className="w-full h-full object-cover rounded-xl"
+            />
           </div>
 
           <div className="flex flex-col flex-1 h-80">
@@ -182,10 +202,12 @@ export default function BookStoryDetailPage() {
             )}
             <div className="flex-grow" />
 
-            <div className="flex items-center justify-between text-gray-400 text-xs">
-              <div>
+            <div className="flex flex-col items-end text-gray-400 text-xs gap-[1rem]">
+              <div className="text-right">
                 도서 : {bookInfo.title} | {bookInfo.author}
               </div>
+
+              {/* 버튼 영역 */}
               <div className="flex items-center gap-4">
                 {isMyStory ? (
                   <>
@@ -224,18 +246,22 @@ export default function BookStoryDetailPage() {
                 ) : (
                   <>
                     <div
-                      className="flex items-center gap-1 text-sm text-gray-600 cursor-pointer"
+                      className="flex items-center gap-1 sm:gap-2 text-sm text-gray-600 cursor-pointer"
                       onClick={handleLike}
                     >
                       <img
                         src={liked ? likedIcon : likeIcon}
                         alt="좋아요"
-                        className="w-[19px] h-[]19px] cursor-pointer"
+                        className="w-4 h-4 sm:w-5 sm:h-5 cursor-pointer"
                       />
                       <span>{likeCount}</span>
                     </div>
                     <button>
-                      <AlertCircle size={16} />
+                      <img
+                        src={reportIcon}
+                        alt="신고"
+                        className="w-4 h-4 sm:w-5 sm:h-5"
+                      />
                     </button>
                   </>
                 )}

@@ -1,9 +1,10 @@
 import { useState } from "react";
-import heartEmpty from "../../assets/icons/heart_empty.png";
-import heartFilled from "../../assets/icons/heart_filled_noLine.png";
-import reportIcon from "../../assets/icons/report2.png";
+import heartEmpty from "../../assets/icons/heartEmpty.png";
+import heartFilled from "../../assets/icons/heartFilled.png";
+import reportIcon from "../../assets/icons/report3.png";
 import { toggleBookStoryLike } from "../../apis/BookStory/bookstories";
 import { axiosInstance } from "../../apis/axiosInstance";
+import noUserImage from "../../assets/images/userImage.png";
 
 interface BookStoryCardProps {
   bookStoryId: number;
@@ -101,7 +102,7 @@ const BookStoryCard = ({
           <div className="flex justify-between items-center text-sm text-gray-700 mb-1">
             <div className="flex items-center gap-2">
               <img
-                src={profileUrl}
+                src={profileUrl || noUserImage}
                 alt="profile"
                 className="w-6 h-6 rounded-full"
               />
@@ -149,7 +150,7 @@ const BookStoryCard = ({
             />
             <span>{likeCount}</span>
           </div>
-          <img src={reportIcon} alt="report" className="w-[20px] h-[20px]" />
+          <img src={reportIcon} alt="report" className="w-4 h-4" />
         </div>
       </div>
     </div>

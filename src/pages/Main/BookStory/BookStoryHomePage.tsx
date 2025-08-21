@@ -129,7 +129,7 @@ export default function BookStoryHomePage() {
 
   return (
     <div className="absolute left-[315px] right-[42px] opacity-100">
-      <Header pageTitle="책 이야기" customClassName="mt-[30px] pl-4" />
+      <Header pageTitle="책 이야기" customClassName="pl-4" />
 
       {/* 탭 및 목록 컨테이너 */}
       <div
@@ -192,7 +192,7 @@ export default function BookStoryHomePage() {
           {stories.length === 0 && loading && <div>로딩 중...</div>}
           {stories.map((story) => (
             <div
-              className="cursor-pointer hover:shadow-lg hover:scale-[1.03]"
+              className="cursor-pointer hover:shadow-lg hover:scale-[1.03] transition-transform duration-300"
               key={story.bookStoryId}
               onClick={() => navigate(`/bookstory/${story.bookStoryId}/detail`)}
             >
