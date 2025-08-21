@@ -88,6 +88,11 @@ export type TeamMemberResult = {
   members: AuthorDto[];
 };
 
+export type TopicSelect = {
+  teamNumber: number;
+  isSelected: boolean;
+};
+
 // 독서 모임 발제와 선택한 팀 정보 전체 조회
 export type TotalTopicResponse = ApiResponse<TotalTopicResult>;
 
@@ -96,3 +101,6 @@ export type TeamTopicResponse = ApiResponse<TeamTopicResult>;
 
 // 팀 별 참여자 조회
 export type TeamMemberResponse = ApiResponse<TeamMemberResult>;
+
+// 팀에서 발제 선택/해제
+export type TopicSelectResponse = ApiResponse<TopicSelect>;

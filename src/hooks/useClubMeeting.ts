@@ -12,6 +12,7 @@ import {
   getMeetingTeamTopic,
   getMeetingTopics,
   updateClubMeeting,
+  updateTopicSelect,
 } from "../apis/clubMeeting/meetingAPI";
 import type {
   CreateClubMeeting,
@@ -19,6 +20,7 @@ import type {
   MeetingListResult,
   TeamMemberResult,
   TeamTopicResult,
+  TopicSelect,
   TotalTopicResult,
   UpdateClubMeeting,
 } from "../types/clubMeeting";
@@ -97,5 +99,20 @@ export const useGetMeetingTeamMember = (
     queryKey: ["meetingTeamMembers", meetingId, teamNumber],
     queryFn: () => getMeetingTeamMember(meetingId, teamNumber),
     enabled: !!meetingId && !!teamNumber,
+  });
+};
+
+// 팀 발제 선택/해제
+export const useUpdateTopicSelect = (meetingId: number, topicId: number) => {
+  const queryClient = useQueryClient();
+  return useMutation<unknown, Error, TopicSelect>({
+    mutationFn: (data: TopicSelect) =>
+      updateTopicSelect(meetingId, topicId, data),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["meetingTopics", meetingId] });
+      queryClient.invalidateQueries({
+        queryKey: ["meetingTeamTopic", meetingId],
+      });
+    },
   });
 };
