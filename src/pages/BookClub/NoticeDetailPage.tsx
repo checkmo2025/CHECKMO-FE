@@ -1,7 +1,7 @@
 import React from 'react';
 import { useMemo } from 'react';
 import { useNavigate, useParams, useSearchParams } from 'react-router-dom';
-import backIcon from "../../assets/icons/backIcon.png";
+import backIcon from "../../assets/icons/backIcon2.png";
 import MeetingNoticeContent from '../../components/BookClub/MeetingNoticeContent';
 import GeneralNoticeContent from '../../components/BookClub/GeneralNoticeContent';
 import VoteNoticeContent from '../../components/BookClub/VoteNoticeContent';
