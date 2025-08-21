@@ -231,12 +231,14 @@ export default function BookStoryDetailPage() {
                         <button
                           className="cursor-pointer"
                           onClick={() => setIsModalOpen(true)}
+                          style={{ color: "#A6917D" }}
                         >
                           <Trash2 size={16} />
                         </button>
                         <button
                           className="cursor-pointer"
                           onClick={() => setIsEditing(true)}
+                          style={{ color: "#A6917D" }}
                         >
                           <Edit2 size={16} />
                         </button>
