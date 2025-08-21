@@ -28,6 +28,8 @@ import BookClubListModal from "./BookClubListModal";
 
 import { fetchMyClubs } from "../apis/Main/clubs";
 import type { ClubDto } from "../apis/Main/clubs";
+import { fetchClubDetail } from "../apis/BookClub/getBookClub"; // ✅ 추가
+import type { ClubDetailDto } from "../apis/BookClub/getBookClub"; // ✅ 추가
 
 type Submenu = {
   name: string;
@@ -56,6 +58,7 @@ const Sidebar = () => {
   const location = useLocation();
 
   const [bookclubName, setBookclubName] = useState("모임 이름");
+  const [clubProfileImage, setClubProfileImage] = useState<string | null>(null); // ✅ 추가
   const [openMenus, setOpenMenus] = useState<Set<string>>(new Set());
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [myClubs, setMyClubs] = useState<ClubDto[]>([]);
@@ -75,6 +78,17 @@ const Sidebar = () => {
     if (bookclubId) {
       const matchedClub = myClubs.find((c) => c.clubId === Number(bookclubId));
       if (matchedClub) setBookclubName(matchedClub.clubName);
+
+      fetchClubDetail(Number(bookclubId))
+        .then((detail: ClubDetailDto) => {
+          //console.log("클럽 상세 정보:", detail);
+          if (detail?.profileImageUrl) {
+            setClubProfileImage(detail.profileImageUrl);
+          }
+        })
+        .catch((err) => {
+          console.error("클럽 정보 불러오기 실패:", err);
+        });
     }
   }, [bookclubId, myClubs]);
 
@@ -359,13 +373,23 @@ const Sidebar = () => {
   const header = (
     <div className="flex items-center gap-4 cursor-pointer">
       <img
-        src={logoImage}
+        src={bookclubId && clubProfileImage ? clubProfileImage : logoImage}
         alt="logo"
-        style={{ width: "3.00188rem", height: "4.63044rem" }}
+        style={{
+          width: "3.00188rem",
+          height: "4.63044rem",
+          objectFit: "cover",
+          borderRadius: bookclubId ? "10%" : "0", // 동그랗게 안함, 클럽이면 살짝 둥글게
+          cursor: "pointer", // 클릭 가능 표시
+        }}
         onClick={() =>
           navigate(bookclubId ? `/bookclub/${bookclubId}/home` : "/home")
         }
+        onError={(e) => {
+          e.currentTarget.src = logoImage;
+        }} // 이미지 로드 실패 시 로고로 fallback
       />
+
       <div className="flex flex-col items-center cursor-pointer">
         <span
           style={{
