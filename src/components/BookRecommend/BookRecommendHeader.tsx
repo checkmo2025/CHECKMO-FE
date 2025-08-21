@@ -7,10 +7,9 @@ interface HeaderProps {
 const BookRecommendHeader = ({ author }: HeaderProps) => {
   return (
     <>
-      <div className="font-pretendard flex flex-row mt-5 mx-4">
+      <div className="flex flex-row mt-5 mx-4">
         <img
           src={author.profileImageUrl}
-          // src="/profile.png"
           className="mr-3 w-8 h-8
                         object-cover
                         rounded-full"
