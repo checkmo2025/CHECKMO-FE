@@ -46,7 +46,7 @@ export default function NoticeCreateDropdown({
     >
       {/* 버튼 컨테이너 */}
       <div 
-        className="w-[204px] absolute right-0 flex justify-center"
+        className="w-full md:w-[204px] md:absolute md:right-0 flex justify-center"
         onMouseEnter={handleMouseEnter}
         onMouseLeave={handleMouseLeave}
       >
