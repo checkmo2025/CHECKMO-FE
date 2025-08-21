@@ -11,6 +11,7 @@ import {
   updateBookStory,
   toggleBookStoryLike,
 } from "../../../apis/BookStory/bookstories";
+import { toggleUserSubscription } from "../../../apis/User/user";
 import Modal, { type ModalButton } from "../../../components/Modal";
 import noProfileImage from "../../../assets/images/userImage.png";
 import checkerImage from "../../../assets/images/checker.png";
@@ -31,6 +32,8 @@ export default function BookStoryDetailPage() {
   const [liked, setLiked] = useState(false);
   const [likeCount, setLikeCount] = useState(0);
 
+  const [isSubscribed, setIsSubscribed] = useState(false);
+
   useEffect(() => {
     if (!storyId) return;
 
@@ -47,6 +50,7 @@ export default function BookStoryDetailPage() {
         setEditDescription(data.description);
         setLiked(data.likedByMe);
         setLikeCount(data.likes);
+        setIsSubscribed(data.authorInfo.following);
       } catch (err: any) {
         console.error(err);
         setError("책 이야기 조회에 실패했습니다.");
@@ -111,6 +115,20 @@ export default function BookStoryDetailPage() {
     }
   };
 
+  const handleToggleSubscription = async () => {
+    if (!authorInfo?.nickname) return;
+    try {
+      // API 함수에 현재 구독 상태(isSubscribed)를 전달
+      await toggleUserSubscription(authorInfo.nickname, isSubscribed);
+
+      // API 요청이 성공하면 UI 상태를 업데이트
+      setIsSubscribed((prev) => !prev);
+    } catch (err) {
+      console.error("구독 처리에 실패했습니다.", err);
+      alert("구독 처리에 실패했습니다.");
+    }
+  };
+
   const modalButtons: ModalButton[] = [
     {
       label: "삭제하기",
@@ -142,28 +160,43 @@ export default function BookStoryDetailPage() {
       </div>
 
       <div className="pl-4 mt-12 max-w-5xl mx-auto">
-        <div
-          className="flex items-center gap-2 mb-6 w-fit cursor-pointer p-1 rounded-lg transition-colors duration-300 hover:bg-[#EEE]"
-          onClick={() => {
-            if (isMyStory) {
-              navigate("/mypage/myprofile");
-            } else {
-              navigate(`/info/others/${authorInfo.nickname}`);
-            }
-          }}
-        >
-          <img
-            src={authorInfo.profileImageUrl || noProfileImage}
-            alt={authorInfo.nickname}
-            className="w-10 h-10 rounded-full"
-          />
-          <span className="text-base font-semibold pr-1">
-            {authorInfo.nickname}
-          </span>
+        <div className="flex items-center justify-between mb-6">
+          <div
+            className="flex items-center gap-2 w-fit cursor-pointer p-1 rounded-lg transition-colors duration-300 hover:bg-[#EEE]"
+            onClick={() => {
+              if (isMyStory) {
+                navigate("/mypage/myprofile");
+              } else {
+                navigate(`/info/others/${authorInfo.nickname}`);
+              }
+            }}
+          >
+            <img
+              src={authorInfo.profileImageUrl || noProfileImage}
+              alt={authorInfo.nickname}
+              className="w-10 h-10 rounded-full"
+            />
+            <span className="text-base font-semibold pr-1">
+              {authorInfo.nickname}
+            </span>
+          </div>
+
+          {!isMyStory && (
+            <button
+              onClick={handleToggleSubscription}
+              className={`px-4 py-1.5 rounded-full text-sm font-semibold transition-colors duration-200 ${
+                isSubscribed
+                  ? "bg-white text-gray-500 border border-gray-300"
+                  : "bg-[#A6917D] text-white"
+              }`}
+            >
+              {isSubscribed ? "구독 중" : "구독"}
+            </button>
+          )}
         </div>
 
-        <div className="flex gap-8">
-          <div className="w-64 h-80 rounded-xl bg-gray-200 overflow-hidden">
+        <div className="flex flex-col sm:flex-row gap-8">
+          <div className="w-full sm:w-64 h-80 rounded-xl bg-gray-200 overflow-hidden flex-shrink-0">
             <img
               src={bookInfo.imgUrl || checkerImage}
               alt={bookInfo.title}
@@ -200,7 +233,6 @@ export default function BookStoryDetailPage() {
                 도서 : {bookInfo.title} | {bookInfo.author}
               </div>
 
-              {/* 버튼 영역 */}
               <div className="flex items-center gap-4">
                 {isMyStory ? (
                   <>

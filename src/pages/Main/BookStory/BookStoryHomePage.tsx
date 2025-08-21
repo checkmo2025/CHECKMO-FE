@@ -159,7 +159,7 @@ export default function BookStoryHomePage() {
         </div>
 
         {/* 상단 버튼 & 보기 모드 */}
-        <div className="flex justify-between items-center mb-8 px-2">
+        <div className="flex justify-between items-center mb-10 px-2">
           <Link to="/bookstory/search">
             <button className="flex items-center gap-2 px-4 py-2 rounded-full bg-[#A6917D] text-white text-sm font-medium cursor-pointer">
               <Pencil size={16} /> 책 이야기
