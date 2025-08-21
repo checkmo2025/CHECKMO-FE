@@ -1,5 +1,6 @@
 // src/pages/BookClub/ClubSearchPage.tsx
 import React, { useMemo, useState, useEffect, useRef } from 'react';
+import { useQuery } from '@tanstack/react-query';
 import { Link } from 'react-router-dom';
 import ClubCard from '../../components/SearchClub/ClubCard';
 import Modal from '../../components/Modal';
@@ -10,6 +11,8 @@ import type { ClubListDto } from '../../types/bookClub';
 import { useClubJoin } from '../../hooks/useClubJoin';
 import { PARTICIPANT_TYPES } from '../../types/bookClub';
 import arrowUpBold from '../../assets/icons/ep_arrow-up-bold.svg';
+import { fetchMyClubs, type ClubDto as MyClubDto } from '../../apis/Main/clubs';
+import alertCircle from '../../assets/icons/alert_circle_loop.png';
 
 export default function ClubSearchPage(): React.ReactElement {
   // ── 검색 상태
@@ -59,6 +62,13 @@ export default function ClubSearchPage(): React.ReactElement {
 
   const { mutate: joinClub } = useClubJoin();
 
+  // 내가 가입한 북클럽 목록 조회
+  const { data: myClubs } = useQuery<MyClubDto[], Error>({
+    queryKey: ['myClubs'],
+    queryFn: fetchMyClubs,
+    staleTime: 60 * 1000,
+  });
+
   // 드롭다운: 바깥 클릭/ESC 닫기
   useEffect(() => {
     const handleClickOutside = (e: MouseEvent) => {
@@ -101,6 +111,14 @@ export default function ClubSearchPage(): React.ReactElement {
         />
 
         <div className='flex flex-col flex-1 min-h-0'>
+          {myClubs && myClubs.length === 0 && (
+            <div className="flex items-center justify-center absolute top-[70px] gap-[10px]">
+              <img src={alertCircle} alt="alert" className="w-[24px] h-[24px]" />
+              <p className=" text-[14px] text-[#FF8045] font-medium">
+                아직 모임에서 활동중이 아니시군요! 책모에서 다양한 독서 동아리에 가입해보세요!
+              </p>
+            </div>
+          )}
           {/* ── 검색 바 ── */}
           <div className='shrink-0'>
             <div className="mt-9 flex items-center w-[1170px] h-[53px] py-[10px] px-[17px] rounded-2xl bg-[var(--Color-4,#F4F2F1)]">
@@ -268,7 +286,7 @@ export default function ClubSearchPage(): React.ReactElement {
                 </div>
               ))}
               {status === 'success' && flatClubs.length > 0 && (
-                <div className="h-[500px]" aria-hidden="true" />
+                <div className="h-[100px]" aria-hidden="true" />
               )}
               {status === 'success' && flatClubs.length === 0 && (
                 <div className="py-8 text-sm text-gray-500">검색 결과가 없습니다.</div>
