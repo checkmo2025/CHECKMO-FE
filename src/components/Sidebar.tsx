@@ -99,7 +99,6 @@ const Sidebar = () => {
     }
   }, [bookclubId, myClubs]);
 
-  // 메뉴 정의
   const menus: Menu[] = bookclubId
     ? [
         {
@@ -111,7 +110,7 @@ const Sidebar = () => {
             { name: "책장", path: `/bookclub/${bookclubId}/shelf` },
             {
               name: "모임",
-              path: "#",
+              path: `/bookclub/${bookclubId}/meeting`,
               submenus: [
                 {
                   name: "모임 전체보기",
@@ -122,7 +121,7 @@ const Sidebar = () => {
             },
             {
               name: "책 추천",
-              path: "#",
+              path: `/bookclub/${bookclubId}/recommend`,
               submenus: [
                 {
                   name: "책 추천 전체보기",
@@ -217,7 +216,18 @@ const Sidebar = () => {
         },
       ];
 
-  // 메뉴 토글
+  const isMenuActive = (menu: Menu | Submenu, currentPath: string): boolean => {
+    if (menu.path === currentPath) {
+      return true;
+    }
+    if (menu.submenus && menu.submenus.length > 0) {
+      return menu.submenus.some((submenu) =>
+        isMenuActive(submenu, currentPath)
+      );
+    }
+    return false;
+  };
+
   const toggleMenu = (menuName: string) => {
     setOpenMenus((prev) => {
       const updated = new Set(prev);
@@ -226,8 +236,14 @@ const Sidebar = () => {
     });
   };
 
-  const getToggleIcon = (menu: Menu, isOpen: boolean) => {
-    const active = isTopMenuActive(menu);
+  const getMenuTextColor = (menu: Menu | Submenu) => {
+    const activeColor = "#3D4C35";
+    const inactiveColor = "#AAAAAA";
+    return isMenuActive(menu, location.pathname) ? activeColor : inactiveColor;
+  };
+
+  const getToggleIcon = (menu: Menu | Submenu, isOpen: boolean) => {
+    const active = isMenuActive(menu, location.pathname);
     if (isOpen) {
       return active ? toggleCloseGreen : toggleCloseGray;
     } else {
@@ -235,53 +251,18 @@ const Sidebar = () => {
     }
   };
 
-  const isTopMenuActive = (menu: Menu | Submenu): boolean => {
-    const checkPaths = (submenus?: Submenu[]): boolean => {
-      if (!submenus) return false;
-      return submenus.some((s) => {
-        // 정확히 path 일치 체크
-        if (s.path && location.pathname === s.path) return true;
-        // 재귀로 하위 메뉴 체크
-        if (s.submenus) return checkPaths(s.submenus);
-        return false;
-      });
-    };
-
-    if ("submenus" in menu) {
-      if ("path" in menu && menu.path && location.pathname === menu.path)
-        return true;
-      return checkPaths(menu.submenus);
-    }
-    return false;
-  };
-
-  const getMenuTextColor = (menu: Menu | Submenu, subPath?: string) => {
-    const activeColor = "#3D4C35";
-    const inactiveColor = "#AAAAAA";
-
-    if (subPath) {
-      return location.pathname === subPath ? activeColor : inactiveColor;
-    }
-
-    return isTopMenuActive(menu) ? activeColor : inactiveColor;
-  };
-
-  const getIconSrc = (menu: Menu | Submenu, subPath?: string) => {
-    const active = getMenuTextColor(menu, subPath) === "#3D4C35";
+  const getIconSrc = (menu: Menu | Submenu) => {
+    const active = isMenuActive(menu, location.pathname);
     return "icon" in menu ? (active ? menu.icon.green : menu.icon.gray) : "";
   };
 
-  // 서브메뉴 렌더링
-  const renderSubmenus = (
-    submenus: Submenu[],
-    level = 1,
-    parentMenu?: Menu
-  ) => {
+  const renderSubmenus = (submenus: Submenu[], level = 1) => {
     const paddingClass = level === 1 ? "pl-8" : "pl-7";
 
     return (
       <div className={`mt-1 space-y-1 ${paddingClass} cursor-pointer`}>
-        {submenus.map(({ name, path, isModal, submenus: nested }) => {
+        {submenus.map((submenu) => {
+          const { name, path, isModal, submenus: nested } = submenu;
           let iconPair = null;
           if (name === "공지사항")
             iconPair = { green: noticeGreen, gray: noticeGray };
@@ -293,6 +274,11 @@ const Sidebar = () => {
             iconPair = { green: bookGreen, gray: bookGray };
 
           const isOpen = openMenus.has(name);
+          const currentSubmenuObject: Submenu = {
+            name,
+            path,
+            submenus: nested,
+          };
 
           if (isModal) {
             return (
@@ -305,19 +291,9 @@ const Sidebar = () => {
                     setIsClubListModalOpen(true);
                   }
                 }}
-                style={{ color: getMenuTextColor(parentMenu!, path) }}
+                style={{ color: getMenuTextColor(currentSubmenuObject) }}
                 className="flex items-center gap-2 text-sm py-1 pl-2 pr-3 rounded hover:bg-[#DDEED6] cursor-pointer"
               >
-                {iconPair && (
-                  <img
-                    src={
-                      getMenuTextColor(parentMenu!, path) === "#3D4C35"
-                        ? iconPair.green
-                        : iconPair.gray
-                    }
-                    className="w-5 h-5"
-                  />
-                )}
                 {name}
               </button>
             );
@@ -331,19 +307,9 @@ const Sidebar = () => {
                   e.preventDefault();
                   openPlannedModal();
                 }}
-                style={{ color: getMenuTextColor(parentMenu!, path) }}
+                style={{ color: getMenuTextColor(currentSubmenuObject) }}
                 className="flex items-center gap-2 text-sm py-1 pl-2 pr-3 rounded hover:bg-[#DDEED6] cursor-pointer"
               >
-                {iconPair && (
-                  <img
-                    src={
-                      getMenuTextColor(parentMenu!, path) === "#3D4C35"
-                        ? iconPair.green
-                        : iconPair.gray
-                    }
-                    className="w-5 h-5"
-                  />
-                )}
                 {name}
               </button>
             );
@@ -354,21 +320,25 @@ const Sidebar = () => {
               <div className="flex items-center justify-between">
                 <NavLink
                   to={nested ? "#" : path}
-                  end
-                  style={{ color: getMenuTextColor(parentMenu!, path) }}
+                  end={!nested}
+                  style={{ color: getMenuTextColor(currentSubmenuObject) }}
                   className="flex items-center gap-2 text-sm py-1 pl-2 pr-3 rounded hover:bg-[#DDEED6]"
-                  onClick={() => {
-                    if (nested) toggleMenu(name);
+                  onClick={(e) => {
+                    if (nested) {
+                      e.preventDefault();
+                      toggleMenu(name);
+                    }
                   }}
                 >
                   {iconPair && (
                     <img
                       src={
-                        getMenuTextColor(parentMenu!, path) === "#3D4C35"
+                        getMenuTextColor(currentSubmenuObject) === "#3D4C35"
                           ? iconPair.green
                           : iconPair.gray
                       }
                       className="w-5 h-5"
+                      alt={name}
                     />
                   )}
                   {name}
@@ -379,7 +349,7 @@ const Sidebar = () => {
                     className="p-1 cursor-pointer"
                   >
                     <img
-                      src={getToggleIcon(parentMenu!, isOpen)}
+                      src={getToggleIcon(currentSubmenuObject, isOpen)}
                       alt="토글"
                       className="w-4 h-4"
                     />
@@ -396,7 +366,7 @@ const Sidebar = () => {
                     transition={{ duration: 0.3, ease: "easeInOut" }}
                     className="overflow-hidden"
                   >
-                    {renderSubmenus(nested, level + 1, parentMenu)}
+                    {renderSubmenus(nested, level + 1)}
                   </motion.div>
                 )}
               </AnimatePresence>
@@ -407,7 +377,6 @@ const Sidebar = () => {
     );
   };
 
-  // 헤더
   const header = (
     <div
       className={`flex cursor-pointer ${
@@ -462,7 +431,7 @@ const Sidebar = () => {
   );
 
   return (
-    <div className="flex w-[16.5rem] h-screen flex-col px-6.5 py-8 bg-[#E9F2E3]">
+    <div className="flex w-[16.5rem] h-screen flex-col px-6.5 py-8 bg-[#E9F2E3] ">
       {header}
       <nav className="flex flex-col w-full overflow-y-auto space-y-2 mt-6">
         {menus.map((menu) => {
@@ -472,21 +441,26 @@ const Sidebar = () => {
           return (
             <div key={name} className="w-full">
               <div className="flex items-center justify-between w-full">
-                {/* 메뉴 링크 */}
                 <NavLink
                   to={path ?? submenus[0]?.path ?? "#"}
-                  end
+                  end={!submenus || submenus.length === 0}
                   style={{ color: getMenuTextColor(menu) }}
                   className={`flex items-center gap-3 py-2 pl-3 pr-4 flex-1 rounded-r-lg hover:bg-[#DDEED6] cursor-pointer ${
-                    isTopMenuActive(menu) ? "border-l-4 border-[#93C27C]" : ""
+                    isMenuActive(menu, location.pathname)
+                      ? "border-l-4 border-[#93C27C]"
+                      : ""
                   }`}
-                  onClick={() => {
-                    if (submenus.length > 0) toggleMenu(name);
+                  onClick={(e) => {
+                    if (submenus.length > 0) {
+                      e.preventDefault();
+                      toggleMenu(name);
+                    }
                   }}
                 >
                   <img
                     src={getIconSrc(menu)}
                     className="w-5 h-5 flex-shrink-0"
+                    alt=""
                   />
                   <span
                     className="text-[18px] font-medium whitespace-nowrap overflow-hidden text-ellipsis flex-1"
@@ -496,7 +470,6 @@ const Sidebar = () => {
                   </span>
                 </NavLink>
 
-                {/* 토글 버튼 */}
                 {submenus.length > 0 && (
                   <button
                     onClick={() => toggleMenu(name)}
@@ -521,7 +494,7 @@ const Sidebar = () => {
                     transition={{ duration: 0.3 }}
                     className="overflow-hidden"
                   >
-                    {renderSubmenus(submenus, 1, menu)}
+                    {renderSubmenus(submenus, 1)}
                   </motion.div>
                 )}
               </AnimatePresence>
