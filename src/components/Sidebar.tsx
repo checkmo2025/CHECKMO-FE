@@ -133,6 +133,7 @@ const Sidebar = () => {
         },
         {
           name: "마이페이지",
+          path: "/mypage",
           icon: { green: mypageGreen, gray: mypageGray },
           submenus: [
             { name: "내 모임", path: "/mypage/group" },
