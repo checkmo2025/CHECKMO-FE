@@ -72,7 +72,7 @@ const MemberBlockPage = () => {
             alt="back"
             className="w-6 h-6 cursor-pointer"
           />
-          <span className="ml-2 text-[var(--Gray-1,#2C2C2C)] font-['Pretendard'] text-[24px] font-bold leading-[135%]">신청 관리</span>
+          <span className="ml-2 text-[var(--Gray-1,#2C2C2C)] font-['Pretendard'] text-[24px] font-bold leading-[135%]">차단 관리</span>
         </div>
       </div>
 
