@@ -170,7 +170,7 @@ const MyPage = () => {
                           {list.slice(0, 5).map((member) => (
                             <div
                               key={`${label}-${member.nickname}`}
-                              className="bg-[#F4F2F1] rounded-lg px-3 py-3 mb-3 flex items-center gap-2 cursor-pointer hover:bg-[#FAFAFA]"
+                              className="bg-[#F4F2F1] rounded-lg px-3 py-3 mb-3 flex items-center gap-2 cursor-pointer hover:bg-[#EEEEEE]"
                               onClick={() =>
                                 navigate(`/info/others/${member.nickname}`)
                               }
