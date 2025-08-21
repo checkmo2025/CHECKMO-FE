@@ -107,7 +107,6 @@ export default function ClubSearchPage(): React.ReactElement {
     <>
       <div className="absolute top-0 bottom-0 left-[315px] right-[42px] opacity-100 flex flex-col overflow-hidden">
         <Header pageTitle={'모임 검색하기'}
-          customClassName="mt-[30px]"
         />
 
         <div className='flex flex-col flex-1 min-h-0'>
