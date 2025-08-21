@@ -121,7 +121,7 @@ export default function AnnouncementList({
           <span
             className={`
               absolute top-[23px] right-[21.5px]
-              hidden sm:inline-flex items-center justify-center
+              hidden lg:inline-flex items-center justify-center
               w-[44px] h-[20px] sm:w-[52px] sm:h-[22px]
               rounded-[15px]
               text-[11px] sm:text-[12px] font-[600]
@@ -148,7 +148,7 @@ export default function AnnouncementList({
                 }
               }}
               className="
-                hidden sm:block absolute sm:bottom-[63px] bottom-[56px] right-[21.5px]
+                hidden lg:block absolute sm:bottom-[63px] bottom-[56px] right-[21.5px]
                 w-[88px] h-[32px] sm:w-[105px] sm:h-[35px]
                 border-2 border-[#EAE5E2]
                 rounded-[16px]
@@ -175,7 +175,7 @@ export default function AnnouncementList({
               handleItemClick(item);
             }}
             className="
-              hidden sm:block absolute bottom-[23px] right-[21.5px]
+              hidden lg:block absolute bottom-[23px] right-[21.5px]
               w-[96px] h-[32px] sm:w-[105px] sm:h-[35px]
               bg-[#A6917D]
               rounded-[16px]
