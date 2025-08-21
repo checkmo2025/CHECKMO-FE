@@ -30,6 +30,7 @@ import toggleOpenGray from "../assets/icons/toggleOpen-gray.png";
 import toggleOpenGreen from "../assets/icons/toggleOpen-green.png";
 import toggleCloseGray from "../assets/icons/toggleClose-gray.png";
 import toggleCloseGreen from "../assets/icons/toggleClose-green.png";
+import exitHoverIcon from "../assets/icons/exit-hover.png";
 
 type Submenu = {
   name: string;
