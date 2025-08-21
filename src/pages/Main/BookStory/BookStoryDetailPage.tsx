@@ -202,10 +202,12 @@ export default function BookStoryDetailPage() {
             )}
             <div className="flex-grow" />
 
-            <div className="flex items-center justify-between text-gray-400 text-xs">
-              <div>
+            <div className="flex flex-col items-end text-gray-400 text-xs gap-[1rem]">
+              <div className="text-right">
                 도서 : {bookInfo.title} | {bookInfo.author}
               </div>
+
+              {/* 버튼 영역 */}
               <div className="flex items-center gap-4">
                 {isMyStory ? (
                   <>
