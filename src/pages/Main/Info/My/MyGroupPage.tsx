@@ -132,20 +132,20 @@ const MyGroupPage = () => {
                     >
                       <div className="flex gap-4 md:gap-6">
                         <div className="bg-gray-200 rounded-[16px] overflow-hidden w-[80px] h-[100px] md:w-[119px] md:h-[119px] flex-shrink-0 flex items-center justify-center">
-                          {!isErrorImage ? (
-                            <img
-                              src={imgUrl!}
-                              alt={group.name}
-                              className="w-full h-full object-cover"
-                              onError={() =>
-                                setErrorImages((prev) => ({ ...prev, [group.clubId]: true }))
-                              }
-                            />
-                          ) : (
-                            <div className="w-full h-full flex items-center justify-center text-gray-400 text-sm">
-                              No Image
-                            </div>
-                          )}
+                          <img
+                            src={
+                              !isErrorImage
+                                ? imgUrl!
+                                : "/assets/basic_bookclub_image.png"
+                            }
+                            alt={group.name}
+                            className="w-full h-full object-cover"
+                            loading="lazy" 
+                            onError={(e) => {
+                              e.currentTarget.src = "/assets/basic_bookclub_image.png"; 
+                              setErrorImages((prev) => ({ ...prev, [group.clubId]: true }));
+                            }}
+                          />
                         </div>
 
                         <div className="flex flex-col justify-between">
