@@ -199,7 +199,7 @@ const OthersProfilePage = () => {
                     <div className="flex items-center gap-5 mt-auto ml-[20px]">
                       {/* 좋아요 버튼 */}
                       <div
-                        className="flex items-center gap-1 text-sm cursor-pointer"
+                        className="flex items-center gap-1.5 text-sm cursor-pointer"
                         onClick={(e) => {
                           e.stopPropagation();
                           likeMutation.mutate(book.bookStoryId);
@@ -211,11 +211,7 @@ const OthersProfilePage = () => {
                           stroke={book.likedByMe ? "#FF6B6B" : "currentColor"}
                         />
                         <span
-                          className={
-                            book.likedByMe
-                              ? "text-[#FF6B6B]"
-                              : "text-[#2C2C2C]"
-                          }
+                          className="min-w-[10px] text-center text-[#2C2C2C]"
                         >
                           {book.likes}
                         </span>
