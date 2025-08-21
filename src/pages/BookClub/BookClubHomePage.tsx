@@ -88,22 +88,24 @@ export default function BookClubHomePage(): React.ReactElement {
   }, [hasNextPage, isFetchingNextPage, fetchNextPage]);
 
   return (
-    <div className="absolute left-[315px] right-[42px] opacity-100">
-      <Header pageTitle={isLoadingClubName ? '로딩중...' : `${bookclubName} 홈`}
-        isAdmin={!!isStaff}
-        showManageButton={!!isStaff}
-        manageLabel="모임 관리하기"
-        manageTo={`/bookclub/${numericClubId}/admin`}
-        />
+    <main className="w-full px-[42px]">
+      <div className="sticky top-0 z-10 bg-[#FFFFFF] pt-[30px]">
+        <Header pageTitle={isLoadingClubName ? '로딩중...' : `${bookclubName} 홈`}
+          isAdmin={!!isStaff}
+          showManageButton={!!isStaff}
+          manageLabel="모임 관리하기"
+          manageTo={`/bookclub/${numericClubId}/admin`}
+          customClassName="!mt-0"
+          />
+      </div>
 
       { /* ── 메인 컨텐츠 ── */}
-      <div className="overflow-y-auto h-[calc(100vh-105px)] w-full flex-1 pt-[27px] pl-[2px] bg-[#FFFFFF]">
-        <div className="flex flex-col gap-[20px]">
+      <div className="w-full flex-1 bg-[#FFFFFF] space-y-[20px]">
           {/* ── 공지사항 섹션 ── */}
-          <section className="w-full">
-            <div className="px-[7px] flex justify-between items-center mb-4">
-              <h2 className="text-[18px] font-semibold">공지사항</h2>  
-              <Link to={`/bookclub/${numericClubId}/notices`} className="text-[14px] text-[#969696] mr-[3px] hover:underline">
+          <section className="pt-[36px] px-[3px] w-full">
+            <div className="flex justify-between items-center mb-[20px]">
+              <h2 className="ml-[10px] text-[18px] font-semibold">공지사항</h2>  
+              <Link to={`/bookclub/${numericClubId}/notices`} className="mr-[15px] text-[14px] text-[#969696] hover:underline">
                 + 더보기
               </Link>
             </div>
@@ -129,17 +131,17 @@ export default function BookClubHomePage(): React.ReactElement {
             
             {/* 공지사항이 없는 경우 */}
             {!loading && !error && notices.length === 0 && (
-              <div className="w-full h-[377px] flex items-center justify-center border-2 border-[#EAE5E2] rounded-[16px]">
+              <div className="w-[calc(100%-24px)] h-[377px] flex items-center justify-center border-2 border-[#EAE5E2] rounded-[16px] mx-[12px]">
                 <p className="text-[#969696]">아직 등록된 중요 공지사항이 없습니다.</p>
               </div>
             )}
           </section>
 
           {/* ── 책 이야기 섹션 ── */}
-          <section className="px-[7px] w-full h-[376px] mb-[60px]">
+          <section className="px-[9px] w-full">
             <div className="flex justify-between items-center mb-[20px]">
-              <h2 className="text-[18px] font-semibold">책 이야기</h2>
-              <Link to={`/bookstory`} className="text-[14px] text-[#8D8D8D] mr-2 hover:underline">
+              <h2 className="ml-[7px] text-[18px] font-semibold">책 이야기</h2>
+              <Link to={`/bookstory`} className="mr-[10px] text-[14px] text-[#8D8D8D] hover:underline">
                   + 더보기
               </Link>
             </div>
@@ -149,31 +151,42 @@ export default function BookClubHomePage(): React.ReactElement {
             {isErrorStories && (
               <p className="text-red-500">{String((errorStories as Error)?.message || '책 이야기 로딩 에러')}</p>
             )}
-            <div className="flex-1 grid grid-cols-1 sm:grid-cols-1 md:grid-cols-1 lg:grid-cols-2 gap-[25px] cursor-pointer">
-              {clubBookStories.map((story) => (
-                <div key={story.bookStoryId} className="w-full">
-                  <BookStoryCard
-                    bookStoryId={story.bookStoryId}
-                    userImage={story.authorInfo.profileImageUrl}
-                    userName={story.authorInfo.nickname}
-                    isSubscribed={story.authorInfo.following}
-                    title={story.bookStoryTitle}
-                    summary={story.description}
-                    likes={story.likes}
-                    likedByMe={story.likedByMe}
-                    bookImageUrl={story.bookInfo.imgUrl}
-                    onClick={() => navigate(`/bookstory/${story.bookStoryId}/detail`)}
-                  />
+
+            {/* 책 이야기가 없는 경우 */}
+            {!isLoadingStories && !isErrorStories && clubBookStories.length === 0 && (
+              <div className="w-[calc(100%-6px)] h-[377px] flex items-center justify-center border-2 border-[#EAE5E2] rounded-[16px] mx-[3px] mb-[50px]">
+                <p className="text-[#969696]">등록된 책 이야기가 없습니다.</p>
+              </div>
+            )}
+
+            {/* 책 이야기 목록 */}
+            {!isLoadingStories && !isErrorStories && clubBookStories.length > 0 && (
+              <>
+                <div className="flex-1 grid grid-cols-1 sm:grid-cols-1 md:grid-cols-1 lg:grid-cols-2 gap-[25px] cursor-pointer pb-[30px]">
+                  {clubBookStories.map((story) => (
+                    <BookStoryCard
+                      key={story.bookStoryId}
+                      bookStoryId={story.bookStoryId}
+                      userImage={story.authorInfo.profileImageUrl}
+                      userName={story.authorInfo.nickname}
+                      isSubscribed={story.authorInfo.following}
+                      title={story.bookStoryTitle}
+                      summary={story.description}
+                      likes={story.likes}
+                      likedByMe={story.likedByMe}
+                      bookImageUrl={story.bookInfo.imgUrl}
+                      onClick={() => navigate(`/bookstory/${story.bookStoryId}/detail`)}
+                    />
+                  ))}
                 </div>
-              ))}
-            </div>
-            <div ref={loadMoreRef} />
-            {isFetchingNextPage && (
-              <p className="text-[#969696] mt-2">불러오는 중...</p>
+                <div ref={loadMoreRef} />
+                {isFetchingNextPage && (
+                  <p className="text-[#969696] mt-2">불러오는 중...</p>
+                )}
+              </>
             )}
           </section>
-        </div>
       </div>
-    </div>
+    </main>
   );
 }

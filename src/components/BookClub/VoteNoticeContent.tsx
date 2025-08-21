@@ -229,10 +229,10 @@ export default function VoteNoticeContent({ data, registerBackBlocker }: VoteNot
   
   // 투표자 드롭다운 토글 (각 옵션별로 독립적)
   const handleVoterDropdownToggle = (optionValue: string) => {
-    setOpenVoterDropdowns(prev => ({
-      ...prev,
-      [optionValue]: !prev[optionValue]
-    }));
+    setOpenVoterDropdowns(prev => {
+      const isOpenNow = !!prev[optionValue];
+      return isOpenNow ? {} : { [optionValue]: true };
+    });
   };
 
   // 모달 관련 핸들러들
@@ -270,7 +270,7 @@ export default function VoteNoticeContent({ data, registerBackBlocker }: VoteNot
   return (
     <div>
       {/* 메인 콘텐츠 영역 */}
-      <div className="w-full max-w-[1150px] min-h-[622px] p-[20px] border-[2px] border-[#EAE5E2] rounded-[16px] mb-[36px] ml-1 mr-[12px] md:mr-[18px]">
+      <div className="w-full max-w-[1150px] min-h-[622px] py-[20px] px-[8px] lg:px-[18px] border-[2px] border-[#EAE5E2] rounded-[16px] mb-[36px] mr-[-1px] ml-[-1px]">
         
         {/* 제목 영역 */}
         <div className="w-full h-[57px] border-b-[2px] border-[#EEEEEE] mb-[20px]">
@@ -317,7 +317,7 @@ export default function VoteNoticeContent({ data, registerBackBlocker }: VoteNot
             {/* 투표 옵션들 */}
             {current.items?.items?.map((option: voteItemDto, index: number) => (
               <div key={`${option.item}-${index}`} className="relative voter-dropdown-container pb-[17px]">
-                <label className={`flex items-center w-full ${isAfterEnd ? 'cursor-default' : 'cursor-pointer'}`}>
+                <label className={`flex items-center w-full ${(hasVoted || isAfterEnd) ? 'cursor-default' : 'cursor-pointer'}`}>
                   {/* 라디오 버튼 */}
                   <input
                     type="checkbox"
@@ -325,7 +325,7 @@ export default function VoteNoticeContent({ data, registerBackBlocker }: VoteNot
                     checked={selectedIndexes.includes(index)}
                     onChange={() => handleVoteChange(index)}
                     disabled={hasVoted || isAfterEnd} // 투표 완료 또는 종료 후 비활성화
-                    className={`appearance-none w-[24px] h-[24px] rounded-full cursor-pointer mr-[12px] flex-shrink-0 aspect-square relative transition-all duration-200 border-[2px] ${
+                    className={`appearance-none w-[24px] h-[24px] rounded-full ${(hasVoted || isAfterEnd) ? 'cursor-default' : 'cursor-pointer'} mr-[12px] flex-shrink-0 aspect-square relative transition-all duration-200 border-[2px] ${
                       selectedIndexes.includes(index) 
                         ? 'border-[#FF8045] bg-[#FF8045]' 
                         : 'border-[#BBBBBB] bg-[#EEEEEE]'
