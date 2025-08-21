@@ -15,16 +15,7 @@ const TeamButtonListComponent = ({
   const allTeams = Array.from({ length: 26 }, (_, i) => i + 1);
 
   return (
-    <div className="flex overflow-x-auto space-x-1 flex-shrink-0 ml-2 w-[230px] hide-scrollbar-container">
-      <style>{`
-        .hide-scrollbar-container {
-          -ms-overflow-style: none;
-          scrollbar-width: none;
-        }
-        .hide-scrollbar-container::-webkit-scrollbar {
-          display: none;
-        }
-      `}</style>
+    <div className="flex overflow-x-auto space-x-1 flex-shrink-0 ml-2 w-[230px]">
       <div className="flex space-x-1">
         {allTeams.map((teamNumber) => {
           const isSelected = selectedTeamNumbers.includes(teamNumber);
