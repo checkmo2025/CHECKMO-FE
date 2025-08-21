@@ -20,6 +20,7 @@ export default function ClubSearchPage(): React.ReactElement {
   // ── 검색 상태
   const [query, setQuery] = useState('');
   const [showAlert, setShowAlert] = useState(false);
+  const [alertMessage, setAlertMessage] = useState<string>('');
 
   // ── 필터 상태 (체크박스/드롭다운)
   const [isNameChecked, setIsNameChecked] = useState<boolean>(false);
@@ -109,11 +110,13 @@ export default function ClubSearchPage(): React.ReactElement {
   // 가입 신청 처리
   const handleJoinRequest = (clubId: number, message: string) => {
     if (message === 'already_member') {
+      setAlertMessage('이미 가입한 독서모임입니다.');
       setShowAlert(true);
       return;
     }
     if (message === 'no_message') {
-      alert('가입 메시지를 작성해주세요.');
+      setAlertMessage('가입 메시지를 작성해주세요.');
+      setShowAlert(true);
       return;
     }
     joinClub({ clubId, joinMessage: message });
@@ -153,7 +156,7 @@ export default function ClubSearchPage(): React.ReactElement {
 
             {/* 검색 필터 영역 */}
             <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between mt-2 mb-2 sm:mt-[10px] sm:mb-[10px] px-2 sm:px-0">
-              <div className="flex items-center gap-[12px]">
+              <div className="flex items-center gap-[12px] ml-[13px]">
                 <div ref={participantDropdownRef} className="cursor-pointer relative flex items-center gap-[6px]">
                   <button
                     type="button"
@@ -324,7 +327,7 @@ export default function ClubSearchPage(): React.ReactElement {
       {showAlert && (
         <Modal
           isOpen={showAlert}
-          title="이미 가입한 독서모임입니다."
+          title={alertMessage}
           buttons={[
             {
               label: "돌아가기",

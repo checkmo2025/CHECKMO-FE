@@ -348,14 +348,17 @@ export default function ClubCard({
                 onInquiryClick={handleInquiryClick}
                 position="top-right"
               />
-              <div className="
-                absolute left-[213px] top-[196px]
-                w-[684px] ${(kakao && insta) ? 'h-[91px]' : 'h-[51px]'} border-[2px] border-[#EAE5E2]
-                rounded-[16px] px-[20px] py-[20px]
-                font-medium text-[14px] text-[#2C2C2C]
-                underline underline-offset-2
-                flex flex-col gap-[10px]
-              ">
+              <div
+                className={`
+                  absolute left-[213px] right-[20px] top-[196px]
+                  ${kakao && insta ? 'h-[91px]' : 'h-[51px]'} border-[2px] border-[#EAE5E2]
+                  rounded-[16px] px-[20px] py-[20px]
+                  font-medium text-[14px] text-[#2C2C2C]
+                  underline underline-offset-2
+                  flex flex-col gap-[10px]
+                  ${kakao && insta ? '' : 'justify-center'}
+                `}
+              >
                 {!kakao && !insta ? (
                   <span className="no-underline text-[#8D8D8D] ">등록된 링크가 없습니다.</span>
                 ) : (
