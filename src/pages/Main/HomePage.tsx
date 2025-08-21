@@ -118,12 +118,12 @@ export default function HomePage() {
         </div>
 
         <div className="w-full flex-1 bg-white space-y-[20px] pb-10">
-          <section className="mt-[36px] mx-[3px] w-full p-[6px]">
+          <section className="mt-[36px] mx-[3px] w-full px-[6px]">
             <div className="mb-[20px]">
               <h2 className="text-[18px] font-semibold ml-[10px]">공지사항</h2>
             </div>
 
-            {loadingNotices && <p>공지사항 로딩중...</p>}
+            {loadingNotices && <p className="ml-[10px]">공지사항 로딩중...</p>}
 
             {!loadingNotices && notices.length === 0 && (
               <div className="w-full h-[380px] flex items-center justify-center border-2 border-[#EAE5E2] rounded-[16px]">
@@ -135,7 +135,7 @@ export default function HomePage() {
 
             {notices.length > 0 && (
               <div className="overflow-x-auto p-[6px]">
-                <div className="flex gap-[24px] w-full md:min-w-max">
+                <div className="flex gap-[24px] w-full md:min-w-max mb-[20px]">
                   {notices.map((notice) => (
                     <div
                       key={`${notice.clubId}-${notice.id}`}
@@ -171,7 +171,7 @@ export default function HomePage() {
             </div>
 
             {bookStories.length === 0 && loadingBooks && (
-              <p>책 이야기 로딩중...</p>
+              <p className="ml-[10px]">책 이야기 로딩중...</p>
             )}
             {errorBooks && (
               <p className="text-red-500 ml-[10px]">에러: {errorBooks}</p>
