@@ -3,9 +3,6 @@ import { NavLink, useParams, useNavigate, useLocation } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import exitIcon from "../assets/icons/exit.png";
 import logoImage from "../assets/logos/mainlogo.png";
-import toggleClose from "../assets/icons/toggleClose.png";
-import toggleOpen from "../assets/icons/toggleOpen.png";
-
 import homeGreen from "../assets/icons/home-green.png";
 import homeGray from "../assets/icons/home-gray.png";
 import bookclubGreen from "../assets/icons/bookclub-green.png";
@@ -22,14 +19,18 @@ import bookshelfGreen from "../assets/icons/bookshelf-green.png";
 import bookshelfGray from "../assets/icons/bookshelf-gray.png";
 import noticeGreen from "../assets/icons/notice-green.png";
 import noticeGray from "../assets/icons/notice-gray.png";
-
 import Modal from "./Modal";
 import BookClubListModal from "./BookClubListModal";
-
 import { fetchMyClubs } from "../apis/Main/clubs";
 import type { ClubDto } from "../apis/Main/clubs";
-import { fetchClubDetail } from "../apis/BookClub/getBookClub"; // ✅ 추가
-import type { ClubDetailDto } from "../apis/BookClub/getBookClub"; // ✅ 추가
+import { fetchClubDetail } from "../apis/BookClub/getBookClub";
+import type { ClubDetailDto } from "../apis/BookClub/getBookClub";
+import clubDefaultImage from "../assets/images/clubImage.png";
+import toggleOpenGray from "../assets/icons/toggleOpen-gray.png";
+import toggleOpenGreen from "../assets/icons/toggleOpen-green.png";
+import toggleCloseGray from "../assets/icons/toggleClose-gray.png";
+import toggleCloseGreen from "../assets/icons/toggleClose-green.png";
+import exitHoverIcon from "../assets/icons/exit-hover.png";
 
 type Submenu = {
   name: string;
@@ -58,13 +59,19 @@ const Sidebar = () => {
   const location = useLocation();
 
   const [bookclubName, setBookclubName] = useState("모임 이름");
-  const [clubProfileImage, setClubProfileImage] = useState<string | null>(null); // ✅ 추가
+  const [clubProfileImage, setClubProfileImage] = useState<string | null>(null);
   const [openMenus, setOpenMenus] = useState<Set<string>>(new Set());
+
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [modalMessage, setModalMessage] = useState("추후 개발 예정입니다!");
+
   const [myClubs, setMyClubs] = useState<ClubDto[]>([]);
   const [isClubListModalOpen, setIsClubListModalOpen] = useState(false);
 
-  const openPlannedModal = () => setIsModalOpen(true);
+  const openPlannedModal = (msg = "추후 개발 예정입니다!") => {
+    setModalMessage(msg);
+    setIsModalOpen(true);
+  };
 
   useEffect(() => {
     const loadClubs = async () => {
@@ -81,9 +88,10 @@ const Sidebar = () => {
 
       fetchClubDetail(Number(bookclubId))
         .then((detail: ClubDetailDto) => {
-          //console.log("클럽 상세 정보:", detail);
           if (detail?.profileImageUrl) {
             setClubProfileImage(detail.profileImageUrl);
+          } else {
+            setClubProfileImage(null);
           }
         })
         .catch((err) => {
@@ -103,7 +111,7 @@ const Sidebar = () => {
             { name: "책장", path: `/bookclub/${bookclubId}/shelf` },
             {
               name: "모임",
-              path: "#",
+              path: `/bookclub/${bookclubId}/meeting`,
               submenus: [
                 {
                   name: "모임 전체보기",
@@ -114,7 +122,7 @@ const Sidebar = () => {
             },
             {
               name: "책 추천",
-              path: "#",
+              path: `/bookclub/${bookclubId}/recommend`,
               submenus: [
                 {
                   name: "책 추천 전체보기",
@@ -168,7 +176,11 @@ const Sidebar = () => {
           name: "독서 모임",
           icon: { green: bookclubGreen, gray: bookclubGray },
           submenus: [
-            { name: "내 모임 바로가기", path: "#", isModal: true },
+            {
+              name: "내 모임 바로가기",
+              path: "#",
+              isModal: true,
+            },
             { name: "모임 검색하기", path: "/searchClub" },
             { name: "모임 생성하기", path: "/createClub" },
           ],
@@ -205,6 +217,18 @@ const Sidebar = () => {
         },
       ];
 
+  const isMenuActive = (menu: Menu | Submenu, currentPath: string): boolean => {
+    if (menu.path === currentPath) {
+      return true;
+    }
+    if (menu.submenus && menu.submenus.length > 0) {
+      return menu.submenus.some((submenu) =>
+        isMenuActive(submenu, currentPath)
+      );
+    }
+    return false;
+  };
+
   const toggleMenu = (menuName: string) => {
     setOpenMenus((prev) => {
       const updated = new Set(prev);
@@ -213,44 +237,33 @@ const Sidebar = () => {
     });
   };
 
-  const isTopMenuActive = (menu: Menu) => {
-    const paths = [
-      ...(menu.path ? [menu.path] : []),
-      ...menu.submenus.flatMap((s) => [
-        s.path,
-        ...(s.submenus?.map((n) => n.path) || []),
-      ]),
-    ].filter(Boolean) as string[];
-    return paths.some((p) => location.pathname.startsWith(p));
-  };
-
-  const getMenuTextColor = (menu: Menu, subPath?: string) => {
-    const currentPath = location.pathname;
+  const getMenuTextColor = (menu: Menu | Submenu) => {
     const activeColor = "#3D4C35";
     const inactiveColor = "#AAAAAA";
+    return isMenuActive(menu, location.pathname) ? activeColor : inactiveColor;
+  };
 
-    if (subPath) {
-      return currentPath === subPath ? activeColor : inactiveColor;
+  const getToggleIcon = (menu: Menu | Submenu, isOpen: boolean) => {
+    const active = isMenuActive(menu, location.pathname);
+    if (isOpen) {
+      return active ? toggleCloseGreen : toggleCloseGray;
+    } else {
+      return active ? toggleOpenGreen : toggleOpenGray;
     }
-
-    return isTopMenuActive(menu) ? activeColor : inactiveColor;
   };
 
-  const getIconSrc = (menu: Menu, subPath?: string) => {
-    const active = getMenuTextColor(menu, subPath) === "#3D4C35";
-    return active ? menu.icon.green : menu.icon.gray;
+  const getIconSrc = (menu: Menu | Submenu) => {
+    const active = isMenuActive(menu, location.pathname);
+    return "icon" in menu ? (active ? menu.icon.green : menu.icon.gray) : "";
   };
 
-  const renderSubmenus = (
-    submenus: Submenu[],
-    level = 1,
-    parentMenu?: Menu
-  ) => {
+  const renderSubmenus = (submenus: Submenu[], level = 1) => {
     const paddingClass = level === 1 ? "pl-8" : "pl-7";
 
     return (
       <div className={`mt-1 space-y-1 ${paddingClass} cursor-pointer`}>
-        {submenus.map(({ name, path, isModal, submenus: nested }) => {
+        {submenus.map((submenu) => {
+          const { name, path, isModal, submenus: nested } = submenu;
           let iconPair = null;
           if (name === "공지사항")
             iconPair = { green: noticeGreen, gray: noticeGray };
@@ -262,25 +275,26 @@ const Sidebar = () => {
             iconPair = { green: bookGreen, gray: bookGray };
 
           const isOpen = openMenus.has(name);
+          const currentSubmenuObject: Submenu = {
+            name,
+            path,
+            submenus: nested,
+          };
 
           if (isModal) {
             return (
               <button
                 key={name}
-                onClick={() => setIsClubListModalOpen(true)}
-                style={{ color: getMenuTextColor(parentMenu!, path) }}
+                onClick={() => {
+                  if (myClubs.length === 0) {
+                    openPlannedModal("내 모임이 없습니다.");
+                  } else {
+                    setIsClubListModalOpen(true);
+                  }
+                }}
+                style={{ color: getMenuTextColor(currentSubmenuObject) }}
                 className="flex items-center gap-2 text-sm py-1 pl-2 pr-3 rounded hover:bg-[#DDEED6] cursor-pointer"
               >
-                {iconPair && (
-                  <img
-                    src={
-                      getMenuTextColor(parentMenu!, path) === "#3D4C35"
-                        ? iconPair.green
-                        : iconPair.gray
-                    }
-                    className="w-5 h-5"
-                  />
-                )}
                 {name}
               </button>
             );
@@ -294,19 +308,9 @@ const Sidebar = () => {
                   e.preventDefault();
                   openPlannedModal();
                 }}
-                style={{ color: getMenuTextColor(parentMenu!, path) }}
+                style={{ color: getMenuTextColor(currentSubmenuObject) }}
                 className="flex items-center gap-2 text-sm py-1 pl-2 pr-3 rounded hover:bg-[#DDEED6] cursor-pointer"
               >
-                {iconPair && (
-                  <img
-                    src={
-                      getMenuTextColor(parentMenu!, path) === "#3D4C35"
-                        ? iconPair.green
-                        : iconPair.gray
-                    }
-                    className="w-5 h-5"
-                  />
-                )}
                 {name}
               </button>
             );
@@ -317,21 +321,25 @@ const Sidebar = () => {
               <div className="flex items-center justify-between">
                 <NavLink
                   to={nested ? "#" : path}
-                  end
-                  style={{ color: getMenuTextColor(parentMenu!, path) }}
-                  className="flex items-center gap-2 text-sm py-1 pl-2 pr-3 rounded hover:bg-[#DDEED6] cursor-pointer"
-                  onClick={() => {
-                    if (nested) toggleMenu(name);
+                  end={!nested}
+                  style={{ color: getMenuTextColor(currentSubmenuObject) }}
+                  className="flex items-center gap-2 text-sm py-1 pl-2 pr-3 rounded hover:bg-[#DDEED6]"
+                  onClick={(e) => {
+                    if (nested) {
+                      e.preventDefault();
+                      toggleMenu(name);
+                    }
                   }}
                 >
                   {iconPair && (
                     <img
                       src={
-                        getMenuTextColor(parentMenu!, path) === "#3D4C35"
+                        getMenuTextColor(currentSubmenuObject) === "#3D4C35"
                           ? iconPair.green
                           : iconPair.gray
                       }
                       className="w-5 h-5"
+                      alt={name}
                     />
                   )}
                   {name}
@@ -342,7 +350,7 @@ const Sidebar = () => {
                     className="p-1 cursor-pointer"
                   >
                     <img
-                      src={isOpen ? toggleClose : toggleOpen}
+                      src={getToggleIcon(currentSubmenuObject, isOpen)}
                       alt="토글"
                       className="w-4 h-4"
                     />
@@ -357,9 +365,9 @@ const Sidebar = () => {
                     animate={{ height: "auto", opacity: 1 }}
                     exit={{ height: 0, opacity: 0 }}
                     transition={{ duration: 0.3, ease: "easeInOut" }}
-                    className="overflow-hidden cursor-pointer"
+                    className="overflow-hidden"
                   >
-                    {renderSubmenus(nested, level + 1, parentMenu)}
+                    {renderSubmenus(nested, level + 1)}
                   </motion.div>
                 )}
               </AnimatePresence>
@@ -371,32 +379,36 @@ const Sidebar = () => {
   };
 
   const header = (
-    <div className="flex items-center gap-4 cursor-pointer">
+    <div
+      className={`flex cursor-pointer ${
+        bookclubId ? "items-center gap-4" : "items-center justify-center gap-1"
+      }`}
+    >
       <img
-        src={bookclubId && clubProfileImage ? clubProfileImage : logoImage}
+        src={bookclubId ? clubProfileImage || clubDefaultImage : logoImage}
         alt="logo"
         style={{
-          width: "3.00188rem",
-          height: "4.63044rem",
-          objectFit: "cover",
-          borderRadius: bookclubId ? "10%" : "0", // 동그랗게 안함, 클럽이면 살짝 둥글게
-          cursor: "pointer", // 클릭 가능 표시
+          width: "5.3478rem",
+          height: "5.7158rem",
+          objectFit: bookclubId ? "cover" : "contain",
+          borderRadius: bookclubId ? "0.81rem" : "0",
+          cursor: "pointer",
         }}
         onClick={() =>
           navigate(bookclubId ? `/bookclub/${bookclubId}/home` : "/home")
         }
         onError={(e) => {
-          e.currentTarget.src = logoImage;
-        }} // 이미지 로드 실패 시 로고로 fallback
+          e.currentTarget.src = clubDefaultImage;
+        }}
       />
-
-      <div className="flex flex-col items-center cursor-pointer">
+      <div className="flex flex-col items-center">
         <span
           style={{
             fontFamily: "'Black Han Sans', sans-serif",
             fontSize: bookclubId ? "2.25rem" : "3rem",
+            marginRight: !bookclubId ? "1rem" : undefined,
           }}
-          className="max-w-[160px] whitespace-nowrap overflow-hidden text-ellipsis text-[#3D4C35] text-center"
+          className="max-w-[8.125rem] whitespace-nowrap overflow-hidden text-ellipsis text-[#3D4C35] text-center"
           title={bookclubName}
           onClick={() =>
             navigate(bookclubId ? `/bookclub/${bookclubId}/home` : "/home")
@@ -407,9 +419,9 @@ const Sidebar = () => {
         {bookclubId && (
           <button
             onClick={() => navigate(`/home`)}
-            className="relative flex items-center mt-1 h-[2.125rem] w-[8rem] rounded border border-[#93C27C] bg-[#F1F8EF] cursor-pointer"
+            className="relative flex items-center mt-1 h-[2.125rem] w-[7rem] rounded border border-[#93C27C] bg-[#F1F8EF] cursor-pointer"
           >
-            <img src={exitIcon} alt="home" className="w-4 h-4 ml-7" />
+            <img src={exitIcon} alt="home" className="w-4 h-4 ml-5" />
             <span className="text-[0.85rem] text-[#3D4C35] font-medium ml-2">
               메인 홈
             </span>
@@ -420,31 +432,39 @@ const Sidebar = () => {
   );
 
   return (
-    <div className="flex w-[16.5rem] h-screen flex-col px-6 py-8 bg-[#E9F2E3]">
+    <div className="flex w-[16.5rem] h-screen flex-col px-6.5 py-8 bg-[#E9F2E3] ">
       {header}
-
-      <nav className="flex flex-col w-full overflow-y-auto space-y-2 mt-6 cursor-pointer">
+      <nav className="flex flex-col w-full overflow-y-auto space-y-2 mt-6">
         {menus.map((menu) => {
           const { name, path, submenus } = menu;
           const isMenuOpen = openMenus.has(name);
 
           return (
-            <div key={name} className="w-full cursor-pointer">
-              <div className="flex items-center justify-between">
+            <div key={name} className="w-full">
+              <div className="flex items-center justify-between w-full">
                 <NavLink
                   to={path ?? submenus[0]?.path ?? "#"}
-                  end
+                  end={!submenus || submenus.length === 0}
                   style={{ color: getMenuTextColor(menu) }}
-                  className={`flex items-center gap-3 py-2 pl-3 pr-4 w-full rounded-r-lg cursor-pointer hover:bg-[#DDEED6] ${
-                    isTopMenuActive(menu) ? "border-l-4 border-[#93C27C]" : ""
+                  className={`flex items-center gap-3 py-2 pl-3 pr-4 flex-1 rounded-r-lg hover:bg-[#DDEED6] cursor-pointer ${
+                    isMenuActive(menu, location.pathname)
+                      ? "border-l-4 border-[#93C27C]"
+                      : ""
                   }`}
-                  onClick={() => {
-                    if (submenus.length > 0) toggleMenu(name);
+                  onClick={(e) => {
+                    if (submenus.length > 0) {
+                      e.preventDefault();
+                      toggleMenu(name);
+                    }
                   }}
                 >
-                  <img src={getIconSrc(menu)} className="w-5 h-5" />
+                  <img
+                    src={getIconSrc(menu)}
+                    className="w-5 h-5 flex-shrink-0"
+                    alt=""
+                  />
                   <span
-                    className="text-[18px] font-medium whitespace-nowrap overflow-hidden text-ellipsis block w-[9rem]"
+                    className="text-[18px] font-medium whitespace-nowrap overflow-hidden text-ellipsis flex-1"
                     title={name}
                   >
                     {name}
@@ -454,16 +474,17 @@ const Sidebar = () => {
                 {submenus.length > 0 && (
                   <button
                     onClick={() => toggleMenu(name)}
-                    className="p-1 cursor-pointer"
+                    className="p-1 flex-shrink-0 cursor-pointer"
                   >
                     <img
-                      src={isMenuOpen ? toggleClose : toggleOpen}
+                      src={getToggleIcon(menu, isMenuOpen)}
                       alt="토글"
-                      className="w-4 h-4"
+                      className="w-4 h-4 cursor-pointer"
                     />
                   </button>
                 )}
               </div>
+
               <AnimatePresence>
                 {isMenuOpen && (
                   <motion.div
@@ -472,9 +493,9 @@ const Sidebar = () => {
                     animate={{ height: "auto", opacity: 1 }}
                     exit={{ height: 0, opacity: 0 }}
                     transition={{ duration: 0.3 }}
-                    className="overflow-hidden cursor-pointer"
+                    className="overflow-hidden"
                   >
-                    {renderSubmenus(submenus, 1, menu)}
+                    {renderSubmenus(submenus, 1)}
                   </motion.div>
                 )}
               </AnimatePresence>
@@ -485,7 +506,7 @@ const Sidebar = () => {
 
       <Modal
         isOpen={isModalOpen}
-        title={"추후 개발 예정입니다!"}
+        title={modalMessage}
         buttons={[{ label: "돌아가기", onClick: () => setIsModalOpen(false) }]}
         onBackdrop={() => setIsModalOpen(false)}
       />
