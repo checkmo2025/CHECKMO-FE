@@ -2,7 +2,6 @@ import { Link } from 'react-router-dom';
 import { useParams } from 'react-router-dom';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import AnnouncementCard from '../../components/BookClub/AnnouncementCard';
-import type { noticeListItemDto } from '../../types/clubNotice';
 import { useClubNotices } from '../../hooks/BookClub/useClubNotices';
 import Header from '../../components/Header';
 import BookStoryCard from '../../components/BookClub/BookStoryCard';
@@ -65,11 +64,6 @@ export default function BookClubHomePage(): React.ReactElement {
     onlyImportant: true,
     size: 5 
   });
-
-  // API 데이터에서 공지/투표만 필터링
-  const filteredNotices: noticeListItemDto[] = notices.filter((notice) =>
-    notice.tag === '공지' || notice.tag === '투표'
-  );
   // 책이야기 무한스크롤 (클럽 스코프)
   const { data: bookStoriesPages, fetchNextPage, hasNextPage, isFetchingNextPage, isLoading: isLoadingStories, isError: isErrorStories, error: errorStories } =
     useBookStoriesInfinite({ scope: 'CLUB', clubId: numericClubId });
@@ -100,10 +94,10 @@ export default function BookClubHomePage(): React.ReactElement {
         showManageButton={!!isStaff}
         manageLabel="모임 관리하기"
         manageTo={`/bookclub/${numericClubId}/admin`}
-        customClassName="mt-[30px]"
         />
+
       { /* ── 메인 컨텐츠 ── */}
-      <div className="overflow-y-auto h-[calc(100vh-80px)] w-full flex-1 pt-[57px] pl-[2px] pr-[30px] bg-[#FFFFFF]">
+      <div className="overflow-y-auto h-[calc(100vh-105px)] w-full flex-1 pt-[27px] pl-[2px] pr-[30px] bg-[#FFFFFF]">
         <div className="flex flex-col gap-[20px]">
           {/* ── 공지사항 섹션 ── */}
           <section className="w-full">
@@ -129,12 +123,12 @@ export default function BookClubHomePage(): React.ReactElement {
             )}
             
             {/* 공지사항 데이터 */}
-            {!loading && !error && filteredNotices.length > 0 && (
-              <AnnouncementCard items={filteredNotices} />
+            {!loading && !error && notices.length > 0 && (
+              <AnnouncementCard items={notices} />
             )}
             
             {/* 공지사항이 없는 경우 */}
-            {!loading && !error && filteredNotices.length === 0 && (
+            {!loading && !error && notices.length === 0 && (
               <div className="w-full h-[377px] flex items-center justify-center border-2 border-[#EAE5E2] rounded-[16px]">
                 <p className="text-[#969696]">아직 등록된 중요 공지사항이 없습니다.</p>
               </div>
