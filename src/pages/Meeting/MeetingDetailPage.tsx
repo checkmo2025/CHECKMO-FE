@@ -62,7 +62,7 @@ const MeetingDetailPage = () => {
   })();
 
   return (
-    <div className="mx-auto px-10">
+    <div className="mx-auto px-10 mb-10">
       <NonProfileHeader title={meetingInfo.title} />
       <section className="space-y-10">
         <div className="relative min-w-[700px]">
@@ -96,8 +96,8 @@ const MeetingDetailPage = () => {
             previews={topics.slice(0, 4)}
             onMoreClick={handleMoreTopics}
           />
+          {(topics.length === 0) && <hr className="h-[1px] bg-[#EAE5E2] border-0" />}
         </div>
-        <hr className="h-[1px] bg-[#EAE5E2] border-0" />
 
         {displayTeams.map((team) => (
           <div key={team.teamNumber} className="min-w-[700px]">
@@ -106,7 +106,7 @@ const MeetingDetailPage = () => {
               topics={(team.topics ?? []).slice(0, 4)}
               onViewAllClick={() => handleViewAllTeamTopics(team)}
             />
-            <hr className="h-[1px] bg-[#EAE5E2] border-0" />
+            {(team.topics.length === 0) && <hr className="h-[1px] bg-[#EAE5E2] border-0" />}
           </div>
         ))}
       </section>
