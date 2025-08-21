@@ -19,6 +19,12 @@ const ProfilePage = () => {
     const isLoggedIn = Boolean(localStorage.getItem("nickname"));
     const blockedPaths = ["/", "/signup", "/profile"];
 
+    //  /profile 주소 직접 접근 차단
+    if (location.pathname === "/profile") {
+      navigate("/", { replace: true });
+      return;
+    }
+
     if (isLoggedIn && blockedPaths.includes(location.pathname)) {
       (async () => {
         try {
@@ -356,7 +362,7 @@ const ProfilePage = () => {
                 {/* 소개 */}
                 <div className="mb-5">
                   <label className="block mb-1 text-[#2C2C2C] font-semibold">
-                    소개
+                    소개 (20자 이내)
                   </label>
                   <input
                     type="text"
