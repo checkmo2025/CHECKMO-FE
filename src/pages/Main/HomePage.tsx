@@ -112,7 +112,10 @@ export default function HomePage() {
 
   return (
     <main className="w-full px-[42px] max-lg:px-4">
-      <div ref={scrollContainerRef} className="h-screen overflow-y-auto">
+      <div
+        ref={scrollContainerRef}
+        className="h-screen overflow-y-auto scrollbar-hide"
+      >
         <div className="sticky top-0 z-10 bg-white pt-[30px]">
           <Header pageTitle="책모 홈" customClassName="!mt-0 !pl-0" />
         </div>
