@@ -31,7 +31,7 @@ const TeamButtonListComponent = ({
                 }
                 onSelect(teamNumber);
               }}
-              className={`px-4 py-1.5 border-2 text-xs rounded-xl whitespace-nowrap ${isSelected
+              className={`px-4 py-1.5 border-2 text-xs rounded-xl whitespace-nowrap cursor-pointer ${isSelected
                 ? "border-[#90D26D] bg-[#90D26D] text-white"
                 : "border-[#90D26D]  bg-[#EFF5ED] text-[#3D4C35]"
                 }`}

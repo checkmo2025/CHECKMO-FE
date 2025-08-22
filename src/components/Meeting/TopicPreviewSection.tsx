@@ -25,7 +25,7 @@ const TopicPreviewSectionComponent = ({
         {onMoreClick && (
           <button
             onClick={onMoreClick}
-            className="text-sm text-gray-500 hover:underline"
+            className="text-sm text-gray-500 hover:underline cursor-pointer"
           >
             더보기
           </button>
