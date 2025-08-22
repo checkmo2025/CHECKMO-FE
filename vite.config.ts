@@ -1,27 +1,17 @@
-import { defineConfig, loadEnv } from "vite";
+import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
 import tailwindcss from "@tailwindcss/vite";
 
-export default defineConfig(({ mode }) => {
-  const env = loadEnv(mode, process.cwd(), "");
-
+export default defineConfig(() => {
   return {
     plugins: [react(), tailwindcss()],
-    server: {
-      proxy: {
-        "/api": {
-          target: env.VITE_API_URL,
-          changeOrigin: true,
-          secure: false,
-        },
-      },
-    },
-    preview: {
-      proxy: {
-        "/api": {
-          target: env.VITE_API_URL,
-          changeOrigin: true,
-          secure: false,
+    build: {
+      rollupOptions: {
+        output: {
+          manualChunks: {
+            react: ["react", "react-dom"],
+            vendor: ["axios", "date-fns"],
+          },
         },
       },
     },
