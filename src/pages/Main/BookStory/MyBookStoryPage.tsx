@@ -66,84 +66,73 @@ export default function MyBookStoryPage() {
   ];
 
   return (
-    <div className="w-full">
-      <div className="h-screen overflow-y-auto scrollbar-hide bg-[#FFFFFF]">
-        <div className="sticky top-0 z-10 bg-white pt-[30px]">
-          <Header
-            pageTitle={`${userNickname}님의 책 이야기`}
-            customClassName="pl-4"
-          />
-        </div>
-        <div className="max-w-7xl mx-auto px-20">
-          <div className="flex justify-between items-center mb-6 mt-[30px]">
-            <button
-              className="flex items-center gap-2 px-4 py-2 rounded-full bg-[#A6917D] text-white text-sm font-medium cursor-pointer"
-              onClick={() => navigate("/bookstory/search")}
-            >
-              <Pencil size={16} /> 책 이야기
-            </button>
-            <div className="flex gap-2">
-              <button
-                className="cursor-pointer"
-                onClick={() => setViewMode("grid")}
-              >
-                <LayoutGrid
-                  size={20}
-                  className={
-                    viewMode === "grid" ? "text-black" : "text-gray-400"
-                  }
-                />
-              </button>
-              <button
-                className="cursor-pointer"
-                onClick={() => setViewMode("list")}
-              >
-                <List
-                  size={20}
-                  className={
-                    viewMode === "list" ? "text-black" : "text-gray-400"
-                  }
-                />
-              </button>
-            </div>
-          </div>
-
-          <div
-            className={`pb-10 ${
-              viewMode === "grid"
-                ? "grid grid-cols-1 xl:grid-cols-2 gap-6"
-                : "flex flex-col items-center gap-6 w-full"
-            }`}
+    <div className="absolute left-[315px] right-[42px] opacity-100 max-xl:static max-xl:w-full">
+      <Header
+        pageTitle={`${userNickname}님의 책 이야기`}
+        customClassName="pl-4"
+      />
+      <div className="overflow-y-auto h-[calc(100vh-80px)] w-full flex-1 pt-[30px] px-[18px] bg-[#FFFFFF]">
+        <div className="flex justify-between items-center mb-6 px-2">
+          <button
+            className="flex items-center gap-2 px-4 py-2 rounded-full bg-[#A6917D] text-white text-sm font-medium cursor-pointer"
+            onClick={() => navigate("/bookstory/search")}
           >
-            {loading ? (
-              <div>로딩 중...</div>
-            ) : stories.length > 0 ? (
-              stories.map((story) => (
-                <MyBookStoryCard
-                  key={story.bookStoryId}
-                  profileUrl={story.authorInfo.profileImageUrl}
-                  userName={story.authorInfo.nickname}
-                  imageUrl={story.bookInfo.imgUrl}
-                  title={story.bookStoryTitle}
-                  summary={story.description}
-                  bookTitle={story.bookInfo.title}
-                  author={story.bookInfo.author}
-                  onEdit={() =>
-                    navigate(`/bookstory/${story.bookStoryId}/edit`)
-                  }
-                  onDelete={() => {
-                    setSelectedStoryId(story.bookStoryId);
-                    setIsModalOpen(true);
-                  }}
-                  onClick={() =>
-                    navigate(`/bookstory/${story.bookStoryId}/detail`)
-                  }
-                />
-              ))
-            ) : (
-              <div>책 이야기가 없습니다.</div>
-            )}
+            <Pencil size={16} /> 책 이야기
+          </button>
+          <div className="flex gap-2">
+            <button
+              className="cursor-pointer"
+              onClick={() => setViewMode("grid")}
+            >
+              <LayoutGrid
+                size={20}
+                className={viewMode === "grid" ? "text-black" : "text-gray-400"}
+              />
+            </button>
+            <button
+              className="cursor-pointer"
+              onClick={() => setViewMode("list")}
+            >
+              <List
+                size={20}
+                className={viewMode === "list" ? "text-black" : "text-gray-400"}
+              />
+            </button>
           </div>
+        </div>
+        <div
+          className={`px-2 pb-10 ${
+            viewMode === "grid"
+              ? "grid grid-cols-1 xl:grid-cols-2 gap-6"
+              : "flex flex-col items-center gap-6 w-full"
+          }`}
+        >
+          {loading ? (
+            <div>로딩 중...</div>
+          ) : stories.length > 0 ? (
+            stories.map((story) => (
+              <MyBookStoryCard
+                key={story.bookStoryId}
+                profileUrl={story.authorInfo.profileImageUrl}
+                userName={story.authorInfo.nickname}
+                imageUrl={story.bookInfo.imgUrl}
+                title={story.bookStoryTitle}
+                summary={story.description}
+                bookTitle={story.bookInfo.title}
+                author={story.bookInfo.author}
+                onEdit={() => navigate(`/bookstory/${story.bookStoryId}/edit`)}
+                onDelete={() => {
+                  setSelectedStoryId(story.bookStoryId);
+                  setIsModalOpen(true);
+                }}
+                onClick={() =>
+                  navigate(`/bookstory/${story.bookStoryId}/detail`)
+                }
+              />
+            ))
+          ) : (
+            <div>책 이야기가 없습니다.</div>
+          )}
         </div>
       </div>
 
