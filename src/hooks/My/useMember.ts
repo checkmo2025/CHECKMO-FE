@@ -20,6 +20,7 @@ import type {
   NotificationResponse,
 } from "../../types/My/member";
 import { QK } from "../useHeader";
+import type { NotificationPreviewItem } from "../../types/header";
 
 /* -------------------- 마이홈 전용 QK -------------------- */
  const QK_MY_HOME = {
@@ -124,10 +125,19 @@ export const useReadNotification = () => {
   const qc = useQueryClient();
   return useMutation<void, Error, number>({
     mutationFn: (id) => readNotification(id),
-    onSuccess: () => {
-      // 읽음 처리 후 알림 목록 새로고침
-      qc.invalidateQueries({ queryKey: [QK_MY_HOME.notifications] });
+    onSuccess: async (_, id) => {
+      // 1. 알림 페이지 invalidate (cursorId 붙은 쿼리까지 다 포함)
+      qc.invalidateQueries({ queryKey: [QK_MY_HOME.notifications], exact: false });
+
+      // 2. 헤더 알림 캐시에서 해당 알림 직접 업데이트
+      qc.setQueryData<NotificationPreviewItem[]>(QK.notiPreview(5), (old) =>
+        old ? old.map((n) =>
+          n.notificationId === id ? { ...n, read: true } : n
+        ) : old
+      );
+
+      // 3. 헤더도 서버 최신으로 갱신
+      qc.invalidateQueries({ queryKey: QK.notiPreview(5), exact:true });
     },
   });
 };
-  

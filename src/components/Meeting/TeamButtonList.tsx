@@ -1,35 +1,40 @@
 import { memo } from "react";
 
 interface TeamButtonListProps {
-  selectedTeams: number[];
+  teamNumbers: number[],
+  selectedTeamNumbers: number[];
+  onSelect: (teamId: number) => void;
+  disabled: boolean
 }
 
-const TeamButtonListComponent = ({ selectedTeams }: TeamButtonListProps) => {
+const TeamButtonListComponent = ({
+  teamNumbers,
+  selectedTeamNumbers,
+  onSelect,
+  disabled
+}: TeamButtonListProps) => {
   const getTeamName = (num: number) => `${String.fromCharCode(64 + num)}조`;
-  const allTeams = Array.from({ length: 26 }, (_, i) => i + 1);
+  // const allTeams = Array.from({ length: teamCnt }, (_, i) => i + 1);
 
   return (
-    <div className="flex overflow-x-auto space-x-1 flex-shrink-0 ml-2 w-[230px] hide-scrollbar-container">
-      <style>{`
-        .hide-scrollbar-container {
-          -ms-overflow-style: none;
-          scrollbar-width: none;
-        }
-        .hide-scrollbar-container::-webkit-scrollbar {
-          display: none;
-        }
-      `}</style>
+    <div className="flex overflow-x-auto space-x-1 flex-shrink-0 ml-2 max-w-[230px]">
       <div className="flex space-x-1">
-        {allTeams.map((teamNumber) => {
-          const isSelected = selectedTeams.includes(teamNumber);
+        {teamNumbers.map((teamNumber) => {
+          const isSelected = selectedTeamNumbers.includes(teamNumber);
           return (
             <button
               key={teamNumber}
-              className={`px-4 py-1.5 border-2 text-xs rounded-xl whitespace-nowrap ${
-                isSelected
-                  ? "border-[#90D26D] bg-[#90D26D] text-white"
-                  : "border-[#90D26D]  bg-[#EFF5ED] text-[#3D4C35]"
-              }`}
+              onClick={(e) => {
+                if (disabled) {
+                  e.preventDefault();
+                  return;
+                }
+                onSelect(teamNumber);
+              }}
+              className={`px-4 py-1.5 border-2 text-xs rounded-xl whitespace-nowrap ${isSelected
+                ? "border-[#90D26D] bg-[#90D26D] text-white"
+                : "border-[#90D26D]  bg-[#EFF5ED] text-[#3D4C35]"
+                }`}
             >
               {getTeamName(teamNumber)}
             </button>

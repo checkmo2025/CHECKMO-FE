@@ -1,14 +1,21 @@
 import { memo } from "react";
+
 import type { Topic } from "../../types/clubMeeting";
 import { TopicPreviewCard } from "./TopicPreviewCard";
 
 interface TopicPreviewSectionProps {
   previews: Topic[];
+  meetingId?: number;
+  listOfTeams: number[];
+  onUpdateSuccess?: (message: string) => void;
   onMoreClick?: () => void;
 }
 
 const TopicPreviewSectionComponent = ({
   previews,
+  meetingId,
+  listOfTeams,
+  onUpdateSuccess,
   onMoreClick,
 }: TopicPreviewSectionProps) => {
   return (
@@ -26,7 +33,13 @@ const TopicPreviewSectionComponent = ({
       </div>
       <ul className="space-y-3">
         {previews.map((preview) => (
-          <TopicPreviewCard key={preview.topicId} preview={preview} />
+          <TopicPreviewCard
+            key={preview.topicId}
+            preview={preview}
+            meetingId={meetingId}
+            listOfTeams={listOfTeams}
+            onUpdateSuccess={onUpdateSuccess}
+          />
         ))}
       </ul>
     </section>

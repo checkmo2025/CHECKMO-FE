@@ -41,7 +41,7 @@ const BookClubAdminPage = () => {
           <span className="ml-1 text-[var(--Gray-1,#2C2C2C)] font-['Pretendard'] text-[24px] font-bold leading-[135%]">관리하기</span>
           
         </div>
-        <button className="flex ml-4 text-sm text-gray-500 underline"
+        <button className="flex ml-4 text-sm text-gray-500 underline mt-1 cursor-pointer hover:text-gray-700"
           onClick={() => navigate(`/bookclub/${bookclubId}/edit`)}>
             독서모임 편집
         </button>

@@ -35,8 +35,8 @@ const Header = ({
   // 프로필
   const { data: me, isPending: profilePending } = useMyProfileQuery();
 
-  // 알림 5개 불러오기
-  const { notifications, notiLoading } = useHeaderData(5);
+  // 알림 (항상 최대 5개 유지)
+  const { notifications, notiLoading, markAsRead } = useHeaderData(5);
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const modalRef = useRef<HTMLDivElement>(null);
@@ -67,8 +67,9 @@ const Header = ({
     return `${n.senderNickname ?? ""} 님이 ${action}`;
   };
 
-  // 알림 클릭 시 notificationType 기준 redirect 처리
+  // 알림 클릭 시 → 읽음 처리 후 redirect
   const handleNotificationClick = (n: NotificationPreviewItem) => {
+    markAsRead(n.notificationId); // 읽음 처리
     if (n.redirectPath) {
       navigate(n.redirectPath);
       setIsModalOpen(false);
@@ -77,10 +78,12 @@ const Header = ({
 
   return (
     <header
-      className={`${
-        customClassName ??
-        "fixed left-[264px] right-0 top-3 h-[56px] lg:px-13 px-4 md:px-8 "
-      } bg-white flex justify-between items-center z-50`}
+      className={`
+        w-full
+        mt-[30px] pb-[30px] bg-white flex justify-between items-center
+        border-b border-gray-200
+        ${customClassName ?? ""}
+      `}
     >
       {/* 타이틀 + 관리 버튼 */}
       <div className="flex items-center gap-3">
@@ -105,7 +108,7 @@ const Header = ({
           <FaBell size={32} color="#90D26D" />
           {!notiLoading && unreadCount > 0 && (
             <span className="absolute -top-1 -right-1 min-w-[18px] h-[18px] px-[4px] rounded-full text-[11px] bg-[#90D26D] text-white flex items-center justify-center cursor-pointer">
-              {unreadCount}
+              {unreadCount >= 5 ? "5+" : unreadCount}
             </span>
           )}
         </button>
@@ -149,7 +152,7 @@ const Header = ({
         {/* 프로필 */}
         <div
           onClick={() => navigate("/mypage")}
-          className="flex gap-2 md:gap-3 items-center min-w-0 cursor-pointer"
+          className="flex gap-2 md:gap-3 items-center min-w-0 cursor-pointer rounded-[8px] hover:bg-[#EEEEEE] px-3 py-2"
         >
           <div className="w-10 h-10 rounded-full shrink-0 overflow-hidden bg-white flex items-center justify-center">
             {me?.profileImageUrl ? (

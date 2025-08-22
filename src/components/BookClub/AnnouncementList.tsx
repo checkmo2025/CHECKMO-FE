@@ -32,14 +32,13 @@ export default function AnnouncementList({
   };
 
   return (
-    <div className="space-y-[12px] mx-auto">
+    <div className="space-y-[12px] mx-auto w-full max-w-[1700px] px-4 sm:px-5">
       {items.map(item => (
         <div
           key={item.id}
           onClick={() => handleItemClick(item)}
           className="
-            w-[1138px] h-[204px]
-            mx-3
+            w-full md:min-h-[204px] min-h-[180px]
             relative flex items-start
             bg-white border-[2px] border-[#EAE5E2] rounded-[16px]
             cursor-pointer
@@ -51,30 +50,30 @@ export default function AnnouncementList({
             <img
               src={item.meetingInfoDTO.bookInfo.imgUrl}
               alt="notice thumbnail"
-              className="w-[128px] h-[164px] ml-[21.5px] mt-[20px] rounded-lg object-cover"
+              className="hidden sm:block sm:w-[128px] sm:h-[164px] ml-4 sm:ml-[21.5px] mt-4 sm:mt-[20px] rounded-lg object-cover"
             />
           ) : (
-            <div className="w-[128px] h-[164px] ml-[21.5px] mt-[20px] rounded-lg flex items-center justify-center overflow-hidden bg-white">
+            <div className="hidden sm:flex sm:w-[128px] sm:h-[164px] ml-4 sm:ml-[21.5px] mt-4 sm:mt-[20px] rounded-lg items-center justify-center overflow-hidden bg-white">
               <img
                 src={logoImage}
                 alt="logo"
-                className="w-[128px] h-[164px] object-contain"
+                className="w-full h-full object-contain"
               />
             </div>
           )}
 
           {/* 오른쪽: 내용 */}
-          <div className="ml-[29px] mt-[23px] w-[883px] h-[158px]">
+          <div className="ml-4 sm:ml-[29px] mt-4 sm:mt-[23px] flex-1 min-w-0">
             {/* 제목 */}
-            <div className="flex items-center">
+            <div className="flex items-center min-w-0">
               <img src={vector} alt="icon" className="w-[24px] h-[24px]" />
-              <p className="ml-[13px] font-pretendard font-medium text-[18px] leading-[135%] tracking-[-0.1%] text-[#000000]">
+              <p className="ml-[13px] font-medium text-[16px] sm:text-[18px] text-[#000000] line-clamp-2">
                 {item.title}
               </p>
             </div>
 
             {/* 본문 */}
-            <div className="mt-[18px] space-y-[5px] font-pretendard font-medium text-[14px] leading-[145%] tracking-[-0.1%] text-[#8D8D8D]">
+            <div className="mt-[12px] sm:mt-[18px] space-y-[5px] font-medium text-[13px] sm:text-[14px] text-[#8D8D8D]">
               {item.tag === '모임' && item.meetingInfoDTO && (
                 <>
                   <p>
@@ -89,7 +88,7 @@ export default function AnnouncementList({
                       })()
                     }
                   </p>
-                  <p>
+                  <p className="line-clamp-2">
                     다음 모임 책: {item.meetingInfoDTO.bookInfo?.title} | {item.meetingInfoDTO.bookInfo?.author}
                   </p>
                 </>
@@ -97,9 +96,9 @@ export default function AnnouncementList({
 
               {item.tag === '투표' && (
                 <>
-                  <p className="whitespace-pre-line">{item.content}</p>
+                  <p className="whitespace-pre-line line-clamp-2">{item.content}</p>
                   {Array.isArray(item.items) && item.items.length > 0 && (
-                    <div className="mt-[8px] text-[13px] text-[#8D8D8D]">
+                    <div className="mt-[8px] text-[12px] sm:text-[13px] text-[#8D8D8D]">
                       {item.items.slice(0, 3).map((opt: voteItemDto, i: number) => (
                         <span key={`${opt.item}-${i}`} className="mr-2">• {opt.item}</span>
                       ))}
@@ -110,7 +109,7 @@ export default function AnnouncementList({
 
               {item.tag === '공지' && item.content && (
                 <>
-                  <p className="whitespace-pre-line">
+                  <p className="whitespace-pre-line line-clamp-2">
                     {item.content}
                   </p>
                 </>
@@ -122,11 +121,10 @@ export default function AnnouncementList({
           <span
             className={`
               absolute top-[23px] right-[21.5px]
-              inline-flex items-center justify-center
-              w-[52px] h-[22px]
+              hidden lg:inline-flex items-center justify-center
+              w-[44px] h-[20px] sm:w-[52px] sm:h-[22px]
               rounded-[15px]
-              font-pretendard text-[12px] font-[600]
-              leading-[145%] tracking-[-0.1%]
+              text-[11px] sm:text-[12px] font-[600]
               text-white whitespace-nowrap
               ${item.tag === '모임' ? 'bg-[#90D26D]' :
                 item.tag === '투표' ? 'bg-[#FF8045]' :
@@ -150,11 +148,11 @@ export default function AnnouncementList({
                 }
               }}
               className="
-                absolute bottom-[63px] right-[21.5px]
-                w-[105px] h-[35px]
+                hidden lg:block absolute sm:bottom-[63px] bottom-[56px] right-[21.5px]
+                w-[88px] h-[32px] sm:w-[105px] sm:h-[35px]
                 border-2 border-[#EAE5E2]
                 rounded-[16px]
-                font-medium text-[12px]
+                font-medium text-[11px] sm:text-[12px]
                 text-[#8D8D8D]
                 bg-white
                 whitespace-nowrap
@@ -177,12 +175,11 @@ export default function AnnouncementList({
               handleItemClick(item);
             }}
             className="
-              absolute bottom-[23px] right-[21.5px]
-              w-[105px] h-[35px]
+              hidden lg:block absolute bottom-[23px] right-[21.5px]
+              w-[96px] h-[32px] sm:w-[105px] sm:h-[35px]
               bg-[#A6917D]
               rounded-[16px]
-              font-pretendard font-medium text-[12px]
-              leading-[145%] tracking-[-0.1%] 
+              font-medium text-[12px]
               text-white
               whitespace-nowrap
               cursor-pointer

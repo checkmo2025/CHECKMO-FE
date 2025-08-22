@@ -14,7 +14,7 @@ export default function   ShelfHomePage() {
 
   const [Cursor, setCursor]  = useState<number | null | undefined>(null);
   const [Generation, setGeneration] = useState<number | undefined>(undefined);
-  const [maxGeneration, setMaxGeneration] = useState<number>(0);
+  const [maxGeneration, setMaxGeneration] = useState<number>(1);
 
   const Req : ShelfHomeRequest = {
       clubId: Number(bookclubId), 
@@ -58,21 +58,20 @@ export default function   ShelfHomePage() {
     const el = loadMoreRef.current;
     if (el) observer.observe(el);
     return () => observer.disconnect();
-  }, [hasNext, isLoading, nextCursor]);
+  }, [hasNext, isLoading, nextCursor, ShelfList]);
 
   if ( isError ) return <p className="text-red-500">Error: {error?.message}</p>;
-
   return (
     <div className="flex h-screen">
-      {/* 메인 컨텐츠 자리 */}
-      <div className="">
-        {/* 헤더 자리 */}
-        <Header pageTitle={'책장'} 
-          customClassName="px-10 mt-[30px]"
-        />
+      <div className="w-full">
+        <div className = "mx-10">
+          <Header
+            pageTitle={"책장"}
+            customClassName=""
+          />
+        </div>
   
-        <div className="pt-[54px] flex flex-col">
-          {/* 타이틀과 기수 */}
+        <div className="pt-[24px] flex flex-col">
           <div className="px-10 flex items-center justify-between w-full h-[24px]">
             <h1 className="font-[Pretendard] font-medium text-[18px] leading-[135%]">독서 목록</h1>
 
@@ -104,10 +103,22 @@ export default function   ShelfHomePage() {
                           absolute top-1/2 right-[12px] -translate-y-1/2"/>
            </div>
           </div>
-          {/* 책장 리스트 */}
-          <div className="pt-[18px] grid grid-cols-1 gap-x-1 gap-y-2 lg:grid-cols-2 lg:gap-x-2 lg:gap-y-4 xl:grid-cols-3 lg:gap-x-3 lg:gap-y-6 content-start overflow-y-auto h-[calc(100vh-171px)] overscroll-none px-10"  style={{ msOverflowStyle: 'none', scrollbarWidth: 'none' }}>
-                {ShelfList.map((Shelf) => (
-              <Link key={Shelf.meetingInfo.meetingId} to={`${location.pathname}/${Shelf.meetingInfo.meetingId}`} className="flex h-[260px] p-[20px] items-center gap-[20px] rounded-2xl border-2 border-[var(--sub-color-2-brown,#EAE5E2)] bg-[var(--White,#FFF)] hover:shadow-lg hover:scale-[1.03] transition-shadow block">
+          {!ShelfList || ShelfList.length === 0 ? (
+            <div className="flex flex-col w-full h-[120px] px-10">
+              <p className="mt-20 text-[#969696] text-center">책장이 비어있습니다.</p>
+            </div>
+          ) : (
+            /* 책장: 목록 있을 때만 그리드/무한스크롤 포함 */
+            <div
+              className="pt-[18px] grid grid-cols-1 gap-x-1 gap-y-2 lg:grid-cols-2 lg:gap-x-2 lg:gap-y-4 xl:grid-cols-3 lg:gap-x-3 lg:gap-y-6 content-start overflow-y-auto h-[calc(100vh-171px)] overscroll-none px-10"
+              style={{ msOverflowStyle: "none", scrollbarWidth: "none" }}
+            >
+              {ShelfList.map((Shelf) => (
+                <Link
+                  key={Shelf.meetingInfo.meetingId}
+                  to={`${location.pathname}/${Shelf.meetingInfo.meetingId}`}
+                  className="flex h-[260px] p-[20px] items-center gap-[20px] rounded-2xl border-2 border-[var(--sub-color-2-brown,#EAE5E2)] bg-[var(--White,#FFF)] ransition-transform duration-300  hover:shadow-lg hover:scale-[1.03] transition-shadow block"
+                >
                   {/* 왼쪽 */}
                   <div className="w-[156px] flex-shrink-0 h-full rounded-2xl overflow-hidden bg-gray-200">
                     <img
@@ -117,76 +128,96 @@ export default function   ShelfHomePage() {
                     />
                   </div>
 
-                {/* 오른쪽: 남은 공간을 모두 차지 */}
-                <div className="flex flex-col h-full flex-1 min-h-0 overflow-hidden">
-
-                  {/* 1) 제목 */}
-                  <p className="flex-1 min-w-0 flex-none h-[17px] text-[14px] font-[Pretendard] font-semibold  leading-[135%] text-[var(--Gray1,#2C2C2C)] truncate ">
-                    {Shelf.bookInfo.title}
-                  </p>
-                  {/* 2) 저자 · 번역자 */}
-                  <p className="flex-1 min-w-0 flex-none h-[17px] text-[12px] text-[#8D8D8D] font-[Pretendard] font-medium leading-[145%] truncate ">
-                    {Shelf.bookInfo.author} 지음
-                  </p>
-                  {/* 3) term, tag  (10px 아래 여백) */}
-                  <div className="flex mt-[10px] gap-2 ">
-                    <p className=" h-6 w-[54px] text-[12px] rounded-full bg-[#90D26D] flex items-center justify-center text-white">
-                      {Shelf.meetingInfo.generation}기
+                  {/* 오른쪽 */}
+                  <div className="flex flex-col h-full flex-1 min-h-0 overflow-hidden">
+                    {/* 제목 */}
+                    <p className="flex-1 min-w-0 flex-none h-[17px] text-[14px] font-[Pretendard] font-semibold leading-[135%] text-[var(--Gray1,#2C2C2C)] truncate">
+                      {Shelf.bookInfo.title}
                     </p>
-                    <p className="flex-shrink-0 h-6 px-3 min-w-[54px] text-[12px] rounded-full bg-[#90D26D] flex items-center justify-center text-[12px]  text-white">
-                      {Shelf.meetingInfo.tag}
+                    {/* 저자 */}
+                    <p className="flex-1 min-w-0 flex-none h-[17px] text-[12px] text-[#8D8D8D] font-[Pretendard] font-medium leading-[145%] truncate">
+                      {Shelf.bookInfo.author} 지음
                     </p>
-                  </div>
 
-                {/* 링크 3개 */}
-                <div className="mt-[24px] flex flex-col">
-                  <Link to={`${location.pathname}/${Shelf.meetingInfo.meetingId}/topic`} state={{ bookTitle: Shelf.bookInfo.title }} className="block" onClick={(e) => { e.stopPropagation();}}>
-                    <div className=" w-[128px] h-[24px] border-b-[1px] border-[var(--sub-color-2-brown,#EAE5E2)] flex items-center justify-between">
-                      <span className="text-[12px] font-[Pretendard] font-medium leading-[145%] text-[#2C2C2C] items-center">
-                        발제</span>
-                      <img src="/assets/바로가기.svg" className="w-[24px] h-[24px]"/>
+                    {/* 기수, 태그 */}
+                    <div className="flex mt-[10px] gap-2">
+                      <p className="h-6 w-[54px] text-[12px] rounded-full bg-[#90D26D] flex items-center justify-center text-white">
+                        {Shelf.meetingInfo.generation}기
+                      </p>
+                      <p className="flex-shrink-0 h-6 px-3 min-w-[54px] text-[12px] rounded-full bg-[#90D26D] flex items-center justify-center text-white">
+                        {Shelf.meetingInfo.tag}
+                      </p>
                     </div>
-                  </Link>
-                  <div  className="block">
-                    <Link to={`${location.pathname}/${Shelf.meetingInfo.meetingId}/score`} state={{ bookTitle: Shelf.bookInfo.title }} className="block" onClick={(e) => { e.stopPropagation();}}>
-                      <div className=" w-[128px] h-[24px] border-b-[1px] border-[var(--sub-color-2-brown,#EAE5E2)] flex items-center justify-between">
-                      <span className="text-[12px] font-[Pretendard] font-medium leading-[145%] text-[#2C2C2C] items-center">
-                        한줄평</span>
-                      <img src="/assets/바로가기.svg" className="w-[24px] h-[24px]"/>
-                    </div>
-                    </Link>
-                  </div>
-                  <div className="w-[128px] h-[24px] border-b-[1px] border-[var(--sub-color-2-brown,#EAE5E2)] flex items-center justify-between"
-                  onClick={(e) => {
-                    setIsModalOpen(true);
-                    e.preventDefault();    
-                    e.stopPropagation();  
-                  }}>
-                  <span className="text-[12px] font-[Pretendard] font-medium leading-[145%] text-[#2C2C2C] items-center">
-                    독서 후 활동
-                  </span>
-                  <img src="/assets/바로가기.svg" className="w-[24px] h-[24px]" />
-                </div>
-                </div>
-                  {/* 7) 평점별 별 아이콘 */}
-                  <div className="mt-[20px] flex items-center">
-                    {Array.from({ length: 5 }).map((_, i) => {
-                      const src = getStarIcon(Shelf.meetingInfo.averageRate, i);
-                      return <img key={i} src={src} alt="star" className="w-[24px] h-[24px]" />;
-                    })}
-                  </div>
-                </div>
 
-            </Link>
-            ))}
-            
-            {isLoading && <div className = "font-[Pretendard] font-semibold text-[16px] text-[#8D8D8D]">추가 불러오는 중…</div>}
-            <div ref={loadMoreRef} style={{ height: 1 }} />
-            <div className ="h-20"></div>
-            {Array.from({ length: 2 }).map((_, i) => (
-              <div key={`spacer-${i}`} className="invisible h-0"></div>
-            ))}
-          </div>
+                    {/* 링크 3개 */}
+                    <div className="mt-[24px] flex flex-col">
+                      <Link
+                        to={`${location.pathname}/${Shelf.meetingInfo.meetingId}/topic`}
+                        state={{ bookTitle: Shelf.bookInfo.title }}
+                        className="block"
+                        onClick={(e) => e.stopPropagation()}
+                      >
+                        <div className="w-[128px] h-[24px] border-b-[1px] border-[var(--sub-color-2-brown,#EAE5E2)] flex items-center justify-between">
+                          <span className="text-[12px] font-[Pretendard] font-medium leading-[145%] text-[#2C2C2C]">
+                            발제
+                          </span>
+                          <img src="/assets/바로가기.svg" className="w-[24px] h-[24px]" />
+                        </div>
+                      </Link>
+
+                      <Link
+                        to={`${location.pathname}/${Shelf.meetingInfo.meetingId}/score`}
+                        state={{ bookTitle: Shelf.bookInfo.title }}
+                        className="block"
+                        onClick={(e) => e.stopPropagation()}
+                      >
+                        <div className="w-[128px] h-[24px] border-b-[1px] border-[var(--sub-color-2-brown,#EAE5E2)] flex items-center justify-between">
+                          <span className="text-[12px] font-[Pretendard] font-medium leading-[145%] text-[#2C2C2C]">
+                            한줄평
+                          </span>
+                          <img src="/assets/바로가기.svg" className="w-[24px] h-[24px]" />
+                        </div>
+                      </Link>
+
+                      <div
+                        className="w-[128px] h-[24px] border-b-[1px] border-[var(--sub-color-2-brown,#EAE5E2)] flex items-center justify-between"
+                        onClick={(e) => {
+                          setIsModalOpen(true);
+                          e.preventDefault();
+                          e.stopPropagation();
+                        }}
+                      >
+                        <span className="text-[12px] font-[Pretendard] font-medium leading-[145%] text-[#2C2C2C]">
+                          독서 후 활동
+                        </span>
+                        <img src="/assets/바로가기.svg" className="w-[24px] h-[24px]" />
+                      </div>
+                    </div>
+
+                    <div className="mt-[20px] flex items-center">
+                      {Array.from({ length: 5 }).map((_, i) => {
+                        const src = getStarIcon(Shelf.meetingInfo.averageRate, i)
+                        return <img key={i} src={src} alt="star" className="w-[24px] h-[24px]" />
+                      })}
+                    </div>
+                  </div>
+                </Link>
+              ))}
+
+              {isLoading && (
+                <div className="font-[Pretendard] font-semibold text-[16px] text-[#8D8D8D]">
+                  추가 불러오는 중…
+                </div>
+              )}
+              <div ref={loadMoreRef} style={{ height: 1 }} />
+              <div className="h-20"></div>
+              {Array.from({ length: 2 }).map((_, i) => (
+                <div key={`spacer-${i}`} className="invisible h-0"></div>
+              ))}
+            </div>
+          )}
+
+
           <Modal isOpen={isModalOpen} title={"독서 후 활동은 개발 예정입니다!"} buttons={[
             {
               label: '돌아가기',

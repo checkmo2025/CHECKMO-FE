@@ -17,7 +17,6 @@ export default function BookStoryWritePage() {
 
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
-  // const [loading, setLoading] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   const handleAddStory = async () => {
@@ -61,12 +60,12 @@ export default function BookStoryWritePage() {
       className="absolute left-[315px] right-[42px] top-0 bottom-0 flex flex-col opacity-100"
       style={{ maxWidth: "1080px", margin: "0 auto" }}
     >
-      <Header pageTitle="책 이야기" customClassName="mt-[30px]" />
+      <Header pageTitle="책 이야기" />
 
-      <main className="overflow-y-auto flex-grow pt-[30px] px-0">
+      <main className="overflow-y-auto flex-grow px-0">
         <div className="max-w-full mx-auto p-0 space-y-8 text-gray-900">
-          {/* 책 정보 */}
-          <section className="relative flex items-start gap-6 p-6 border border-[#EAE5E2] rounded-xl bg-white">
+          {/* 책 정보 - 수정된 부분 */}
+          <section className="flex items-start gap-6 p-6 border border-[#EAE5E2] rounded-xl bg-white">
             <div className="w-28 h-36 rounded-lg bg-gray-200 flex-shrink-0">
               {book.imgUrl ? (
                 <img
@@ -88,12 +87,12 @@ export default function BookStoryWritePage() {
               <div className="text-xs text-gray-500 mt-1 mb-2">
                 {book.author} | {book.publisher}
               </div>
-              <p className="mt-2 text-xs leading-relaxed text-gray-800 whitespace-pre-line pr-28">
+              <p className="mt-2 text-xs leading-relaxed text-gray-800 whitespace-pre-line">
                 {book.description}
               </p>
             </div>
 
-            <div className="flex flex-col gap-2 absolute top-6 right-6 items-center">
+            <div className="flex flex-col gap-2 items-center ml-auto flex-shrink-0">
               <button className="rounded-[1rem] bg-[#A6917D] px-3 py-1.5 text-xs font-semibold text-white cursor-default select-none w-[6rem]">
                 선택됨
               </button>
@@ -128,7 +127,7 @@ export default function BookStoryWritePage() {
               </button>
               <button
                 onClick={handleAddStory}
-                className="rounded-[1rem] bg-[#A6917D] px-6 py-2 text-sm font-semibold text-white hover:bg-beige-600 w-[6.5625rem]"
+                className="rounded-[1rem] bg-[#A6917D] px-6 py-2 text-sm font-semibold text-white hover:bg-beige-600 w-[6.5625rem] cursor-pointer"
               >
                 등록
               </button>

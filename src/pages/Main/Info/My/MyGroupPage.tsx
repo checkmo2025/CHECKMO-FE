@@ -1,8 +1,9 @@
-import { useState } from "react";
+import { useState, useRef, useCallback } from "react";
 import MyPageHeader from "../../../../components/MyPageHeader";
 import { useNavigate } from "react-router-dom";
 import Modal from "../../../../components/Modal"; 
-import { useMyClubsQuery, useLeaveClub } from "../../../../hooks/My/useMember";
+import { useLeaveClub } from "../../../../hooks/My/useMember";
+import { useMyClubsInfinite } from "../../../../hooks/My/useClubsInfinite"; 
 import type { ClubItem } from "../../../../types/My/member";
 
 const MyGroupPage = () => {
@@ -15,8 +16,38 @@ const MyGroupPage = () => {
   const [isLeaving, setIsLeaving] = useState(false);
   const navigate = useNavigate();
 
-  const { data, isFetching, isError, refetch } = useMyClubsQuery(null);
+  // 무한 스크롤 쿼리
+  const {
+    data,
+    isFetchingNextPage,
+    fetchNextPage,
+    hasNextPage,
+    isError,
+  } = useMyClubsInfinite();
+
   const leaveClubMutation = useLeaveClub();
+
+  // IntersectionObserver Ref (타입 수정)
+  const observerRef = useRef<IntersectionObserver | null>(null);
+
+  const lastElementRef = useCallback(
+    (node: HTMLDivElement | null) => {
+      if (isFetchingNextPage) return;
+
+      if (observerRef.current) {
+        observerRef.current.disconnect();
+      }
+
+      observerRef.current = new IntersectionObserver((entries) => {
+        if (entries[0].isIntersecting && hasNextPage) {
+          fetchNextPage();
+        }
+      });
+
+      if (node) observerRef.current.observe(node);
+    },
+    [isFetchingNextPage, fetchNextPage, hasNextPage]
+  );
 
   const handleGroupClick = (id: number) => {
     navigate(`/bookclub/${id}/home`);
@@ -32,7 +63,6 @@ const MyGroupPage = () => {
         setSelectedGroupId(null);
         setShowConfirmModal(false);
         setShowResultModal(true);
-        refetch();
       },
       onError: (error: any) => {
         setIsLeaving(false);
@@ -43,23 +73,17 @@ const MyGroupPage = () => {
         const message = error?.response?.data?.message;
         const status = error?.response?.status;
 
-        // 기존 CLUB_4019 처리
         if (code === "CLUB_4019") {
           setErrorMessage(message || "운영진은 클럽을 탈퇴할 수 없습니다.");
-        }
-        // 추가된 상태 코드 처리
-        else if (status === 400) {
+        } else if (status === 400) {
           setErrorMessage(message || "잘못된 요청입니다.");
         } else if (status === 403) {
           setErrorMessage(message || "본인만 탈퇴할 수 있습니다.");
         } else if (status === 404) {
           setErrorMessage(message || "존재하지 않는 독서 모임입니다.");
-        }
-        // 그 외 기본 처리
-        else {
+        } else {
           setErrorMessage(message || "탈퇴에 실패했습니다.");
         }
-
         setShowErrorModal(true);
       },
     });
@@ -76,7 +100,9 @@ const MyGroupPage = () => {
     return <div className="p-6 text-red-500">모임 목록을 불러오는데 실패했습니다.</div>;
   }
 
-  const clubList = data?.clubList ?? [];
+  // page 타입 지정
+  const clubList =
+    data?.pages.flatMap((page: { clubList: ClubItem[] }) => page.clubList) ?? [];
 
   return (
     <div className="flex w-full h-screen bg-[#FAFAFA] overflow-hidden">
@@ -85,49 +111,47 @@ const MyGroupPage = () => {
       <div className="flex-1 flex flex-col pt-[96px] overflow-hidden">
         <main className="flex-1 overflow-y-auto">
           <div className="px-4 md:px-10 py-8 flex flex-col items-center min-h-full">
-            {/* case1: 모임이 없을 때 → 중앙에 표시 */}
-            {!isFetching && clubList.length === 0 ? (
+            {/* case1: 모임이 없을 때 */}
+            {clubList.length === 0 ? (
               <div className="flex flex-1 items-center justify-center">
-                <p className="text-gray-400">더 이상 모임이 없습니다.</p>
+                <p className="text-gray-400">모임이 없습니다.</p>
               </div>
             ) : (
-              /* 모임 목록 */
               <div className="w-full space-y-4 flex flex-col">
-                {clubList.map((group: ClubItem) => {
+                {clubList.map((group: ClubItem, idx: number) => {
                   const imgUrl = getImageUrl(group.profileImageUrl);
                   const isErrorImage = errorImages[group.clubId] || !imgUrl;
+                  const isLast = idx === clubList.length - 1;
 
                   return (
                     <div
                       key={group.clubId}
+                      ref={isLast ? lastElementRef : null} // 마지막 요소에 observer 연결
                       className="w-full flex flex-col md:flex-row justify-between bg-white border border-[#EAE5E2] rounded-[16px] px-4 md:px-6 py-4 shadow-sm cursor-pointer transition-transform duration-300 transform hover:shadow-lg hover:scale-105"
                       onClick={() => handleGroupClick(group.clubId)}
                     >
                       <div className="flex gap-4 md:gap-6">
                         <div className="bg-gray-200 rounded-[16px] overflow-hidden w-[80px] h-[100px] md:w-[119px] md:h-[119px] flex-shrink-0 flex items-center justify-center">
-                          {!isErrorImage ? (
-                            <img
-                              src={imgUrl!}
-                              alt={group.name}
-                              className="w-full h-full object-cover"
-                              onError={() =>
-                                setErrorImages((prev) => ({ ...prev, [group.clubId]: true }))
-                              }
-                            />
-                          ) : (
-                            <div className="w-full h-full flex items-center justify-center text-gray-400 text-sm">
-                              No Image
-                            </div>
-                          )}
+                          <img
+                            src={
+                              !isErrorImage
+                                ? imgUrl!
+                                : "/assets/basic_bookclub_image.png"
+                            }
+                            alt={group.name}
+                            className="w-full h-full object-cover"
+                            loading="lazy" 
+                            onError={(e) => {
+                              e.currentTarget.src = "/assets/basic_bookclub_image.png"; 
+                              setErrorImages((prev) => ({ ...prev, [group.clubId]: true }));
+                            }}
+                          />
                         </div>
 
                         <div className="flex flex-col justify-between">
                           <div>
                             <div className="flex gap-2 mb-2 md:mb-3">
-                              <span className="min-w-[48px] md:min-w-[54px] h-[22px] md:h-[24px] rounded-[15px] bg-[#90D26D] text-white text-[12px] md:text-[13px] flex items-center justify-center px-2">
-                                7기
-                              </span>
-                              {group.category.map((cat, idx) => (
+                              {group.category.map((cat: string, idx: number) => (
                                 <span
                                   key={idx}
                                   className="min-w-[48px] md:min-w-[54px] h-[22px] md:h-[24px] rounded-[15px] bg-[#90D26D] text-white text-[12px] md:text-[13px] flex items-center justify-center px-2"
@@ -155,7 +179,7 @@ const MyGroupPage = () => {
                           }}
                           disabled={isLeaving}
                           className={`text-[#5C5C5C] border border-[#EAE5E2] rounded-full w-[90px] md:w-[105px] h-[32px] md:h-[35px] text-sm mt-auto 
-                            ${isLeaving ? "opacity-50 cursor-not-allowed" : "hover:bg-[#90D26D] hover:text-white"}`}
+                            ${isLeaving ? "opacity-50 cursor-not-allowed" : "hover:bg-[#90D26D] hover:text-white cursor-pointer"}`}
                         >
                           탈퇴하기
                         </button>
@@ -164,12 +188,11 @@ const MyGroupPage = () => {
                   );
                 })}
 
-                {isFetching && (
+                {isFetchingNextPage && (
                   <p className="text-center text-gray-400">불러오는 중...</p>
                 )}
 
-                {/* case2: 모임이 있을 때 > 끝에 표시 */}
-                {!isFetching && clubList.length > 0 && (
+                {!hasNextPage && (
                   <div className="w-full mt-4 flex justify-center">
                     <p className="text-gray-400">더 이상 모임이 없습니다.</p>
                   </div>
@@ -180,11 +203,12 @@ const MyGroupPage = () => {
         </main>
       </div>
 
-      {/* 탈퇴 확인 모달 */}
+      {/* 모달들 */}
       <Modal
         isOpen={showConfirmModal}
         title="정말 탈퇴 하시겠습니까?"
         buttons={[
+          { label: "탈퇴", onClick: confirmLeaveGroup, variant: "danger" },
           {
             label: "취소",
             onClick: () => {
@@ -193,11 +217,6 @@ const MyGroupPage = () => {
             },
             variant: "outline",
           },
-          {
-            label: "탈퇴",
-            onClick: confirmLeaveGroup,
-            variant: "danger",
-          },
         ]}
         onBackdrop={() => {
           setShowConfirmModal(false);
@@ -205,31 +224,17 @@ const MyGroupPage = () => {
         }}
       />
 
-      {/* 결과 모달 */}
       <Modal
         isOpen={showResultModal}
         title="탈퇴되었습니다."
-        buttons={[
-          {
-            label: "확인",
-            onClick: () => setShowResultModal(false),
-            variant: "primary",
-          },
-        ]}
+        buttons={[{ label: "확인", onClick: () => setShowResultModal(false), variant: "primary" }]}
         onBackdrop={() => setShowResultModal(false)}
       />
 
-      {/* 에러 모달 */}
       <Modal
         isOpen={showErrorModal}
         title={errorMessage}
-        buttons={[
-          {
-            label: "확인",
-            onClick: () => setShowErrorModal(false),
-            variant: "primary",
-          },
-        ]}
+        buttons={[{ label: "확인", onClick: () => setShowErrorModal(false), variant: "primary" }]}
         onBackdrop={() => setShowErrorModal(false)}
       />
     </div>

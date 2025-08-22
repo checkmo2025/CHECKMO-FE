@@ -1,17 +1,21 @@
 import { useParams, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
-import { Trash2, Edit2, AlertCircle, Check, X } from "lucide-react";
+import { Trash2, Edit2, Check, X } from "lucide-react";
 import backIcon from "../../../assets/icons/backIcon.png";
 import { axiosInstance } from "../../../apis/axiosInstance";
 import type { BookStoryResponseDto } from "../../../types/bookStories";
-import likeIcon from "../../../assets/icons/heart_empty.png";
-import likedIcon from "../../../assets/icons/heart_filled.png";
+import likeIcon from "../../../assets/icons/heartEmpty.png";
+import likedIcon from "../../../assets/icons/heartFilled.png";
 import {
   deleteBookStory,
   updateBookStory,
   toggleBookStoryLike,
 } from "../../../apis/BookStory/bookstories";
+import { toggleUserSubscription } from "../../../apis/User/user";
 import Modal, { type ModalButton } from "../../../components/Modal";
+import noProfileImage from "../../../assets/images/userImage.png";
+import checkerImage from "../../../assets/images/checker.png";
+import reportIcon from "../../../assets/icons/report3.png";
 
 export default function BookStoryDetailPage() {
   const { storyId } = useParams<{ storyId: string }>();
@@ -28,6 +32,8 @@ export default function BookStoryDetailPage() {
   const [liked, setLiked] = useState(false);
   const [likeCount, setLikeCount] = useState(0);
 
+  const [isSubscribed, setIsSubscribed] = useState(false);
+
   useEffect(() => {
     if (!storyId) return;
 
@@ -38,11 +44,13 @@ export default function BookStoryDetailPage() {
         const data: BookStoryResponseDto = await axiosInstance.get(
           `/book-stories/${storyId}`
         );
+        console.log(data);
 
         setStory(data);
         setEditDescription(data.description);
         setLiked(data.likedByMe);
         setLikeCount(data.likes);
+        setIsSubscribed(data.authorInfo.following);
       } catch (err: any) {
         console.error(err);
         setError("책 이야기 조회에 실패했습니다.");
@@ -107,6 +115,17 @@ export default function BookStoryDetailPage() {
     }
   };
 
+  const handleToggleSubscription = async () => {
+    if (!authorInfo?.nickname) return;
+    try {
+      await toggleUserSubscription(authorInfo.nickname, isSubscribed);
+      setIsSubscribed((prev) => !prev);
+    } catch (err) {
+      console.error("구독 처리에 실패했습니다.", err);
+      alert("구독 처리에 실패했습니다.");
+    }
+  };
+
   const modalButtons: ModalButton[] = [
     {
       label: "삭제하기",
@@ -128,64 +147,83 @@ export default function BookStoryDetailPage() {
           className="flex items-center gap-2 text-lg font-semibold mb-4"
           type="button"
         >
-          <img src={backIcon} alt="뒤로가기" className="w-5 h-5" />
+          <img
+            src={backIcon}
+            alt="뒤로가기"
+            className="w-5 h-5 cursor-pointer"
+          />
           {bookStoryTitle}
         </button>
       </div>
 
-      <div className="pl-10 mt-12 max-w-5xl mx-auto">
-        <div className="flex items-center gap-2 mb-6">
+      <div className="pl-4 mt-12 max-w-5xl mx-auto">
+        {/* 프로필 영역 그대로 유지 */}
+        <div
+          className="flex items-center gap-2 w-fit cursor-pointer p-1 rounded-lg transition-colors duration-300 hover:bg-[#EEE] mb-6"
+          onClick={() => {
+            if (isMyStory) {
+              navigate("/mypage/myprofile");
+            } else {
+              navigate(`/info/others/${authorInfo.nickname}`);
+            }
+          }}
+        >
           <img
-            src={authorInfo.profileImageUrl}
+            src={authorInfo.profileImageUrl || noProfileImage}
             alt={authorInfo.nickname}
             className="w-10 h-10 rounded-full"
           />
-          <span className="text-base font-semibold">{authorInfo.nickname}</span>
+          <span className="text-base font-semibold pr-1">
+            {authorInfo.nickname}
+          </span>
         </div>
 
-        <div className="flex gap-8">
-          <div className="w-64 h-80 rounded-xl bg-gray-200 overflow-hidden">
-            {bookInfo.imgUrl ? (
-              <img
-                src={bookInfo.imgUrl}
-                alt={bookInfo.title}
-                className="w-full h-full object-cover rounded-xl"
-              />
-            ) : (
-              <div className="w-full h-full flex items-center justify-center text-gray-400">
-                이미지 없음
-              </div>
-            )}
+        <div className="flex flex-col sm:flex-row gap-8">
+          <div className="w-full sm:w-64 h-80 rounded-xl bg-gray-200 overflow-hidden flex-shrink-0">
+            <img
+              src={bookInfo.imgUrl || checkerImage}
+              alt={bookInfo.title}
+              className="w-full h-full object-cover rounded-xl"
+            />
           </div>
 
           <div className="flex flex-col flex-1 h-80">
+            {/* 제목 + 버튼 한 줄 */}
+            <div className="flex items-center justify-between mb-4">
+              <h1 className="text-2xl font-semibold">{bookStoryTitle}</h1>
+              {!isMyStory && (
+                <button
+                  onClick={handleToggleSubscription}
+                  className={`w-[4.6rem] h-[2rem] px-4 py-1.5 rounded-full text-sm font-semibold transition-colors duration-200 cursor-pointer ${
+                    isSubscribed
+                      ? "bg-[#A6917D] text-white hover:bg-[#8c7a69]"
+                      : "bg-white text-[#A6917D] border border-[#A6917D] hover:bg-[#A6917D] hover:text-white"
+                  }`}
+                >
+                  {isSubscribed ? "구독 중" : "구독"}
+                </button>
+              )}
+            </div>
+
             {isEditing ? (
-              <>
-                <h1 className="text-2xl font-semibold mb-4">
-                  {bookStoryTitle}
-                </h1>
-                <textarea
-                  className="flex-1 p-2 border border-gray-300 rounded"
-                  value={editDescription}
-                  onChange={(e) => setEditDescription(e.target.value)}
-                />
-              </>
+              <textarea
+                className="flex-1 p-2 border border-gray-300 rounded"
+                value={editDescription}
+                onChange={(e) => setEditDescription(e.target.value)}
+              />
             ) : (
-              <>
-                <h1 className="text-2xl font-semibold mb-4">
-                  {bookStoryTitle}
-                </h1>
-                <p className="text-sm leading-relaxed whitespace-pre-line mb-6">
-                  {description}
-                </p>
-              </>
+              <p className="text-sm leading-relaxed whitespace-pre-line mb-6">
+                {description}
+              </p>
             )}
+
             <div className="flex-grow" />
 
-            <div className="flex items-center justify-between text-gray-400 text-xs">
-              <div>
+            <div className="flex flex-col items-end text-gray-400 text-xs gap-[1rem]">
+              <div className="text-right">
                 도서 : {bookInfo.title} | {bookInfo.author}
               </div>
+
               <div className="flex items-center gap-4">
                 {isMyStory ? (
                   <>
@@ -209,12 +247,14 @@ export default function BookStoryDetailPage() {
                         <button
                           className="cursor-pointer"
                           onClick={() => setIsModalOpen(true)}
+                          style={{ color: "#A6917D" }}
                         >
                           <Trash2 size={16} />
                         </button>
                         <button
                           className="cursor-pointer"
                           onClick={() => setIsEditing(true)}
+                          style={{ color: "#A6917D" }}
                         >
                           <Edit2 size={16} />
                         </button>
@@ -224,18 +264,22 @@ export default function BookStoryDetailPage() {
                 ) : (
                   <>
                     <div
-                      className="flex items-center gap-1 text-sm text-gray-600 cursor-pointer"
+                      className="flex items-center gap-1 sm:gap-2 text-sm text-gray-600 cursor-pointer"
                       onClick={handleLike}
                     >
                       <img
                         src={liked ? likedIcon : likeIcon}
                         alt="좋아요"
-                        className="w-[19px] h-[]19px] cursor-pointer"
+                        className="w-4 h-4 sm:w-5 sm:h-5 cursor-pointer"
                       />
                       <span>{likeCount}</span>
                     </div>
                     <button>
-                      <AlertCircle size={16} />
+                      <img
+                        src={reportIcon}
+                        alt="신고"
+                        className="w-4 h-4 sm:w-5 sm:h-5"
+                      />
                     </button>
                   </>
                 )}

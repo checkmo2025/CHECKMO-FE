@@ -1,7 +1,9 @@
 // src/pages/BookClub/CreateClubPage.tsx
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { ChipToggleGroup } from '../../components/CreateClub/ChipToggleGroup';
 import Header from '../../components/Header';
+import Modal from '../../components/Modal';
 import { useCreateClub } from '../../hooks/useCreateClub';
 import { useUploadImage } from '../../hooks/useUploadImage';
 import { useClubNameValidation } from '../../hooks/useClubNameValidation';
@@ -27,6 +29,7 @@ const getParticipantKey = (participantName: string): string => {
 };
 
 export default function CreateClubPage(): React.ReactElement {
+  const navigate = useNavigate();
   // React Query hooks
   const createClubMutation = useCreateClub();
   const uploadImageMutation = useUploadImage();
@@ -42,6 +45,16 @@ export default function CreateClubPage(): React.ReactElement {
   const [kakao, setKakao] = useState('');
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
   const [imageFile, setImageFile] = useState<File | null>(null);
+
+  // 공통 모달 상태
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [modalMessage, setModalMessage] = useState<string>('');
+  const [modalAfterAction, setModalAfterAction] = useState<null | (() => void)>(null);
+  const openModal = (message: string, afterAction: null | (() => void) = null) => {
+    setModalMessage(message);
+    setModalAfterAction(() => afterAction);
+    setIsModalOpen(true);
+  };
 
   // 중복검사 훅
   const { isValidating, isAvailable, isDuplicate, error, checkClubName, hasManualCheck, resetValidation } = useClubNameValidation();
@@ -64,35 +77,35 @@ export default function CreateClubPage(): React.ReactElement {
   // 클럽 생성 핸들러
   const handleCreateClub = async () => {
     if (!clubName.trim()) {
-      alert('모임 이름을 입력해주세요.');
+      openModal('모임 이름을 입력해주세요.');
       return;
     }
     if (!hasManualCheck) {
-      alert('중복확인 버튼을 눌러 모임 이름을 확인해주세요.');
+      openModal('중복확인 버튼을 눌러 모임 이름을 확인해주세요.');
       return;
     }
     if (isDuplicate === true) {
-      alert('이미 존재하는 모임 이름입니다. 다른 이름을 입력해주세요.');
+      openModal('이미 존재하는 모임 이름입니다. 다른 이름을 입력해주세요.');
       return;
     }
     if (isValidating) {
-      alert('모임 이름을 확인 중입니다. 잠시 후 다시 시도해주세요.');
+      openModal('모임 이름을 확인 중입니다. 잠시 후 다시 시도해주세요.');
       return;
     }
     if (!clubDescription.trim()) {
-      alert('모임 소개글을 입력해주세요.');
+      openModal('모임 소개글을 입력해주세요.');
       return;
     }
     if (visibility === null) {
-      alert('공개/비공개 여부를 선택해주세요.');
+      openModal('공개/비공개 여부를 선택해주세요.');
       return;
     }
     if (selectedCategories.length === 0) {
-      alert('선호하는 독서 카테고리를 선택해주세요.');
+      openModal('선호하는 독서 카테고리를 선택해주세요.');
       return;
     }
     if (selectedParticipants.length === 0) {
-      alert('모임 참여 대상을 선택해주세요.');
+      openModal('모임 참여 대상을 선택해주세요.');
       return;
     }
 
@@ -104,6 +117,7 @@ export default function CreateClubPage(): React.ReactElement {
       try {
         profileImageUrl = await uploadImageMutation.mutateAsync(imageFile);
       } catch (error) {
+        openModal('이미지 업로드에 실패했습니다. 잠시 후 다시 시도해주세요.');
         return;
       }
     }
@@ -120,17 +134,34 @@ export default function CreateClubPage(): React.ReactElement {
       kakao: kakao || undefined,
     };
 
-    createClubMutation.mutate(clubData);
+    createClubMutation.mutate(clubData, {
+      onSuccess: () => {
+        openModal('모임이 성공적으로 생성되었습니다!', () => {
+          navigate('/searchClub');
+        });
+      },
+      onError: (err: any) => {
+        if (err?.response?.status === 400) {
+          openModal('입력 값이 유효하지 않습니다.');
+        } else {
+          openModal('모임 생성에 실패했습니다. 다시 시도해주세요.');
+        }
+      },
+    });
   };
 
   return (
-    <div className="absolute left-[315px] right-[42px] opacity-100">
-      <Header
-        pageTitle="모임 생성하기"
-        customClassName="mt-[30px]"
-      />
+    <>
+    <main className="w-full px-[42px]">
+      <div className="sticky top-0 z-10 bg-[#FFFFFF] pt-[30px]">
+        <Header
+          pageTitle="모임 생성하기"
+          customClassName="!mt-0"
+        />
+      </div>
 
-      <div className="mt-[15px] flex flex-col items-center overflow-y-auto h-[calc(100vh-90px)] w-full pb-[80px]">
+      <div className="w-full flex-1 bg-[#FFFFFF]">
+        <div className="mt-[15px] flex flex-col items-center w-full pb-[80px]">
         {/* 모임 이름 */}
         <div className="mt-[36px]">
           <label className=" font-medium text-[18px]">
@@ -380,7 +411,27 @@ export default function CreateClubPage(): React.ReactElement {
 
         {/* 하단 여백 */}
         <div className="h-[20px]"></div>
+        </div>
       </div>
-    </div>
+    </main>
+    {/* 알림 모달 */}
+    <Modal
+      isOpen={isModalOpen}
+      title={modalMessage}
+      buttons={[{
+        label: '확인',
+        onClick: () => {
+          setIsModalOpen(false);
+          if (modalAfterAction) modalAfterAction();
+          setModalAfterAction(null);
+        },
+        variant: 'primary'
+      }]}
+      onBackdrop={() => {
+        setIsModalOpen(false);
+        setModalAfterAction(null);
+      }}
+    />
+    </>
   );
-}
+};

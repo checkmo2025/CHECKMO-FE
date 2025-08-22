@@ -91,7 +91,7 @@ export default function NoticeCreateVoteComponent({ formRef }: Props) {
           ))}
 
           {visibleCount < 5 && (
-            <button type="button" onClick={addItem} className="flex items-center justify-center w-full flex h-16 bg-[var(--Gray7,#EEE)] rounded-2xl text-center font-pretendard text-[18px] font-medium leading-[135%] text-[var(--Gray-1,#2C2C2C)]">+ 항목 추가 </button>
+            <button type="button" onClick={addItem} className="flex items-center justify-center w-full flex h-16 bg-[var(--Gray7,#EEE)] rounded-2xl text-center font-pretendard text-[18px] font-medium leading-[135%] text-[var(--Gray-1,#2C2C2C)] cursor-pointer hover:bg-[#DDD]">+ 항목 추가 </button>
           )}
       </div>
 

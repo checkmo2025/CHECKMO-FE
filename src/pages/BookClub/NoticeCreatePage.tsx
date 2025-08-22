@@ -163,7 +163,7 @@ export default function NoticeCreatePage() {
                 type="button"
                 onClick={() => setType('poll')}
                 aria-pressed={type === 'poll'}
-                className={`h-[24px] w-[54px] rounded-full text-[12px] font-semibold transition ${
+                className={`h-[24px] w-[54px] rounded-full text-[12px] font-semibold transition cursor-pointer ${
                   type === 'poll'
                     ? 'bg-[#FF8A3D] text-white shadow-sm hover:opacity-90'
                     : 'bg-neutral-200 text-neutral-700 hover:bg-neutral-300'
@@ -175,7 +175,7 @@ export default function NoticeCreatePage() {
                 type="button"
                 onClick={() => setType('notice')}
                 aria-pressed={type === 'notice'}
-                className={`h-[24px] w-[54px]  rounded-full text-[12px] font-semibold transition ${
+                className={`h-[24px] w-[54px]  rounded-full text-[12px] font-semibold transition cursor-pointer ${
                   type === 'notice'
                     ? 'bg-[#FFC648] text-white shadow-sm hover:opacity-90'
                     : 'bg-neutral-200 text-neutral-700 hover:bg-neutral-300'
@@ -203,14 +203,14 @@ export default function NoticeCreatePage() {
             <div className="flex justify-end gap-3">
               <button
                 type="submit"
-                className="inline-flex items-center justify-center w-[105px] h-[35px] text-[#6B6661] text-[14px] font-semibold rounded-full border-2 border-[#BFAB96] hover:bg-[#F4F2F1] active:bg-[#ECE8E4]"
+                className="inline-flex items-center justify-center w-[105px] h-[35px] text-[#6B6661] text-[14px] font-semibold rounded-full border-2 border-[#BFAB96] hover:bg-[#F4F2F1] active:bg-[#ECE8E4] cursor-pointer"
                 onClick={handleSaveDraft}
               >
                 임시저장
               </button>
               <button
                 type="submit"
-                className="inline-flex items-center justify-center w-[105px] h-[35px] text-white text-[14px] font-semibold leading-[135%] rounded-full bg-[#A6917D] hover:brightness-95 active:brightness-90"
+                className="inline-flex items-center justify-center w-[105px] h-[35px] text-white text-[14px] font-semibold leading-[135%] rounded-full bg-[#A6917D] hover:brightness-95 active:brightness-90 cursor-pointer"
                 onClick={handleSubmit}
               >
                 등록

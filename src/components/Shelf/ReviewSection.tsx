@@ -16,6 +16,7 @@ import LongtermChatInput from '../LongtermChatInput';
 import { getStarIcon } from './getStarIcon';
 import StarSelector from '../BookRecommend/StarSelector';
 import Modal, { type ModalButton } from '../Modal';
+import { useNavigate } from 'react-router-dom';
 
 export default function ReviewSection({
   meetingId,
@@ -26,6 +27,7 @@ export default function ReviewSection({
   currentUser: { nickname: string; profileImageUrl: string };
   size: number;
 }) {
+  const navigate = useNavigate();
   const [newRating, setNewRating] = useState<number>(0);
   const [editRating, setEditRating] = useState<number>(0);
   const [ReviewList, setReviewList] = useState<ReviewItem[]>([]);
@@ -144,7 +146,7 @@ export default function ReviewSection({
       </span>
 
       {/* 등록 영역 */}
-      <div className="flex py-2 shadow rounded-2xl border-2 border-[var(--sub-color-2-brown,#EAE5E2)] w-full mb-3  hover:shadow-md">
+      <div className="flex py-2 shadow rounded-2xl border-2 border-[var(--sub-color-2-brown,#EAE5E2)] w-full mb-3  transition-transform duration-300 hover:shadow-md">
         <div className="flex items-center justify-between h-[48px] w-[270px] flex-none ml-[12px] mr-[34px]">
           <img
             src={currentUser.profileImageUrl}
@@ -173,7 +175,9 @@ export default function ReviewSection({
             key={review.bookReviewId}
             className="flex py-2 shadow rounded-2xl border-2 border-[var(--sub-color-2-brown,#EAE5E2)]  hover:shadow-md"
           >
-            <div className="flex items-center justify-between h-[48px] w-[270px] flex-none ml-[12px] mr-[34px]">
+            <div className="flex items-center justify-between h-[48px] w-[270px] flex-none ml-[12px] mr-[34px] cursor-pointer" onClick={() => {
+                    navigate(`/info/others/${review.authorInfo.nickname}`)
+                  }}>
               <img
                 src={
                   review.authorInfo.profileImageUrl ||

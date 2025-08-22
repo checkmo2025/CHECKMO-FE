@@ -17,7 +17,7 @@ export default function AnnouncementCard({
 }): React.ReactElement {
   return (
     <div className="overflow-x-auto py-[6px] px-[6px]">
-      <div className="flex gap-[24px] min-w-max">
+      <div className="flex gap-[24px] w-full md:min-w-max">
         {items.map((item, idx) => (
           <AnnouncementCardItem key={idx} item={item} />
         ))}
@@ -44,27 +44,24 @@ function AnnouncementCardItem({
   return (
     <div
       onClick={handleCardClick}
-      className="relative w-[312px] h-[377px] rounded-[16px] border-2 border-[#EAE5E2] py-[26px] px-[21.5px] flex flex-col overflow-hidden cursor-pointer select-none
+      className="relative w-full md:w-[312px] h-auto md:h-[380px] flex-shrink-0 rounded-[16px] border-2 border-[#EAE5E2] py-[26px] px-[21.5px] mb-[20px] flex flex-col overflow-hidden cursor-pointer select-none
       hover:bg-gray-50 hover:shadow-lg hover:scale-[1.03] transition-all duration-300 origin-center"
     >
       <div className="flex justify-between items-center">
         <div className="flex items-center">
-          <img src={vector} alt="icon" className="w-[24px] h-[21px]" />
+          <img src={vector} alt="icon" className="w-[24px] h-[24px]" />
           <h3
             className="
               ml-[13px]
-              font-pretendard
               font-medium
               text-[18px]
-              leading-[135%]
-              tracking-[-0.1%]
             "
           >
             {item.title}
           </h3>
         </div>
         <span
-          className={`inline-flex items-center justify-center w-[52px] h-[22px] opacity-100 rounded-[15px] text-[12px] text-[#FFFFFF] font-pretendard font-semibold leading-[145%] tracking-[-0.1%] whitespace-nowrap ${item.tag === "모임"
+          className={`inline-flex items-center justify-center w-[52px] h-[22px] opacity-100 rounded-[15px] text-[12px] text-[#FFFFFF] font-semibold whitespace-nowrap ${item.tag === "모임"
             ? "bg-[#90D26D]"
             : item.tag === "투표"
               ? "bg-[#FF8045]"
@@ -79,7 +76,7 @@ function AnnouncementCardItem({
 
       <div className="mt-[9px]">
         {item.tag === "모임" && item.meetingInfoDTO && (
-          <div className="font-pretendard font-normal text-[12px] leading-[145%] tracking-[-0.1%] text-[#000000] space-y-[4px]">
+          <div className="font-normal text-[12px] text-[#000000] space-y-[4px]">
             <p>
               다음 모임 날짜:{" "}
               {(() => {
@@ -91,12 +88,14 @@ function AnnouncementCardItem({
                 }
               })()}
             </p>
-            <p>다음 모임 책: {item.meetingInfoDTO.bookInfo?.title}</p>
-            <div className="absolute top-[80px] right-[24px]">
+            <p className="line-clamp-1">
+              다음 모임 책: {item.meetingInfoDTO.bookInfo?.title}
+            </p>
+            <div className="md:absolute md:top-[67px] md:right-[24px] self-end">
               <img src={arrow} alt="icon" className="w-[24px] h-[24px] -mt-3" />
             </div>
-            <div className="absolute bottom-[24.5px]">
-              <div className="relative w-[262px] h-[232px] bg-gray-100 rounded-lg overflow-hidden flex items-center justify-center">
+            <div className="md:absolute md:bottom-[24.5px] mt-[12px]">
+              <div className="relative md:w-[262px] md:h-[232px] w-full h-[200px] bg-gray-100 rounded-lg overflow-hidden flex items-center justify-center">
                 {item.meetingInfoDTO.bookInfo?.imgUrl ? (
                   <img
                     src={item.meetingInfoDTO.bookInfo.imgUrl}
@@ -112,14 +111,14 @@ function AnnouncementCardItem({
         )}
 
         {item.tag === "투표" && (
-          <div className="font-pretendard font-normal text-[12px] leading-[145%] tracking-[-0.1%] text-[#000000] space-y-[4px]">
+          <div className="font-normal text-[12px] text-[#000000] space-y-[4px]">
             <p className="mt-[24px] mb-[16px] whitespace-pre-line">
               {item.content}
             </p>
-            <div className="absolute top-[80px] right-[24px]">
+            <div className="md:absolute md:top-[67px] md:right-[24px] self-end">
               <img src={arrow} alt="icon" className="w-[24px] h-[24px] -mt-3" />
             </div>
-            <div className="w-[269px] h-[207px] mt-[46px] border-[2px] border-[#EAE5E2] rounded-[16px]">
+            <div className="w-full md:w-[269px] md:h-[207px] mt-[46px] border-[2px] border-[#EAE5E2] rounded-[16px]">
               <form className="mt-[14.5px]">
                 {item.items
                   ?.slice(0, 3)
@@ -129,14 +128,11 @@ function AnnouncementCardItem({
                       className="
                       ml-[22.5px]
                       flex items-center
-                      w-[224px] h-[46px]
+                      w-full md:w-[224px] h-[46px]
                       cursor-pointer
                       border-b-2 border-[#EAE5E2]
-                      font-pretendard
                       font-medium
                       text-[14px]
-                      leading-[145%]
-                      tracking-[-0.1%]
                       text-[#434343]
                     "
                     >
@@ -166,16 +162,13 @@ function AnnouncementCardItem({
                   type="button"
                   onClick={handleCardClick}
                   className="
-                  ml-[177.5px] mt-[16px]
+                  md:ml-[177.5px] self-end mt-[16px]
                   w-[69px] h-[24px]
                   bg-[#FF8045] 
                   text-white 
                   rounded-[15px]
-                  font-pretendard
                   font-semibold
                   text-[12px]
-                  leading-[145%]
-                  tracking-[-0.1%]                 
                   whitespace-nowrap
                   cursor-pointer
                 "
@@ -190,14 +183,9 @@ function AnnouncementCardItem({
         <div className="mt-[9px]">
           {item.tag === "공지" && (
             <div
-              className="   
-            font-normal           
-            text-[12px]           
-            text-[#000000]
-            space-y-[4px]    
-             "
+              className="font-normal text-[12px] text-[#000000] space-y-[4px]"
             >
-              <div className="absolute top-[80px] right-[24px]">
+              <div className="md:absolute md:top-[67px] md:right-[24px] self-end">
                 <img src={arrow} alt="icon" className="w-[24px] h-[24px] -mt-3" />
               </div>
               <p className="mt-[46px] font-normal text-[12px] whitespace-pre-line">

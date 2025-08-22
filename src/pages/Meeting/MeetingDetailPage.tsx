@@ -1,5 +1,6 @@
-import { useCallback } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { useCallback, useEffect } from "react";
+import { useNavigate, useParams, useNavigationType } from "react-router-dom";
+import { useQueryClient } from "@tanstack/react-query";
 import type { TeamTopic, Topic } from "../../types/clubMeeting";
 import { MeetingCard } from "../../components/Meeting/MeetingCard";
 import { TopicPreviewSection } from "../../components/Meeting/TopicPreviewSection";
@@ -10,7 +11,33 @@ import { useMeetingDetail } from "../../hooks/useClubMeeting";
 const MeetingDetailPage = () => {
   const navigate = useNavigate();
   const { meetingId } = useParams<{ meetingId: string }>();
-  const { data, isLoading, isError } = useMeetingDetail(Number(meetingId));
+  const { data, isLoading, isError, refetch } = useMeetingDetail(Number(meetingId));
+  const navigationType = useNavigationType();
+  const queryClient = useQueryClient();
+
+  useEffect(() => {
+    if (navigationType === 'POP') {
+      // 즉시 최신 데이터로 갱신
+      refetch();
+      // 목록/상세 캐시도 무효화하여 새로 고침 유도 (보조 안전장치)
+      if (meetingId) {
+        const mid = Number(meetingId);
+        queryClient.invalidateQueries({ queryKey: ["meeting", mid] });
+        queryClient.invalidateQueries({ queryKey: ["meetings"] });
+      }
+    }
+  }, [navigationType, refetch, meetingId, queryClient]);
+
+  useEffect(() => {
+    const handler = (e: PageTransitionEvent) => {
+      // bfcache에서 복원되거나, 단순히 페이지 표시될 때도 갱신
+      if (e.persisted || true) {
+        refetch();
+      }
+    };
+    window.addEventListener("pageshow", handler as any);
+    return () => window.removeEventListener("pageshow", handler as any);
+  }, [refetch]);
 
   const title = data?.meetingInfo.bookInfo?.title ?? "";
   const meetingTime = data?.meetingInfo?.meetingTime ?? "";
@@ -46,6 +73,8 @@ const MeetingDetailPage = () => {
 
   const { meetingInfo, teams, topics } = data;
 
+  const teamNumbers = teams?.map(t => t.teamNumber) ?? [];
+
   // 최소 2개의 팀 섹션이 보이도록! (A, B 조 형태)
   const displayTeams: TeamTopic[] = (() => {
     if (!teams || teams.length === 0) {
@@ -62,7 +91,7 @@ const MeetingDetailPage = () => {
   })();
 
   return (
-    <div className="mx-auto px-10">
+    <div className="mx-auto px-10 mb-10">
       <NonProfileHeader title={meetingInfo.title} />
       <section className="space-y-10">
         <div className="relative min-w-[700px]">
@@ -93,11 +122,12 @@ const MeetingDetailPage = () => {
 
         <div className="min-w-[700px]">
           <TopicPreviewSection
+            listOfTeams={teamNumbers}
             previews={topics.slice(0, 4)}
             onMoreClick={handleMoreTopics}
           />
+          {(topics.length === 0) && <hr className="h-[1px] bg-[#EAE5E2] border-0" />}
         </div>
-        <hr className="h-[1px] bg-[#EAE5E2] border-0" />
 
         {displayTeams.map((team) => (
           <div key={team.teamNumber} className="min-w-[700px]">
@@ -106,7 +136,7 @@ const MeetingDetailPage = () => {
               topics={(team.topics ?? []).slice(0, 4)}
               onViewAllClick={() => handleViewAllTeamTopics(team)}
             />
-            <hr className="h-[1px] bg-[#EAE5E2] border-0" />
+            {(team.topics.length === 0) && <hr className="h-[1px] bg-[#EAE5E2] border-0" />}
           </div>
         ))}
       </section>

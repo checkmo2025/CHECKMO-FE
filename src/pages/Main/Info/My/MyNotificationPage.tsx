@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef, useCallback } from "react"; 
+import { useNavigate } from "react-router-dom";
 import MyPageHeader from "../../../../components/MyPageHeader";
 import Modal from "../../../../components/Modal"; 
 import type { NotificationItem, NotificationResponse } from "../../../../types/My/member";
@@ -14,6 +15,8 @@ const MyNotificationPage = () => {
     open: false,
     message: "",
   });
+
+  const navigate = useNavigate();
 
   // 무한스크롤 상태
   const [cursorId, setCursorId] = useState<number | null>(null);
@@ -109,10 +112,16 @@ const MyNotificationPage = () => {
   );
 
   const handleNotificationClick = async (n: NotificationItem) => {
+    // 1. 먼저 이동
+    if (n.redirectPath) {
+      navigate(n.redirectPath);
+    }
+
+    // 2. 뒤에서 읽음 처리 (실패해도 무시)
     if (!n.read) {
       try {
         await readNotification(n.notificationId);
-        //  읽음 처리 후 다시 불러오기
+        // 새로고침하지 않고 읽음 상태만 최신화하고 싶으면 아래 fetch는 빼도 됨
         fetchNotifications(null, false);
       } catch (err) {
         console.error("알림 읽음 처리 실패:", err);
@@ -125,7 +134,7 @@ const MyNotificationPage = () => {
       case "LIKE":
         return `${item.senderNickname} 님이 내 책이야기에 좋아요를 눌렀습니다.`;
       case "FOLLOW":
-        return `${item.senderNickname} 님이 팔로잉을 시작했습니다.`;
+        return `${item.senderNickname} 님이 구독했습니다.`;
       case "JOIN_CLUB":
         return `${item.targetName}에 가입되셨습니다.`;
       default:
@@ -223,11 +232,7 @@ const MyNotificationPage = () => {
         isOpen={showSettingModal}
         title={
           <>
-            알림 설정
-            <br />
-            <span className="text-sm text-[#2C2C2C]">
-              알림 설정 기능은 추후 개발 예정입니다.
-            </span>
+            알림 설정은 추후 개발 예정입니다.
           </>
         }
         buttons={[

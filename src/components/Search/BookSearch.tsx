@@ -32,7 +32,7 @@ export default function BookSearch({
       setSearchBooks(booksOnPage!);
     } else {
       setSearchBooks((prev) => [...prev, ...booksOnPage!]);
-      console.log("추가된 책:", Searchbooks);
+
     }
   }, [booksOnPage, page]);
 
@@ -48,7 +48,7 @@ export default function BookSearch({
     const el = loadMoreRef.current;
     if (el) observer.observe(el);
     return () => observer.disconnect();
-  }, [hasNext, isFetching]);
+  }, [hasNext, isFetching, Searchbooks]);
 
   return (
     <div className=" flex flex-col flex-1">
@@ -90,7 +90,7 @@ export default function BookSearch({
         >
           {Searchbooks.map((SearchBook) => (
             <div key={SearchBook.isbn}>
-              <div className = "flex h-[215px] border-2 border-[var(--sub-color-2-brown,#EAE5E2)] rounded-2xl bg-[var(--White,#FFF)] shadow-sm  hover:shadow-lg hover:scale-[1.03]">
+              <div className = "min-w-[300px] flex h-[215px] border-2 border-[var(--sub-color-2-brown,#EAE5E2)] rounded-2xl bg-[var(--White,#FFF)] shadow-sm ransition-transform duration-300  hover:shadow-lg hover:scale-[1.03]">
                   {/* 좌측 */}
                 <div className="flex-1 flex p-[10px] gap-[20px]">
                   {/* 썸네일 */}
@@ -128,7 +128,7 @@ export default function BookSearch({
                     <button
                       key={i}
                       onClick={() => action.onClick(SearchBook)}
-                      className={` w-[105px] h-[35px] text-[12px] py-[5px] px-[12px] rounded-[16px] flex items-center justify-center font-[Pretendard] font-medium text-[12px] leading-[145%] ${
+                      className={` w-[105px] h-[35px] text-[12px] py-[5px] px-[12px] rounded-[16px] flex items-center justify-center font-[Pretendard] font-medium text-[12px] leading-[145%] cursor-pointer ${
                         action.className ?? ""
                       }`}
                     >

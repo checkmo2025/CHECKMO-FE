@@ -1,11 +1,13 @@
 import React, { useState } from "react";
 import checker from "../../assets/images/checker.png";
-import emptyHeartIcon from "../../assets/icons/heart_empty_bigger.png";
-import filledHeartIcon from "../../assets/icons/heart_filled_noLine.png";
+import emptyHeartIcon from "../../assets/icons/heartEmpty.png";
+import filledHeartIcon from "../../assets/icons/heartFilled.png";
 import sirenIcon from "../../assets/images/siren.png";
 import { toggleBookStoryLike } from "../../apis/BookStory/bookstories";
 import { followMember } from "../../apis/otherApi";
 import { unfollowMember } from "../../apis/My/memberApi";
+import defaultUserImage from '../../assets/images/userImage.png';
+import { useMyProfileQuery } from "../../hooks/My/useMember";
 
 export interface BookStoryCardProps {
   userImage: string;
@@ -33,7 +35,8 @@ export default function BookStoryCard({
   bookStoryId,
 }: BookStoryCardProps): React.ReactElement {
 
-  const avatar = userImage || "/default-avatar.png";
+  const avatar = userImage || defaultUserImage;
+  const isDefaultAvatar = !userImage;
   
   // 좋아요 상태 관리
   const [liked, setLiked] = useState(likedByMe);
@@ -43,6 +46,10 @@ export default function BookStoryCard({
   // 구독 상태 관리
   const [subscribed, setSubscribed] = useState(isSubscribed);
   const [subscribeLoading, setSubscribeLoading] = useState(false);
+
+  // 내 이야기 여부 판단
+  const { data: myProfile } = useMyProfileQuery();
+  const isMyStory = myProfile?.nickname === userName;
 
   // 좋아요 처리 함수
   const handleLike = async (e: React.MouseEvent) => {
@@ -113,12 +120,11 @@ export default function BookStoryCard({
                 <img
                   src={avatar}
                   alt={userName}
-                  className="w-[24px] h-[24px] rounded-full"
+                  className={`${isDefaultAvatar ? "w-[29px] h-[29px]" : "w-[24px] h-[24px]"} rounded-full`}
                 />
                 <span
                   className="
-                    font-pretendard font-medium text-[12px]
-                    leading-[145%] tracking-[-0.1%] text-[#000000]
+                    font-medium text-[12px] text-[#000000]
                   "
                 >
                   {userName}
@@ -128,21 +134,23 @@ export default function BookStoryCard({
                 type="button"
                 className={`
                   w-[60px] h-[24px]
-                  font-pretendard font-medium text-[12px] rounded-[15px]
+                  font-medium text-[12px] rounded-[15px]
                   px-[20px] py-[2px]
                   flex items-center justify-center
                   whitespace-nowrap
-                  cursor-pointer
                   transition-colors duration-200
-                  ${subscribed 
-                    ? "bg-[#BFAB96] text-white hover:bg-[#A6917D]" 
-                    : "bg-white text-[#BFAB96] border border-[#BFAB96] hover:bg-[#BFAB96] hover:text-white"
+                  ${isMyStory
+                    ? "cursor-default text-[#A6917D] bg-[#DED6CD]"
+                    : `cursor-pointer ${subscribed 
+                        ? "bg-[#BFAB96] text-white hover:bg-[#A6917D]" 
+                        : "bg-white text-[#BFAB96] border border-[#BFAB96] hover:bg-[#BFAB96] hover:text-white"}
+                      ${subscribeLoading ? "opacity-50 cursor-not-allowed" : ""}`
                   }
-                  ${subscribeLoading ? "opacity-50 cursor-not-allowed" : ""}
                 `}
-                onClick={handleSubscribe}
+                onClick={isMyStory ? undefined : handleSubscribe}
+                disabled={isMyStory}
               >
-                {subscribeLoading ? "..." : subscribed ? "구독 중" : "구독"}
+                {isMyStory ? "내 이야기" : subscribeLoading ? "..." : subscribed ? "구독 중" : "구독"}
               </button>
             </div>
             <h4
@@ -157,8 +165,7 @@ export default function BookStoryCard({
               className="
                   w-[256px] h-[80px]
                   mt-[4px]
-                  font-pretendard font-normal text-[14px]
-                  leading-[145%] tracking-[-0.1%] text-[#000000]
+                  font-normal text-[14px] text-[#000000]
                   overflow-hidden
                 "
               title={summary}
@@ -170,11 +177,12 @@ export default function BookStoryCard({
             >
               {summary}
             </p>
-            <button
-              type="button"
-              className="mt-auto flex items-center justify-end gap-[8px] flex items-center gap-[2px]"
-              onClick={handleLike}
-            >
+            <div className="mt-auto flex items-center justify-end gap-[10px] pr-[2px]">
+              <button
+                type="button"
+                className="flex items-center gap-[2px]"
+                onClick={handleLike}
+              >
                 <img
                   src={liked ? filledHeartIcon : emptyHeartIcon}
                   alt={liked ? "liked" : "not liked"}
@@ -184,17 +192,18 @@ export default function BookStoryCard({
                 />
                 <span
                   className="
-                    font-pretendard font-medium text-[12px] text-[#000000]
+                    font-medium text-[12px] text-[#000000]
                   "
                 >
                   {likeCount}
                 </span>
               </button>
-              <img
-                src={sirenIcon}
-                alt="alert"
-                className="w-[24px] h-[24px] cursor-pointer"
-              />
+                <img
+                  src={sirenIcon}
+                  alt="alert"
+                  className="w-[24px] h-[24px] cursor-pointer"
+                />
+              </div>
             </div>
           </div>
         </div>
