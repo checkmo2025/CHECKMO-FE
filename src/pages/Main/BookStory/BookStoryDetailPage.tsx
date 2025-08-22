@@ -1,6 +1,6 @@
 import { useParams, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
-import { Trash2, Edit2, Check, X } from "lucide-react";
+import { Check, X } from "lucide-react";
 import backIcon from "../../../assets/icons/backIcon.png";
 import { axiosInstance } from "../../../apis/axiosInstance";
 import type { BookStoryResponseDto } from "../../../types/bookStories";
@@ -16,6 +16,10 @@ import Modal, { type ModalButton } from "../../../components/Modal";
 import noProfileImage from "../../../assets/images/userImage.png";
 import checkerImage from "../../../assets/images/checker.png";
 import reportIcon from "../../../assets/icons/report3.png";
+import editIcon from "../../../assets/icons/edit.png";
+import editHoverIcon from "../../../assets/icons/editHover.png";
+import deleteIcon from "../../../assets/icons/delete.png";
+import deleteHoverIcon from "../../../assets/icons/deleteHover.png";
 
 export default function BookStoryDetailPage() {
   const { storyId } = useParams<{ storyId: string }>();
@@ -33,6 +37,9 @@ export default function BookStoryDetailPage() {
   const [likeCount, setLikeCount] = useState(0);
 
   const [isSubscribed, setIsSubscribed] = useState(false);
+
+  const [isDeleteHovered, setIsDeleteHovered] = useState(false);
+  const [isEditHovered, setIsEditHovered] = useState(false);
 
   useEffect(() => {
     if (!storyId) return;
@@ -156,7 +163,6 @@ export default function BookStoryDetailPage() {
       </div>
 
       <div className="pl-4 mt-12 max-w-5xl mx-auto">
-        {/* 프로필 영역 그대로 유지 */}
         <div
           className="flex items-center gap-2 w-fit cursor-pointer p-1 rounded-lg transition-colors duration-300 hover:bg-[#EEE] mb-6"
           onClick={() => {
@@ -187,7 +193,6 @@ export default function BookStoryDetailPage() {
           </div>
 
           <div className="flex flex-col flex-1 h-80">
-            {/* 제목 + 버튼 한 줄 */}
             <div className="flex items-center justify-between mb-4">
               <h1 className="text-2xl font-semibold">{bookStoryTitle}</h1>
               {!isMyStory && (
@@ -232,13 +237,13 @@ export default function BookStoryDetailPage() {
                           className="cursor-pointer"
                           onClick={handleEditSave}
                         >
-                          <Check size={16} />
+                          <Check size={18} />
                         </button>
                         <button
                           className="cursor-pointer"
                           onClick={handleEditCancel}
                         >
-                          <X size={16} />
+                          <X size={18} />
                         </button>
                       </>
                     ) : (
@@ -246,16 +251,26 @@ export default function BookStoryDetailPage() {
                         <button
                           className="cursor-pointer"
                           onClick={() => setIsModalOpen(true)}
-                          style={{ color: "#A6917D" }}
+                          onMouseEnter={() => setIsDeleteHovered(true)}
+                          onMouseLeave={() => setIsDeleteHovered(false)}
                         >
-                          <Trash2 size={16} />
+                          <img
+                            src={isDeleteHovered ? deleteHoverIcon : deleteIcon}
+                            alt="삭제"
+                            className="w-6 h-6"
+                          />
                         </button>
                         <button
                           className="cursor-pointer"
                           onClick={() => setIsEditing(true)}
-                          style={{ color: "#A6917D" }}
+                          onMouseEnter={() => setIsEditHovered(true)}
+                          onMouseLeave={() => setIsEditHovered(false)}
                         >
-                          <Edit2 size={16} />
+                          <img
+                            src={isEditHovered ? editHoverIcon : editIcon}
+                            alt="수정"
+                            className="w-6 h-6"
+                          />
                         </button>
                       </>
                     )}
