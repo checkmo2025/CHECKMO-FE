@@ -17,7 +17,7 @@ const TopicCardComponent = ({ content, authorInfo }: TopicCardProps) => {
           src={authorInfo.profileImageUrl ? authorInfo.profileImageUrl : defaultAvatar}
           alt={authorInfo.nickname}
           onClick={() => navigate(`/info/others/${authorInfo.nickname}`)}
-          className="w-8 h-8 rounded-full shrink-0 ml-2 cursor-pointer"
+          className="w-8 h-8 rounded-full bg-gray-200 shrink-0 ml-2"
         />
         <span className="text-black text-[12px] font-medium w-[120px] shrink-0 overflow-hidden text-ellipsis whitespace-nowrap">
           {authorInfo.nickname}
