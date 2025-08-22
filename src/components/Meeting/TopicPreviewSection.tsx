@@ -6,7 +6,7 @@ import { TopicPreviewCard } from "./TopicPreviewCard";
 interface TopicPreviewSectionProps {
   previews: Topic[];
   meetingId?: number;
-  numberOfTeams?: number;
+  listOfTeams: number[];
   onUpdateSuccess?: (message: string) => void;
   onMoreClick?: () => void;
 }
@@ -14,7 +14,7 @@ interface TopicPreviewSectionProps {
 const TopicPreviewSectionComponent = ({
   previews,
   meetingId,
-  numberOfTeams,
+  listOfTeams,
   onUpdateSuccess,
   onMoreClick,
 }: TopicPreviewSectionProps) => {
@@ -37,7 +37,7 @@ const TopicPreviewSectionComponent = ({
             key={preview.topicId}
             preview={preview}
             meetingId={meetingId}
-            numberOfTeams={numberOfTeams}
+            listOfTeams={listOfTeams}
             onUpdateSuccess={onUpdateSuccess}
           />
         ))}

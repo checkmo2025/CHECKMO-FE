@@ -73,6 +73,8 @@ const MeetingDetailPage = () => {
 
   const { meetingInfo, teams, topics } = data;
 
+  const teamNumbers = teams?.map(t => t.teamNumber) ?? [];
+
   // 최소 2개의 팀 섹션이 보이도록! (A, B 조 형태)
   const displayTeams: TeamTopic[] = (() => {
     if (!teams || teams.length === 0) {
@@ -120,6 +122,7 @@ const MeetingDetailPage = () => {
 
         <div className="min-w-[700px]">
           <TopicPreviewSection
+            listOfTeams={teamNumbers}
             previews={topics.slice(0, 4)}
             onMoreClick={handleMoreTopics}
           />
