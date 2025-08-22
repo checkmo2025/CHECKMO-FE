@@ -84,12 +84,10 @@ const MemberAdminPage = () => {
           <li
             key={member.clubMemberId}
             style={{ borderBottom: "1px solid #EAE5E2" }}
-            className="flex items-center justify-between pb-4"
+            className="flex items-center justify-between pb-2"
           >
             {/* 유저 정보 */}
-            <div className="flex items-center cursor-pointer" onClick={() => {
-                    navigate(`/info/others/${member.basicInfo.nickname}`)
-                  }}>
+            <div className="flex items-center p-1 cursor-pointer transition-colors hover:bg-[#EEE] duration-300 rounded-md" onClick={() => {navigate(`/info/others/${member.basicInfo.nickname}`)}}>
               <img src = {member.basicInfo.profileImageUrl || "/public/assets/ix_user-profile-filled.svg"} alt="profile" className="w-12 h-12 rounded-full mr-4" />
               <span className="font-['Pretendard'] text-[18px] font-semibold leading-[135%] text-gray-800">
                 {member.basicInfo.nickname}

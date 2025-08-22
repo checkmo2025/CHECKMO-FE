@@ -22,7 +22,6 @@ export default function ShelfDetailPage() {
     const profileImageUrl = localStorage.getItem('profileImageUrl');
     if(nickname) {
       setMynickname(nickname);
-     
     }
     if(profileImageUrl) {
       setUrl(profileImageUrl);

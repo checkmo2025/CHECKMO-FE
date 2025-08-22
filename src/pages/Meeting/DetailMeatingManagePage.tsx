@@ -188,17 +188,18 @@ export default function DetailMeetingManagePage() {
               토론 참여자
             </h2>
             <div className="min-h-[600px] bg-white border-[2px] border-[#EAE5E2] rounded-[12px] p-6 min-h-[540px]" >
-              <div className="space-y-4">
+              <div className="space-y-3">
                 {participants.map((member: MeetingMemberItem) => (
-                  <div className="flex items-center justify-between border-b border-[#EAE5E2] pb-3">
-                    <div className="flex items-center gap-4 min-w-[180px] cursor-pointer"
-                    onClick={() => navigate(`/info/others/${member.memberInfo.nickname}`)}
-                    >
-                      <img src={member.memberInfo.profileImageUrl || "/assets/basic_profile.png"}
-                      className="w-[36px] h-[36px] rounded-full" />
-                      <span className="text-[#2C2C2C] text-lg font-medium truncate">
-                        {member.memberInfo.nickname}
-                      </span>
+                  <div className="flex items-center justify-between border-b border-[#EAE5E2] pb-2">
+                    <div className="min-w-[180px]">
+                      <div className="inline-flex gap-4 items-center p-1 cursor-pointer transition-colors hover:bg-[#EEE] duration-300 rounded-md" 
+                      onClick={() => navigate(`/info/others/${member.memberInfo.nickname}`)}>
+                        <img src={member.memberInfo.profileImageUrl || "/assets/basic_profile.png"}
+                        className="w-[36px] h-[36px] rounded-full" />
+                        <span className="text-[#2C2C2C] text-lg font-medium truncate">
+                          {member.memberInfo.nickname}
+                        </span>
+                      </div>
                     </div>
 
                     <div className="flex flex-wrap gap-2 justify-end flex-1">
