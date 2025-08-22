@@ -25,7 +25,7 @@ import { fetchMyClubs } from "../apis/Main/clubs";
 import type { ClubDto } from "../apis/Main/clubs";
 import { fetchClubDetail } from "../apis/BookClub/getBookClub";
 import type { ClubDetailDto } from "../apis/BookClub/getBookClub";
-import clubDefaultImage from "../assets/images/clubImage.png";
+import clubDefaultImage from "../assets/images/clubSidebarImg.png";
 import toggleOpenGray from "../assets/icons/toggleOpen-gray.png";
 import toggleOpenGreen from "../assets/icons/toggleOpen-green.png";
 import toggleCloseGray from "../assets/icons/toggleClose-gray.png";
@@ -459,7 +459,8 @@ const Sidebar = () => {
                   to={path ?? submenus[0]?.path ?? "#"}
                   end={!submenus || submenus.length === 0}
                   style={{ color: getMenuTextColor(menu) }}
-                  className={`flex items-center gap-3 py-2 pl-3 pr-4 flex-1 rounded-r-lg hover:bg-[#DDEED6] cursor-pointer ${
+                  className={`flex items-center gap-3 py-2 pl-3 pr-4 flex-1 rounded-r-lg hover:bg-[#DDEED6] cursor-pointer min-w-0 ${
+                    // ✨ 이 부분에 min-w-0을 추가했습니다.
                     isMenuActive(menu, location.pathname)
                       ? "border-l-4 border-[#93C27C]"
                       : ""
@@ -477,7 +478,7 @@ const Sidebar = () => {
                     alt=""
                   />
                   <span
-                    className="text-[18px] font-medium whitespace-nowrap overflow-hidden text-ellipsis flex-1"
+                    className="text-[18px] font-medium whitespace-nowrap overflow-hidden text-ellipsis flex-1 min-w-0"
                     title={name}
                   >
                     {name}
