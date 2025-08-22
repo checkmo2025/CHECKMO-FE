@@ -75,7 +75,7 @@ export default function BookStoryDetailPage() {
     try {
       await deleteBookStory(Number(storyId));
       setIsModalOpen(false);
-      navigate(-1);
+      navigate("/bookstory/my");
     } catch (err) {
       console.error(err);
       alert("삭제 실패했습니다.");
@@ -91,7 +91,6 @@ export default function BookStoryDetailPage() {
         description: editDescription,
       });
       setIsEditing(false);
-      alert("수정되었습니다.");
     } catch (err) {
       console.error(err);
       alert("수정 실패했습니다.");
