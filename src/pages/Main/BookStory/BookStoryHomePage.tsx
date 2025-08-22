@@ -128,16 +128,16 @@ export default function BookStoryHomePage() {
   };
 
   return (
-    <div className="absolute left-[315px] right-[42px] opacity-100">
+    <div className="absolute left-[315px] right-[42px] opacity-100 max-xl:static max-xl:w-full">
       <Header pageTitle="책 이야기" customClassName="pl-4" />
 
       {/* 탭 및 목록 컨테이너 */}
       <div
-        className="overflow-y-auto h-[calc(100vh-80px)] w-full flex-1 pt-[30px] pl-[2px] pr-[30px] bg-[#FFFFFF]"
+        className="overflow-y-auto h-[calc(100vh-80px)] w-full flex-1 pt-[30px] px-[18px] bg-white"
         ref={containerRef}
       >
         {/* 탭 */}
-        <div className="flex items-center gap-2 mb-6 pl-4">
+        <div className="flex items-center gap-2 mb-6 px-2">
           <div
             className="flex gap-6 overflow-x-auto scrollbar-hide whitespace-nowrap"
             ref={tabContainerRef}
@@ -159,20 +159,26 @@ export default function BookStoryHomePage() {
         </div>
 
         {/* 상단 버튼 & 보기 모드 */}
-        <div className="flex justify-between items-center mb-6 pl-4">
+        <div className="flex justify-between items-center mb-10 px-2">
           <Link to="/bookstory/search">
             <button className="flex items-center gap-2 px-4 py-2 rounded-full bg-[#A6917D] text-white text-sm font-medium cursor-pointer">
               <Pencil size={16} /> 책 이야기
             </button>
           </Link>
-          <div className="flex gap-2 px-4">
-            <button onClick={() => setViewMode("grid")}>
+          <div className="flex gap-2">
+            <button
+              onClick={() => setViewMode("grid")}
+              className="cursor-pointer"
+            >
               <LayoutGrid
                 size={20}
                 className={viewMode === "grid" ? "text-black" : "text-gray-400"}
               />
             </button>
-            <button onClick={() => setViewMode("list")}>
+            <button
+              onClick={() => setViewMode("list")}
+              className="cursor-pointer"
+            >
               <List
                 size={20}
                 className={viewMode === "list" ? "text-black" : "text-gray-400"}
@@ -183,17 +189,20 @@ export default function BookStoryHomePage() {
 
         {/* 책 이야기 목록 */}
         <div
-          className={`${
+          className={`px-2 pb-10 ${
             viewMode === "grid"
-              ? "grid grid-cols-2 gap-6 px-4"
-              : "flex flex-col gap-4 w-full px-4"
+              ? "grid grid-cols-1 xl:grid-cols-2 gap-6"
+              : "flex flex-col items-center gap-4 w-full"
           }`}
         >
-          {stories.length === 0 && loading && <div>로딩 중...</div>}
+          {loading && stories.length === 0 && <div>로딩 중...</div>}
+
           {stories.map((story) => (
             <div
-              className="cursor-pointer hover:shadow-lg hover:scale-[1.03] transition-transform duration-300"
               key={story.bookStoryId}
+              className={`w-full transition-transform duration-300 ${
+                viewMode === "list" ? "max-w-[104rem]" : "hover:scale-[1.03]"
+              }`}
               onClick={() => navigate(`/bookstory/${story.bookStoryId}/detail`)}
             >
               <BookStoryCard
@@ -204,19 +213,17 @@ export default function BookStoryHomePage() {
                 isSubscribed={story.authorInfo.following}
                 title={story.bookStoryTitle}
                 summary={story.description}
-                bookTitle={story.bookInfo.title}
-                author={story.bookInfo.author}
                 likes={story.likes}
                 writtenByMe={story.writtenByMe}
                 likedByMe={story.likedByMe}
-                viewMode={viewMode}
                 onToggleLike={handleToggleLike}
                 onToggleSubscribe={handleToggleSubscribe}
               />
             </div>
           ))}
+
           {loading && stories.length > 0 && <div>로딩 중...</div>}
-          {!loading && stories.length === 0 && <div>데이터가 없습니다.</div>}
+          {!loading && stories.length === 0 && <div>책 이야기가 없습니다.</div>}
         </div>
       </div>
     </div>

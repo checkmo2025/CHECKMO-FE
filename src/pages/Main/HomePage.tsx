@@ -70,7 +70,6 @@ export default function HomePage() {
             allNotices.push(
               ...notices.map((notice) => ({ ...notice, clubId: club.clubId }))
             );
-            // 서버 과부하 방지용 딜레이 150ms
             await new Promise((res) => setTimeout(res, 150));
           } catch (err) {
             console.error(`클럽 ${club.clubId} 공지 가져오기 실패`, err);
@@ -101,11 +100,7 @@ export default function HomePage() {
           }
         });
       },
-      {
-        root,
-        rootMargin: "0px",
-        threshold: 1.0,
-      }
+      { root, rootMargin: "0px", threshold: 1.0 }
     );
 
     observerRef.current = observer;
@@ -116,86 +111,115 @@ export default function HomePage() {
   }, [loadBookStories]);
 
   return (
-    <div className="absolute left-[315px] right-[42px] opacity-100 max-xl:static max-xl:w-full">
-      <Header pageTitle="책모 홈" customClassName="pl-6" />
-
-      <div
-        ref={scrollContainerRef}
-        className="overflow-y-auto h-[calc(100vh-80px)] w-full flex-1 pt-[30px] px-4 bg-[#FFFFFF]"
-      >
-        {/* 공지사항 */}
-        <div className="text-xl font-semibold text-gray-800 mb-4 pl-2">
-          공지사항
+    <main className="w-full px-[42px] max-lg:px-4">
+      <div ref={scrollContainerRef} className="h-screen overflow-y-auto">
+        <div className="sticky top-0 z-10 bg-white pt-[30px]">
+          <Header pageTitle="책모 홈" customClassName="!mt-0 !pl-0" />
         </div>
-        {loadingNotices && <p className=" pl-2">공지사항 로딩중...</p>}
-        <div
-          className="flex gap-4 overflow-x-auto flex-nowrap scroll-smooth mb-12 p-2
-                        max-sm:flex-col max-sm:overflow-x-hidden max-sm:gap-3"
-        >
-          {notices.map((notice) => (
-            <div
-              key={`${notice.clubId}-${notice.id}`}
-              className="flex-shrink-0 cursor-pointer max-sm:w-full"
-              onClick={() => {
-                const typeMap: Record<string, string> = {
-                  공지: "general",
-                  투표: "vote",
-                  모임: "meeting",
-                };
-                const type = typeMap[notice.tag] ?? "general";
-                navigate(
-                  `/bookclub/${notice.clubId}/notices/${notice.id}?type=${type}`
-                );
-              }}
-            >
-              <NoticeCard notice={notice} />
+
+        <div className="w-full flex-1 bg-white space-y-[20px] pb-10">
+          <section className="mt-[36px] mx-[3px] w-full px-[6px]">
+            <div className="mb-[20px]">
+              <h2 className="text-[18px] font-semibold ml-[10px]">공지사항</h2>
             </div>
-          ))}
-        </div>
 
-        {/* 책 이야기 */}
-        <div className="text-xl font-semibold text-gray-800 mb-4 pl-2">
-          책 이야기
-        </div>
-        {bookStories.length === 0 && loadingBooks && (
-          <p className="pl-2">책 이야기 로딩중...</p>
-        )}
-        {errorBooks && (
-          <p className="text-red-500 pl-2">책 이야기 에러: {errorBooks}</p>
-        )}
-        <div
-          className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-2 
-                        gap-4 scroll-smooth scrollbar-hide pl-2
-                        max-sm:grid-cols-1 max-md:grid-cols-1"
-        >
-          {bookStories.map((story, index) => {
-            const state: "내 이야기" | "구독 중" | "구독하기" =
-              story.writtenByMe
-                ? "내 이야기"
-                : story.authorInfo.following
-                ? "구독 중"
-                : "구독하기";
+            {loadingNotices && <p className="ml-[10px]">공지사항 로딩중...</p>}
 
-            return (
-              <BookStoriesCard
-                key={`${story.bookStoryId}-${index}`}
-                bookStoryId={story.bookStoryId}
-                title={story.bookStoryTitle}
-                story={story.description}
-                state={state}
-                likes={story.likes}
-                likedByMe={story.likedByMe}
-                authorNickname={story.authorInfo.nickname}
-                authorProfileImageUrl={story.authorInfo.profileImageUrl}
-                bookCoverImageUrl={story.bookInfo.imgUrl}
-              />
-            );
-          })}
-        </div>
+            {!loadingNotices && notices.length === 0 && (
+              <div className="w-full h-[380px] flex items-center justify-center border-2 border-[#EAE5E2] rounded-[16px]">
+                <p className="text-[#969696]">
+                  아직 등록된 공지사항이 없습니다.
+                </p>
+              </div>
+            )}
 
-        <div id="book-story-sentinel" className="h-2"></div>
-        {loadingBooks && <p>추가 로딩중...</p>}
+            {notices.length > 0 && (
+              <div className="overflow-x-auto p-[6px]">
+                <div className="flex gap-[24px] w-full md:min-w-max mb-[20px]">
+                  {notices.map((notice) => (
+                    <div
+                      key={`${notice.clubId}-${notice.id}`}
+                      onClick={() => {
+                        const typeMap: Record<string, string> = {
+                          공지: "general",
+                          투표: "vote",
+                          모임: "meeting",
+                        };
+                        const type = typeMap[notice.tag] ?? "general";
+                        navigate(
+                          `/bookclub/${notice.clubId}/notices/${notice.id}?type=${type}`
+                        );
+                      }}
+                    >
+                      <NoticeCard notice={notice} />
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+          </section>
+
+          <section className="px-[9px] w-full">
+            <div className="flex justify-between items-center mb-[20px]">
+              <h2 className="text-[18px] ml-[10px] font-semibold">책 이야기</h2>
+              <span
+                onClick={() => navigate(`/bookstory`)}
+                className="text-[14px] text-[#8D8D8D] hover:underline cursor-pointer"
+              >
+                + 더보기
+              </span>
+            </div>
+
+            {bookStories.length === 0 && loadingBooks && (
+              <p className="ml-[10px]">책 이야기 로딩중...</p>
+            )}
+            {errorBooks && (
+              <p className="text-red-500 ml-[10px]">에러: {errorBooks}</p>
+            )}
+
+            {!loadingBooks && !errorBooks && bookStories.length === 0 && (
+              <div className="w-full h-[377px] flex items-center justify-center border-2 border-[#EAE5E2] rounded-[16px]">
+                <p className="text-[#969696] ml-[10px]">
+                  등록된 책 이야기가 없습니다.
+                </p>
+              </div>
+            )}
+
+            {bookStories.length > 0 && (
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-[24px]">
+                {bookStories.map((story) => {
+                  const state: "내 이야기" | "구독 중" | "구독하기" =
+                    story.writtenByMe
+                      ? "내 이야기"
+                      : story.authorInfo.following
+                      ? "구독 중"
+                      : "구독하기";
+
+                  return (
+                    <BookStoriesCard
+                      key={story.bookStoryId}
+                      bookStoryId={story.bookStoryId}
+                      title={story.bookStoryTitle}
+                      story={story.description}
+                      state={state}
+                      likes={story.likes}
+                      likedByMe={story.likedByMe}
+                      authorNickname={story.authorInfo.nickname}
+                      authorProfileImageUrl={story.authorInfo.profileImageUrl}
+                      bookCoverImageUrl={story.bookInfo.imgUrl}
+                    />
+                  );
+                })}
+              </div>
+            )}
+
+            <div id="book-story-sentinel" className="h-2"></div>
+            {loadingBooks && (
+              <p className="text-center py-4 ml-[10px]">추가 로딩중...</p>
+            )}
+          </section>
+        </div>
       </div>
-    </div>
+    </main>
   );
 }

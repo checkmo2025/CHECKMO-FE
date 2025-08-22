@@ -11,6 +11,7 @@ import {
   updateBookStory,
   toggleBookStoryLike,
 } from "../../../apis/BookStory/bookstories";
+import { toggleUserSubscription } from "../../../apis/User/user";
 import Modal, { type ModalButton } from "../../../components/Modal";
 import noProfileImage from "../../../assets/images/userImage.png";
 import checkerImage from "../../../assets/images/checker.png";
@@ -31,6 +32,8 @@ export default function BookStoryDetailPage() {
   const [liked, setLiked] = useState(false);
   const [likeCount, setLikeCount] = useState(0);
 
+  const [isSubscribed, setIsSubscribed] = useState(false);
+
   useEffect(() => {
     if (!storyId) return;
 
@@ -47,6 +50,7 @@ export default function BookStoryDetailPage() {
         setEditDescription(data.description);
         setLiked(data.likedByMe);
         setLikeCount(data.likes);
+        setIsSubscribed(data.authorInfo.following);
       } catch (err: any) {
         console.error(err);
         setError("책 이야기 조회에 실패했습니다.");
@@ -111,6 +115,17 @@ export default function BookStoryDetailPage() {
     }
   };
 
+  const handleToggleSubscription = async () => {
+    if (!authorInfo?.nickname) return;
+    try {
+      await toggleUserSubscription(authorInfo.nickname, isSubscribed);
+      setIsSubscribed((prev) => !prev);
+    } catch (err) {
+      console.error("구독 처리에 실패했습니다.", err);
+      alert("구독 처리에 실패했습니다.");
+    }
+  };
+
   const modalButtons: ModalButton[] = [
     {
       label: "삭제하기",
@@ -142,35 +157,29 @@ export default function BookStoryDetailPage() {
       </div>
 
       <div className="pl-4 mt-12 max-w-5xl mx-auto">
-        <div className="flex items-center gap-2 mb-6">
+        {/* 프로필 영역 그대로 유지 */}
+        <div
+          className="flex items-center gap-2 w-fit cursor-pointer p-1 rounded-lg transition-colors duration-300 hover:bg-[#EEE] mb-6"
+          onClick={() => {
+            if (isMyStory) {
+              navigate("/mypage/myprofile");
+            } else {
+              navigate(`/info/others/${authorInfo.nickname}`);
+            }
+          }}
+        >
           <img
             src={authorInfo.profileImageUrl || noProfileImage}
             alt={authorInfo.nickname}
-            className="w-10 h-10 rounded-full cursor-pointer"
-            onClick={() => {
-              if (isMyStory) {
-                navigate("/mypage/myprofile");
-              } else {
-                navigate(`/info/others/${authorInfo.nickname}`);
-              }
-            }}
+            className="w-10 h-10 rounded-full"
           />
-          <span
-            className="text-base font-semibold cursor-pointer"
-            onClick={() => {
-              if (isMyStory) {
-                navigate("/mypage/myprofile");
-              } else {
-                navigate(`/info/others/${authorInfo.nickname}`);
-              }
-            }}
-          >
+          <span className="text-base font-semibold pr-1">
             {authorInfo.nickname}
           </span>
         </div>
 
-        <div className="flex gap-8">
-          <div className="w-64 h-80 rounded-xl bg-gray-200 overflow-hidden">
+        <div className="flex flex-col sm:flex-row gap-8">
+          <div className="w-full sm:w-64 h-80 rounded-xl bg-gray-200 overflow-hidden flex-shrink-0">
             <img
               src={bookInfo.imgUrl || checkerImage}
               alt={bookInfo.title}
@@ -179,27 +188,35 @@ export default function BookStoryDetailPage() {
           </div>
 
           <div className="flex flex-col flex-1 h-80">
+            {/* 제목 + 버튼 한 줄 */}
+            <div className="flex items-center justify-between mb-4">
+              <h1 className="text-2xl font-semibold">{bookStoryTitle}</h1>
+              {!isMyStory && (
+                <button
+                  onClick={handleToggleSubscription}
+                  className={`w-[4.6rem] h-[2rem] px-4 py-1.5 rounded-full text-sm font-semibold transition-colors duration-200 cursor-pointer ${
+                    isSubscribed
+                      ? "bg-[#A6917D] text-white hover:bg-[#8c7a69]"
+                      : "bg-white text-[#A6917D] border border-[#A6917D] hover:bg-[#A6917D] hover:text-white"
+                  }`}
+                >
+                  {isSubscribed ? "구독 중" : "구독"}
+                </button>
+              )}
+            </div>
+
             {isEditing ? (
-              <>
-                <h1 className="text-2xl font-semibold mb-4">
-                  {bookStoryTitle}
-                </h1>
-                <textarea
-                  className="flex-1 p-2 border border-gray-300 rounded"
-                  value={editDescription}
-                  onChange={(e) => setEditDescription(e.target.value)}
-                />
-              </>
+              <textarea
+                className="flex-1 p-2 border border-gray-300 rounded"
+                value={editDescription}
+                onChange={(e) => setEditDescription(e.target.value)}
+              />
             ) : (
-              <>
-                <h1 className="text-2xl font-semibold mb-4">
-                  {bookStoryTitle}
-                </h1>
-                <p className="text-sm leading-relaxed whitespace-pre-line mb-6">
-                  {description}
-                </p>
-              </>
+              <p className="text-sm leading-relaxed whitespace-pre-line mb-6">
+                {description}
+              </p>
             )}
+
             <div className="flex-grow" />
 
             <div className="flex flex-col items-end text-gray-400 text-xs gap-[1rem]">
@@ -207,7 +224,6 @@ export default function BookStoryDetailPage() {
                 도서 : {bookInfo.title} | {bookInfo.author}
               </div>
 
-              {/* 버튼 영역 */}
               <div className="flex items-center gap-4">
                 {isMyStory ? (
                   <>
@@ -231,12 +247,14 @@ export default function BookStoryDetailPage() {
                         <button
                           className="cursor-pointer"
                           onClick={() => setIsModalOpen(true)}
+                          style={{ color: "#A6917D" }}
                         >
                           <Trash2 size={16} />
                         </button>
                         <button
                           className="cursor-pointer"
                           onClick={() => setIsEditing(true)}
+                          style={{ color: "#A6917D" }}
                         >
                           <Edit2 size={16} />
                         </button>
