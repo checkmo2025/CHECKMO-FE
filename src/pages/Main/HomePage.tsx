@@ -118,9 +118,10 @@ export default function HomePage() {
         </div>
 
         <div className="w-full flex-1 bg-white space-y-[20px] pb-10">
-          <section className="mt-[36px] mx-[3px] w-full px-[6px]">
+          {/* 공지사항 */}
+          <section className="mt-[36px] w-full px-[3px]">
             <div className="mb-[20px]">
-              <h2 className="text-[18px] font-semibold ml-[10px]">공지사항</h2>
+              <h2 className="text-[18px] ml-[10px] font-semibold ">공지사항</h2>
             </div>
 
             {loadingNotices && <p className="ml-[10px]">공지사항 로딩중...</p>}
@@ -134,7 +135,7 @@ export default function HomePage() {
             )}
 
             {notices.length > 0 && (
-              <div className="overflow-x-auto p-[6px]">
+              <div className="overflow-x-auto p-[9px]">
                 <div className="flex gap-[24px] w-full md:min-w-max mb-[20px]">
                   {notices.map((notice) => (
                     <div
@@ -159,9 +160,10 @@ export default function HomePage() {
             )}
           </section>
 
-          <section className="px-[9px] w-full">
-            <div className="flex justify-between items-center mb-[20px]">
-              <h2 className="text-[18px] ml-[10px] font-semibold">책 이야기</h2>
+          {/* 책 이야기 */}
+          <section className="w-full px-[12px]">
+            <div className="flex justify-between items-center mb-[20px] ">
+              <h2 className="text-[18px] font-semibold">책 이야기</h2>
               <span
                 onClick={() => navigate(`/bookstory`)}
                 className="text-[14px] text-[#8D8D8D] hover:underline cursor-pointer"
