@@ -133,7 +133,7 @@ export default function BookStoryHomePage() {
 
       {/* 탭 및 목록 컨테이너 */}
       <div
-        className="overflow-y-auto h-[calc(100vh-80px)] w-full flex-1 pt-[30px] px-[18px] bg-white"
+        className="overflow-y-auto h-[calc(100vh-130px)] w-full flex-1 pt-[30px] px-[18px] bg-white"
         ref={containerRef}
       >
         {/* 탭 */}

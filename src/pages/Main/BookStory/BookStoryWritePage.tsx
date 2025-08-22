@@ -57,10 +57,11 @@ export default function BookStoryWritePage() {
 
   return (
     <div
-      className="absolute left-[315px] right-[42px] top-0 bottom-0 flex flex-col opacity-100"
-      style={{ maxWidth: "1080px", margin: "0 auto" }}
+      className="w-full px-10 opacity-100 "
     >
-      <Header pageTitle="책 이야기" />
+      <div className="sticky w-full">
+        <Header pageTitle="책 이야기" />
+      </div>
 
       <main className="overflow-y-auto flex-grow px-0">
         <div className="max-w-full mx-auto p-0 space-y-8 text-gray-900">

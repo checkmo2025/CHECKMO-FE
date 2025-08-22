@@ -33,7 +33,7 @@ export default function SearchPage() {
   return (
     <div>
       <div className="flex h-screen ">
-        <div className="absolute left-[315px] right-[42px] opacity-100 ">
+        <div className="w-full px-10 opacity-100 ">
           <Header
             pageTitle={"통합검색"}
             customClassName="mt-15"
