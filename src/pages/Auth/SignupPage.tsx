@@ -270,12 +270,12 @@ const SignupPage = () => {
                 {/* 이메일 입력 */}
                 <div className="mb-7">
                   <label className="block mb-3 text-[#2C2C2C] text-sm font-semibold">
-                    아이디
+                    이메일
                   </label>
                   <div className="flex gap-2">
                     <input
                       type="text"
-                      placeholder="이메일 아이디"
+                      placeholder="이메일"
                       value={emailId}
                       onChange={(e) => setEmailId(e.target.value)}
                       className="flex-1 border-b border-[#DADFE3] px-3 py-1 focus:outline-none"

@@ -20,7 +20,7 @@ export default function BookStorySearchPage() {
 
   return (
     <div className="flex h-screen">
-      <div className="absolute left-[315px] right-[42px] opacity-100 ">
+      <div className="w-full px-10 opacity-100 ">
         <Header pageTitle={"책 이야기"} customClassName="mt-15" />
 
         {/* 메인 컨텐츠 자리 */}

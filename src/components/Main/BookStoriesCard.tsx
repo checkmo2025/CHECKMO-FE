@@ -156,7 +156,7 @@ const BookStoriesCard = ({
           <div className="mt-auto flex items-center justify-end gap-2.5">
             <button
               type="button"
-              className="flex items-center gap-1"
+              className="flex items-center gap-1 cursor-pointer"
               onClick={handleLike}
             >
               <img

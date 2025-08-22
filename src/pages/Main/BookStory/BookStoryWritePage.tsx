@@ -57,10 +57,11 @@ export default function BookStoryWritePage() {
 
   return (
     <div
-      className="absolute left-[315px] right-[42px] top-0 bottom-0 flex flex-col opacity-100"
-      style={{ maxWidth: "1080px", margin: "0 auto" }}
+      className="w-full px-10 opacity-100 "
     >
-      <Header pageTitle="책 이야기" />
+      <div className="sticky w-full">
+        <Header pageTitle="책 이야기" />
+      </div>
 
       <main className="overflow-y-auto flex-grow px-0">
         <div className="max-w-full mx-auto p-0 space-y-8 text-gray-900">
@@ -93,11 +94,11 @@ export default function BookStoryWritePage() {
             </div>
 
             <div className="flex flex-col gap-2 items-center ml-auto flex-shrink-0">
-              <button className="rounded-[1rem] bg-[#A6917D] px-3 py-1.5 text-xs font-semibold text-white cursor-default select-none w-[6rem]">
+              <button className="rounded-[1rem] bg-[#A6917D] px-3 py-1.5 text-xs font-semibold text-white cursor-pointer hover:shadow-md select-none w-[6rem]">
                 선택됨
               </button>
               <Link to="/bookstory/search">
-                <button className="rounded-[1rem] border border-[#A6917D] px-3 py-1.5 text-xs font-semibold text-beige-700 hover:bg-beige-100 w-[6rem] cursor-pointer">
+                <button className="rounded-[1rem] border border-[#A6917D] px-3 py-1.5 text-xs font-semibold text-beige-700 hover:bg-beige-100 w-[6rem] cursor-pointer hover:shadow-md">
                   변경하기
                 </button>
               </Link>
@@ -122,12 +123,12 @@ export default function BookStoryWritePage() {
             />
 
             <div className="mt-4 flex justify-end gap-4">
-              <button className="rounded-[1rem] border border-[#A6917D] px-6 py-2 text-sm text-beige-700 hover:bg-beige-100 w-[6.5625rem]">
+              <button className="rounded-[1rem] border border-[#A6917D] px-6 py-2 text-sm text-beige-700 hover:bg-beige-100 w-[6.5625rem] cursor-pointer hover:shadow-md">
                 임시저장
               </button>
               <button
                 onClick={handleAddStory}
-                className="rounded-[1rem] bg-[#A6917D] px-6 py-2 text-sm font-semibold text-white hover:bg-beige-600 w-[6.5625rem] cursor-pointer"
+                className="rounded-[1rem] bg-[#A6917D] px-6 py-2 text-sm font-semibold text-white hover:bg-beige-600 w-[6.5625rem] cursor-pointer hover:shadow-md"
               >
                 등록
               </button>

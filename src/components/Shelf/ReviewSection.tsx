@@ -147,9 +147,9 @@ export default function ReviewSection({
 
       {/* 등록 영역 */}
       <div className="flex py-2 shadow rounded-2xl border-2 border-[var(--sub-color-2-brown,#EAE5E2)] w-full mb-3  transition-transform duration-300 hover:shadow-md">
-        <div className="flex items-center justify-between h-[48px] w-[270px] flex-none ml-[12px] mr-[34px]">
+        <div className="flex items-center justify-between h-[48px] w-[270px] flex-none ml-[12px] mr-[34px] cursor-pointer" onClick={() => {navigate(`/info/others/${currentUser.nickname}`)}}>
           <img
-            src={currentUser.profileImageUrl}
+            src={currentUser.profileImageUrl || '/assets/ix_user-profile-filled.svg'}
             className="w-[48px] h-[48px] rounded-full object-cover"
             alt="프로필"
           />

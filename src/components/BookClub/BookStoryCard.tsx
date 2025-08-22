@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import checker from "../../assets/images/checker.png";
 import emptyHeartIcon from "../../assets/icons/heartEmpty.png";
 import filledHeartIcon from "../../assets/icons/heartFilled.png";
-import sirenIcon from "../../assets/images/siren.png";
+import sirenIcon from "../../assets/icons/report3.png";
 import { toggleBookStoryLike } from "../../apis/BookStory/bookstories";
 import { followMember } from "../../apis/otherApi";
 import { unfollowMember } from "../../apis/My/memberApi";

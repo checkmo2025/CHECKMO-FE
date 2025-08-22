@@ -1,7 +1,6 @@
 import { useParams, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
-import { Trash2, Edit2, Check, X } from "lucide-react";
-import backIcon from "../../../assets/icons/backIcon.png";
+import { Check, X } from "lucide-react";
 import { axiosInstance } from "../../../apis/axiosInstance";
 import type { BookStoryResponseDto } from "../../../types/bookStories";
 import likeIcon from "../../../assets/icons/heartEmpty.png";
@@ -16,6 +15,11 @@ import Modal, { type ModalButton } from "../../../components/Modal";
 import noProfileImage from "../../../assets/images/userImage.png";
 import checkerImage from "../../../assets/images/checker.png";
 import reportIcon from "../../../assets/icons/report3.png";
+import editIcon from "../../../assets/icons/edit.png";
+import editHoverIcon from "../../../assets/icons/editHover.png";
+import deleteIcon from "../../../assets/icons/delete.png";
+import deleteHoverIcon from "../../../assets/icons/deleteHover.png";
+import { NonProfileHeader } from "../../../components/NonProfileHeader";
 
 export default function BookStoryDetailPage() {
   const { storyId } = useParams<{ storyId: string }>();
@@ -33,6 +37,9 @@ export default function BookStoryDetailPage() {
   const [likeCount, setLikeCount] = useState(0);
 
   const [isSubscribed, setIsSubscribed] = useState(false);
+
+  const [isDeleteHovered, setIsDeleteHovered] = useState(false);
+  const [isEditHovered, setIsEditHovered] = useState(false);
 
   useEffect(() => {
     if (!storyId) return;
@@ -75,7 +82,7 @@ export default function BookStoryDetailPage() {
     try {
       await deleteBookStory(Number(storyId));
       setIsModalOpen(false);
-      navigate(-1);
+      navigate(-1); // 이전 페이지(원래 있던 페이지)로 이동
     } catch (err) {
       console.error(err);
       alert("삭제 실패했습니다.");
@@ -91,7 +98,6 @@ export default function BookStoryDetailPage() {
         description: editDescription,
       });
       setIsEditing(false);
-      alert("수정되었습니다.");
     } catch (err) {
       console.error(err);
       alert("수정 실패했습니다.");
@@ -141,23 +147,11 @@ export default function BookStoryDetailPage() {
 
   return (
     <div>
-      <div className="pt-10 pl-10">
-        <button
-          onClick={() => navigate(-1)}
-          className="flex items-center gap-2 text-lg font-semibold mb-4"
-          type="button"
-        >
-          <img
-            src={backIcon}
-            alt="뒤로가기"
-            className="w-5 h-5 cursor-pointer"
-          />
-          {bookStoryTitle}
-        </button>
+      <div className="pl-10">
+        <NonProfileHeader title={bookStoryTitle} />
       </div>
-
+      
       <div className="pl-4 mt-12 max-w-5xl mx-auto">
-        {/* 프로필 영역 그대로 유지 */}
         <div
           className="flex items-center gap-2 w-fit cursor-pointer p-1 rounded-lg transition-colors duration-300 hover:bg-[#EEE] mb-6"
           onClick={() => {
@@ -188,7 +182,6 @@ export default function BookStoryDetailPage() {
           </div>
 
           <div className="flex flex-col flex-1 h-80">
-            {/* 제목 + 버튼 한 줄 */}
             <div className="flex items-center justify-between mb-4">
               <h1 className="text-2xl font-semibold">{bookStoryTitle}</h1>
               {!isMyStory && (
@@ -233,13 +226,13 @@ export default function BookStoryDetailPage() {
                           className="cursor-pointer"
                           onClick={handleEditSave}
                         >
-                          <Check size={16} />
+                          <Check size={18} />
                         </button>
                         <button
                           className="cursor-pointer"
                           onClick={handleEditCancel}
                         >
-                          <X size={16} />
+                          <X size={18} />
                         </button>
                       </>
                     ) : (
@@ -247,16 +240,26 @@ export default function BookStoryDetailPage() {
                         <button
                           className="cursor-pointer"
                           onClick={() => setIsModalOpen(true)}
-                          style={{ color: "#A6917D" }}
+                          onMouseEnter={() => setIsDeleteHovered(true)}
+                          onMouseLeave={() => setIsDeleteHovered(false)}
                         >
-                          <Trash2 size={16} />
+                          <img
+                            src={isDeleteHovered ? deleteHoverIcon : deleteIcon}
+                            alt="삭제"
+                            className="w-6 h-6"
+                          />
                         </button>
                         <button
                           className="cursor-pointer"
                           onClick={() => setIsEditing(true)}
-                          style={{ color: "#A6917D" }}
+                          onMouseEnter={() => setIsEditHovered(true)}
+                          onMouseLeave={() => setIsEditHovered(false)}
                         >
-                          <Edit2 size={16} />
+                          <img
+                            src={isEditHovered ? editHoverIcon : editIcon}
+                            alt="수정"
+                            className="w-6 h-6"
+                          />
                         </button>
                       </>
                     )}

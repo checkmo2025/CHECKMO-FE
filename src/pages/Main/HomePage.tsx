@@ -111,8 +111,11 @@ export default function HomePage() {
   }, [loadBookStories]);
 
   return (
-    <main className="w-full px-[42px] max-lg:px-4">
-      <div ref={scrollContainerRef} className="h-screen overflow-y-auto">
+    <main className="w-full">
+      <div
+        ref={scrollContainerRef}
+        className="h-screen overflow-y-auto scrollbar-hide pl-[42px] max-lg:px-4"
+      >
         <div className="sticky top-0 z-10 bg-white pt-[30px]">
           <Header pageTitle="책모 홈" customClassName="!mt-0 !pl-0" />
         </div>
@@ -127,7 +130,7 @@ export default function HomePage() {
             {loadingNotices && <p className="ml-[10px]">공지사항 로딩중...</p>}
 
             {!loadingNotices && notices.length === 0 && (
-              <div className="w-full h-[380px] flex items-center justify-center border-2 border-[#EAE5E2] rounded-[16px]">
+              <div className="w-[calc(100%-50px)] h-[380px] flex items-center justify-center border-2 border-[#EAE5E2] rounded-[16px] mx-[10px]">
                 <p className="text-[#969696]">
                   아직 등록된 공지사항이 없습니다.
                 </p>
@@ -161,7 +164,7 @@ export default function HomePage() {
           </section>
 
           {/* 책 이야기 */}
-          <section className="w-full px-[12px]">
+          <section className="w-full pl-[12px] pr-[42px] mt-10">
             <div className="flex justify-between items-center mb-[20px] ">
               <h2 className="text-[18px] font-semibold">책 이야기</h2>
               <span

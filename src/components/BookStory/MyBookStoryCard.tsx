@@ -1,5 +1,9 @@
-import { Edit2, Trash2 } from "lucide-react";
+import { useState } from "react";
 import noUserImage from "../../assets/images/userImage.png";
+import editIcon from "../../assets/icons/edit.png";
+import editHoverIcon from "../../assets/icons/editHover.png";
+import deleteIcon from "../../assets/icons/delete.png";
+import deleteHoverIcon from "../../assets/icons/deleteHover.png";
 
 type Props = {
   profileUrl: string;
@@ -26,6 +30,9 @@ export default function MyBookStoryCard({
   onDelete,
   onClick,
 }: Props) {
+  const [isDeleteHovered, setIsDeleteHovered] = useState(false);
+  const [isEditHovered, setIsEditHovered] = useState(false);
+
   return (
     <div
       onClick={onClick}
@@ -47,7 +54,6 @@ export default function MyBookStoryCard({
 
         {/* 오른쪽 텍스트 영역 */}
         <div className="flex-1 flex flex-col min-w-0">
-          {" "}
           {/* 상단: 프로필 */}
           <div className="flex justify-between items-center">
             <div className="flex items-center gap-2">
@@ -61,7 +67,6 @@ export default function MyBookStoryCard({
           </div>
           {/* 제목 + 요약 */}
           <div className="mt-2 flex flex-col gap-1">
-            {" "}
             <h4
               className="font-semibold text-xl text-black overflow-hidden"
               style={{
@@ -88,25 +93,36 @@ export default function MyBookStoryCard({
             도서: {bookTitle} | {author}
           </div>
           {/* 하단: 수정/삭제 버튼 */}
-          <div className="mt-auto flex items-center justify-end gap-4 pt-2">
-            {" "}
+          <div className="mt-auto flex items-center justify-end gap-3 pt-2">
             <button
               onClick={(e) => {
                 e.stopPropagation();
                 onDelete?.();
               }}
+              onMouseEnter={() => setIsDeleteHovered(true)}
+              onMouseLeave={() => setIsDeleteHovered(false)}
               className="cursor-pointer"
             >
-              <Trash2 size={18} color="#A6917D" />
+              <img
+                src={isDeleteHovered ? deleteHoverIcon : deleteIcon}
+                alt="삭제"
+                className="w-[18px] h-[18px]"
+              />
             </button>
             <button
               onClick={(e) => {
                 e.stopPropagation();
                 onEdit?.();
               }}
+              onMouseEnter={() => setIsEditHovered(true)}
+              onMouseLeave={() => setIsEditHovered(false)}
               className="cursor-pointer"
             >
-              <Edit2 size={18} color="#A6917D" />
+              <img
+                src={isEditHovered ? editHoverIcon : editIcon}
+                alt="수정"
+                className="w-[18px] h-[18px]"
+              />
             </button>
           </div>
         </div>

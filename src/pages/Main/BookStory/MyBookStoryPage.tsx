@@ -17,8 +17,9 @@ export default function MyBookStoryPage() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedStoryId, setSelectedStoryId] = useState<number | null>(null);
 
-  const nickname = localStorage.getItem("nickname") || "사용자";
-  const profileImageUrl = localStorage.getItem("profileImageUrl") || "";
+  const userNickname =
+    stories.length > 0 ? stories[0].authorInfo.nickname : "사용자";
+
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -66,8 +67,11 @@ export default function MyBookStoryPage() {
 
   return (
     <div className="absolute left-[315px] right-[42px] opacity-100 max-xl:static max-xl:w-full">
-      <Header pageTitle={`${nickname}님의 책 이야기`} customClassName="pl-4" />
-      <div className="overflow-y-auto h-[calc(100vh-80px)] w-full flex-1 pt-[30px] px-[18px] bg-[#FFFFFF]">
+      <Header
+        pageTitle={`${userNickname}님의 책 이야기`}
+        customClassName="pl-4"
+      />
+      <div className="overflow-y-auto h-[calc(100vh-130px)] w-full flex-1 pt-[30px] px-[18px] bg-[#FFFFFF]">
         <div className="flex justify-between items-center mb-6 px-2">
           <button
             className="flex items-center gap-2 px-4 py-2 rounded-full bg-[#A6917D] text-white text-sm font-medium cursor-pointer"
@@ -109,8 +113,8 @@ export default function MyBookStoryPage() {
             stories.map((story) => (
               <MyBookStoryCard
                 key={story.bookStoryId}
-                profileUrl={profileImageUrl}
-                userName={nickname}
+                profileUrl={story.authorInfo.profileImageUrl}
+                userName={story.authorInfo.nickname}
                 imageUrl={story.bookInfo.imgUrl}
                 title={story.bookStoryTitle}
                 summary={story.description}
@@ -127,7 +131,7 @@ export default function MyBookStoryPage() {
               />
             ))
           ) : (
-            <div>데이터가 없습니다.</div>
+            <div>책 이야기가 없습니다.</div>
           )}
         </div>
       </div>

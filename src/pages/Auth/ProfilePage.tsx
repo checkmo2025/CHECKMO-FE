@@ -19,11 +19,6 @@ const ProfilePage = () => {
     const isLoggedIn = Boolean(localStorage.getItem("nickname"));
     const blockedPaths = ["/", "/signup", "/profile"];
 
-    //  /profile 주소 직접 접근 차단
-    if (location.pathname === "/profile") {
-      navigate("/", { replace: true });
-      return;
-    }
 
     if (isLoggedIn && blockedPaths.includes(location.pathname)) {
       (async () => {
@@ -249,14 +244,16 @@ const ProfilePage = () => {
                       <img
                         src={profileImagePreview}
                         alt="Profile"
-                        className="w-full h-full object-cover"
+                        className={`w-full h-full object-cover ${
+                          profileImagePreview === "/assets/basic_profile.png" ? "scale-125" : ""
+                        }`}
                         onError={(e) => {
                           e.currentTarget.src = "/assets/basic_profile.png";
-                          e.currentTarget.style.objectFit = "cover";  // 기본 이미지도 꽉 차게
+                          e.currentTarget.classList.add("scale-125");
                         }}
                       />
                     ) : (
-                      <div className="w-full h-full bg-[#F8FFEF]" />
+                      <div className="w-full h-full bg-[#F7FFE9]" />
                     )}
                   </div>
 
@@ -444,16 +441,19 @@ const ProfilePage = () => {
                     <img
                       src={profileImagePreview}
                       alt="Profile"
-                      className="w-full h-full object-cover"
+                      className={`w-full h-full object-cover ${
+                        profileImagePreview === "/assets/basic_profile.png" ? "scale-125" : ""
+                      }`}
                       onError={(e) => {
                         e.currentTarget.src = "/assets/basic_profile.png";
+                        e.currentTarget.classList.add("scale-125");
                       }}
                     />
                   ) : (
                     <img
                       src="/assets/basic_profile.png"
                       alt="Default Profile"
-                      className="w-full h-full object-cover"
+                      className="w-full h-full object-cover scale-125"
                     />
                   )}
                 </div>
