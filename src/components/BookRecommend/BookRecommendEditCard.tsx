@@ -69,7 +69,7 @@ const BookRecommendEditCard = ({
     if (
       !title.trim() ||
       !content.trim() ||
-      !tagInput ||
+      !tagInput.trim() ||
       rate === undefined ||
       rate === null
     ) {

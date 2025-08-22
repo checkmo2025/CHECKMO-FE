@@ -50,7 +50,7 @@ const BookRecommendCreateCard = ({
 
   const onConfirm = () => {
     // 유효성 검사
-    if (!rating || !content.trim() || !title.trim() || tagInput) {
+    if (!rating || !content.trim() || !title.trim() || !tagInput.trim()) {
       setModalTitle("별점, 추천 제목, 추천 이유, 태그를 모두 입력해 주세요.");
       setModalButtons([{ label: "확인", onClick: () => setModalOpen(false) }]);
       return;
