@@ -35,7 +35,7 @@ const MeetingCard = ({ notice }: MeetingCardProps) => {
       <div className="mt-2 text-xs text-gray-700 space-y-1 pr-10">
         <p>다음 모임 날짜: {date}</p>
         <p className="truncate">
-          다음 모임 책: {notice.meetingInfoDTO.bookInfo?.title ?? "정보 없음"}
+          다음 모임 책: {notice.meetingInfoDTO?.bookInfo?.title ?? "정보 없음"}
         </p>
       </div>
 
