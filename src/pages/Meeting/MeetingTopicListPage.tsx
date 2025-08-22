@@ -46,7 +46,7 @@ const MeetingTopicListPage = () => {
   }
 
   const topics = topicsResult.topics;
-  const numberOfTeams = meetingDetails.teams.length;
+  const teamNumbers = meetingDetails.teams?.map(t => t.teamNumber) ?? [];
 
   return (
     <div className="mx-auto px-10 space-y-5">
@@ -61,7 +61,7 @@ const MeetingTopicListPage = () => {
         <TopicPreviewSection
           previews={topics}
           meetingId={meetId}
-          numberOfTeams={numberOfTeams}
+          listOfTeams={teamNumbers}
           onUpdateSuccess={handleUpdateSuccess}
         />
       ) : (

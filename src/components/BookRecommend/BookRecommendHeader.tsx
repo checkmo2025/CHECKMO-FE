@@ -2,9 +2,10 @@ import type { AuthorDto } from "../../types/dto";
 
 interface HeaderProps {
   author: AuthorDto;
+  tag: string
 }
 
-const BookRecommendHeader = ({ author }: HeaderProps) => {
+const BookRecommendHeader = ({ author, tag }: HeaderProps) => {
   return (
     <>
       <div className="flex flex-row mt-5 mx-4">
@@ -16,6 +17,16 @@ const BookRecommendHeader = ({ author }: HeaderProps) => {
         />
         <div className="flex items-center">
           <h3>{author.nickname}</h3>
+        </div>
+        <div className="ml-auto">
+          <span
+            className="flex items-center justify-center
+              px-3.5 py-1 bg-[#90D26D] text-white text-xs
+              rounded-full whitespace-nowrap"
+            title={tag}
+          >
+            {tag}
+          </span>
         </div>
       </div>
     </>

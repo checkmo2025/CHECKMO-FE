@@ -8,20 +8,20 @@ import { AxiosError } from "axios";
 interface TopicPreviewCardProps {
   preview: Topic;
   meetingId?: number;
-  numberOfTeams?: number;
+  listOfTeams: number[];
   onUpdateSuccess?: (message: string) => void;
 }
 
 const TopicPreviewCardComponent = ({
   preview,
   meetingId,
-  numberOfTeams,
+  listOfTeams,
   onUpdateSuccess,
 }: TopicPreviewCardProps) => {
   // 토픽 선택 기능 활성화 여부
   const isSelectable =
     typeof meetingId === "number" &&
-    typeof numberOfTeams === "number" &&
+    // typeof listOfTeams === "Array" &&
     typeof onUpdateSuccess === "function";
 
   const { mutate: updateTopic, isPending } = useUpdateTopicSelect(
@@ -60,6 +60,7 @@ const TopicPreviewCardComponent = ({
       <TopicCard content={preview.content} authorInfo={preview.authorInfo} />
       <>
         <TeamButtonList
+          teamNumbers={listOfTeams}
           selectedTeamNumbers={preview.teamNumbers}
           onSelect={handleSelect}
           disabled={!isSelectable}

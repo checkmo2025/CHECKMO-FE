@@ -1,23 +1,25 @@
 import { memo } from "react";
 
 interface TeamButtonListProps {
+  teamNumbers: number[],
   selectedTeamNumbers: number[];
   onSelect: (teamId: number) => void;
   disabled: boolean
 }
 
 const TeamButtonListComponent = ({
+  teamNumbers,
   selectedTeamNumbers,
   onSelect,
   disabled
 }: TeamButtonListProps) => {
   const getTeamName = (num: number) => `${String.fromCharCode(64 + num)}조`;
-  const allTeams = Array.from({ length: 26 }, (_, i) => i + 1);
+  // const allTeams = Array.from({ length: teamCnt }, (_, i) => i + 1);
 
   return (
-    <div className="flex overflow-x-auto space-x-1 flex-shrink-0 ml-2 w-[230px]">
+    <div className="flex overflow-x-auto space-x-1 flex-shrink-0 ml-2 max-w-[230px]">
       <div className="flex space-x-1">
-        {allTeams.map((teamNumber) => {
+        {teamNumbers.map((teamNumber) => {
           const isSelected = selectedTeamNumbers.includes(teamNumber);
           return (
             <button

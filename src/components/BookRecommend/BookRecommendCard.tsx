@@ -7,7 +7,7 @@ interface BookRecommendCardProps {
 }
 
 const BookRecommendCard = ({ recommend }: BookRecommendCardProps) => {
-  const { title, authorInfo, bookInfo, content, rate } = recommend;
+  const { title, authorInfo, bookInfo, content, rate, tag } = recommend;
 
   return (
     <div
@@ -21,6 +21,7 @@ const BookRecommendCard = ({ recommend }: BookRecommendCardProps) => {
           nickname: authorInfo.nickname,
           profileImageUrl: authorInfo.profileImageUrl,
         }}
+        tag={tag}
       />
 
       <div className="mt-2 mb-4 mx-4 flex-1 flex overflow-hidden">
