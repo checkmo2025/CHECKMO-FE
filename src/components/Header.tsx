@@ -108,7 +108,7 @@ const Header = ({
           <FaBell size={32} color="#90D26D" />
           {!notiLoading && unreadCount > 0 && (
             <span className="absolute -top-1 -right-1 min-w-[18px] h-[18px] px-[4px] rounded-full text-[11px] bg-[#90D26D] text-white flex items-center justify-center cursor-pointer">
-              {unreadCount}
+              {unreadCount >= 5 ? "5+" : unreadCount}
             </span>
           )}
         </button>
