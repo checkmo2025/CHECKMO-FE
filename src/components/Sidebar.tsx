@@ -262,7 +262,7 @@ const Sidebar = () => {
     const paddingClass = level === 1 ? "pl-8" : "pl-7";
 
     return (
-      <div className={`mt-1 space-y-1 ${paddingClass} cursor-pointer`}>
+      <div className={`mt-1 space-y-1 ${paddingClass}`}>
         {submenus.map((submenu) => {
           const { name, path, isModal, submenus: nested } = submenu;
           let iconPair = null;
@@ -294,7 +294,7 @@ const Sidebar = () => {
                   }
                 }}
                 style={{ color: getMenuTextColor(currentSubmenuObject) }}
-                className="flex items-center gap-2 text-sm py-1 pl-2 pr-3 rounded hover:bg-[#DDEED6] cursor-pointer"
+                className="flex items-center gap-2 text-sm py-1 pl-2 pr-3 rounded hover:bg-[#DDEED6] hover:cursor-pointer"
               >
                 {name}
               </button>
@@ -310,7 +310,7 @@ const Sidebar = () => {
                   openPlannedModal();
                 }}
                 style={{ color: getMenuTextColor(currentSubmenuObject) }}
-                className="flex items-center gap-2 text-sm py-1 pl-2 pr-3 rounded hover:bg-[#DDEED6] cursor-pointer"
+                className="flex items-center gap-2 text-sm py-1 pl-2 pr-3 rounded hover:bg-[#DDEED6] hover:cursor-pointer"
               >
                 {name}
               </button>
@@ -318,13 +318,13 @@ const Sidebar = () => {
           }
 
           return (
-            <div key={name} className="cursor-pointer">
+            <div key={name}>
               <div className="flex items-center justify-between">
                 <NavLink
                   to={nested ? "#" : path}
                   end={!nested}
                   style={{ color: getMenuTextColor(currentSubmenuObject) }}
-                  className="flex items-center gap-2 text-sm py-1 pl-2 pr-3 rounded hover:bg-[#DDEED6]"
+                  className="flex items-center gap-2 text-sm py-1 pl-2 pr-3 rounded hover:bg-[#DDEED6] hover:cursor-pointer"
                   onClick={(e) => {
                     if (nested) {
                       e.preventDefault();
@@ -459,15 +459,16 @@ const Sidebar = () => {
                   to={path ?? submenus[0]?.path ?? "#"}
                   end={!submenus || submenus.length === 0}
                   style={{ color: getMenuTextColor(menu) }}
-                  className={`flex items-center gap-3 py-2 pl-3 pr-4 flex-1 rounded-r-lg hover:bg-[#DDEED6] cursor-pointer min-w-0 ${
-                    // ✨ 이 부분에 min-w-0을 추가했습니다.
+                  className={`flex items-center gap-3 py-2 pl-3 pr-4 flex-1 rounded-r-lg hover:bg-[#DDEED6] hover:cursor-pointer min-w-0 ${
                     isMenuActive(menu, location.pathname)
                       ? "border-l-4 border-[#93C27C]"
                       : ""
                   }`}
                   onClick={(e) => {
-                    if (submenus.length > 0) {
+                    if (name !== "마이페이지" && submenus.length > 0) {
                       e.preventDefault();
+                    }
+                    if (submenus.length > 0) {
                       toggleMenu(name);
                     }
                   }}
