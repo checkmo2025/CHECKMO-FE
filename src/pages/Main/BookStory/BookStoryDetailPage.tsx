@@ -82,7 +82,7 @@ export default function BookStoryDetailPage() {
     try {
       await deleteBookStory(Number(storyId));
       setIsModalOpen(false);
-      navigate("/bookstory/my");
+      navigate(-1); // 이전 페이지(원래 있던 페이지)로 이동
     } catch (err) {
       console.error(err);
       alert("삭제 실패했습니다.");
