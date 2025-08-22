@@ -20,6 +20,7 @@ import editIcon from "../../../assets/icons/edit.png";
 import editHoverIcon from "../../../assets/icons/editHover.png";
 import deleteIcon from "../../../assets/icons/delete.png";
 import deleteHoverIcon from "../../../assets/icons/deleteHover.png";
+import { NonProfileHeader } from "../../../components/NonProfileHeader";
 
 export default function BookStoryDetailPage() {
   const { storyId } = useParams<{ storyId: string }>();
@@ -147,21 +148,10 @@ export default function BookStoryDetailPage() {
 
   return (
     <div>
-      <div className="pt-10 pl-10">
-        <button
-          onClick={() => navigate(-1)}
-          className="flex items-center gap-2 text-lg font-semibold mb-4"
-          type="button"
-        >
-          <img
-            src={backIcon}
-            alt="뒤로가기"
-            className="w-5 h-5 cursor-pointer"
-          />
-          {bookStoryTitle}
-        </button>
+      <div className="pl-10">
+        <NonProfileHeader title={bookStoryTitle} />
       </div>
-
+      
       <div className="pl-4 mt-12 max-w-5xl mx-auto">
         <div
           className="flex items-center gap-2 w-fit cursor-pointer p-1 rounded-lg transition-colors duration-300 hover:bg-[#EEE] mb-6"
