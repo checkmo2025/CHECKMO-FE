@@ -11,7 +11,7 @@ const NonProfileHeaderComponent = ({ title }: NonProfileHeaderProps) => {
 
   return (
     <div className="flex items-center sticky top-0 z-30 bg-white min-w-[700px] py-[30px]">
-      <button onClick={() => navigate(-1)} className="mr-2 h-6 w-6">
+      <button onClick={() => navigate(-1)} className="mr-2 h-6 w-6 cursor-pointer">
         <img src={backIcon} alt="뒤로가기" />
       </button>
       <h1 className="text-2xl font-bold truncate">{title}</h1>

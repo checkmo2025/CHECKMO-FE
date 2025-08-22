@@ -1,3 +1,4 @@
+import { useNavigate } from "react-router-dom";
 import type { AuthorDto } from "../../types/dto";
 
 interface TeamTopicParticipantProps {
@@ -9,6 +10,7 @@ const TeamTopicParticipant = ({
   teamName,
   participants,
 }: TeamTopicParticipantProps) => {
+  const navigate = useNavigate();
   return (
     <>
       <h2 className="text-base font-semibold mb-3">{String.fromCharCode(64 + teamName)}조 참여자</h2>
@@ -20,9 +22,10 @@ const TeamTopicParticipant = ({
               className="flex items-center mt-2 p-2 border-b-2 border-gray-200"
             >
               <img
-                src={p.profileImageUrl ?? "/default-avatar.png"}
+                src={p.profileImageUrl || "/src/assets/images/userImage.png"}
                 alt={p.nickname}
                 className="w-8 h-8 rounded-full bg-gray-200 flex-shrink-0"
+                onClick={() => navigate(`/info/others/${p.nickname}`)}
               />
               <span className="ml-3 text-md font-medium text-black">
                 {p.nickname}
