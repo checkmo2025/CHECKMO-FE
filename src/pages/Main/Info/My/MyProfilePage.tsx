@@ -23,7 +23,6 @@ const MyProfilePage = () => {
   const [isEditing, setIsEditing] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
 
-
   const [errorModal, setErrorModal] = useState<{ isOpen: boolean; message: string }>({
     isOpen: false,
     message: "",
@@ -54,14 +53,23 @@ const MyProfilePage = () => {
   );
   const keywords: string[] = useMemo(() => CATEGORY_ENTRIES.map((e) => e.name), [CATEGORY_ENTRIES]);
 
+ // 프로필 초기화 부분
   useEffect(() => {
     if (!me) return;
+
     setNickname(me.nickname ?? "");
     const desc = me.description ?? "";
     setBio(desc);
     setTempBio(desc);
-    setProfileImage(me.profileImageUrl ?? null);
-    setTempProfileImage(me.profileImageUrl ?? null);
+
+    // 여기서 null/빈값 처리 → 기본이미지 강제
+    const img = me.profileImageUrl && me.profileImageUrl.trim() !== ""
+      ? me.profileImageUrl
+      : "/assets/basic_profile.png";
+
+    setProfileImage(img);
+    setTempProfileImage(img);
+
     const names = (me.categories ?? []).map((c: { id: number; name: string }) => c.name);
     setTempKeywords(names);
   }, [me]);
@@ -169,15 +177,18 @@ const MyProfilePage = () => {
                   className="w-[212px] h-[212px] rounded-full overflow-hidden flex items-center justify-center border cursor-pointer"
                   style={{ borderColor: "#EAE5E2", backgroundColor: "#F4F2F1" }}
                 >
-                  {tempProfileImage ? (
-                    <img src={tempProfileImage} alt="프로필" className="w-full h-full object-cover" />
-                  ) : (
-                    <img
-                      src="/assets/basic_profile.png"
-                      alt="기본 프로필"
-                      className="w-full h-full object-cover"
-                    />
-                  )}
+                  <img
+                    src={tempProfileImage ?? "/assets/basic_profile.png"}
+                    alt="프로필"
+                    onError={(e) => {
+                      e.currentTarget.src = "/assets/basic_profile.png"; 
+                    }}
+                    className={`w-full h-full object-cover ${
+                      (tempProfileImage ?? "/assets/basic_profile.png") === "/assets/basic_profile.png"
+                        ? "scale-125"
+                        : ""
+                    }`}
+                  />
                 </div>
                 {isEditing && (
                   <label
