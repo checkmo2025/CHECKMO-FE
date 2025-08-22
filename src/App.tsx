@@ -3,7 +3,7 @@ import { useEffect } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 import { getMyProfile } from "./apis/My/memberApi";
 import { QK } from "./hooks/useHeader";
-import { AppRoutes } from "./router";
+import { AppRoutes } from "./router/AppRoutes";
 
 const App = () => {
   const qc = useQueryClient();
