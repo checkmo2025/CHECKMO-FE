@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useDeleteVote } from '../../hooks/ClubNotice/useDeleteVote';
 import logoImage from '../../assets/logos/clearMainLogo.png';
-import vector from '../../assets/images/Vector.png';
+import vector from "../../assets/icons/mainnotice.svg";
 import type { noticeListItemDto, voteItemDto } from '../../types/clubNotice';
 import { mapTagToRouteType } from '../../types/noticeType';
 import { parseISO, format } from 'date-fns';
