@@ -168,7 +168,7 @@ const Header = ({
               <img
                 src="/assets/basic_profile.png"
                 alt="기본 프로필"
-                className="w-full h-full object-cover"
+                className="w-full h-full object-cover scale-125"
               />
             )}
           </div>
