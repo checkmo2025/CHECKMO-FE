@@ -19,6 +19,11 @@ const ProfilePage = () => {
     const isLoggedIn = Boolean(localStorage.getItem("nickname"));
     const blockedPaths = ["/", "/signup", "/profile"];
 
+    //  /profile 주소 직접 접근 차단
+    if (location.pathname === "/profile") {
+      navigate("/", { replace: true });
+      return;
+    }
 
     if (isLoggedIn && blockedPaths.includes(location.pathname)) {
       (async () => {
