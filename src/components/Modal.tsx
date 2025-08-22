@@ -46,7 +46,7 @@ const Modal = ({ isOpen, title, buttons, onBackdrop }: ModalProps) => {
             <button
               key={i}
               onClick={onClick}
-              className={`w-full rounded-lg transition ${variantClass[variant]} text-sm`}
+              className={`w-full rounded-lg transition ${variantClass[variant]} text-sm cursor-pointer`}
             >
               {label}
             </button>
