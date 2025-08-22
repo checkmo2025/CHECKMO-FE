@@ -191,7 +191,9 @@ export default function DetailMeetingManagePage() {
               <div className="space-y-4">
                 {participants.map((member: MeetingMemberItem) => (
                   <div className="flex items-center justify-between border-b border-[#EAE5E2] pb-3">
-                    <div className="flex items-center gap-4 min-w-[180px]">
+                    <div className="flex items-center gap-4 min-w-[180px] cursor-pointer"
+                    onClick={() => navigate(`/info/others/${member.memberInfo.nickname}`)}
+                    >
                       <img src={member.memberInfo.profileImageUrl || "/assets/basic_profile.png"}
                       className="w-[36px] h-[36px] rounded-full" />
                       <span className="text-[#2C2C2C] text-lg font-medium truncate">
