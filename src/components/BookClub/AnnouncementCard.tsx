@@ -1,8 +1,8 @@
 import React from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import type { noticeListItemDto, voteItemDto } from "../../types/clubNotice";
-import vector from "../../assets/images/Vector.png";
-import arrow from "../../assets/images/ShortcutArrow.png";
+import vector from "../../assets/icons/mainnotice.svg";
+import arrow from "../../assets/icons/shortcut.png";
 import { mapTagToRouteType } from "../../types/noticeType";
 import { parseISO, format } from "date-fns";
 
@@ -44,7 +44,7 @@ function AnnouncementCardItem({
   return (
     <div
       onClick={handleCardClick}
-      className="relative w-full md:w-[312px] h-auto md:h-[380px] flex-shrink-0 rounded-[16px] border-2 border-[#EAE5E2] py-[26px] px-[21.5px] mb-[20px] flex flex-col overflow-hidden cursor-pointer select-none
+      className="relative w-full md:w-[312px] h-auto md:h-[380px] flex-shrink-0 rounded-[16px] border-2 border-[#EAE5E2] p-6 mb-[20px] flex flex-col overflow-hidden cursor-pointer select-none
       hover:bg-gray-50 hover:shadow-lg hover:scale-[1.03] transition-all duration-300 origin-center"
     >
       <div className="flex justify-between items-center">
@@ -53,7 +53,7 @@ function AnnouncementCardItem({
           <h3
             className="
               ml-[13px]
-              font-medium
+              font-normal
               text-[18px]
             "
           >
@@ -76,7 +76,7 @@ function AnnouncementCardItem({
 
       <div className="mt-[9px]">
         {item.tag === "모임" && item.meetingInfoDTO && (
-          <div className="font-normal text-[12px] text-[#000000] space-y-[4px]">
+          <div className="font-normal text-[12px] text-[#2C2C2C] space-y-1 pr-10">
             <p>
               다음 모임 날짜:{" "}
               {(() => {
@@ -91,8 +91,8 @@ function AnnouncementCardItem({
             <p className="line-clamp-1">
               다음 모임 책: {item.meetingInfoDTO.bookInfo?.title}
             </p>
-            <div className="md:absolute md:top-[67px] md:right-[24px] self-end">
-              <img src={arrow} alt="icon" className="w-[24px] h-[24px] -mt-3" />
+            <div className="md:absolute md:top-[67px] right-6 w-6 h-6">
+              <img src={arrow} alt="icon" className="w-[24px] h-[24px]" />
             </div>
             <div className="md:absolute md:bottom-[24.5px] mt-[12px]">
               <div className="relative md:w-[262px] md:h-[232px] w-full h-[200px] bg-gray-100 rounded-lg overflow-hidden flex items-center justify-center">
