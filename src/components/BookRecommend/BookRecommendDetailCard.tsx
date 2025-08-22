@@ -26,7 +26,7 @@ const BookRecommendDetailCard = ({
   };
 
   return (
-    <div className="mt-2 px-4 sm:px-6 md:px-8 py-2">
+    <div className="mt-2 p-2">
       <h1 className="font-bold text-2xl sm:text-3xl truncate">{bookInfo.title}</h1>
       <p className="mt-3 sm:mt-4 mb-4 text-xs sm:text-sm text-gray-500">
         {bookInfo.author}
