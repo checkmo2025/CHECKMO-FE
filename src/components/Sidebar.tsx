@@ -30,6 +30,7 @@ import toggleOpenGray from "../assets/icons/toggleOpen-gray.png";
 import toggleOpenGreen from "../assets/icons/toggleOpen-green.png";
 import toggleCloseGray from "../assets/icons/toggleClose-gray.png";
 import toggleCloseGreen from "../assets/icons/toggleClose-green.png";
+import exitHoverIcon from "../assets/icons/exit-hover.png";
 
 type Submenu = {
   name: string;
@@ -66,6 +67,7 @@ const Sidebar = () => {
 
   const [myClubs, setMyClubs] = useState<ClubDto[]>([]);
   const [isClubListModalOpen, setIsClubListModalOpen] = useState(false);
+  const [isHover, setIsHover] = useState(false);
 
   const openPlannedModal = (msg = "추후 개발 예정입니다!") => {
     setModalMessage(msg);
@@ -417,11 +419,23 @@ const Sidebar = () => {
         </span>
         {bookclubId && (
           <button
+            onMouseEnter={() => setIsHover(true)}
+            onMouseLeave={() => setIsHover(false)}
             onClick={() => navigate(`/home`)}
-            className="relative flex items-center mt-1 h-[2.125rem] w-[7rem] rounded border border-[#93C27C] bg-[#F1F8EF] cursor-pointer"
+            className={`relative flex items-center mt-1 h-[2.125rem] w-[7rem] rounded cursor-pointer border ${
+              isHover ? "border-[#367216]" : "border-[#93C27C]"
+            } bg-[#F1F8EF]`}
           >
-            <img src={exitIcon} alt="home" className="w-4 h-4 ml-5" />
-            <span className="text-[0.85rem] text-[#3D4C35] font-medium ml-2">
+            <img
+              src={isHover ? exitHoverIcon : exitIcon}
+              alt="home"
+              className="w-4 h-4 ml-5"
+            />
+            <span
+              className={`text-[0.85rem] font-medium ml-2 ${
+                isHover ? "text-[#2C2C2C]" : "text-[#8D8D8D]"
+              }`}
+            >
               메인 홈
             </span>
           </button>
