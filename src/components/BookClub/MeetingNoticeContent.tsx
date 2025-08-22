@@ -3,8 +3,8 @@ import { format, parseISO } from 'date-fns';
 import { ko } from 'date-fns/locale';
 // import { BOOK_CATEGORIES } from '../../types/dto';
 import type { meetingInfoDto } from '../../types/clubNotice';
-import calenderIcon from "../../assets/icons/calenderIcon.png";
-import mapIcon from "../../assets/icons/mapIcon.png";
+import calenderIcon from "../../assets/icons/calender.png";
+import mapIcon from "../../assets/icons/location.png";
 
 interface MeetingNoticeContentProps {
   data: meetingInfoDto;
