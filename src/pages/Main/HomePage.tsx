@@ -127,7 +127,7 @@ export default function HomePage() {
             {loadingNotices && <p className="ml-[10px]">공지사항 로딩중...</p>}
 
             {!loadingNotices && notices.length === 0 && (
-              <div className="w-full h-[380px] flex items-center justify-center border-2 border-[#EAE5E2] rounded-[16px]">
+              <div className="w-[calc(100%-24px)] h-[380px] flex items-center justify-center border-2 border-[#EAE5E2] rounded-[16px] mx-[10px]">
                 <p className="text-[#969696]">
                   아직 등록된 공지사항이 없습니다.
                 </p>

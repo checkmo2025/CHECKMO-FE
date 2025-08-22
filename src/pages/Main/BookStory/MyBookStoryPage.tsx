@@ -127,7 +127,7 @@ export default function MyBookStoryPage() {
               />
             ))
           ) : (
-            <div>데이터가 없습니다.</div>
+            <div>책 이야기가 없습니다.</div>
           )}
         </div>
       </div>
