@@ -23,7 +23,7 @@ const TeamTopicSectionComponent = ({
         {onViewAllClick && (
           <button
             onClick={onViewAllClick}
-            className="text-sm text-gray-500 hover:underline cursor-pointer"
+            className="text-sm text-gray-500 hover:underline"
           >
             전체보기
           </button>

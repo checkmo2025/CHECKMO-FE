@@ -8,7 +8,6 @@ import type { MeetingMemberItem } from "../../types/Meeting/GetmeetingMember.ts"
 import type { ModalButton } from "../../components/Modal.tsx";
 
 import Modal from "../../components/Modal.tsx";
-import { NonProfileHeader } from "../../components/NonProfileHeader.tsx";
 export default function DetailMeetingManagePage() {
   const params = useParams<{ bookclubId: string, meetingId: string }>();
   const { state } = useLocation();
@@ -135,8 +134,16 @@ export default function DetailMeetingManagePage() {
   
   return (
     <div className="flex min-h-screen bg-[#FAFAFA] overflow-y-auto bg-white">
-      <main className="flex-1 px-10">
-        <NonProfileHeader title={meetingTitle} />
+      <main className="flex-1 px-10 py-[30px]">
+
+        <div onClick={() => navigate(-1)} className="flex items-center h-[38px] gap-[3px] cursor-pointer mb-[36px]">
+          <div className="w-[30px] h-full flex items-center justify-center">
+            <img src="/assets/material-symbols_arrow-back-ios.svg" className="w-[30px] h-[30px]"/>
+          </div>
+          <span className="font-[Pretendard] font-bold text-[28px] leading-[135%]">
+            {meetingTitle}
+          </span>
+        </div>
 
         <div className="flex flex-col lg:flex-row gap-10">
           {/* 왼쪽: 조 생성 + 멤버 배정 */}
