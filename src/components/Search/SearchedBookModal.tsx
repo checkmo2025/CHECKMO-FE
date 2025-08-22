@@ -65,13 +65,13 @@ export default function SearchedBookModal({ isOpen, onClose, searchBook}: Props)
             {/* 액션 버튼 */}
             <div className="mt-6 flex justify-end space-x-2">
               <button
-                className="rounded-lg px-4 py-2 bg-gray-200 text-gray-700 hover:bg-gray-300"
+                className="rounded-lg px-4 py-2 bg-gray-200 text-gray-700 hover:bg-gray-300 cursor-pointer"
                 onClick={onClose}
               >
                 닫기
               </button>
               <button
-                className="rounded-lg px-4 py-2 bg-[var(--button-brown,#A6917E)] text-white hover:brightness-90"
+                className="rounded-lg px-4 py-2 bg-[var(--button-brown,#A6917E)] text-white hover:brightness-90 cursor-pointer"
                 onClick={() => {
                   navigate(`/bookstory/${searchBook.isbn}/write`, { state: { book: searchBook } });
                   onClose();

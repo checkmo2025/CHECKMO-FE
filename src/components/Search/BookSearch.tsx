@@ -32,7 +32,7 @@ export default function BookSearch({
       setSearchBooks(booksOnPage!);
     } else {
       setSearchBooks((prev) => [...prev, ...booksOnPage!]);
-      console.log("추가된 책:", Searchbooks);
+
     }
   }, [booksOnPage, page]);
 
@@ -48,7 +48,7 @@ export default function BookSearch({
     const el = loadMoreRef.current;
     if (el) observer.observe(el);
     return () => observer.disconnect();
-  }, [hasNext, isFetching]);
+  }, [hasNext, isFetching, Searchbooks]);
 
   return (
     <div className=" flex flex-col flex-1">
@@ -128,7 +128,7 @@ export default function BookSearch({
                     <button
                       key={i}
                       onClick={() => action.onClick(SearchBook)}
-                      className={` w-[105px] h-[35px] text-[12px] py-[5px] px-[12px] rounded-[16px] flex items-center justify-center font-[Pretendard] font-medium text-[12px] leading-[145%] ${
+                      className={` w-[105px] h-[35px] text-[12px] py-[5px] px-[12px] rounded-[16px] flex items-center justify-center font-[Pretendard] font-medium text-[12px] leading-[145%] cursor-pointer ${
                         action.className ?? ""
                       }`}
                     >
