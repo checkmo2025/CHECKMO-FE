@@ -1,7 +1,6 @@
 import { useParams, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { Check, X } from "lucide-react";
-import backIcon from "../../../assets/icons/backIcon.png";
 import { axiosInstance } from "../../../apis/axiosInstance";
 import type { BookStoryResponseDto } from "../../../types/bookStories";
 import likeIcon from "../../../assets/icons/heartEmpty.png";
