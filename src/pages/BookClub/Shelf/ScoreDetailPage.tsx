@@ -15,12 +15,14 @@ export default function ScoreDetailPage() {
   useEffect(() => {
     const nickname = localStorage.getItem('nickname');
     const profileImageUrl = localStorage.getItem('profileImageUrl');
-    if(!nickname || !profileImageUrl) {
-      console.log("error처리")
-      return;
+    if(nickname) {
+      setMynickname(nickname);
+     
     }
-    setMynickname(nickname);
-    setUrl(profileImageUrl);
+    if(profileImageUrl) {
+      setUrl(profileImageUrl);
+    }
+
   }, []) 
 
   return (

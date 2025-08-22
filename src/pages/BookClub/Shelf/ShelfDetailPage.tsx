@@ -20,12 +20,13 @@ export default function ShelfDetailPage() {
   useEffect(() => {
     const nickname = localStorage.getItem('nickname');
     const profileImageUrl = localStorage.getItem('profileImageUrl');
-    if(!nickname || !profileImageUrl) {
-      console.log("error처리")
-      return;
+    if(nickname) {
+      setMynickname(nickname);
+     
     }
-    setMynickname(nickname);
-    setUrl(profileImageUrl);
+    if(profileImageUrl) {
+      setUrl(profileImageUrl);
+    }
   }, []) 
 
   if (isLoading) return <div className = "font-[Pretendard] font-semibold text-[16px] text-[#8D8D8D]">로딩 중…</div>

@@ -35,12 +35,13 @@ export default function ThemeDetailPage() {
   useEffect(() => {
     const nickname = localStorage.getItem('nickname');
     const profileImageUrl = localStorage.getItem('profileImageUrl');
-    if(!nickname || !profileImageUrl) {
-      console.log("error처리")
-      return;
+    if(nickname) {
+      setMynickname(nickname);
+     
     }
-    setMynickname(nickname);
-    setUrl(profileImageUrl);
+    if(profileImageUrl) {
+      setUrl(profileImageUrl);
+    }
   }, []) 
   
   useEffect(() => {
@@ -133,7 +134,7 @@ export default function ThemeDetailPage() {
             {/* 등록 영역 */}
             <div className=" py-2 flex shadow rounded-2xl border-2 border-[var(--sub-color-2-brown,#EAE5E2)] mb-3   transition-transform duration-300 hover:shadow-md">
               <div className="flex-shrink-0 items-center w-[222px] h-[48px] ml-[12px] flex gap-[19px] mr-[15px]">
-                <img src={MyUrl} className="w-[48px] h-[48px] rounded-full object-cover"  alt="프로필"/>
+                <img src={MyUrl || '/assets/ix_user-profile-filled.svg'} className="w-[48px] h-[48px] rounded-full object-cover"  alt="프로필"/>
                 <div className="flex-1 font-semibold text-[15px] text-gray-800">
                   {Mynickname}
                 </div>
