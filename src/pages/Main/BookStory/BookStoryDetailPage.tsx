@@ -118,10 +118,7 @@ export default function BookStoryDetailPage() {
   const handleToggleSubscription = async () => {
     if (!authorInfo?.nickname) return;
     try {
-      // API 함수에 현재 구독 상태(isSubscribed)를 전달
       await toggleUserSubscription(authorInfo.nickname, isSubscribed);
-
-      // API 요청이 성공하면 UI 상태를 업데이트
       setIsSubscribed((prev) => !prev);
     } catch (err) {
       console.error("구독 처리에 실패했습니다.", err);
@@ -160,39 +157,25 @@ export default function BookStoryDetailPage() {
       </div>
 
       <div className="pl-4 mt-12 max-w-5xl mx-auto">
-        <div className="flex items-center justify-between mb-6">
-          <div
-            className="flex items-center gap-2 w-fit cursor-pointer p-1 rounded-lg transition-colors duration-300 hover:bg-[#EEE]"
-            onClick={() => {
-              if (isMyStory) {
-                navigate("/mypage/myprofile");
-              } else {
-                navigate(`/info/others/${authorInfo.nickname}`);
-              }
-            }}
-          >
-            <img
-              src={authorInfo.profileImageUrl || noProfileImage}
-              alt={authorInfo.nickname}
-              className="w-10 h-10 rounded-full"
-            />
-            <span className="text-base font-semibold pr-1">
-              {authorInfo.nickname}
-            </span>
-          </div>
-
-          {!isMyStory && (
-            <button
-              onClick={handleToggleSubscription}
-              className={`px-4 py-1.5 rounded-full text-sm font-semibold transition-colors duration-200 ${
-                isSubscribed
-                  ? "bg-white text-gray-500 border border-gray-300"
-                  : "bg-[#A6917D] text-white"
-              }`}
-            >
-              {isSubscribed ? "구독 중" : "구독"}
-            </button>
-          )}
+        {/* 프로필 영역 그대로 유지 */}
+        <div
+          className="flex items-center gap-2 w-fit cursor-pointer p-1 rounded-lg transition-colors duration-300 hover:bg-[#EEE] mb-6"
+          onClick={() => {
+            if (isMyStory) {
+              navigate("/mypage/myprofile");
+            } else {
+              navigate(`/info/others/${authorInfo.nickname}`);
+            }
+          }}
+        >
+          <img
+            src={authorInfo.profileImageUrl || noProfileImage}
+            alt={authorInfo.nickname}
+            className="w-10 h-10 rounded-full"
+          />
+          <span className="text-base font-semibold pr-1">
+            {authorInfo.nickname}
+          </span>
         </div>
 
         <div className="flex flex-col sm:flex-row gap-8">
@@ -205,27 +188,35 @@ export default function BookStoryDetailPage() {
           </div>
 
           <div className="flex flex-col flex-1 h-80">
+            {/* 제목 + 버튼 한 줄 */}
+            <div className="flex items-center justify-between mb-4">
+              <h1 className="text-2xl font-semibold">{bookStoryTitle}</h1>
+              {!isMyStory && (
+                <button
+                  onClick={handleToggleSubscription}
+                  className={`w-[4.6rem] h-[2rem] px-4 py-1.5 rounded-full text-sm font-semibold transition-colors duration-200 cursor-pointer ${
+                    isSubscribed
+                      ? "bg-[#A6917D] text-white hover:bg-[#8c7a69]"
+                      : "bg-white text-[#A6917D] border border-[#A6917D] hover:bg-[#A6917D] hover:text-white"
+                  }`}
+                >
+                  {isSubscribed ? "구독 중" : "구독"}
+                </button>
+              )}
+            </div>
+
             {isEditing ? (
-              <>
-                <h1 className="text-2xl font-semibold mb-4">
-                  {bookStoryTitle}
-                </h1>
-                <textarea
-                  className="flex-1 p-2 border border-gray-300 rounded"
-                  value={editDescription}
-                  onChange={(e) => setEditDescription(e.target.value)}
-                />
-              </>
+              <textarea
+                className="flex-1 p-2 border border-gray-300 rounded"
+                value={editDescription}
+                onChange={(e) => setEditDescription(e.target.value)}
+              />
             ) : (
-              <>
-                <h1 className="text-2xl font-semibold mb-4">
-                  {bookStoryTitle}
-                </h1>
-                <p className="text-sm leading-relaxed whitespace-pre-line mb-6">
-                  {description}
-                </p>
-              </>
+              <p className="text-sm leading-relaxed whitespace-pre-line mb-6">
+                {description}
+              </p>
             )}
+
             <div className="flex-grow" />
 
             <div className="flex flex-col items-end text-gray-400 text-xs gap-[1rem]">
