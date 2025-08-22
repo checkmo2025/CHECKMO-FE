@@ -2,6 +2,7 @@ import { useNavigate } from "react-router-dom";
 import type { RecommendationDto } from "../../types/bookRecommend";
 import ActionButton from "./ActionButton";
 import StarRating from "./StarRating";
+import defaultAvatar from "../../assets/images/userImage.png";
 
 interface BookRecommendDetailCardProps {
   clubId: number;
@@ -54,7 +55,7 @@ const BookRecommendDetailCard = ({
             </div>
             <div className="flex items-center my-4 sm:my-5 gap-3 sm:gap-4">
               <img
-                src={authorInfo.profileImageUrl}
+                src={authorInfo.profileImageUrl ? authorInfo.profileImageUrl : defaultAvatar}
                 alt={authorInfo.nickname}
                 className="w-8 h-8 sm:w-10 sm:h-10 rounded-full object-cover bg-gray-200"
                 onClick={() => navigate(`/info/others/${authorInfo.nickname}`)}

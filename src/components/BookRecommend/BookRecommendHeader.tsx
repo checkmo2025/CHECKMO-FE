@@ -1,4 +1,5 @@
 import type { AuthorDto } from "../../types/dto";
+import defaultAvatar from "../../assets/images/userImage.png";
 
 interface HeaderProps {
   author: AuthorDto;
@@ -10,7 +11,9 @@ const BookRecommendHeader = ({ author, tag }: HeaderProps) => {
     <>
       <div className="flex flex-row mt-5 mx-4">
         <img
-          src={author.profileImageUrl}
+          src={author.profileImageUrl ? author.profileImageUrl : defaultAvatar}
+
+          // src={author.profileImageUrl
           className="mr-3 w-8 h-8
                         object-cover
                         rounded-full"
