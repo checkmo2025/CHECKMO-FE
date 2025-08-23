@@ -31,7 +31,7 @@ const BookClubListModal = ({ isOpen, clubs, onClose, onSelect }: Props) => {
   return (
     <div
       ref={ref}
-      className="absolute left-[15rem] top-40 w-48 bg-white border border-gray-200 shadow-lg rounded-md z-50"
+      className="absolute left-[15rem] top-40 w-48 max-h-60 overflow-y-auto bg-white border border-gray-200 shadow-lg rounded-md z-50"
     >
       <ul className="flex flex-col">
         {clubs.map((club) => (
