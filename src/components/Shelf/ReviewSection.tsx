@@ -1,22 +1,22 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from "react";
 
-import { useReviewInfinite } from '../../hooks/Shelf/useReviewInfinite';
-import { useReviewCreate } from '../../hooks/Shelf/useReviewCreate';
-import { useReviewUpdate } from '../../hooks/Shelf/useReviewUpdate';
-import { useReviewDelete } from '../../hooks/Shelf/useReviewDelete';
+import { useReviewInfinite } from "../../hooks/Shelf/useReviewInfinite";
+import { useReviewCreate } from "../../hooks/Shelf/useReviewCreate";
+import { useReviewUpdate } from "../../hooks/Shelf/useReviewUpdate";
+import { useReviewDelete } from "../../hooks/Shelf/useReviewDelete";
 
 import type {
   ReviewItem,
   ReviewListRequest,
   ReviewCreateRequest,
   ReviewUpdateRequest,
-} from '../../types/Shelf/Shelfreview';
+} from "../../types/Shelf/Shelfreview";
 
-import LongtermChatInput from '../LongtermChatInput';
-import { getStarIcon } from './getStarIcon';
-import StarSelector from '../BookRecommend/StarSelector';
-import Modal, { type ModalButton } from '../Modal';
-import { useNavigate } from 'react-router-dom';
+import LongtermChatInput from "../LongtermChatInput";
+import { getStarIcon } from "./getStarIcon";
+import StarSelector from "../BookRecommend/StarSelector";
+import Modal, { type ModalButton } from "../Modal";
+import { useNavigate } from "react-router-dom";
 
 export default function ReviewSection({
   meetingId,
@@ -32,12 +32,12 @@ export default function ReviewSection({
   const [editRating, setEditRating] = useState<number>(0);
   const [ReviewList, setReviewList] = useState<ReviewItem[]>([]);
   const [editingReviewId, setEditingReviewId] = useState<number | null>(null);
-  const [editingInitialText, setEditingInitialText] = useState<string>('');
+  const [editingInitialText, setEditingInitialText] = useState<string>("");
   const [infoOpen, setInfoOpen] = useState(false);
-  const [infoTitle, setInfoTitle] = useState('');
+  const [infoTitle, setInfoTitle] = useState("");
   const infoButtons: ModalButton[] = [
     {
-      label: '돌아가기',
+      label: "돌아가기",
       onClick: () => setInfoOpen(false),
     },
   ];
@@ -53,7 +53,7 @@ export default function ReviewSection({
   useEffect(() => {
     if (ReviewResult) {
       const allReviews = ReviewResult.pages.flatMap(
-        (page) => page.bookReviewList,
+        (page) => page.bookReviewList
       );
       setReviewList(allReviews);
     }
@@ -76,15 +76,15 @@ export default function ReviewSection({
 
   function Checkdescription(description: string, Rating: number) {
     if (Rating < 1) {
-      setInfoTitle('별점이 1점보다 커야 합니다.');
+      setInfoTitle("별점이 1점보다 커야 합니다.");
       setInfoOpen(true);
       return false;
-    } else if (description == '') {
-      setInfoTitle('한줄평을 입력해주세요.');
+    } else if (description == "") {
+      setInfoTitle("한줄평을 입력해주세요.");
       setInfoOpen(true);
       return false;
     } else if (description.length > 40) {
-      setInfoTitle('한줄평은 40자 이내로 입력해주세요.');
+      setInfoTitle("한줄평은 40자 이내로 입력해주세요.");
       setInfoOpen(true);
       return false;
     }
@@ -100,12 +100,11 @@ export default function ReviewSection({
     createReviewMut.mutate(payload, {
       onSuccess: () => {
         setNewRating(0);
-        description = '';
+        description = "";
       },
     });
     return true;
-
-  };
+  }
 
   // Update
   const updateMut = useReviewUpdate({ meetingId, size } as ReviewListRequest);
@@ -129,15 +128,13 @@ export default function ReviewSection({
       },
     });
     return true;
-  };
+  }
 
   // Delete
   const deleteMut = useReviewDelete({ meetingId, size } as ReviewListRequest);
   const handleDelete = (bookReviewId: number) => {
     deleteMut.mutate(bookReviewId);
   };
-
-  
 
   return (
     <div className="mt-[64px] flex flex-col mb-[73px]">
@@ -147,9 +144,18 @@ export default function ReviewSection({
 
       {/* 등록 영역 */}
       <div className="flex py-2 shadow rounded-2xl border-2 border-[var(--sub-color-2-brown,#EAE5E2)] w-full mb-3  transition-transform duration-300 hover:shadow-md">
-        <div className="flex items-center justify-between h-[48px] w-[270px] flex-none ml-[12px] mr-[34px] cursor-pointer" onClick={() => {navigate(`/info/others/${currentUser.nickname}`)}}>
+        <div className="flex items-center justify-between h-[48px] w-[270px] flex-none ml-[12px] mr-[34px] cursor-pointer">
+          <div
+            className="cursor-pointer"
+            onClick={() => {
+              navigate(`/info/others/${currentUser.nickname}`);
+            }}
+          ></div>
           <img
-            src={currentUser.profileImageUrl || '/assets/ix_user-profile-filled.svg'}
+            src={
+              currentUser.profileImageUrl ||
+              "/assets/ix_user-profile-filled.svg"
+            }
             className="w-[48px] h-[48px] rounded-full object-cover"
             alt="프로필"
           />
@@ -162,7 +168,7 @@ export default function ReviewSection({
         </div>
         <LongtermChatInput
           onSend={handleSend}
-          placeholder={'한줄평을 입력해 주세요'}
+          placeholder={"한줄평을 입력해 주세요"}
           buttonIconSrc="/assets/등록.svg"
           className=""
         />
@@ -175,13 +181,16 @@ export default function ReviewSection({
             key={review.bookReviewId}
             className="flex py-2 shadow rounded-2xl border-2 border-[var(--sub-color-2-brown,#EAE5E2)]  hover:shadow-md"
           >
-            <div className="flex items-center justify-between h-[48px] w-[270px] flex-none ml-[12px] mr-[34px] cursor-pointer" onClick={() => {
-                    navigate(`/info/others/${review.authorInfo.nickname}`)
-                  }}>
+            <div
+              className="flex items-center justify-between h-[48px] w-[270px] flex-none ml-[12px] mr-[34px] cursor-pointer"
+              onClick={() => {
+                navigate(`/info/others/${review.authorInfo.nickname}`);
+              }}
+            >
               <img
                 src={
                   review.authorInfo.profileImageUrl ||
-                  '/assets/ix_user-profile-filled.svg'
+                  "/assets/ix_user-profile-filled.svg"
                 }
                 className="w-[48px] h-[48px] rounded-full object-cover"
                 alt="프로필"
@@ -219,7 +228,7 @@ export default function ReviewSection({
               {editingReviewId === review.bookReviewId ? (
                 <LongtermChatInput
                   onSend={handleUpdate}
-                  placeholder={'한줄평을 수정해 주세요'}
+                  placeholder={"한줄평을 수정해 주세요"}
                   buttonIconSrc="/assets/등록.svg"
                   initialValue={editingInitialText}
                   className=""
@@ -237,7 +246,7 @@ export default function ReviewSection({
                     <button
                       onClick={() => {
                         setEditingReviewId(null);
-                        setEditingInitialText('');
+                        setEditingInitialText("");
                       }}
                     >
                       <img
@@ -256,7 +265,10 @@ export default function ReviewSection({
                         />
                       </button>
                       <button onClick={() => handleDelete(review.bookReviewId)}>
-                        <img src="/assets/삭제.svg" className="w-6 h-6 hover:cursor-pointer" />
+                        <img
+                          src="/assets/삭제.svg"
+                          className="w-6 h-6 hover:cursor-pointer"
+                        />
                       </button>
                     </div>
                   )}
